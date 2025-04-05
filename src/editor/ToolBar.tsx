@@ -1,18 +1,21 @@
-import { JSX } from 'react';
+import { JSX, RefObject, ReactNode } from 'react';
 import { MenuItem } from '@mui/material';
 import Objects from './Data/ObjectNames';
 import ToolBarItem from './ToolBarItem';
+import ControllerProps from '../types/ControllerProps';
+import * as THREE from 'three';
 
 interface ToolbarProps {
   addMesh: (mesh: JSX.Element) => void;
+  setRef: (ref: RefObject<THREE.Mesh>) => void;
 }
 
-function Toolbar({ addMesh }: ToolbarProps) {
+function Toolbar({ addMesh, setRef }: ToolbarProps) {
   const handleAdd = (
     _: React.MouseEvent<HTMLElement>,
-    Component: React.ComponentType<{ position: [number, number, number] }>,
+    Component: React.ComponentType<ControllerProps>,
   ) => {
-    addMesh(<Component position={[0, 0, 0]} />);
+    addMesh(<Component position={[0, 0, 0]} parentCallback={setRef} />);
   };
 
   return (
