@@ -5,7 +5,7 @@ import * as THREE from 'three';
 
 function Editor() {
   const [objects, setObjects] = useState<JSX.Element[]>([]);
-  const [ref, setRef] = useState<RefObject<THREE.Mesh>>();
+  const [ref, setRef] = useState<RefObject<THREE.Mesh> | null>();
 
   const pushMesh = (mesh: JSX.Element) => {
     setObjects((prev) => [...prev, mesh]);
@@ -14,7 +14,7 @@ function Editor() {
   return (
     <>
       <Toolbar addMesh={pushMesh} setRef={setRef} />
-      <CanvasController objects={objects} refObj={ref} />
+      <CanvasController objects={objects} currentRef={ref} setRef={setRef} />
     </>
   );
 }

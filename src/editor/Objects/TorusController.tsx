@@ -1,5 +1,5 @@
-import { ReactNode, RefObject, useRef, useState } from 'react';
 import { ThreeEvent } from '@react-three/fiber';
+import { ReactNode, RefObject, useRef, useState } from 'react';
 import ControllerProps from '../../types/ControllerProps';
 import * as THREE from 'three';
 

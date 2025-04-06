@@ -5,16 +5,33 @@ import * as THREE from 'three';
 
 interface CanvasControllerProps {
   objects: JSX.Element[];
-  refObj?: RefObject<THREE.Mesh>;
+  currentRef?: RefObject<THREE.Mesh> | null;
+  setRef: (ref: RefObject<THREE.Mesh> | null) => void;
 }
 
-function CanvasController({ objects, refObj }: CanvasControllerProps) {
+function CanvasController({
+  objects,
+  currentRef,
+  setRef,
+}: CanvasControllerProps) {
+  const unfocusObject = () => {
+    if (currentRef?.current) {
+      setRef(null);
+    }
+  };
+
   return (
-    <Canvas className="canvas" camera={{ position: [0, 10, 20] }}>
+    <Canvas
+      className="canvas"
+      onPointerMissed={unfocusObject}
+      camera={{ position: [0, 10, 20] }}
+    >
       <ambientLight />
       <directionalLight position={[10, 10, 10]} />
       <OrbitControls makeDefault enableDamping={false} />
-      {refObj?.current ? <TransformControls object={refObj} /> : undefined}
+      {currentRef?.current ? (
+        <TransformControls object={currentRef} />
+      ) : undefined}
       <Grid sectionSize={4} infiniteGrid />
       {objects}
     </Canvas>
