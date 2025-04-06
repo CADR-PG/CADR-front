@@ -7,8 +7,7 @@ This is the **frontend application** for a web-based **3D graphics editor**. It 
 - **React** – for building the user interface
 - **Vite** – fast development and build tool
 - **Three.js** – for 3D rendering
-- **React Three Fiber** – React renderer for Three.js (optional)
-- **Zustand / Redux / Context API** – for state management (depending on the project)
+- **React Three Fiber** – React renderer for Three.js
 - **SASS** – for styling 
 
 ## ✨ Features
