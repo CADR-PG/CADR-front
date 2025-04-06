@@ -23,8 +23,6 @@ function ToolBarItem({ label, children }: ToolBarItemProps) {
     setAnchorEl(null);
   };
 
-  // modify incoming children, so that each menu item
-  // will also call `closeMenu` on click
   const modifiedChildren = Children.map(children, (child) => {
     if (isValidElement(child)) {
       const element = child as React.ReactElement<

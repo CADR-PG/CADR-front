@@ -1,6 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import TorusController from './TorusController';
+import TorusController from './Objects/TorusController';
 import { JSX } from 'react';
 
 interface CanvasControllerProps {
