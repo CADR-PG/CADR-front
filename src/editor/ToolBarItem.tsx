@@ -23,6 +23,8 @@ function ToolBarItem({ label, children }: ToolBarItemProps) {
     setAnchorEl(null);
   };
 
+  // modify incoming children, so that each menu item
+  // will also call `closeMenu` on click
   const modifiedChildren = Children.map(children, (child) => {
     if (isValidElement(child)) {
       const element = child as React.ReactElement<
@@ -31,7 +33,7 @@ function ToolBarItem({ label, children }: ToolBarItemProps) {
       const originalOnClick = element.props.onClick;
       return cloneElement(element, {
         onClick: (e: React.MouseEvent<HTMLElement>) => {
-          originalOnClick?.(e);
+          originalOnClick?.(e as React.MouseEvent<HTMLLIElement>);
           closeMenu();
         },
       });

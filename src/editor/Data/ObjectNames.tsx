@@ -60,7 +60,6 @@ const Objects = [
     name: 'Extrude',
     component: ExtrudeController,
   },
-
   {
     id: 9,
     name: 'Lathe',
