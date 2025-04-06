@@ -33,7 +33,7 @@ function ToolBarItem({ label, children }: ToolBarItemProps) {
       const originalOnClick = element.props.onClick;
       return cloneElement(element, {
         onClick: (e: React.MouseEvent<HTMLElement>) => {
-          originalOnClick?.(e);
+          originalOnClick?.(e as React.MouseEvent<HTMLLIElement>);
           closeMenu();
         },
       });

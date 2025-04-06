@@ -1,37 +1,31 @@
 import { JSX } from 'react';
-import TorusController from './TorusController';
-import ToolBarItem from './ToolBarItem';
 import { MenuItem } from '@mui/material';
+import Objects from './Data/ObjectNames';
+import ToolBarItem from './ToolBarItem';
 
 interface ToolbarProps {
   addMesh: (mesh: JSX.Element) => void;
 }
 
-enum Shape {
-  Torus,
-}
-
 function Toolbar({ addMesh }: ToolbarProps) {
-  const newMesh = (_: React.MouseEvent<HTMLElement>, shape: Shape) => {
-    switch (shape) {
-      case Shape.Torus:
-        addMesh(<TorusController position={[0, 0, 0]} />);
-        break;
-      default:
-        break;
-    }
+  const handleAdd = (
+    _: React.MouseEvent<HTMLElement>,
+    Component: React.ComponentType<{ position: [number, number, number] }>,
+  ) => {
+    addMesh(<Component position={[0, 0, 0]} />);
   };
 
   return (
     <div className="tool-bar">
       <ToolBarItem label="Shapes">
-        <MenuItem
-          onClick={(e) => {
-            newMesh(e, Shape.Torus);
-          }}
-        >
-          Torus
-        </MenuItem>
+        {Objects.map((object) => (
+          <MenuItem
+            key={object.id}
+            onClick={(e) => handleAdd(e, object.component)}
+          >
+            {object.name}
+          </MenuItem>
+        ))}
       </ToolBarItem>
     </div>
   );
