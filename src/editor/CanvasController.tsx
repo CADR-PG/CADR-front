@@ -1,20 +1,38 @@
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-import TorusController from './Objects/TorusController';
-import { JSX } from 'react';
+import { Grid, OrbitControls, TransformControls } from '@react-three/drei';
+import { JSX, RefObject } from 'react';
+import * as THREE from 'three';
 
 interface CanvasControllerProps {
   objects: JSX.Element[];
+  currentRef?: RefObject<THREE.Mesh> | null;
+  setRef: (ref: RefObject<THREE.Mesh> | null) => void;
 }
 
-function CanvasController({ objects }: CanvasControllerProps) {
+function CanvasController({
+  objects,
+  currentRef,
+  setRef,
+}: CanvasControllerProps) {
+  const unfocusObject = () => {
+    if (currentRef?.current) {
+      setRef(null);
+    }
+  };
+
   return (
-    <Canvas className="canvas" camera={{ position: [0, 0, 30] }}>
+    <Canvas
+      className="canvas"
+      onPointerMissed={unfocusObject}
+      camera={{ position: [3, 2, 3] }}
+    >
       <ambientLight />
       <directionalLight position={[10, 10, 10]} />
-      <TorusController position={[-5, 0, 0]} />
-      <TorusController position={[5, 0, 0]} />
-      <OrbitControls enableDamping={false} />
+      <OrbitControls makeDefault enableDamping={false} />
+      {currentRef?.current ? (
+        <TransformControls object={currentRef} />
+      ) : undefined}
+      <Grid sectionSize={2} infiniteGrid />
       {objects}
     </Canvas>
   );
