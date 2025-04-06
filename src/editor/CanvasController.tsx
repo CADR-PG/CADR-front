@@ -24,7 +24,7 @@ function CanvasController({
     <Canvas
       className="canvas"
       onPointerMissed={unfocusObject}
-      camera={{ position: [0, 10, 20] }}
+      camera={{ position: [3, 2, 3] }}
     >
       <ambientLight />
       <directionalLight position={[10, 10, 10]} />
@@ -32,7 +32,7 @@ function CanvasController({
       {currentRef?.current ? (
         <TransformControls object={currentRef} />
       ) : undefined}
-      <Grid sectionSize={4} infiniteGrid />
+      <Grid sectionSize={2} infiniteGrid />
       {objects}
     </Canvas>
   );

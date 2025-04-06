@@ -36,7 +36,7 @@ function TorusController({
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <torusGeometry args={[3, 1, 16, 100]} />
+      <torusGeometry args={[0.4, 0.1, 16, 100]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
       {children}
     </mesh>
