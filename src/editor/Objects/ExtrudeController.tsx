@@ -54,6 +54,7 @@ function ExtrudeController({
     >
       <extrudeGeometry args={[shape, extrudeSettings]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+      {children}
     </mesh>
   );
 }

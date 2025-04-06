@@ -38,6 +38,7 @@ function CylinderController({
     >
       <cylinderGeometry args={[1, 1, 2, 32]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+      {children}
     </mesh>
   );
 }

@@ -43,6 +43,7 @@ function LatheController({
     >
       <latheGeometry args={[points, 32]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+      {children}
     </mesh>
   );
 }

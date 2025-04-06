@@ -38,6 +38,7 @@ function DodecahedronController({
     >
       <dodecahedronGeometry args={[1, 0]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+      {children}
     </mesh>
   );
 }

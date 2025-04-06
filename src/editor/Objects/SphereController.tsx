@@ -38,6 +38,7 @@ function SphereController({
     >
       <sphereGeometry args={[1, 32, 32]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+      {children}
     </mesh>
   );
 }

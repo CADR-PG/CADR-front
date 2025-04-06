@@ -38,6 +38,7 @@ function CapsuleController({
     >
       <capsuleGeometry args={[1, 2, 8, 16]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+      {children}
     </mesh>
   );
 }

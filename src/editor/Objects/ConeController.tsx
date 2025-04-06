@@ -38,6 +38,7 @@ function ConeController({
     >
       <coneGeometry args={[1, 2, 32]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+      {children}
     </mesh>
   );
 }

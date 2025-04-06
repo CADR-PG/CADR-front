@@ -38,6 +38,7 @@ function CircleController({
     >
       <circleGeometry args={[1.5, 32]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+      {children}
     </mesh>
   );
 }

@@ -1,4 +1,4 @@
-import { JSX, RefObject, ReactNode } from 'react';
+import { RefObject, ReactNode } from 'react';
 import * as THREE from 'three';
 
 interface ControllerProps extends React.ComponentProps<'mesh'> {

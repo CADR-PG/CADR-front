@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ThreeEvents } from '@react-three/fiber';
+import { ThreeEvent } from '@react-three/fiber';
 import ControllerProps from '../../types/ControllerProps';
 
 function PlaneController({
@@ -38,6 +38,7 @@ function PlaneController({
     >
       <planeGeometry args={[3, 3, 32, 32]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+      {children}
     </mesh>
   );
 }
