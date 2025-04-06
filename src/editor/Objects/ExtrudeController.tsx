@@ -7,7 +7,6 @@ function ExtrudeController(props: ThreeElements['mesh']) {
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
 
-
   const shape = new THREE.Shape();
   shape.moveTo(0, 0);
   shape.lineTo(1, 0);

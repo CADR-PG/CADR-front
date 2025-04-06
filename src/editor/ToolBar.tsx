@@ -10,7 +10,7 @@ interface ToolbarProps {
 function Toolbar({ addMesh }: ToolbarProps) {
   const handleAdd = (
     _: React.MouseEvent<HTMLElement>,
-    Component: React.ComponentType<{ position: [number, number, number] }>
+    Component: React.ComponentType<{ position: [number, number, number] }>,
   ) => {
     addMesh(<Component position={[0, 0, 0]} />);
   };

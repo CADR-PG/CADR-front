@@ -13,84 +13,83 @@ import SphereController from '../Objects/SphereController';
 import TetrahedronController from '../Objects/TetrahedronController';
 
 const Objects = [
-{
+  {
     id: 1,
-    name: "Torus",
+    name: 'Torus',
     component: TorusController,
-},
+  },
 
-{
+  {
     id: 2,
-    name: "Box",
+    name: 'Box',
     component: BoxController,
-},
+  },
 
-{
+  {
     id: 3,
-    name: "Capsule",
+    name: 'Capsule',
     component: CapsuleController,
-},
+  },
 
-{
+  {
     id: 4,
-    name: "Circle",
+    name: 'Circle',
     component: CircleController,
-},
+  },
 
-{
+  {
     id: 4,
-    name: "Cone",
+    name: 'Cone',
     component: ConeController,
-},
+  },
 
-{
+  {
     id: 6,
-    name: "Cylinder",
+    name: 'Cylinder',
     component: CylinderController,
-},
+  },
 
-{
+  {
     id: 7,
-    name: "Dodecahedron",
+    name: 'Dodecahedron',
     component: DodecahedronController,
-},
+  },
 
-{
+  {
     id: 8,
-    name: "Extrude",
+    name: 'Extrude',
     component: ExtrudeController,
-},
+  },
 
-{
+  {
     id: 9,
-    name: "Lathe",
+    name: 'Lathe',
     component: LatheController,
-},
+  },
 
-{
+  {
     id: 10,
-    name: "Octahedron",
+    name: 'Octahedron',
     component: OctahedronController,
-},
+  },
 
-{
+  {
     id: 11,
-    name: "Plane",
+    name: 'Plane',
     component: PlaneController,
-},
+  },
 
-{
+  {
     id: 12,
-    name: "Sphere",
+    name: 'Sphere',
     component: SphereController,
-},
+  },
 
-{
+  {
     id: 13,
-    name: "Tetrahedron",
+    name: 'Tetrahedron',
     component: TetrahedronController,
-}
-
+  },
 ];
 
 export default Objects;
