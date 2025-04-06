@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ThreeElements, useFrame } from '@react-three/fiber';
+import { ThreeElements } from '@react-three/fiber';
 
 function ExtrudeController(props: ThreeElements['mesh']) {
   const ref = useRef<THREE.Mesh>(null!);
@@ -22,12 +22,6 @@ function ExtrudeController(props: ThreeElements['mesh']) {
     bevelSize: 0.2,
     bevelSegments: 1,
   };
-
-  useFrame((_, delta) => {
-    ref.current.rotation.z += delta;
-    ref.current.rotation.y += delta;
-    ref.current.rotation.x += delta;
-  });
 
   return (
     <mesh
