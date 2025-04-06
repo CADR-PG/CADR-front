@@ -16,68 +16,81 @@ const Objects = [
 {
     id: 1,
     name: "Torus",
-    component: TorusController
+    component: TorusController,
 },
+
 {
     id: 2,
     name: "Box",
-    component: BoxController
+    component: BoxController,
 },
+
 {
     id: 3,
     name: "Capsule",
-    component: CapsuleController
+    component: CapsuleController,
 },
+
 {
     id: 4,
     name: "Circle",
-    component: CircleController
+    component: CircleController,
 },
+
 {
     id: 4,
     name: "Cone",
-    component: ConeController
+    component: ConeController,
 },
+
 {
     id: 6,
     name: "Cylinder",
-    component: CylinderController
+    component: CylinderController,
 },
+
 {
     id: 7,
     name: "Dodecahedron",
-    component: DodecahedronController
+    component: DodecahedronController,
 },
+
 {
     id: 8,
     name: "Extrude",
-    component: ExtrudeController
+    component: ExtrudeController,
 },
+
 {
     id: 9,
     name: "Lathe",
-    component: LatheController
+    component: LatheController,
 },
+
 {
     id: 10,
     name: "Octahedron",
-    component: OctahedronController
+    component: OctahedronController,
 },
+
 {
     id: 11,
     name: "Plane",
-    component: PlaneController
+    component: PlaneController,
 },
+
 {
     id: 12,
     name: "Sphere",
-    component: SphereController
+    component: SphereController,
 },
+
 {
     id: 13,
     name: "Tetrahedron",
-    component: TetrahedronController
+    component: TetrahedronController,
 }
+
 ];
 
 export default Objects;
