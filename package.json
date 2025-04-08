@@ -22,7 +22,6 @@
     "react-resizable-panels": "^2.1.7",
     "react-router-dom": "^7.4.1",
     "react-split": "^2.0.14",
-    "react-split-pane": "^0.1.92",
     "sass": "^1.86.3",
     "three": "^0.175.0"
   },
