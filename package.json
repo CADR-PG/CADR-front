@@ -19,13 +19,16 @@
     "@react-three/fiber": "^9.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-resizable-panels": "^2.1.7",
     "react-router-dom": "^7.4.1",
+    "react-split": "^2.0.14",
+    "react-split-pane": "^0.1.92",
     "sass": "^1.86.3",
     "three": "^0.175.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
-    "@types/react": "^19.0.10",
+    "@types/react": "^19.1.0",
     "@types/react-dom": "^19.0.4",
     "@types/three": "^0.175.0",
     "@vitejs/plugin-react": "^4.3.4",

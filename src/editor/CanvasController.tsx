@@ -1,5 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 import { Grid, OrbitControls, TransformControls } from '@react-three/drei';
+import ToolbarComponent from './Components/Toolbar';
 import { JSX, RefObject } from 'react';
 import * as THREE from 'three';
 
@@ -21,20 +22,23 @@ function CanvasController({
   };
 
   return (
-    <Canvas
-      className="canvas"
-      onPointerMissed={unfocusObject}
-      camera={{ position: [3, 2, 3] }}
-    >
-      <ambientLight />
-      <directionalLight position={[10, 10, 10]} />
-      <OrbitControls makeDefault enableDamping={false} />
-      {currentRef?.current ? (
-        <TransformControls object={currentRef} />
-      ) : undefined}
-      <Grid sectionSize={2} infiniteGrid />
-      {objects}
-    </Canvas>
+    <div className="canvas-container">
+      <ToolbarComponent />
+      <Canvas
+        className="canvas"
+        onPointerMissed={unfocusObject}
+        camera={{ position: [3, 2, 3] }}
+      >
+        <ambientLight />
+        <directionalLight position={[10, 10, 10]} />
+        <OrbitControls makeDefault enableDamping={false} />
+        {currentRef?.current ? (
+          <TransformControls object={currentRef} />
+        ) : undefined}
+        <Grid sectionSize={2} infiniteGrid />
+        {objects}
+      </Canvas>
+    </div>
   );
 }
 
