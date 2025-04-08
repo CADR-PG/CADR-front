@@ -1,4 +1,3 @@
-
 import { JSX, useState, RefObject } from 'react';
 import Split from 'react-split';
 import CanvasController from '../editor/CanvasController';
@@ -40,7 +39,11 @@ function Editor() {
               minSize={[400, 250]}
               style={{ display: 'flex', height: '100%' }}
             >
-              <CanvasController objects={objects} currentRef={ref} setRef={setRef} />
+              <CanvasController
+                objects={objects}
+                currentRef={ref}
+                setRef={setRef}
+              />
               <InspectorWindow />
             </Split>
           </Split>
