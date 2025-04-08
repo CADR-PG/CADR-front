@@ -6,6 +6,23 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  &-hld {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+  }
+
+  &-section {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  &-split {
+    display: flex;
+    height: 100%;
+  }
 }
 
 .gutter {
