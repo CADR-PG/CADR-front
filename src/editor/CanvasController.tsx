@@ -2,6 +2,7 @@ import { Canvas } from '@react-three/fiber';
 import { Grid, OrbitControls, TransformControls } from '@react-three/drei';
 import { JSX, RefObject } from 'react';
 import * as THREE from 'three';
+import OrientationCube from './OrientationCube';
 
 interface CanvasControllerProps {
   objects: JSX.Element[];
@@ -26,6 +27,7 @@ function CanvasController({
       onPointerMissed={unfocusObject}
       camera={{ position: [3, 2, 3] }}
     >
+      <OrientationCube />
       <ambientLight />
       <directionalLight position={[10, 10, 10]} />
       <OrbitControls makeDefault enableDamping={false} />
