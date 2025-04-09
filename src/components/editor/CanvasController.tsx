@@ -3,6 +3,7 @@ import { Grid, OrbitControls, TransformControls } from '@react-three/drei';
 import ToolbarComponent from './Toolbar';
 import { JSX, RefObject } from 'react';
 import * as THREE from 'three';
+import OrientationCube from './OrientationCube';
 
 interface CanvasControllerProps {
   objects: JSX.Element[];
@@ -36,6 +37,7 @@ function CanvasController({
           <TransformControls object={currentRef} />
         ) : undefined}
         <Grid sectionSize={2} infiniteGrid />
+        <OrientationCube />
         {objects}
       </Canvas>
     </div>
