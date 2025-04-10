@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
+import ControllerProps from '../../../types/ControllerProps';
 import { ThreeEvent } from '@react-three/fiber';
-import ControllerProps from '../../types/ControllerProps';
 
-function CircleController({
+function SphereController({
   parentCallback,
   children,
   ...props
@@ -36,11 +36,11 @@ function CircleController({
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <circleGeometry args={[1.5, 32]} />
+      <sphereGeometry args={[1, 32, 32]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
       {children}
     </mesh>
   );
 }
 
-export default CircleController;
+export default SphereController;

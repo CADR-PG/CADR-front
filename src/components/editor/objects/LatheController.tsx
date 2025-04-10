@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
-import ControllerProps from '../../types/ControllerProps';
+import ControllerProps from '../../../types/ControllerProps';
 import { ThreeEvent } from '@react-three/fiber';
 
-function BoxController({
+function LatheController({
   parentCallback,
   children,
   ...props
@@ -28,6 +28,11 @@ function BoxController({
     hover(false);
   };
 
+  const points = [];
+  for (let i = 0; i < 10; i++) {
+    points.push(new THREE.Vector2(Math.sin(i * 0.2) * 1.5 + 1, (i - 5) * 0.4));
+  }
+
   return (
     <mesh
       {...props}
@@ -36,11 +41,11 @@ function BoxController({
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <boxGeometry args={[1, 1, 1]} />
+      <latheGeometry args={[points, 32]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
       {children}
     </mesh>
   );
 }
 
-export default BoxController;
+export default LatheController;

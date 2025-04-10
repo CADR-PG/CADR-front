@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
-import ControllerProps from '../../types/ControllerProps';
 import { ThreeEvent } from '@react-three/fiber';
+import ControllerProps from '../../../types/ControllerProps';
 
-function LatheController({
+function ExtrudeController({
   parentCallback,
   children,
   ...props
@@ -11,6 +11,22 @@ function LatheController({
   const ref = useRef<THREE.Mesh>(null!);
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
+
+  const shape = new THREE.Shape();
+  shape.moveTo(0, 0);
+  shape.lineTo(1, 0);
+  shape.lineTo(1, 1);
+  shape.lineTo(0, 1);
+  shape.lineTo(0, 0);
+
+  const extrudeSettings = {
+    steps: 2,
+    depth: 1,
+    bevelEnabled: true,
+    bevelThickness: 0.2,
+    bevelSize: 0.2,
+    bevelSegments: 1,
+  };
 
   const handleClick = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
@@ -28,11 +44,6 @@ function LatheController({
     hover(false);
   };
 
-  const points = [];
-  for (let i = 0; i < 10; i++) {
-    points.push(new THREE.Vector2(Math.sin(i * 0.2) * 1.5 + 1, (i - 5) * 0.4));
-  }
-
   return (
     <mesh
       {...props}
@@ -41,11 +52,11 @@ function LatheController({
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <latheGeometry args={[points, 32]} />
+      <extrudeGeometry args={[shape, extrudeSettings]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
       {children}
     </mesh>
   );
 }
 
-export default LatheController;
+export default ExtrudeController;

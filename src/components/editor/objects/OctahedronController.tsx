@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
 import { ThreeEvent } from '@react-three/fiber';
-import ControllerProps from '../../types/ControllerProps';
+import ControllerProps from '../../../types/ControllerProps';
 
 function OctahedronController({
   parentCallback,

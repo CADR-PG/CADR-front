@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
+import ControllerProps from '../../../types/ControllerProps';
 import { ThreeEvent } from '@react-three/fiber';
-import ControllerProps from '../../types/ControllerProps';
 
-function CylinderController({
+function BoxController({
   parentCallback,
   children,
   ...props
@@ -36,11 +36,11 @@ function CylinderController({
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <cylinderGeometry args={[1, 1, 2, 32]} />
+      <boxGeometry args={[1, 1, 1]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
       {children}
     </mesh>
   );
 }
 
-export default CylinderController;
+export default BoxController;
