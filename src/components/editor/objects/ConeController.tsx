@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
+import ControllerProps from '../../../types/ControllerProps';
 import { ThreeEvent } from '@react-three/fiber';
-import ControllerProps from '../../types/ControllerProps';
 
-function ExtrudeController({
+function ConeController({
   parentCallback,
   children,
   ...props
@@ -11,22 +11,6 @@ function ExtrudeController({
   const ref = useRef<THREE.Mesh>(null!);
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
-
-  const shape = new THREE.Shape();
-  shape.moveTo(0, 0);
-  shape.lineTo(1, 0);
-  shape.lineTo(1, 1);
-  shape.lineTo(0, 1);
-  shape.lineTo(0, 0);
-
-  const extrudeSettings = {
-    steps: 2,
-    depth: 1,
-    bevelEnabled: true,
-    bevelThickness: 0.2,
-    bevelSize: 0.2,
-    bevelSegments: 1,
-  };
 
   const handleClick = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
@@ -52,11 +36,11 @@ function ExtrudeController({
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <extrudeGeometry args={[shape, extrudeSettings]} />
+      <coneGeometry args={[1, 2, 32]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
       {children}
     </mesh>
   );
 }
 
-export default ExtrudeController;
+export default ConeController;

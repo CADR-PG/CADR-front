@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
 import { ThreeEvent } from '@react-three/fiber';
-import ControllerProps from '../../types/ControllerProps';
+import ControllerProps from '../../../types/ControllerProps';
 
-function CapsuleController({
+function CircleController({
   parentCallback,
   children,
   ...props
@@ -36,11 +36,11 @@ function CapsuleController({
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <capsuleGeometry args={[1, 2, 8, 16]} />
+      <circleGeometry args={[1.5, 32]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
       {children}
     </mesh>
   );
 }
 
-export default CapsuleController;
+export default CircleController;

@@ -7,12 +7,12 @@ import {
 } from 'react';
 import { Button, Menu, Fade, MenuItem } from '@mui/material';
 
-interface ToolBarItemProps {
+interface NavigationItemProps {
   label: string;
   children?: ReactNode;
 }
 
-function ToolBarItem({ label, children }: ToolBarItemProps) {
+function NavigationItem({ label, children }: NavigationItemProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -69,4 +69,4 @@ function ToolBarItem({ label, children }: ToolBarItemProps) {
   );
 }
 
-export default ToolBarItem;
+export default NavigationItem;

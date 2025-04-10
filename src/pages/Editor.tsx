@@ -1,10 +1,10 @@
 import { JSX, useState, RefObject } from 'react';
 import Split from 'react-split';
-import CanvasController from '../editor/CanvasController';
-import HierarchyWindow from '../editor/Components/HierarchyWindow';
-import ProjectWindow from '../editor/Components/ProjectWindow';
-import InspectorWindow from '../editor/Components/InspectorWindow';
-import Toolbar from '../editor/ToolBar';
+import CanvasController from '../components/editor/CanvasController';
+import HierarchyWindow from '../components/editor/HierarchyWindow';
+import ProjectWindow from '../components/editor/ProjectWindow';
+import InspectorWindow from '../components/editor/InspectorWindow';
+import Navigation from '../components/editor/Navigation';
 import * as THREE from 'three';
 
 function Editor() {
@@ -17,7 +17,7 @@ function Editor() {
 
   return (
     <div className="editor-hld">
-      <Toolbar addMesh={pushMesh} setRef={setRef} />
+      <Navigation addMesh={pushMesh} setRef={setRef} />
       <div className="editor-section">
         <Split
           className="editor"

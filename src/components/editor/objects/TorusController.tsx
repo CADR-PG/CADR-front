@@ -1,9 +1,9 @@
-import { useRef, useState } from 'react';
-import * as THREE from 'three';
 import { ThreeEvent } from '@react-three/fiber';
-import ControllerProps from '../../types/ControllerProps';
+import { useRef, useState } from 'react';
+import ControllerProps from '../../../types/ControllerProps';
+import * as THREE from 'three';
 
-function DodecahedronController({
+function TorusController({
   parentCallback,
   children,
   ...props
@@ -36,11 +36,11 @@ function DodecahedronController({
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <dodecahedronGeometry args={[1, 0]} />
+      <torusGeometry args={[0.4, 0.1, 16, 100]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
       {children}
     </mesh>
   );
 }
 
-export default DodecahedronController;
+export default TorusController;

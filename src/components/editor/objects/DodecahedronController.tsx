@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
-import ControllerProps from '../../types/ControllerProps';
 import { ThreeEvent } from '@react-three/fiber';
+import ControllerProps from '../../../types/ControllerProps';
 
-function SphereController({
+function DodecahedronController({
   parentCallback,
   children,
   ...props
@@ -36,11 +36,11 @@ function SphereController({
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <sphereGeometry args={[1, 32, 32]} />
+      <dodecahedronGeometry args={[1, 0]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
       {children}
     </mesh>
   );
 }
 
-export default SphereController;
+export default DodecahedronController;

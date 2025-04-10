@@ -1,6 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 import { Grid, OrbitControls, TransformControls } from '@react-three/drei';
-import ToolbarComponent from './Components/Toolbar';
+import ToolbarComponent from './Toolbar';
 import { JSX, RefObject } from 'react';
 import * as THREE from 'three';
 
