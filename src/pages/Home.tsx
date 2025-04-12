@@ -12,6 +12,9 @@ function Home() {
         <Link to="/register" className="home__link">
           <button className="home__btn">Register now</button>
         </Link>
+        <Link to="/login" className="home__link">
+          <button className="home__btn">Login</button>
+        </Link>
       </div>
     </section>
   );
