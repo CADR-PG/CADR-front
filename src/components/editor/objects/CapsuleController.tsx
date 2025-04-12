@@ -1,9 +1,9 @@
-import { ThreeEvent } from '@react-three/fiber';
 import { useRef, useState } from 'react';
-import ControllerProps from '../../types/ControllerProps';
 import * as THREE from 'three';
+import { ThreeEvent } from '@react-three/fiber';
+import ControllerProps from '../../../types/ControllerProps';
 
-function TorusController({
+function CapsuleController({
   parentCallback,
   children,
   ...props
@@ -36,11 +36,11 @@ function TorusController({
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <torusGeometry args={[0.4, 0.1, 16, 100]} />
+      <capsuleGeometry args={[1, 2, 8, 16]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
       {children}
     </mesh>
   );
 }
 
-export default TorusController;
+export default CapsuleController;
