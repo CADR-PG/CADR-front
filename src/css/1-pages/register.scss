@@ -1,0 +1,47 @@
+.register {
+
+    &-hld {
+        display: grid;
+        justify-content: center;
+        background-color: $c-beige;
+        max-width: 500px;
+        width: 75vw;
+        border-radius: 20px;
+
+        .logo {
+            position: relative;
+            left: 21%;
+        }
+    }
+
+    &-form {
+        display: flex;
+        flex-direction: column;
+        padding: 5px 0;
+
+        &__text {
+            font-family: $f-montserrat;
+            color: $c-dark;
+        }
+
+        &__btn {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-radius: 20px;
+            font-family: $f-montserrat;
+        }
+
+        &-error {
+            &__text {
+                color: $c-error
+            }
+        }
+
+        .input {
+            border-radius: 15px;
+            padding-left: 15px;
+            height: 27px;
+            width: 200px;
+        }
+    }
+}
