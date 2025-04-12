@@ -19,12 +19,7 @@ function Editor() {
     <div className="editor-hld">
       <Navigation addMesh={pushMesh} setRef={setRef} />
       <div className="editor-section">
-        <Split
-          className="editor"
-          direction="vertical"
-          sizes={[80, 20]}
-          minSize={150}
-        >
+        <Split className="editor" direction="vertical" minSize={150}>
           <Split
             direction="horizontal"
             sizes={[30, 70]}
