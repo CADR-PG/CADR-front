@@ -20,36 +20,11 @@ function Register() {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('https://cadr-pg.github.io/users/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setResponseMessage(`Success: ${data.message}`);
-      } else {
-        const errorData = await response.json();
-        setResponseMessage(`Error: ${errorData.message}`);
-      }
-    } catch (error) {
-      setResponseMessage(
-        `Error: ${error instanceof Error ? error.message : 'An unknown error occurred'}`,
-      );
-    }
-  };
-
   return (
     <div className="l-section l-section--register">
       <div className="register-hld">
         <img className="logo" src={logo} height="125px" />
-        <form onSubmit={handleSubmit}>
+        <form>
           <div className="register-form register-form--lastName">
             <label className="register-form__text register-form--firstName__text">
               First Name
