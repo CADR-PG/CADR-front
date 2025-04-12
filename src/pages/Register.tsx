@@ -10,7 +10,7 @@ function Register() {
     phoneNumber: '',
   });
 
-  const [responseMessage, setResponseMessage] = useState('');
+  const [responseMessage] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
