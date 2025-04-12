@@ -9,6 +9,9 @@ function Home() {
         <Link to="/editor" className="home__link">
           <button className="home__btn">Go to Editor</button>
         </Link>
+        <Link to="/register" className="home__link">
+          <button className="home__btn">Register now</button>
+        </Link>
       </div>
     </section>
   );
