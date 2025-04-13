@@ -28,7 +28,7 @@ function CanvasController({
       <Canvas
         className="canvas"
         onPointerMissed={unfocusObject}
-        camera={{ position: [3, 2, 3] }}
+        camera={{ position: [3, 2, -3] }}
       >
         <ambientLight />
         <directionalLight position={[10, 10, 10]} />
