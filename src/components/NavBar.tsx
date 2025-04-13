@@ -4,9 +4,9 @@ import logo from './../assets/logo.png';
 function NavBar() {
   return (
     <div className="navbar-hld">
-      <div className="navbar__logo">
+      <Link to="/" className="navbar__logo">
         <img className="logo" src={logo} height="40px" />
-      </div>
+      </Link>
       <div className="navbar__btn">
         <Link to="/register" className="nav__link">
           <button className="nav__btn">Register now</button>

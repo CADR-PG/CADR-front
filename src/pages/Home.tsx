@@ -3,7 +3,7 @@ import NavBar from './../components/NavBar';
 
 function Home() {
   return (
-    <div>
+    <div className="container">
       <NavBar />
       <section className="l-section l-section--home">
         <h1>Welcome to CADR</h1>
