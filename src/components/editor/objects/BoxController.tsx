@@ -1,9 +1,9 @@
 import GenericMesh from '../../mesh';
 import ControllerProps from '../../../types/ControllerProps';
 
-function BoxController({ children }: ControllerProps) {
+function BoxController({ children, parentCallback }: ControllerProps) {
   return (
-    <GenericMesh>
+    <GenericMesh parentCallback={parentCallback}>
       <boxGeometry args={[1, 1, 1]} />
       {children}
     </GenericMesh>

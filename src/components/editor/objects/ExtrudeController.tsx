@@ -2,7 +2,7 @@ import GenericMesh from '../../mesh';
 import * as THREE from 'three';
 import ControllerProps from '../../../types/ControllerProps';
 
-function ExtrudeController({ children }: ControllerProps) {
+function ExtrudeController({ children, parentCallback }: ControllerProps) {
   const shape = new THREE.Shape();
   shape.moveTo(0, 0);
   shape.lineTo(1, 0);
@@ -20,7 +20,7 @@ function ExtrudeController({ children }: ControllerProps) {
   };
 
   return (
-    <GenericMesh>
+    <GenericMesh parentCallback={parentCallback}>
       <extrudeGeometry args={[shape, extrudeSettings]} />
       {children}
     </GenericMesh>

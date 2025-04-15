@@ -1,9 +1,9 @@
 import GenericMesh from '../../mesh';
 import ControllerProps from '../../../types/ControllerProps';
 
-function SphereController({ children }: ControllerProps) {
+function SphereController({ children, parentCallback }: ControllerProps) {
   return (
-    <GenericMesh>
+    <GenericMesh parentCallback={parentCallback}>
       <sphereGeometry args={[1, 32, 32]} />
       {children}
     </GenericMesh>

@@ -1,9 +1,9 @@
 import ControllerProps from '../../../types/ControllerProps';
 import GenericMesh from '../../mesh';
 
-function CapsuleController({ children }: ControllerProps) {
+function CapsuleController({ children, parentCallback }: ControllerProps) {
   return (
-    <GenericMesh>
+    <GenericMesh parentCallback={parentCallback}>
       <capsuleGeometry args={[1, 2, 8, 16]} />
       {children}
     </GenericMesh>

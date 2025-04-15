@@ -1,9 +1,9 @@
 import GenericMesh from '../../mesh';
 import ControllerProps from '../../../types/ControllerProps';
 
-function PlaneController({ children }: ControllerProps) {
+function PlaneController({ children, parentCallback }: ControllerProps) {
   return (
-    <GenericMesh>
+    <GenericMesh parentCallback={parentCallback}>
       <planeGeometry args={[3, 3, 32, 32]} />
       {children}
     </GenericMesh>
