@@ -1,4 +1,4 @@
-import GenericMesh from '../../mesh';
+import GenericMesh from '../../MeshController';
 import * as THREE from 'three';
 import ControllerProps from '../../../types/ControllerProps';
 

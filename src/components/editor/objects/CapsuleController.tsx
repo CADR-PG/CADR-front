@@ -1,5 +1,5 @@
 import ControllerProps from '../../../types/ControllerProps';
-import GenericMesh from '../../mesh';
+import GenericMesh from '../../MeshController';
 
 function CapsuleController({ children, parentCallback }: ControllerProps) {
   return (

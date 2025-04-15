@@ -1,4 +1,4 @@
-import GenericMesh from '../../mesh';
+import GenericMesh from '../../MeshController';
 import ControllerProps from '../../../types/ControllerProps';
 function TorusController({ children, parentCallback }: ControllerProps) {
   return (
