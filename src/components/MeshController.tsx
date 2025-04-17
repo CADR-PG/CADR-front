@@ -7,9 +7,8 @@ function GenericMesh({
   children,
   ...props
 }: {
-  parentCallback?: (ref: React.RefObject<THREE.Mesh>) => void;
+  parentCallback: (ref: React.RefObject<THREE.Mesh>) => void;
   children?: ReactNode;
-  [key: string]: unknown;
 }) {
   const localRef = useRef<THREE.Mesh>(null!);
   const [hovered, setHovered] = useState(false);
