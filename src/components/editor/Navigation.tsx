@@ -1,21 +1,19 @@
-import { JSX, RefObject } from 'react';
 import { MenuItem } from '@mui/material';
 import Objects from '../../data/ObjectNames';
 import NavigationItem from './NavigationItem';
-import ControllerProps from '../../types/ControllerProps';
-import * as THREE from 'three';
+import SceneObject from '../../types/SceneObject';
+import { useEditorContext } from '../../hooks/useEditorContext';
 
-interface NavigationProps {
-  addMesh: (mesh: JSX.Element) => void;
-  setRef: (ref: RefObject<THREE.Mesh>) => void;
-}
+function Navigation() {
+  const { setSceneObjects, focus } = useEditorContext();
 
-function Navigation({ addMesh, setRef }: NavigationProps) {
-  const handleAdd = (
-    _: React.MouseEvent<HTMLElement>,
-    Component: React.ComponentType<ControllerProps>,
-  ) => {
-    addMesh(<Component position={[0, 0, 0]} parentCallback={setRef} />);
+  const handleAdd = (object: typeof Objects[0]) => {
+    const newObject: SceneObject = {
+      id: crypto.randomUUID(), 
+      geometryType: object.name,
+      component: <object.component parentCallback={focus} />
+    };
+    setSceneObjects((old) => [...old, newObject])
   };
 
   return (
@@ -24,7 +22,7 @@ function Navigation({ addMesh, setRef }: NavigationProps) {
         {Objects.map((object) => (
           <MenuItem
             key={object.id}
-            onClick={(e) => handleAdd(e, object.component)}
+            onClick={() => handleAdd(object)}
           >
             {object.name}
           </MenuItem>

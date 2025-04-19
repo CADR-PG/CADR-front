@@ -1,4 +1,4 @@
-import { JSX, useState, RefObject } from 'react';
+import { useState, RefObject, createContext, Dispatch, SetStateAction } from 'react';
 import Split from 'react-split';
 import CanvasController from '../components/editor/CanvasController';
 import HierarchyWindow from '../components/editor/HierarchyWindow';
@@ -6,45 +6,56 @@ import ProjectWindow from '../components/editor/ProjectWindow';
 import InspectorWindow from '../components/editor/InspectorWindow';
 import Navigation from '../components/editor/Navigation';
 import * as THREE from 'three';
+import SceneObject from '../types/SceneObject';
+
+interface EditorContextValues {
+  sceneObjects: SceneObject[];
+  setSceneObjects: Dispatch<SetStateAction<SceneObject[]>>;
+  focused: RefObject<THREE.Mesh> | null;
+  focus: Dispatch<SetStateAction<RefObject<THREE.Mesh> | null>>;
+}
+
+export const EditorContext = createContext<EditorContextValues | undefined>(undefined);
 
 function Editor() {
-  const [objects, setObjects] = useState<JSX.Element[]>([]);
-  const [ref, setRef] = useState<RefObject<THREE.Mesh> | null>();
+  const [sceneObjects, setSceneObjects] = useState<SceneObject[]>([]);
+  const [focused, focus] = useState<RefObject<THREE.Mesh> | null>(null);
 
-  const pushMesh = (mesh: JSX.Element) => {
-    setObjects((prev) => [...prev, mesh]);
+  const contextValue: EditorContextValues = {
+    sceneObjects,
+    setSceneObjects,
+    focused,
+    focus,
   };
 
   return (
-    <div className="editor-hld">
-      <Navigation addMesh={pushMesh} setRef={setRef} />
-      <div className="editor-section">
-        <Split className="editor" direction="vertical" minSize={150}>
-          <Split
-            direction="horizontal"
-            sizes={[30, 70]}
-            minSize={[200, 400]}
-            className="editor-split"
-          >
-            <HierarchyWindow objects={objects} />
+    <EditorContext.Provider value={contextValue}>
+      <div className="editor-hld">
+        <Navigation />
+        <div className="editor-section">
+          <Split className="editor" direction="vertical" minSize={150}>
             <Split
               direction="horizontal"
-              sizes={[70, 30]}
-              minSize={[400, 250]}
+              sizes={[30, 70]}
+              minSize={[200, 400]}
               className="editor-split"
             >
-              <CanvasController
-                objects={objects}
-                currentRef={ref}
-                setRef={setRef}
-              />
-              <InspectorWindow />
+              <HierarchyWindow />
+              <Split
+                direction="horizontal"
+                sizes={[70, 30]}
+                minSize={[400, 250]}
+                className="editor-split"
+              >
+                <CanvasController />
+                <InspectorWindow />
+              </Split>
             </Split>
+            <ProjectWindow />
           </Split>
-          <ProjectWindow />
-        </Split>
+        </div>
       </div>
-    </div>
+    </EditorContext.Provider>
   );
 }
 

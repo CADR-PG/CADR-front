@@ -1,17 +1,25 @@
-import { JSX } from 'react';
-interface HierarchyWindowProps {
-  objects: JSX.Element[];
-}
+import { useEditorContext } from '../../hooks/useEditorContext';
+import SceneObject from '../../types/SceneObject';
 
-function HierarchyWindow({ objects }: HierarchyWindowProps) {
+function HierarchyWindow() {
+  const { sceneObjects, focused } = useEditorContext();
+
+  const handleOnClick = (object: SceneObject) => {
+    console.log(focused);
+    console.log(object.component);
+  }
+
   return (
     <div className="hierarchy-window">
       <h3>Hierarchy</h3>
-      <div>
-        {objects.map(() => (
-          <div>text</div>
-        ))}
-      </div>
+      {sceneObjects.map((object) => (
+        <div
+          className="hierarchy-window__item"
+          onClick={() => handleOnClick(object)}
+        >
+          {object.geometryType}
+        </div>
+      ))}
     </div>
   );
 }
