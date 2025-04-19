@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import NavBar from './../components/NavBar';
 import logo from './../assets/logo.png';
+import { post } from './../api/client';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -11,7 +12,8 @@ function Register() {
     phoneNumber: '',
   });
 
-  const [responseMessage] = useState('');
+  const [responseMessage, setResponseMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -21,17 +23,42 @@ function Register() {
     });
   };
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setResponseMessage('');
+
+    try {
+      const response = await post('/users/register', formData);
+      setResponseMessage('Registration successful!');
+      console.log('Response:', response);
+    } catch (error: unknown) {
+      if (error instanceof Error && 'response' in error) {
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        setResponseMessage(
+          axiosError.response?.data?.message ||
+            'Registration failed. Please try again.',
+        );
+      } else {
+        setResponseMessage('An unexpected error occurred. Please try again.');
+      }
+      console.error('Error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="container">
       <NavBar />
       <div className="l-section l-section--register">
         <div className="register-hld">
-          <img className="logo" src={logo} height="125px" />
-          <form>
-            <div className="register-form register-form--lastName">
-              <label className="register-form__text register-form--firstName__text">
-                First Name
-              </label>
+          <img className="logo" src={logo} height="125px" alt="Logo" />
+          <form className="register-form__form" onSubmit={handleSubmit}>
+            <div className="register-form register-form--firstName">
+              <label className="register-form__text">First Name</label>
               <input
                 type="text"
                 name="firstName"
@@ -42,9 +69,7 @@ function Register() {
               />
             </div>
             <div className="register-form register-form--lastName">
-              <label className="register-form__text register-form--lastName__text">
-                Last Name
-              </label>
+              <label className="register-form__text">Last Name</label>
               <input
                 type="text"
                 name="lastName"
@@ -54,10 +79,8 @@ function Register() {
                 required
               />
             </div>
-            <div className="register-form register-form--lastName">
-              <label className="register-form__text register-form--mail__text">
-                Email
-              </label>
+            <div className="register-form register-form--email">
+              <label className="register-form__text">Email</label>
               <input
                 type="email"
                 name="email"
@@ -67,10 +90,8 @@ function Register() {
                 required
               />
             </div>
-            <div className="register-form register-form--lastName">
-              <label className="register-form__text register-form--password__text">
-                Password
-              </label>
+            <div className="register-form register-form--password">
+              <label className="register-form__text">Password</label>
               <input
                 type="password"
                 name="password"
@@ -80,10 +101,8 @@ function Register() {
                 required
               />
             </div>
-            <div className="register-form register-form--lastName">
-              <label className="register-form__text register-form--phone__text">
-                Phone Number
-              </label>
+            <div className="register-form register-form--phoneNumber">
+              <label className="register-form__text">Phone Number</label>
               <input
                 type="tel"
                 name="phoneNumber"
@@ -94,8 +113,12 @@ function Register() {
                 required
               />
             </div>
-            <button className="register-form__btn" type="submit">
-              Register
+            <button
+              className="register-form__btn"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Registering...' : 'Register'}
             </button>
           </form>
           {responseMessage && (
