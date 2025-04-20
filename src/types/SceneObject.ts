@@ -1,10 +1,12 @@
-import React, { JSX, ReactElement } from "react";
-import ControllerProps from "./ControllerProps";
+import { ReactElement, RefObject } from "react";
+import * as THREE from 'three';
 
-interface SceneObject {
-  id: string;
+export interface SceneObject {
   geometryType?: string;
+  ref?: RefObject<THREE.Mesh>;
   component: ReactElement<any, any>
 }
 
-export default SceneObject;
+export interface SceneObjects {
+  [uuid: string]: SceneObject
+}

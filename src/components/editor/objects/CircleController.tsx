@@ -1,9 +1,9 @@
 import GenericMesh from '../../MeshController';
 import ControllerProps from '../../../types/ControllerProps';
 
-function CircleController({ children, parentCallback }: ControllerProps) {
+function CircleController({ children, ...props }: ControllerProps) {
   return (
-    <GenericMesh parentCallback={parentCallback}>
+    <GenericMesh {...props}>
       <circleGeometry args={[1.5, 32]} />
       {children}
     </GenericMesh>

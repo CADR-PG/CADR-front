@@ -1,19 +1,19 @@
 import { MenuItem } from '@mui/material';
 import Objects from '../../data/ObjectNames';
 import NavigationItem from './NavigationItem';
-import SceneObject from '../../types/SceneObject';
+import { SceneObject } from '../../types/SceneObject';
 import { useEditorContext } from '../../hooks/useEditorContext';
 
 function Navigation() {
-  const { setSceneObjects, focus } = useEditorContext();
+  const { sceneObjects, setSceneObjects } = useEditorContext();
 
   const handleAdd = (object: typeof Objects[0]) => {
+    const uuid = crypto.randomUUID();
     const newObject: SceneObject = {
-      id: crypto.randomUUID(), 
       geometryType: object.name,
-      component: <object.component parentCallback={focus} />
+      component: <object.component uuid={uuid} />
     };
-    setSceneObjects((old) => [...old, newObject])
+    setSceneObjects({...sceneObjects, [uuid]: newObject})
   };
 
   return (

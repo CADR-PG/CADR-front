@@ -6,20 +6,22 @@ import ProjectWindow from '../components/editor/ProjectWindow';
 import InspectorWindow from '../components/editor/InspectorWindow';
 import Navigation from '../components/editor/Navigation';
 import * as THREE from 'three';
-import SceneObject from '../types/SceneObject';
+import { SceneObjects } from '../types/SceneObject';
 
 interface EditorContextValues {
-  sceneObjects: SceneObject[];
-  setSceneObjects: Dispatch<SetStateAction<SceneObject[]>>;
-  focused: RefObject<THREE.Mesh> | null;
-  focus: Dispatch<SetStateAction<RefObject<THREE.Mesh> | null>>;
+  sceneObjects: SceneObjects;
+  setSceneObjects: Dispatch<SetStateAction<SceneObjects>>;
+  focused: string | null;
+  focus: Dispatch<SetStateAction<string | null>>;
 }
 
 export const EditorContext = createContext<EditorContextValues | undefined>(undefined);
 
 function Editor() {
-  const [sceneObjects, setSceneObjects] = useState<SceneObject[]>([]);
-  const [focused, focus] = useState<RefObject<THREE.Mesh> | null>(null);
+  const [sceneObjects, setSceneObjects] = useState<SceneObjects>({});
+  const [focused, focus] = useState<string | null>(null);
+
+  console.log(sceneObjects);
 
   const contextValue: EditorContextValues = {
     sceneObjects,

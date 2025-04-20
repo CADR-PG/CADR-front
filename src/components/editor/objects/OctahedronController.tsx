@@ -1,9 +1,9 @@
 import GenericMesh from '../../MeshController';
 import ControllerProps from '../../../types/ControllerProps';
 
-function OctahedronController({ children, parentCallback }: ControllerProps) {
+function OctahedronController({ children, ...props }: ControllerProps) {
   return (
-    <GenericMesh parentCallback={parentCallback}>
+    <GenericMesh {...props}>
       <octahedronGeometry args={[1, 0]} />
       {children}
     </GenericMesh>
