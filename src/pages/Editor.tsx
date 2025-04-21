@@ -1,27 +1,16 @@
-import { useState, RefObject, createContext, Dispatch, SetStateAction } from 'react';
+import { useState } from 'react';
 import Split from 'react-split';
 import CanvasController from '../components/editor/CanvasController';
 import HierarchyWindow from '../components/editor/HierarchyWindow';
 import ProjectWindow from '../components/editor/ProjectWindow';
 import InspectorWindow from '../components/editor/InspectorWindow';
 import Navigation from '../components/editor/Navigation';
-import * as THREE from 'three';
 import { SceneObjects } from '../types/SceneObject';
-
-interface EditorContextValues {
-  sceneObjects: SceneObjects;
-  setSceneObjects: Dispatch<SetStateAction<SceneObjects>>;
-  focused: string | null;
-  focus: Dispatch<SetStateAction<string | null>>;
-}
-
-export const EditorContext = createContext<EditorContextValues | undefined>(undefined);
+import { EditorContextValues, EditorContext } from '../data/EditorContext';
 
 function Editor() {
   const [sceneObjects, setSceneObjects] = useState<SceneObjects>({});
   const [focused, focus] = useState<string | null>(null);
-
-  console.log(sceneObjects);
 
   const contextValue: EditorContextValues = {
     sceneObjects,

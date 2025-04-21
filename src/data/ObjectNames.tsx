@@ -11,8 +11,9 @@ import OctahedronController from '../components/editor/objects/OctahedronControl
 import PlaneController from '../components/editor/objects/PlaneController';
 import SphereController from '../components/editor/objects/SphereController';
 import TetrahedronController from '../components/editor/objects/TetrahedronController';
+import { SceneObject } from '../types/SceneObject';
 
-const Objects = [
+const Objects: SceneObject[] = [
   {
     id: 1,
     name: 'Torus',
@@ -38,7 +39,7 @@ const Objects = [
   },
 
   {
-    id: 4,
+    id: 5,
     name: 'Cone',
     component: ConeController,
   },

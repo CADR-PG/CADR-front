@@ -21,12 +21,14 @@ function CanvasController() {
         <ambientLight />
         <directionalLight position={[10, 10, 10]} />
         <OrbitControls makeDefault enableDamping={false} />
-        {focused? (
+        {focused ? (
           <TransformControls object={sceneObjects[focused].ref} mode={mode} />
         ) : undefined}
         <Grid sectionSize={2} infiniteGrid />
         <OrientationCube />
-        {Object.values(sceneObjects).map((object) => object.component)}
+        {Object.entries(sceneObjects).map(([uuid, object]) => (
+          <object.component objectUuid={uuid} />
+        ))}
       </Canvas>
     </div>
   );

@@ -7,23 +7,16 @@ import { useEditorContext } from '../../hooks/useEditorContext';
 function Navigation() {
   const { sceneObjects, setSceneObjects } = useEditorContext();
 
-  const handleAdd = (object: typeof Objects[0]) => {
+  const handleAdd = (object: SceneObject) => {
     const uuid = crypto.randomUUID();
-    const newObject: SceneObject = {
-      geometryType: object.name,
-      component: <object.component uuid={uuid} />
-    };
-    setSceneObjects({...sceneObjects, [uuid]: newObject})
+    setSceneObjects({ ...sceneObjects, [uuid]: object });
   };
 
   return (
     <div className="tool-bar">
       <NavigationItem label="Shapes">
         {Objects.map((object) => (
-          <MenuItem
-            key={object.id}
-            onClick={() => handleAdd(object)}
-          >
+          <MenuItem key={object.id} onClick={() => handleAdd(object)}>
             {object.name}
           </MenuItem>
         ))}

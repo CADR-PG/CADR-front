@@ -1,4 +1,4 @@
-import React, { RefObject, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useEditorContext } from '../../hooks/useEditorContext';
 
 function HierarchyWindow() {
@@ -12,14 +12,14 @@ function HierarchyWindow() {
       // TODO: this is kinda stupid, but `eventListener` gets called before `onClick`
       // so on a valid object click it will override null
       if (isInsideParent) focus(null);
-    }
-
-    document.addEventListener("mousedown", handleClick);
-    return () => {
-      document.removeEventListener("mousedown", handleClick);
     };
-  }, [])
-  
+
+    document.addEventListener('mousedown', handleClick);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+    };
+  }, [focus]);
+
   return (
     <div className="hierarchy-window" ref={parentRef}>
       <h3>Hierarchy</h3>
@@ -28,9 +28,9 @@ function HierarchyWindow() {
           key={uuid}
           className="hierarchy-window__item"
           onClick={() => focus(uuid)}
-          style={{background: focused == uuid ?  "#555" : ""}}
+          style={{ background: focused == uuid ? '#555' : '' }}
         >
-          {object.geometryType}
+          {object.name}
         </div>
       ))}
     </div>
