@@ -1,11 +1,3 @@
-@import '0-site/font.scss';
-@import '0-site/variables';
-@import '0-site/index';
-@import '0-site/sections';
-
-@import '1-pages/editor';
-@import '1-pages/homepage';
-@import '1-pages/register';
-@import '1-pages/login';
-
-@import '2-components/navbar';
+@use '0-site' as *;
+@use '1-pages' as *;
+@use '2-components' as *;

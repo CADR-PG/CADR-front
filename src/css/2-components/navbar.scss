@@ -1,3 +1,5 @@
+@use '../0-site' as *;
+
 .navbar {
     &__btn {
         display: flex;
