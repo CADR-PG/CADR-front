@@ -1,8 +1,9 @@
 import GenericMesh from '../../MeshController';
 import ControllerProps from '../../../types/ControllerProps';
-function TorusController({ children, parentCallback }: ControllerProps) {
+
+function TorusController({ children, ...props }: ControllerProps) {
   return (
-    <GenericMesh parentCallback={parentCallback}>
+    <GenericMesh {...props}>
       <torusGeometry args={[0.4, 0.1, 16, 100]} />
       {children}
     </GenericMesh>

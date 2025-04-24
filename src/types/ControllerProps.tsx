@@ -1,9 +1,8 @@
-import { RefObject, ReactNode } from 'react';
-import * as THREE from 'three';
+import { ReactNode } from 'react';
 
 interface ControllerProps extends React.ComponentProps<'mesh'> {
-  parentCallback: (ref: RefObject<THREE.Mesh>) => void;
   children?: ReactNode;
+  objectUuid: string;
 }
 
 export default ControllerProps;
