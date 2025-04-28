@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import NavBar from './../components/NavBar';
 import logo from './../assets/logo.png';
-import { post } from './../api/client';
+import useSubmission from './../hooks/useSubmission';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -12,42 +12,20 @@ function Register() {
     phoneNumber: '',
   });
 
-  const [responseMessage, setResponseMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { responseMessage, isSubmitting, submit } =
+    useSubmission('/users/register');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setResponseMessage('');
-
-    try {
-      const response = await post('/users/register', formData);
-      setResponseMessage('Registration successful!');
-      console.log('Response:', response);
-    } catch (error: unknown) {
-      if (error instanceof Error && 'response' in error) {
-        const axiosError = error as {
-          response?: { data?: { message?: string } };
-        };
-        setResponseMessage(
-          axiosError.response?.data?.message ||
-            'Registration failed. Please try again.',
-        );
-      } else {
-        setResponseMessage('An unexpected error occurred. Please try again.');
-      }
-      console.error('Error:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    submit(formData, 'Registration successful!');
   };
 
   return (
