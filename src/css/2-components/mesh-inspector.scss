@@ -1,0 +1,12 @@
+.mesh-inspector {
+    &__input {
+        display: flex;
+        justify-content: center;
+
+        input {
+            width: 60px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+    }
+}

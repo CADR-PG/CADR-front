@@ -7,16 +7,25 @@ import InspectorWindow from '../components/editor/InspectorWindow';
 import Navigation from '../components/editor/Navigation';
 import { SceneObjects } from '../types/SceneObject';
 import { EditorContextValues, EditorContext } from '../data/EditorContext';
+import * as THREE from 'three';
 
 function Editor() {
   const [sceneObjects, setSceneObjects] = useState<SceneObjects>({});
   const [focused, focus] = useState<string | null>(null);
+
+  const updateFocusedObject = (focusedObject: THREE.Mesh) => {
+    setSceneObjects((objects) => ({...objects, [focused!]: {
+      ...sceneObjects[focused!],
+      ref: focusedObject
+    }}));
+  }
 
   const contextValue: EditorContextValues = {
     sceneObjects,
     setSceneObjects,
     focused,
     focus,
+    updateFocusedObject
   };
 
   return (

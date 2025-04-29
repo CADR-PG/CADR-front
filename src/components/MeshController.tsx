@@ -26,7 +26,7 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
   };
 
   const handleRef = useCallback(
-    (node: RefObject<THREE.Mesh>) => {
+    (node: THREE.Mesh) => {
       setSceneObjects((prevObjects) => ({
         ...prevObjects,
         [objectUuid]: {
