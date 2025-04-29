@@ -1,4 +1,4 @@
-@use '../0-site' as *;
+@use "../0-site/variables";
 
 .navbar {
     &__btn {
@@ -14,17 +14,17 @@
 
     &-hld {
         display: flex;
-        background-color: $c-beige;
+        background-color: variables.$c-beige;
         .nav {
             &__btn {
                 margin-left: 10px;
                 margin-top: 2px;
-                background-color: $c-beige;
-                color: $c-dark;
+                background-color: variables.$c-beige;
+                color: variables.$c-dark;
     
                 &:hover {
-                    background-color: $c-dark;
-                    color: $c-border;
+                    background-color: variables.$c-dark;
+                    color: variables.$c-border;
                 }
             }
         }

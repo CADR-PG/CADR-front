@@ -1,3 +1,12 @@
-@use '0-site' as *;
-@use '1-pages' as *;
-@use '2-components' as *;
+@use '0-site/font.scss';
+@use '0-site/variables';
+@use '0-site/index';
+@use '0-site/sections';
+
+@use '1-pages/editor';
+@use '1-pages/homepage';
+@use '1-pages/register';
+@use '1-pages/login';
+
+@use '2-components/navbar';
+@use '2-components/hierarchy-window';

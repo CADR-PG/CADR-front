@@ -1,17 +1,17 @@
-@use '../0-site' as *;
+@use "../0-site/variables";
 
 .home {
 
     &__link {
         text-decoration: none;
-        color: $c-white;
+        color: variables.$c-white;
     }
 
     &__btn {
         padding: 10px 20px;
         margin-top: 15px;
         font-size: 1rem;
-        background-color: $c-blue;
+        background-color: variables.$c-blue;
         border: none;
         border-radius: 5px;
         cursor: pointer;

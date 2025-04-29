@@ -1,7 +1,7 @@
-@use '../0-site' as *;
+@use "../0-site/variables";
 
 .tool-bar {
-    background-color: $c-white;
+    background-color: variables.$c-white;
 }
 
 .editor {
@@ -53,7 +53,7 @@
   top: 10px; 
   left: 10px; 
   z-index: 10;
-  background-color: $c-blue;
+  background-color: variables.$c-blue;
   display: flex;
   flex-direction: column;
 }
