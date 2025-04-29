@@ -11,21 +11,21 @@ function Toolbar({ editingMode, selectMode }: ToolbarProps) {
     <div className="toolbar">
       <button
         className="toolbar-item"
-        style={{ background: editingMode === 'translate' ? 'cyan' : 'white' }}
+        style={{ background: editingMode === 'translate' ? 'black' : 'gray' }}
         onClick={() => selectMode('translate')}
       >
         T
       </button>
       <button
         className="toolbar-item"
-        style={{ background: editingMode === 'rotate' ? 'cyan' : 'white' }}
+        style={{ background: editingMode === 'rotate' ? 'black' : 'gray' }}
         onClick={() => selectMode('rotate')}
       >
         R
       </button>
       <button
         className="toolbar-item"
-        style={{ background: editingMode === 'scale' ? 'cyan' : 'white' }}
+        style={{ background: editingMode === 'scale' ? 'black' : 'gray' }}
         onClick={() => selectMode('scale')}
       >
         S
