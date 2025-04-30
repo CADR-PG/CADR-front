@@ -1,9 +1,11 @@
+@use "../0-site/variables";
+
 .login {
 
     &-hld {
         display: grid;
         justify-content: center;
-        background-color: $c-beige;
+        background-color: variables.$c-beige;
         max-width: 500px;
         width: 75vw;
         border-radius: 20px;
@@ -20,20 +22,20 @@
         padding: 5px 0;
 
         &__text {
-            font-family: $f-montserrat;
-            color: $c-dark;
+            font-family: variables.$f-montserrat;
+            color: variables.$c-dark;
         }
 
         &__btn {
             margin-top: 20px;
             margin-bottom: 10px;
             border-radius: 20px;
-            font-family: $f-montserrat;
+            font-family: variables.$f-montserrat;
         }
 
         &-error {
             &__text {
-                color: $c-error
+                color: variables.$c-error
             }
         }
 
