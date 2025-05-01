@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import NavBar from './../components/NavBar';
 import logo from './../assets/logo.png';
-import useSubmission from './../hooks/useSubmission';
+import useLogin from '../hooks/useLogin';
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -9,8 +9,7 @@ function Login() {
     password: '',
   });
 
-  const { responseMessage, isSubmitting, submit } =
-    useSubmission('/users/login');
+  const { mutate, isError, error, isPending } = useLogin();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -22,7 +21,7 @@ function Login() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    submit(formData, 'Login successful!');
+    mutate(formData);
   };
 
   return (
@@ -57,13 +56,13 @@ function Login() {
             <button
               className="login-form__btn"
               type="submit"
-              disabled={isSubmitting}
+              disabled={isPending}
             >
-              {isSubmitting ? 'Logging in...' : 'Login'}
+              {isPending ? 'Logging in...' : 'Login'}
             </button>
           </form>
-          {responseMessage && (
-            <p className="login-form-error__text">{responseMessage}</p>
+          {isError && (
+            <p className="login-form-error__text">{error.response.data.detail}</p>
           )}
         </div>
       </div>

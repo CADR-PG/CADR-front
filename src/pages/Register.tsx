@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import NavBar from './../components/NavBar';
 import logo from './../assets/logo.png';
-import useSubmission from './../hooks/useSubmission';
+import useRegister from '../hooks/useRegister';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -12,8 +12,7 @@ function Register() {
     phoneNumber: '',
   });
 
-  const { responseMessage, isSubmitting, submit } =
-    useSubmission('/users/register');
+  const { mutate, error, isError, isPending } = useRegister()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,7 +24,7 @@ function Register() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    submit(formData, 'Registration successful!');
+    mutate(formData);
   };
 
   return (
@@ -94,13 +93,13 @@ function Register() {
             <button
               className="register-form__btn"
               type="submit"
-              disabled={isSubmitting}
+              disabled={isPending}
             >
-              {isSubmitting ? 'Registering...' : 'Register'}
+              {isPending ? 'Registering...' : 'Register'}
             </button>
           </form>
-          {responseMessage && (
-            <p className="register-form-error__text">{responseMessage}</p>
+          {isError && (
+            <p className="register-form-error__text">{error.message}</p>
           )}
         </div>
       </div>
