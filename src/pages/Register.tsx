@@ -4,7 +4,7 @@ import logo from './../assets/logo.png';
 import useRegister from '../hooks/useRegister';
 
 function Register() {
-  const { mutate, error, isPending } = useRegister()
+  const { mutate, error, isPending } = useRegister();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
