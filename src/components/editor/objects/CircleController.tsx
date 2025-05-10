@@ -1,45 +1,12 @@
-import { useRef, useState } from 'react';
-import * as THREE from 'three';
-import { ThreeEvent } from '@react-three/fiber';
+import GenericMesh from '../../MeshController';
 import ControllerProps from '../../../types/ControllerProps';
 
-function CircleController({
-  parentCallback,
-  children,
-  ...props
-}: ControllerProps) {
-  const ref = useRef<THREE.Mesh>(null!);
-  const [hovered, hover] = useState(false);
-  const [clicked, click] = useState(false);
-
-  const handleClick = (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    click(!clicked);
-    parentCallback(ref);
-  };
-
-  const handlePointerOver = (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    hover(true);
-  };
-
-  const handlePointerOut = (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    hover(false);
-  };
-
+function CircleController({ children, ...props }: ControllerProps) {
   return (
-    <mesh
-      {...props}
-      ref={ref}
-      onClick={handleClick}
-      onPointerOver={handlePointerOver}
-      onPointerOut={handlePointerOut}
-    >
+    <GenericMesh {...props}>
       <circleGeometry args={[1.5, 32]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
       {children}
-    </mesh>
+    </GenericMesh>
   );
 }
 

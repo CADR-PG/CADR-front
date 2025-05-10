@@ -28,6 +28,7 @@
     "three": "^0.175.0"
   },
   "devDependencies": {
+    "@azure/static-web-apps-cli": "^2.0.6",
     "@eslint/js": "^9.21.0",
     "@types/axios": "^0.9.36",
     "@types/react": "^19.1.3",

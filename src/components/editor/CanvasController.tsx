@@ -1,47 +1,34 @@
 import { Canvas } from '@react-three/fiber';
 import { Grid, OrbitControls, TransformControls } from '@react-three/drei';
 import ToolbarComponent from './Toolbar';
-import { JSX, RefObject, useState } from 'react';
-import * as THREE from 'three';
+import { useState } from 'react';
 import OrientationCube from './OrientationCube';
 import EditingMode from '../../types/EditingMode';
+import { useEditorContext } from '../../hooks/useEditorContext';
 
-interface CanvasControllerProps {
-  objects: JSX.Element[];
-  currentRef?: RefObject<THREE.Mesh> | null;
-  setRef: (ref: RefObject<THREE.Mesh> | null) => void;
-}
-
-function CanvasController({
-  objects,
-  currentRef,
-  setRef,
-}: CanvasControllerProps) {
+function CanvasController() {
   const [mode, selectMode] = useState<EditingMode>('translate');
-
-  const unfocusObject = () => {
-    if (currentRef?.current) {
-      setRef(null);
-    }
-  };
+  const { sceneObjects, focused, focus } = useEditorContext();
 
   return (
     <div className="canvas-container">
       <ToolbarComponent editingMode={mode} selectMode={selectMode} />
       <Canvas
         className="canvas"
-        onPointerMissed={unfocusObject}
+        onPointerMissed={() => focus(null)}
         camera={{ position: [3, 2, -3] }}
       >
         <ambientLight />
         <directionalLight position={[10, 10, 10]} />
         <OrbitControls makeDefault enableDamping={false} />
-        {currentRef?.current ? (
-          <TransformControls object={currentRef} mode={mode} />
+        {focused ? (
+          <TransformControls object={sceneObjects[focused].ref} mode={mode} />
         ) : undefined}
         <Grid sectionSize={2} infiniteGrid />
         <OrientationCube />
-        {objects}
+        {Object.entries(sceneObjects).map(([uuid, object]) => (
+          <object.component objectUuid={uuid} />
+        ))}
       </Canvas>
     </div>
   );
