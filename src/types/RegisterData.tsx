@@ -1,4 +1,4 @@
-interface LoginData {
+interface RegisterData {
   firstName: string;
   lastName: string;
   email: string;
@@ -6,4 +6,4 @@ interface LoginData {
   phoneNumber: string;
 }
 
-export default LoginData;
+export default RegisterData;
