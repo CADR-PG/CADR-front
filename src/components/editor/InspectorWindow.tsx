@@ -1,4 +1,5 @@
 import { useEditorContext } from "../../hooks/useEditorContext";
+import MaterialInspector from "./inspectors/MaterialInspector";
 import MeshInspector from "./inspectors/MeshInspector";
 
 function InspectorWindow() {
@@ -8,6 +9,7 @@ function InspectorWindow() {
     <div className="inspector-window">
       <h3>Inspector</h3>
       {focused && <MeshInspector /> }
+      {focused && <MaterialInspector />}
     </div>
   );
 }

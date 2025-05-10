@@ -8,7 +8,7 @@ import { useEditorContext } from '../../hooks/useEditorContext';
 
 function CanvasController() {
   const [mode, selectMode] = useState<EditingMode>('translate');
-  const { sceneObjects, focused, focus } = useEditorContext();
+  const { sceneObjects, focused, focus, updateFocusedObject } = useEditorContext();
 
   return (
     <div className="canvas-container">
@@ -22,7 +22,10 @@ function CanvasController() {
         <directionalLight position={[10, 10, 10]} />
         <OrbitControls makeDefault enableDamping={false} />
         {focused ? (
-          <TransformControls object={sceneObjects[focused].ref} mode={mode} />
+          <TransformControls object={sceneObjects[focused].ref} onChange={() => {
+            const pos = sceneObjects[focused].ref!
+            updateFocusedObject(pos);
+            }} mode={mode} />
         ) : undefined}
         <Grid sectionSize={2} infiniteGrid />
         <OrientationCube />
