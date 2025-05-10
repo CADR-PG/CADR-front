@@ -42,27 +42,15 @@ function HierarchyWindow() {
           style={{ background: focused == uuid ? '#555' : '' }}
         >
           {object.name}
-          <div
-            className="buttonContainer"
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              alignItems: 'flex-end',
-            }}
-          >
+          <div className="buttonContainer">
             <button
-              style={{
-                background: 'none',
-                border: 'none',
-                padding: '0px',
-                margin: '0px',
-              }}
+              className="visibilityButton"
               onClick={() => handleClick(object)}
             >
               {object.ref && object.ref!.visible ? (
-                <VisibilityOutlined style={{ color: 'white' }} />
+                <VisibilityOutlined />
               ) : (
-                <VisibilityOffOutlinedIcon style={{ color: 'white' }} />
+                <VisibilityOffOutlinedIcon />
               )}
             </button>
           </div>
