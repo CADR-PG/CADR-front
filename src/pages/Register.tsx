@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import NavBar from './../components/NavBar';
 import logo from './../assets/logo.png';
+import useRegister from '../hooks/useRegister';
+import registerData from '../types/RegisterData';
 
 function Register() {
-  const [formData, setFormData] = useState({
+  const { mutate, error, isError, isPending } = useRegister();
+  const [formData, setFormData] = useState<registerData>({
     firstName: '',
     lastName: '',
     email: '',
@@ -11,14 +14,17 @@ function Register() {
     phoneNumber: '',
   });
 
-  const [responseMessage] = useState('');
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mutate(formData);
   };
 
   return (
@@ -26,12 +32,10 @@ function Register() {
       <NavBar />
       <div className="l-section l-section--register">
         <div className="register-hld">
-          <img className="logo" src={logo} height="125px" />
-          <form>
-            <div className="register-form register-form--lastName">
-              <label className="register-form__text register-form--firstName__text">
-                First Name
-              </label>
+          <img className="logo" src={logo} height="125px" alt="Logo" />
+          <form className="register-form__form" onSubmit={handleSubmit}>
+            <div className="register-form register-form--firstName">
+              <label className="register-form__text">First Name</label>
               <input
                 type="text"
                 name="firstName"
@@ -42,9 +46,7 @@ function Register() {
               />
             </div>
             <div className="register-form register-form--lastName">
-              <label className="register-form__text register-form--lastName__text">
-                Last Name
-              </label>
+              <label className="register-form__text">Last Name</label>
               <input
                 type="text"
                 name="lastName"
@@ -54,10 +56,8 @@ function Register() {
                 required
               />
             </div>
-            <div className="register-form register-form--lastName">
-              <label className="register-form__text register-form--mail__text">
-                Email
-              </label>
+            <div className="register-form register-form--email">
+              <label className="register-form__text">Email</label>
               <input
                 type="email"
                 name="email"
@@ -67,10 +67,8 @@ function Register() {
                 required
               />
             </div>
-            <div className="register-form register-form--lastName">
-              <label className="register-form__text register-form--password__text">
-                Password
-              </label>
+            <div className="register-form register-form--password">
+              <label className="register-form__text">Password</label>
               <input
                 type="password"
                 name="password"
@@ -80,10 +78,8 @@ function Register() {
                 required
               />
             </div>
-            <div className="register-form register-form--lastName">
-              <label className="register-form__text register-form--phone__text">
-                Phone Number
-              </label>
+            <div className="register-form register-form--phoneNumber">
+              <label className="register-form__text">Phone Number</label>
               <input
                 type="tel"
                 name="phoneNumber"
@@ -94,12 +90,16 @@ function Register() {
                 required
               />
             </div>
-            <button className="register-form__btn" type="submit">
-              Register
+            <button
+              className="register-form__btn"
+              type="submit"
+              disabled={isPending}
+            >
+              {isPending ? 'Registering...' : 'Register'}
             </button>
           </form>
-          {responseMessage && (
-            <p className="register-form-error__text">{responseMessage}</p>
+          {isError && (
+            <p className="register-form-error__text">{error.message}</p>
           )}
         </div>
       </div>

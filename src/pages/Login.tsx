@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 import NavBar from './../components/NavBar';
 import logo from './../assets/logo.png';
+import useLogin from '../hooks/useLogin';
+import loginData from '../types/LoginData';
 
 function Login() {
-  const [formData, setFormData] = useState({
+  const { mutate, error, isError, isPending } = useLogin();
+  const [formData, setFormData] = useState<loginData>({
     email: '',
     password: '',
   });
 
-  const [responseMessage] = useState('');
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mutate(formData);
   };
 
   return (
@@ -23,12 +29,10 @@ function Login() {
       <NavBar />
       <div className="l-section l-section--login">
         <div className="login-hld">
-          <img className="logo" src={logo} height="125px" />
-          <form>
-            <div className="login-form login-form--lastName">
-              <label className="login-form__text login-form--mail__text">
-                Email
-              </label>
+          <img className="logo" src={logo} height="125px" alt="Logo" />
+          <form className="login-form__form" onSubmit={handleSubmit}>
+            <div className="login-form login-form--email">
+              <label className="login-form__text">Email</label>
               <input
                 type="email"
                 name="email"
@@ -38,10 +42,8 @@ function Login() {
                 required
               />
             </div>
-            <div className="login-form login-form--lastName">
-              <label className="login-form__text login-form--password__text">
-                Password
-              </label>
+            <div className="login-form login-form--password">
+              <label className="login-form__text">Password</label>
               <input
                 type="password"
                 name="password"
@@ -51,13 +53,15 @@ function Login() {
                 required
               />
             </div>
-            <button className="login-form__btn" type="submit">
-              Login
+            <button
+              className="login-form__btn"
+              type="submit"
+              disabled={isPending}
+            >
+              {isPending ? 'Logging in...' : 'Login'}
             </button>
           </form>
-          {responseMessage && (
-            <p className="login-form-error__text">{responseMessage}</p>
-          )}
+          {isError && <p className="login-form-error__text">{error.message}</p>}
         </div>
       </div>
     </div>
