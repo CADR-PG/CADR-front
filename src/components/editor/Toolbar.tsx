@@ -10,22 +10,19 @@ function Toolbar({ editingMode, selectMode }: ToolbarProps) {
   return (
     <div className="toolbar">
       <button
-        className="toolbar-item"
-        style={{ background: editingMode === 'translate' ? 'black' : 'gray' }}
+        className={`toolbar-item ${editingMode === 'translate' ? 'active' : ''}`}
         onClick={() => selectMode('translate')}
       >
         T
       </button>
       <button
-        className="toolbar-item"
-        style={{ background: editingMode === 'rotate' ? 'black' : 'gray' }}
+        className={`toolbar-item ${editingMode === 'rotate' ? 'active' : ''}`}
         onClick={() => selectMode('rotate')}
       >
         R
       </button>
       <button
-        className="toolbar-item"
-        style={{ background: editingMode === 'scale' ? 'black' : 'gray' }}
+        className={`toolbar-item ${editingMode === 'scale' ? 'active' : ''}`}
         onClick={() => selectMode('scale')}
       >
         S

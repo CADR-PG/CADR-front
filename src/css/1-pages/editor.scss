@@ -54,12 +54,18 @@
   background-color: $c-blue;
   display: flex;
   flex-direction: column;
-}
 
-.toolbar-item {
-    background: white; 
+  .toolbar-item {
+    background: $c-dark; 
+    color: $c-white;
     border-radius: 0;
     font-size: 10px;
+  }
+
+  .active {
+    background-color: $c-border;
+    color: $c-dark;
+  }
 }
 
 .canvas-container {
