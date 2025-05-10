@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import NavBar from './../components/NavBar';
 import logo from './../assets/logo.png';
 import useRegister from '../hooks/useRegister';
+import registerData from '../types/RegisterData';
 
 function Register() {
-  const { mutate, error, isPending } = useRegister();
-  const [formData, setFormData] = useState({
+  const { mutate, error, isError, isPending } = useRegister();
+  const [formData, setFormData] = useState<registerData>({
     firstName: '',
     lastName: '',
     email: '',
@@ -97,7 +98,7 @@ function Register() {
               {isPending ? 'Registering...' : 'Register'}
             </button>
           </form>
-          {error && (
+          {isError && (
             <p className="register-form-error__text">{error.message}</p>
           )}
         </div>

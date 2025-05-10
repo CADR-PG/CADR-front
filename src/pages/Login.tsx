@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import NavBar from './../components/NavBar';
 import logo from './../assets/logo.png';
 import useLogin from '../hooks/useLogin';
+import loginData from '../types/LoginData';
 
 function Login() {
-  const { mutate, error, isPending } = useLogin();
-  const [formData, setFormData] = useState({
+  const { mutate, error, isError, isPending } = useLogin();
+  const [formData, setFormData] = useState<loginData>({
     email: '',
     password: '',
   });
@@ -60,7 +61,7 @@ function Login() {
               {isPending ? 'Logging in...' : 'Login'}
             </button>
           </form>
-          {error && <p className="login-form-error__text">{error.message}</p>}
+          {isError && <p className="login-form-error__text">{error.message}</p>}
         </div>
       </div>
     </div>
