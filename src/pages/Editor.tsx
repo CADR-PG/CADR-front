@@ -26,19 +26,29 @@ function Editor() {
         <div className="editor-section">
           <Allotment vertical snap={true}>
             <Allotment.Pane minSize={300} preferredSize={1000}>
-              <Allotment vertical={false} separator={true}>
-                <Allotment.Pane minSize={300} preferredSize={screen.width / 3}>
+              <Allotment vertical={false} separator={true} snap={true}>
+                <Allotment.Pane
+                  minSize={screen.width / 6}
+                  preferredSize={screen.width / 3}
+                >
                   <HierarchyWindow />
                 </Allotment.Pane>
-                <Allotment.Pane minSize={screen.width / 3} preferredSize={screen.width / 3}>
+                <Allotment.Pane
+                  minSize={screen.width / 3}
+                  preferredSize={screen.width / 3}
+                  snap={false}
+                >
                   <CanvasController />
                 </Allotment.Pane>
-                <Allotment.Pane minSize={300} preferredSize={screen.width / 3}>
+                <Allotment.Pane
+                  minSize={screen.width / 6}
+                  preferredSize={screen.width / 3}
+                >
                   <InspectorWindow />
                 </Allotment.Pane>
               </Allotment>
             </Allotment.Pane>
-            <Allotment.Pane minSize={300}>
+            <Allotment.Pane minSize={150} preferredSize={screen.height / 4}>
               <ProjectWindow />
             </Allotment.Pane>
           </Allotment>
