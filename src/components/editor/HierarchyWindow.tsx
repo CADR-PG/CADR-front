@@ -1,9 +1,20 @@
 import { useEffect, useRef } from 'react';
 import { useEditorContext } from '../../hooks/useEditorContext';
+import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import { SceneObject } from '../../types/SceneObject';
 
 function HierarchyWindow() {
   const { sceneObjects, focused, focus } = useEditorContext();
   const parentRef = useRef<HTMLDivElement>(null);
+
+  const handleClick = (object: SceneObject) => {
+    if (object.ref!.visible) {
+      object.ref!.visible = false;
+    } else {
+      object.ref!.visible = true;
+    }
+  };
 
   // TODO: make it more generic and extract it to a hook
   useEffect(() => {
@@ -31,6 +42,18 @@ function HierarchyWindow() {
           style={{ background: focused == uuid ? '#555' : '' }}
         >
           {object.name}
+          <div className="buttonContainer">
+            <button
+              className="visibilityButton"
+              onClick={() => handleClick(object)}
+            >
+              {object.ref && object.ref!.visible ? (
+                <VisibilityOutlined />
+              ) : (
+                <VisibilityOffOutlinedIcon />
+              )}
+            </button>
+          </div>
         </div>
       ))}
     </div>
