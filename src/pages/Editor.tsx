@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Split from 'react-split';
+import { Allotment } from 'allotment';
 import CanvasController from '../components/editor/CanvasController';
 import HierarchyWindow from '../components/editor/HierarchyWindow';
 import ProjectWindow from '../components/editor/ProjectWindow';
@@ -24,26 +24,34 @@ function Editor() {
       <div className="editor-hld">
         <Navigation />
         <div className="editor-section">
-          <Split className="editor" direction="vertical" minSize={150}>
-            <Split
-              direction="horizontal"
-              sizes={[30, 70]}
-              minSize={[200, 400]}
-              className="editor-split"
-            >
-              <HierarchyWindow />
-              <Split
-                direction="horizontal"
-                sizes={[70, 30]}
-                minSize={[400, 250]}
-                className="editor-split"
-              >
-                <CanvasController />
-                <InspectorWindow />
-              </Split>
-            </Split>
-            <ProjectWindow />
-          </Split>
+          <Allotment vertical snap={true}>
+            <Allotment.Pane minSize={300} preferredSize={1000}>
+              <Allotment vertical={false} separator={true} snap={true}>
+                <Allotment.Pane
+                  minSize={screen.width / 6}
+                  preferredSize={screen.width / 5}
+                >
+                  <HierarchyWindow />
+                </Allotment.Pane>
+                <Allotment.Pane
+                  minSize={screen.width / 3}
+                  preferredSize={screen.width / 3}
+                  snap={false}
+                >
+                  <CanvasController />
+                </Allotment.Pane>
+                <Allotment.Pane
+                  minSize={screen.width / 6}
+                  preferredSize={screen.width / 5}
+                >
+                  <InspectorWindow />
+                </Allotment.Pane>
+              </Allotment>
+            </Allotment.Pane>
+            <Allotment.Pane minSize={150} preferredSize={screen.height / 4}>
+              <ProjectWindow />
+            </Allotment.Pane>
+          </Allotment>
         </div>
       </div>
     </EditorContext.Provider>
