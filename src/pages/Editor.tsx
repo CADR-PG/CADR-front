@@ -29,7 +29,7 @@ function Editor() {
               <Allotment vertical={false} separator={true} snap={true}>
                 <Allotment.Pane
                   minSize={screen.width / 6}
-                  preferredSize={screen.width / 3}
+                  preferredSize={screen.width / 5}
                 >
                   <HierarchyWindow />
                 </Allotment.Pane>
@@ -42,7 +42,7 @@ function Editor() {
                 </Allotment.Pane>
                 <Allotment.Pane
                   minSize={screen.width / 6}
-                  preferredSize={screen.width / 3}
+                  preferredSize={screen.width / 5}
                 >
                   <InspectorWindow />
                 </Allotment.Pane>
