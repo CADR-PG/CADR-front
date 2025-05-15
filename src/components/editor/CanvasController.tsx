@@ -1,5 +1,11 @@
 import { Canvas } from '@react-three/fiber';
-import { GizmoHelper, GizmoViewport, Grid, OrbitControls, TransformControls } from '@react-three/drei';
+import {
+  GizmoHelper,
+  GizmoViewport,
+  Grid,
+  OrbitControls,
+  TransformControls,
+} from '@react-three/drei';
 import ToolbarComponent from './Toolbar';
 import { useState } from 'react';
 import EditingMode from '../../types/EditingMode';
@@ -24,11 +30,11 @@ function CanvasController() {
           <TransformControls object={sceneObjects[focused].ref} mode={mode} />
         ) : undefined}
         <Grid sectionSize={2} infiniteGrid />
-        <GizmoHelper
-          alignment="top-right"
-          margin={[80, 80]}
-        >
-          <GizmoViewport axisColors={['red', 'green', 'blue']} labelColor="black" />
+        <GizmoHelper alignment="top-right" margin={[80, 80]}>
+          <GizmoViewport
+            axisColors={['red', 'green', 'blue']}
+            labelColor="black"
+          />
         </GizmoHelper>
         {Object.entries(sceneObjects).map(([uuid, object]) => (
           <object.component objectUuid={uuid} />
