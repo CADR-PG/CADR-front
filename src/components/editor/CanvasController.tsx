@@ -1,8 +1,7 @@
 import { Canvas } from '@react-three/fiber';
-import { Grid, OrbitControls, TransformControls } from '@react-three/drei';
+import { GizmoHelper, GizmoViewport, Grid, OrbitControls, TransformControls } from '@react-three/drei';
 import ToolbarComponent from './Toolbar';
 import { useState } from 'react';
-import OrientationCube from './OrientationCube';
 import EditingMode from '../../types/EditingMode';
 import { useEditorContext } from '../../hooks/useEditorContext';
 
@@ -25,7 +24,12 @@ function CanvasController() {
           <TransformControls object={sceneObjects[focused].ref} mode={mode} />
         ) : undefined}
         <Grid sectionSize={2} infiniteGrid />
-        <OrientationCube />
+        <GizmoHelper
+          alignment="top-right"
+          margin={[80, 80]}
+        >
+          <GizmoViewport axisColors={['red', 'green', 'blue']} labelColor="black" />
+        </GizmoHelper>
         {Object.entries(sceneObjects).map(([uuid, object]) => (
           <object.component objectUuid={uuid} />
         ))}
