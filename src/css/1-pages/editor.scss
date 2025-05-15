@@ -56,12 +56,18 @@
   background-color: variables.$c-blue;
   display: flex;
   flex-direction: column;
-}
 
-.toolbar-item {
-    background: white; 
+  .toolbar-item {
+    background: variables.$c-dark; 
+    color: variables.$c-white;
     border-radius: 0;
     font-size: 10px;
+  }
+
+  .active {
+    background-color: variables.$c-border;
+    color: variables.$c-dark;
+  }
 }
 
 .canvas-container {
