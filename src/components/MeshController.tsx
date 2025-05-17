@@ -4,14 +4,38 @@ import { Helper, Outlines } from '@react-three/drei';
 import { BoxHelper } from 'three';
 
 function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
-  const {
-    focused,
-    hovered,
-    handleRef,
-    handleClick,
-    handlePointerOver,
-    handlePointerOut,
-  } = useMesh(objectUuid);
+  const [hovered, hover] = useState(false);
+  const [clicked, click] = useState(false);
+  const { focus, setSceneObjects } = useEditorContext();
+
+  const handleClick = (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
+    click(!clicked);
+    focus(objectUuid);
+  };
+
+  const handlePointerOver = (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
+    hover(true);
+  };
+
+  const handlePointerOut = (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
+    hover(false);
+  };
+
+  const handleRef = useCallback(
+    (node: THREE.Mesh) => {
+      setSceneObjects((prevObjects) => ({
+        ...prevObjects,
+        [objectUuid]: {
+          ...prevObjects[objectUuid],
+          ref: node,
+        },
+      }));
+    },
+    [objectUuid, setSceneObjects],
+  );
 
   return (
     <mesh
