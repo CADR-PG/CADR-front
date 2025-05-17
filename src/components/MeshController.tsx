@@ -1,7 +1,9 @@
+import { useCallback, useState } from 'react';
+import { ThreeEvent } from '@react-three/fiber';
+import * as THREE from 'three';
+import { useEditorContext } from '../hooks/useEditorContext';
 import ControllerProps from '../types/ControllerProps';
-import { useMesh } from '../hooks/useMesh';
-import { Helper, Outlines } from '@react-three/drei';
-import { BoxHelper } from 'three';
+import { Outlines } from '@react-three/drei';
 
 function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
   const [hovered, hover] = useState(false);
@@ -26,6 +28,10 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
 
   const handleRef = useCallback(
     (node: THREE.Mesh) => {
+      // this piece of shit took like an hour of my life
+      // because it fires when the ref gets set to null
+      if (!node) return;
+
       setSceneObjects((prevObjects) => ({
         ...prevObjects,
         [objectUuid]: {
@@ -46,10 +52,7 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
       onPointerOut={handlePointerOut}
     >
       {children}
-      {hovered ? <Outlines thickness={2} color="yellow" /> : null}
-      {objectUuid == focused ? (
-        <Helper type={BoxHelper} args={['yellow']} />
-      ) : null}
+      <Outlines thickness={hovered ? 2 : 0} color="white" />
     </mesh>
   );
 }
