@@ -5,6 +5,7 @@ function BoxController({ children, ...props }: ControllerProps) {
   return (
     <GenericMesh {...props}>
       <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color="orange" />
       {children}
     </GenericMesh>
   );

@@ -5,6 +5,7 @@ function CapsuleController({ children, ...props }: ControllerProps) {
   return (
     <GenericMesh {...props}>
       <capsuleGeometry args={[1, 2, 8, 16]} />
+      <meshStandardMaterial color="orange" />
       {children}
     </GenericMesh>
   );

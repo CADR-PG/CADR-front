@@ -5,6 +5,7 @@ function TetrahedronController({ children, ...props }: ControllerProps) {
   return (
     <GenericMesh {...props}>
       <tetrahedronGeometry args={[1, 0]} />
+      <meshStandardMaterial color="orange" />
       {children}
     </GenericMesh>
   );

@@ -26,9 +26,9 @@ function CanvasController() {
         <ambientLight />
         <directionalLight position={[10, 10, 10]} />
         <OrbitControls makeDefault enableDamping={false} />
-        {focused ? (
+        {focused && focused in sceneObjects ? (
           <TransformControls object={sceneObjects[focused].ref} mode={mode} />
-        ) : undefined}
+        ) : null}
         <Grid sectionSize={2} infiniteGrid />
         <GizmoHelper alignment="top-right" margin={[80, 80]}>
           <GizmoViewport
@@ -36,9 +36,13 @@ function CanvasController() {
             labelColor="black"
           />
         </GizmoHelper>
-        {Object.entries(sceneObjects).map(([uuid, object]) => (
-          <object.component objectUuid={uuid} />
-        ))}
+        <group>
+          {Object.entries(sceneObjects).map(([uuid, object]) =>
+            object.component ? (
+              <object.component key={uuid} objectUuid={uuid} />
+            ) : null,
+          )}
+        </group>
       </Canvas>
     </div>
   );

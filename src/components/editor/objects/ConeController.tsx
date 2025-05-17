@@ -5,6 +5,7 @@ function ConeController({ children, ...props }: ControllerProps) {
   return (
     <GenericMesh {...props}>
       <coneGeometry args={[1, 2, 32]} />
+      <meshStandardMaterial color="orange" />
       {children}
     </GenericMesh>
   );

@@ -5,6 +5,7 @@ function CylinderController({ children, ...props }: ControllerProps) {
   return (
     <GenericMesh {...props}>
       <cylinderGeometry args={[1, 1, 2, 32]} />
+      <meshStandardMaterial color="orange" />
       {children}
     </GenericMesh>
   );

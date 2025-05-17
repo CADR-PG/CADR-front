@@ -5,6 +5,7 @@ function PlaneController({ children, ...props }: ControllerProps) {
   return (
     <GenericMesh {...props}>
       <planeGeometry args={[3, 3, 32, 32]} />
+      <meshStandardMaterial color="orange" />
       {children}
     </GenericMesh>
   );

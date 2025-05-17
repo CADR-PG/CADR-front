@@ -1,4 +1,4 @@
-import { JSX, RefObject } from 'react';
+import { JSX } from 'react';
 import * as THREE from 'three';
 import ControllerProps from './ControllerProps';
 

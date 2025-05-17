@@ -22,6 +22,7 @@ function ExtrudeController({ children, ...props }: ControllerProps) {
   return (
     <GenericMesh {...props}>
       <extrudeGeometry args={[shape, extrudeSettings]} />
+      <meshStandardMaterial color="orange" />
       {children}
     </GenericMesh>
   );
