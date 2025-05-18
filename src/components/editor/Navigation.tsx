@@ -6,7 +6,7 @@ import { useEditorContext } from '../../hooks/useEditorContext';
 import { downloadJSON } from '../../utils';
 import { ChangeEvent, useRef } from 'react';
 import * as THREE from 'three';
-import GenericMesh from '../MeshController';
+import GenericPrimitive from '../PrimitiveController';
 import { SceneObjects } from '../../types/SceneObject';
 
 function parseScene(obj: THREE.Object3D): SceneObjects {
@@ -18,22 +18,21 @@ function parseScene(obj: THREE.Object3D): SceneObjects {
 
     const uuid = crypto.randomUUID();
     const object: SceneObject = {
-      id: 0, // TODO: do we still need id?
-      name: mesh.geometry.type,
+      name: mesh.geometry.type.replace('Geometry', ''),
       component: () => (
-        <GenericMesh
+        <GenericPrimitive
           objectUuid={uuid}
           position={mesh.position}
           rotation={mesh.rotation}
           scale={mesh.scale}
-          geometry={mesh.geometry}
-          material={mesh.material}
+          object={mesh}
         />
       ),
     };
 
     newObjects[uuid] = object;
   });
+
   return newObjects;
 }
 
@@ -50,10 +49,10 @@ function Navigation() {
   const saveScene = () => {
     if (Object.values(sceneObjects).length == 0) return;
 
-    // TODO: this is quite dumb, but will work for now.
-    // if we add support for groups in the future
-    // then this shit has to be changed
     downloadJSON(
+      // TODO: this is quite dumb, but will work for now.
+      // if we add support for groups in the future
+      // then this shit has to be changed
       Object.values(sceneObjects)[0].ref?.parent?.toJSON(),
       'scene.json',
     );
@@ -63,13 +62,9 @@ function Navigation() {
     if (e.target.files == null) return;
 
     focus(null);
-    try {
-      const text = await e.target.files[0].text();
-      const json = JSON.parse(text);
-      loader.parse(json, (obj) => setSceneObjects(parseScene(obj)));
-    } catch (err) {
-      console.log(err);
-    }
+    const text = await e.target.files[0].text();
+    const json = JSON.parse(text);
+    loader.parse(json, (obj) => setSceneObjects(parseScene(obj)));
   };
 
   const openFilePicker = () => {
@@ -84,7 +79,7 @@ function Navigation() {
       </NavigationItem>
       <NavigationItem label="Shapes">
         {Objects.map((object) => (
-          <MenuItem key={object.id} onClick={() => handleAdd(object)}>
+          <MenuItem key={object.name} onClick={() => handleAdd(object)}>
             {object.name}
           </MenuItem>
         ))}
