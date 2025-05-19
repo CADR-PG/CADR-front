@@ -10,10 +10,12 @@ import ToolbarComponent from './Toolbar';
 import { useState } from 'react';
 import EditingMode from '../../types/EditingMode';
 import { useEditorContext } from '../../hooks/useEditorContext';
+import useEditorKeys from '../../hooks/useEditorKeys';
 
 function CanvasController() {
   const [mode, selectMode] = useState<EditingMode>('translate');
   const { sceneObjects, focused, focus } = useEditorContext();
+  useEditorKeys();
 
   return (
     <div className="canvas-container">
