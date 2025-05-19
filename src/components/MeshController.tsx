@@ -1,7 +1,6 @@
 import ControllerProps from '../types/ControllerProps';
 import { useMesh } from '../hooks/useMesh';
-import { Helper, Outlines } from '@react-three/drei';
-import { BoxHelper } from 'three';
+import HighlightHelper from './HighlightHelper';
 
 function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
   const {
@@ -21,11 +20,8 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
+      <HighlightHelper objectUuid={objectUuid} focused={focused} hovered={hovered} />
       {children}
-      {hovered ? <Outlines thickness={2} color="yellow" /> : null}
-      {objectUuid == focused ? (
-        <Helper type={BoxHelper} args={['yellow']} />
-      ) : null}
     </mesh>
   );
 }
