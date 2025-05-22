@@ -11,6 +11,7 @@ function LatheController({ children, ...props }: ControllerProps) {
   return (
     <GenericMesh {...props}>
       <latheGeometry args={[points, 32]} />
+      <meshStandardMaterial color="orange" />
       {children}
     </GenericMesh>
   );

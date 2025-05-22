@@ -1,9 +1,14 @@
-import ControllerProps from '../types/ControllerProps';
 import { useMesh } from '../hooks/useMesh';
 import { Helper, Outlines } from '@react-three/drei';
+import { ReactNode } from 'react';
 import { BoxHelper } from 'three';
 
-function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
+interface PrimitiveProps extends React.ComponentProps<'primitive'> {
+  children?: ReactNode;
+  objectUuid: string;
+}
+
+function GenericPrimitive({ children, objectUuid, ...props }: PrimitiveProps) {
   const {
     focused,
     hovered,
@@ -14,7 +19,7 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
   } = useMesh(objectUuid);
 
   return (
-    <mesh
+    <primitive
       {...props}
       ref={handleRef}
       onClick={handleClick}
@@ -26,8 +31,8 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
       {objectUuid == focused ? (
         <Helper type={BoxHelper} args={['yellow']} />
       ) : null}
-    </mesh>
+    </primitive>
   );
 }
 
-export default GenericMesh;
+export default GenericPrimitive;

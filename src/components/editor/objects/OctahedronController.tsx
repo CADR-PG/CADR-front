@@ -5,6 +5,7 @@ function OctahedronController({ children, ...props }: ControllerProps) {
   return (
     <GenericMesh {...props}>
       <octahedronGeometry args={[1, 0]} />
+      <meshStandardMaterial color="orange" />
       {children}
     </GenericMesh>
   );
