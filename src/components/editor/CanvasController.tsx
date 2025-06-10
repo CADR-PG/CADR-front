@@ -29,10 +29,7 @@ function CanvasController() {
         <directionalLight position={[10, 10, 10]} />
         <OrbitControls makeDefault enableDamping={false} />
         {focused && focused in sceneObjects ? (
-          <TransformControls
-            object={sceneObjects[focused].ref}
-            mode={mode}
-          />
+          <TransformControls object={sceneObjects[focused].ref} mode={mode} />
         ) : null}
         <Grid sectionSize={2} infiniteGrid />
         <GizmoHelper alignment="top-right" margin={[80, 80]}>
