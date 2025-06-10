@@ -4,7 +4,6 @@ import { useEditorContext } from './useEditorContext';
 import { useEffect, useState } from 'react';
 import { SceneObject } from '../types/SceneObject';
 import GenericPrimitive from '../components/PrimitiveController';
-import GenericMesh from '../components/MeshController';
 
 function useEditorKeys() {
   const { sceneObjects, setSceneObjects, focused, focus } = useEditorContext();
