@@ -20,7 +20,11 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <HighlightHelper objectUuid={objectUuid} focused={focused} hovered={hovered} />
+      <HighlightHelper
+        objectUuid={objectUuid}
+        focused={focused}
+        hovered={hovered}
+      />
       {children}
     </mesh>
   );

@@ -18,7 +18,7 @@ function parseScene(obj: THREE.Object3D): SceneObjects {
 
     const uuid = crypto.randomUUID();
     const object: SceneObject = {
-      name: mesh.geometry? mesh.geometry.type.replace('Geometry', '') : "dupa",
+      name: mesh.geometry ? mesh.geometry.type.replace('Geometry', '') : 'dupa',
       component: () => (
         <GenericPrimitive
           objectUuid={uuid}
@@ -72,16 +72,11 @@ function FileNavigationItem() {
     const uuid = crypto.randomUUID();
     const object: SceneObject = {
       name: 'Model',
-      component: () => (
-        <GenericGLTF
-          objectUuid={uuid}
-          url={url}
-        />
-      ),
+      component: () => <GenericGLTF objectUuid={uuid} url={url} />,
     };
 
-    setSceneObjects({...sceneObjects, [uuid]: object})
-  }
+    setSceneObjects({ ...sceneObjects, [uuid]: object });
+  };
 
   const setRef = useCallback((index: number) => {
     return (node: HTMLInputElement | null) => {
@@ -89,18 +84,21 @@ function FileNavigationItem() {
     };
   }, []);
 
-
   return (
     <>
       <NavigationItem label="File">
         <MenuItem onClick={() => saveScene()}>Save</MenuItem>
-        <MenuItem onClick={() => filePickerRef.current[0]?.click()}>Open...</MenuItem>
-        <MenuItem onClick={() => filePickerRef.current[1]?.click()}>Import...</MenuItem>
+        <MenuItem onClick={() => filePickerRef.current[0]?.click()}>
+          Open...
+        </MenuItem>
+        <MenuItem onClick={() => filePickerRef.current[1]?.click()}>
+          Import...
+        </MenuItem>
       </NavigationItem>
       <input ref={setRef(0)} type="file" onChange={openScene} hidden />
       <input ref={setRef(1)} type="file" onChange={openModel} hidden />
     </>
-  )
+  );
 }
 
 export default FileNavigationItem;

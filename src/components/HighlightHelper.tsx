@@ -1,5 +1,5 @@
-import { Helper, Outlines } from "@react-three/drei";
-import { BoxHelper } from "three";
+import { Helper, Outlines } from '@react-three/drei';
+import { BoxHelper } from 'three';
 
 interface HighlightHelperProps {
   objectUuid: string;
@@ -7,7 +7,11 @@ interface HighlightHelperProps {
   hovered: boolean;
 }
 
-function HighlightHelper({objectUuid, focused, hovered}: HighlightHelperProps) {
+function HighlightHelper({
+  objectUuid,
+  focused,
+  hovered,
+}: HighlightHelperProps) {
   return (
     <>
       {hovered ? <Outlines thickness={2} color="yellow" /> : null}

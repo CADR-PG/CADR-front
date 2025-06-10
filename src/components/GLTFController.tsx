@@ -29,7 +29,11 @@ function GenericGLTF({ children, objectUuid, url, ...props }: GLTFProps) {
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <HighlightHelper objectUuid={objectUuid} focused={focused} hovered={hovered} />
+      <HighlightHelper
+        objectUuid={objectUuid}
+        focused={focused}
+        hovered={hovered}
+      />
       {children}
     </primitive>
   );

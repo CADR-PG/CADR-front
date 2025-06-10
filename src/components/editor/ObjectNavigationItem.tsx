@@ -1,8 +1,8 @@
-import { MenuItem } from "@mui/material";
-import NavigationItem from "./NavigationItem";
-import { useEditorContext } from "../../hooks/useEditorContext";
-import { SceneObject } from "../../types/SceneObject";
-import Objects from "../../data/ObjectNames";
+import { MenuItem } from '@mui/material';
+import NavigationItem from './NavigationItem';
+import { useEditorContext } from '../../hooks/useEditorContext';
+import { SceneObject } from '../../types/SceneObject';
+import Objects from '../../data/ObjectNames';
 
 function ObjectNavigationItem() {
   const { sceneObjects, setSceneObjects, focus } = useEditorContext();
@@ -10,6 +10,7 @@ function ObjectNavigationItem() {
   const handleAdd = (object: SceneObject) => {
     const uuid = crypto.randomUUID();
     setSceneObjects({ ...sceneObjects, [uuid]: object });
+    focus(uuid);
   };
 
   return (
@@ -20,7 +21,7 @@ function ObjectNavigationItem() {
         </MenuItem>
       ))}
     </NavigationItem>
-  )
+  );
 }
 
 export default ObjectNavigationItem;

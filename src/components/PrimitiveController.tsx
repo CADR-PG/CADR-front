@@ -25,7 +25,11 @@ function GenericPrimitive({ children, objectUuid, ...props }: PrimitiveProps) {
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <HighlightHelper objectUuid={objectUuid} focused={focused} hovered={hovered} />
+      <HighlightHelper
+        objectUuid={objectUuid}
+        focused={focused}
+        hovered={hovered}
+      />
       {children}
     </primitive>
   );
