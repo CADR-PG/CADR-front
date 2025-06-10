@@ -7,7 +7,8 @@
 @use '1-pages/homepage';
 @use '1-pages/register';
 @use '1-pages/login';
+@use '1-pages/email-confirmation';
 
 @use '2-components/navbar';
 @use '2-components/hierarchy-window';
-
+@use '2-components/otp';

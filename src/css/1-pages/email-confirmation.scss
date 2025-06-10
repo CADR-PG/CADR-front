@@ -1,0 +1,47 @@
+@use "../0-site/variables";
+
+.email-confirmation {
+    &-hld {
+        color: black;
+        justify-content: center;
+        background-color: variables.$c-beige;
+        max-width: 700px;
+        width: 75vw;
+        border-radius: 20px;
+
+        .logo {
+            position: relative;
+            left: 21%;
+        }
+
+        h1 {
+            font-size: 32px;
+        }
+    }
+
+    &__btn-hld {
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    &__btn {
+        padding: 10px 20px;
+        margin-top: 45px;
+        font-size: 1rem;
+        background-color: variables.$c-blue;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+
+        &--section {
+            display: flex;
+            margin-top: 20px;
+            flex-direction: column;
+        }
+    }
+
+    &__resend:hover {
+        cursor: pointer;
+    }
+}
+
