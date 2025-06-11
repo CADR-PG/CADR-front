@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
-import useFetchUser from '../hooks/useFetchUser';
-import useUserStore from '../stores/useUserStore';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from "react";
+import useFetchUser from "../hooks/useFetchUser";
+import useUserStore from "../stores/useUserStore";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function useAuth() {
   const { data: response, isError } = useFetchUser();
@@ -11,14 +11,12 @@ function useAuth() {
 
   useEffect(() => {
     if (response && !isLoggedIn) {
-      setUser({ isLoggedIn: true, ...response.data });
+      setUser({isLoggedIn: true, ...response.data});
     }
-    if (isError) {
-      if (location.pathname !== '/') {
-        navigate('/');
-      }
+    if (isError && location.pathname !== '/') {
+      navigate('/');
     }
-  }, [response, isError, isLoggedIn, setUser, navigate, location.pathname]);
+  }, [response, isError]);
 }
 
 export default useAuth;
