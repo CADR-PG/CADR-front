@@ -2,6 +2,7 @@ import axios from 'axios';
 import loginData from '../types/LoginData';
 import registerData from '../types/RegisterData';
 import verifyData from '../types/VerifyData';
+import UserData from '../types/UserData';
 
 //const API_BASE_URL = ' https://cadr-api.azurewebsites.net';
 const API_BASE_URL = '/api';
@@ -33,3 +34,10 @@ export const verifyEmail = async (data: verifyData) => {
     `/users/confirm-email?email=${data.email}&code=${data.code}`,
   );
 };
+export const fetchUser = async () => {
+  return await apiClient.get<UserData>('/users/me');
+}
+
+export const logout = async () => {
+  return await apiClient.post('/users/logout');
+}
