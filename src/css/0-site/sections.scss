@@ -10,19 +10,11 @@
         padding: 20px;
     }
 
+    &--email-confirmation,
+    &--registration-successful,
+    &--login,
     &--register {
-        display: grid;
-        align-items: center;
-        justify-content: center;
-    }
-
-    &--login {
-        display: grid;
-        align-items: center;
-        justify-content: center;
-    }
-
-    &--email-confirmation {
+        color: black;
         display: grid;
         align-items: center;
         justify-content: center;

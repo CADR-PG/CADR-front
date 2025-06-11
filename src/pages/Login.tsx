@@ -3,6 +3,8 @@ import NavBar from './../components/NavBar';
 import logo from './../assets/logo.png';
 import useLogin from '../hooks/useLogin';
 import loginData from '../types/LoginData';
+import { AxiosError } from 'axios';
+import ServerError from '../types/ServerError';
 
 function Login() {
   const { mutate, error, isError, isPending } = useLogin();
@@ -61,7 +63,11 @@ function Login() {
               {isPending ? 'Logging in...' : 'Login'}
             </button>
           </form>
-          {isError && <p className="login-form-error__text">{error.message}</p>}
+          {isError && (
+            <p className="login-form-error__text">
+              {(error as AxiosError<ServerError>).response?.data.message}
+            </p>
+          )}
         </div>
       </div>
     </div>

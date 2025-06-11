@@ -23,9 +23,13 @@ export const userLogin = async (userData: loginData) => {
 };
 
 export const resendEmail = async (email: string) => {
-  return await apiClient.post(`/users/resend-email-confirmation?email=${email}`);
+  return await apiClient.post(
+    `/users/resend-email-confirmation?email=${email}`,
+  );
 };
 
 export const verifyEmail = async (data: verifyData) => {
-  return await apiClient.get(`/users/confirm-email?email=${data.email}&code=${data.code}`);
-}
+  return await apiClient.get(
+    `/users/confirm-email?email=${data.email}&code=${data.code}`,
+  );
+};

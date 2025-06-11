@@ -8,6 +8,7 @@ import Login from './pages/Login.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import EmailConfirmation from './pages/EmailConfirmation.tsx';
+import RegistrationSuccessful from './pages/RegistrationSuccessful.tsx';
 
 const router = createBrowserRouter([
   {
@@ -28,8 +29,12 @@ const router = createBrowserRouter([
   },
   {
     path: '/email-confirmation',
-    element: <EmailConfirmation />
-  }
+    element: <EmailConfirmation />,
+  },
+  {
+    path: '/registration-successful',
+    element: <RegistrationSuccessful />,
+  },
 ]);
 
 const queryClient = new QueryClient();

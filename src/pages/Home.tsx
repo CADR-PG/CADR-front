@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import NavBar from './../components/NavBar';
+import SnackbarProvider from '../components/SnackbarProvider';
 
 function Home() {
   return (
@@ -14,6 +15,7 @@ function Home() {
           </Link>
         </div>
       </section>
+      <SnackbarProvider />
     </div>
   );
 }

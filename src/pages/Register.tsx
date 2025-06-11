@@ -3,9 +3,10 @@ import NavBar from './../components/NavBar';
 import logo from './../assets/logo.png';
 import useRegister from '../hooks/useRegister';
 import registerData from '../types/RegisterData';
+import { AxiosError } from 'axios';
+import ServerError from '../types/ServerError';
 
 function Register() {
-  const { mutate, error, isError, isPending, data } = useRegister();
   const [formData, setFormData] = useState<registerData>({
     firstName: '',
     lastName: '',
@@ -13,6 +14,7 @@ function Register() {
     password: '',
     phoneNumber: '',
   });
+  const { mutate, error, isError, isPending } = useRegister(formData.email);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,7 +27,6 @@ function Register() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     mutate(formData);
-    console.log(error?.response.data.message);
   };
 
   return (
@@ -100,7 +101,9 @@ function Register() {
             </button>
           </form>
           {isError && (
-            <p className="register-form-error__text">{error.response.data.message}</p>
+            <p className="register-form-error__text">
+              {(error as AxiosError<ServerError>).response?.data.message}
+            </p>
           )}
         </div>
       </div>
