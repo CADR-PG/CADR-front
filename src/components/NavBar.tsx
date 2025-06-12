@@ -13,9 +13,7 @@ function NavBar() {
       <div className="navbar__btn">
         {isLoggedIn ? (
           <Link to="/logout" className="nav__link">
-            <button className="nav__btn">
-              Logout
-            </button>
+            <button className="nav__btn">Logout</button>
           </Link>
         ) : (
           <>
