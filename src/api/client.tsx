@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import loginData from '../types/LoginData';
 import registerData from '../types/RegisterData';
 import verifyData from '../types/VerifyData';
@@ -14,6 +14,18 @@ const apiClient = axios.create({
     withCredentials: true,
   },
 });
+
+apiClient.interceptors.response.use(
+  response => response,
+  async (error: AxiosError) => {
+    if (error.status === 401) {
+      const refreshResponse = await refreshToken();
+      if (refreshResponse.status === 200) {
+        return await apiClient(error.config!);
+      }
+    }
+    return Promise.reject(error);
+  });
 
 export const userRegister = async (userData: registerData) => {
   return await apiClient.post('/users/register', userData);
@@ -40,4 +52,8 @@ export const fetchUser = async () => {
 
 export const logout = async () => {
   return await apiClient.post('/users/logout');
+}
+
+export const refreshToken = async () => {
+  return await apiClient.post('/users/refresh');
 }
