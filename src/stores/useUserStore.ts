@@ -16,17 +16,16 @@ const initialState: State = {
   isEmailConfirmed: false,
   firstName: '',
   lastName: '',
-}
+};
 
 const useUserStore = create<State & Action>((set) => ({
   ...initialState,
   setUser: (data: State) => {
-    set(data)
+    set(data);
   },
   logoutUser: () => {
-    console.log("logging out");
-    set(initialState)
-  }
+    set(initialState);
+  },
 }));
 
 export default useUserStore;

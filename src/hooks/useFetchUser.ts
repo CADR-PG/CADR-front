@@ -1,11 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchUser } from "../api/client";
+import { useQuery } from '@tanstack/react-query';
+import { fetchUser } from '../api/client';
 
 function useFetchUser() {
   return useQuery({
     queryKey: ['user'],
     queryFn: fetchUser,
     retry: false,
+    refetchOnWindowFocus: false,
   });
 }
 
