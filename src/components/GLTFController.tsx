@@ -1,8 +1,15 @@
-import ControllerProps from '../types/ControllerProps';
 import { useMesh } from '../hooks/useMesh';
+import { useGLTF } from '@react-three/drei';
+import { ReactNode } from 'react';
 import HighlightHelper from './HighlightHelper';
 
-function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
+interface GLTFProps {
+  children?: ReactNode;
+  objectUuid: string;
+  url: string;
+}
+
+function GenericGLTF({ children, objectUuid, url, ...props }: GLTFProps) {
   const {
     focused,
     hovered,
@@ -11,10 +18,12 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
     handlePointerOver,
     handlePointerOut,
   } = useMesh(objectUuid);
+  const model = useGLTF(url);
 
   return (
-    <mesh
+    <primitive
       {...props}
+      object={model.scene}
       ref={handleRef}
       onClick={handleClick}
       onPointerOver={handlePointerOver}
@@ -26,8 +35,8 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
         hovered={hovered}
       />
       {children}
-    </mesh>
+    </primitive>
   );
 }
 
-export default GenericMesh;
+export default GenericGLTF;

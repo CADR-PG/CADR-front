@@ -1,7 +1,6 @@
 import { useMesh } from '../hooks/useMesh';
-import { Helper, Outlines } from '@react-three/drei';
 import { ReactNode } from 'react';
-import { BoxHelper } from 'three';
+import HighlightHelper from './HighlightHelper';
 
 interface PrimitiveProps extends React.ComponentProps<'primitive'> {
   children?: ReactNode;
@@ -26,11 +25,12 @@ function GenericPrimitive({ children, objectUuid, ...props }: PrimitiveProps) {
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
+      <HighlightHelper
+        objectUuid={objectUuid}
+        focused={focused}
+        hovered={hovered}
+      />
       {children}
-      {hovered ? <Outlines thickness={2} color="yellow" /> : null}
-      {objectUuid == focused ? (
-        <Helper type={BoxHelper} args={['yellow']} />
-      ) : null}
     </primitive>
   );
 }
