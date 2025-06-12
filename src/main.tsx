@@ -7,7 +7,6 @@ import Register from './pages/Register.tsx';
 import Login from './pages/Login.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { GuestRoute } from './components/GuestRoute.tsx';
 
 const router = createBrowserRouter([
   {
@@ -20,19 +19,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/register',
-    element: (
-      <GuestRoute>
-        <Register />
-      </GuestRoute>
-    ),
+    element: <Register />,
   },
   {
     path: '/login',
-    element: (
-      <GuestRoute>
-        <Login />
-      </GuestRoute>
-    ),
+    element: <Login />,
   },
 ]);
 
