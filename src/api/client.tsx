@@ -17,7 +17,7 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.response.use(
-  (response) => response,
+  response => response,
   async (error: AxiosError) => {
     if (error.status === 401) {
       const refreshResponse = await refreshToken();
@@ -26,8 +26,7 @@ apiClient.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  },
-);
+  });
 
 export const userRegister = async (userData: registerData) => {
   return await apiClient.post('/users/register', userData);
@@ -54,4 +53,8 @@ export const fetchUser = async () => {
 
 export const logout = async () => {
   return await apiClient.post('/users/logout');
+}
+
+export const refreshToken = async () => {
+  return await apiClient.post('/users/refresh');
 }
