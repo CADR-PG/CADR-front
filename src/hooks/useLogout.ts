@@ -11,7 +11,7 @@ function useLogout() {
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      queryClient.removeQueries({queryKey: ['user']});
+      queryClient.removeQueries({ queryKey: ['user'] });
       logoutUser();
       navigate('/');
     },

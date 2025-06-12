@@ -18,7 +18,7 @@ function useAuth() {
         navigate('/');
       }
     }
-  });
+  }, [response, isError, isLoggedIn, setUser, navigate, location.pathname]);
 }
 
 export default useAuth;
