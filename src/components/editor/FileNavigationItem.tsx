@@ -2,7 +2,7 @@ import { MenuItem } from '@mui/material';
 import NavigationItem from './NavigationItem';
 import { SceneObject } from '../../types/SceneObject';
 import { useEditorContext } from '../../hooks/useEditorContext';
-import { downloadJSON, parseScene } from '../../utils';
+import { parseScene } from '../../utils';
 import { ChangeEvent, useCallback, useRef } from 'react';
 import * as THREE from 'three';
 import GenericGLTF from '../GLTFController';

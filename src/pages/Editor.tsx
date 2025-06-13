@@ -17,15 +17,18 @@ function Editor() {
   const [sceneObjects, setSceneObjects] = useState<SceneObjects>({});
   const [focused, focus] = useState<string | null>(null);
   const { uuid } = useParams();
-  const { data } = useLoadScene(uuid!);
-  const loader = new THREE.ObjectLoader();
+  const { data, isError } = useLoadScene(uuid!);
 
   useEffect(() => {
+    const loader = new THREE.ObjectLoader();
     if (data) {
       // TODO: xdd
       loader.parse(data.data.data, (obj) => setSceneObjects(parseScene(obj)));
     }
-  }, [data]);
+    if (isError) {
+      setSceneObjects({});
+    }
+  }, [data, isError]);
 
   const contextValue: EditorContextValues = {
     sceneObjects,

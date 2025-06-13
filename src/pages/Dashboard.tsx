@@ -2,41 +2,27 @@ import {
   Button,
   Card,
   CardActionArea,
-  CardHeader,
-  CardMedia,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
-  Menu,
-  MenuItem,
   TextField,
 } from '@mui/material';
 import useGetProjects from '../hooks/useGetProjects';
 import { useState } from 'react';
 import useAddProject from '../hooks/useAddProject';
 import AddProjectData from '../types/AddProjectData';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
 import NavBar from '../components/NavBar';
 import useAuth from '../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
-
-interface ProjectData extends AddProjectData {
-  id: string;
-  lastUpdate: string;
-}
+import ProjectCard from '../components/ProjectCard';
+import ProjectData from '../types/ProjectData';
 
 function Dashboard() {
   useAuth();
   const getProjects = useGetProjects();
   const [open, setOpen] = useState(false);
   const addProject = useAddProject();
-  const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  console.log(getProjects.data?.data.items);
 
   const handleOpen = () => {
     setOpen(true);
@@ -44,30 +30,6 @@ function Dashboard() {
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const redirect = (uuid: string) => {
-    navigate(`/editor/${uuid}`);
-  };
-
-  const handleMenuOpen = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setAnchorEl(e.currentTarget);
-  };
-
-  const handleMenuClose = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setAnchorEl(null);
-  };
-
-  const deleteProject = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setAnchorEl(null);
-  };
-
-  const modifyProject = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setAnchorEl(null);
   };
 
   return (
@@ -78,65 +40,6 @@ function Dashboard() {
         <hr className="dashboard-separator" />
         <h2>Recent</h2>
         <div className="dashboard-projects">
-          {getProjects.isSuccess &&
-            getProjects.data?.data.items
-              // TODO: ja pierdole xd
-              .sort(
-                (a: ProjectData, b: ProjectData) =>
-                  new Date(b.lastUpdate).getTime() -
-                  new Date(a.lastUpdate).getTime(),
-              )
-              .slice(0, 5)
-              .map((project: ProjectData) => (
-                <Card className="dashboard-item" key={project.id}>
-                  <CardActionArea onClick={() => redirect(project.id)}>
-                    <CardHeader
-                      title={project.name}
-                      subheader={
-                        'Modified: ' +
-                        new Date(project.lastUpdate).toLocaleDateString('en-GB')
-                      }
-                      action={
-                        <>
-                          <IconButton
-                            aria-label="settings"
-                            onClick={handleMenuOpen}
-                          >
-                            <MoreVertIcon />
-                          </IconButton>
-                          <Menu
-                            anchorEl={anchorEl}
-                            open={anchorEl != null}
-                            onClose={handleMenuClose}
-                            anchorOrigin={{
-                              vertical: 'top',
-                              horizontal: 'right',
-                            }}
-                            transformOrigin={{
-                              vertical: 'top',
-                              horizontal: 'right',
-                            }}
-                          >
-                            <MenuItem onClick={modifyProject}>Modify</MenuItem>
-                            <MenuItem
-                              sx={{ color: 'error.main' }}
-                              onClick={deleteProject}
-                            >
-                              Delete
-                            </MenuItem>
-                          </Menu>
-                        </>
-                      }
-                    />
-                    <CardMedia
-                      component="img"
-                      height="194"
-                      image="/src/assets/thumbnail.jpg"
-                      alt="box"
-                    />
-                  </CardActionArea>
-                </Card>
-              ))}
           <Card className="dashboard-new">
             <CardActionArea className="dashboard-action" onClick={handleOpen}>
               <div className="dashboard-area">
@@ -145,9 +48,35 @@ function Dashboard() {
               </div>
             </CardActionArea>
           </Card>
+          {getProjects.isSuccess &&
+            getProjects.data?.data.items
+              // TODO: ja pierdole xd
+              .sort(
+                (a: ProjectData, b: ProjectData) =>
+                  new Date(b.lastUpdate).getTime() -
+                  new Date(a.lastUpdate).getTime(),
+              )
+              .slice(0, 6)
+              .map((project: ProjectData) => (
+                <ProjectCard project={project} key={project.id} />
+              ))}
         </div>
         <hr className="dashboard-separator" />
         <h2>Projects</h2>
+        <div className="dashboard-projects">
+          {getProjects.isSuccess &&
+            getProjects.data?.data.items
+              // TODO: ja pierdole xd
+              .sort(
+                (a: ProjectData, b: ProjectData) =>
+                  new Date(b.lastUpdate).getTime() -
+                  new Date(a.lastUpdate).getTime(),
+              )
+              .slice(5)
+              .map((project: ProjectData) => (
+                <ProjectCard project={project} key={project.id} />
+              ))}
+        </div>
         <Dialog
           open={open}
           onClose={handleClose}
