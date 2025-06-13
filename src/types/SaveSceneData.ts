@@ -1,6 +1,8 @@
+import * as THREE from 'three';
+
 interface SaveSceneData {
   id: string;
-  data: string;
+  data: THREE.Object3DJSON;
 }
 
 export default SaveSceneData;

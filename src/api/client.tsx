@@ -64,24 +64,24 @@ export const refreshToken = async () => {
 
 export const getAllProjects = async () => {
   return await apiClient.get('/users/projects');
-}
+};
 
 export const modifyProject = async (uuid: string, data: AddProjectData) => {
   return await apiClient.put(`/users/modify-project/${uuid}`, data);
-}
+};
 
 export const addProject = async (data: AddProjectData) => {
   return await apiClient.post('/users/add-project', data);
-}
+};
 
 export const saveScene = async (data: SaveSceneData) => {
   return await apiClient.post(`/users/save-scene/${data.id}`, data, {
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   });
-}
+};
 
 export const loadScene = async (uuid: string) => {
   return await apiClient.get<SaveSceneData>(`/users/load-scene/${uuid}`);
-}
+};

@@ -2,13 +2,30 @@
 
 .dashboard {
     &-hld {
+        padding: 16px;
     }
 
     &-projects {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 12px;
+    }
+
+    &-separator {
+        border: none;
+        border-top: 2px solid white;
+        margin: 1rem 0;
+    }
+
+    &-action {
+        height: 100%;
+    }
+
+    &-area {
+        height: 100%;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 12px;
     }
 }

@@ -18,7 +18,7 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: '/editor/:guid',
+    path: '/editor/:uuid',
     element: <App />,
   },
   {
@@ -44,7 +44,7 @@ const router = createBrowserRouter([
   {
     path: '/dashboard',
     element: <Dashboard />,
-  }
+  },
 ]);
 
 const queryClient = new QueryClient();

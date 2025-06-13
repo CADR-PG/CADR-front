@@ -5,8 +5,7 @@ function useGetProjects() {
   return useQuery({
     queryKey: ['projects'],
     queryFn: getAllProjects,
-    retry: false,
-    refetchOnWindowFocus: false,
+    refetchOnMount: 'always',
     staleTime: 5 * 60 * 1000,
   });
 }
