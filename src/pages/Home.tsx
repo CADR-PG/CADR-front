@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
 import NavBar from './../components/NavBar';
 import SnackbarProvider from '../components/SnackbarProvider';
+import useAuth from '../hooks/useAuth';
 
 function Home() {
+  useAuth();
+
   return (
     <div className="container">
       <NavBar />
