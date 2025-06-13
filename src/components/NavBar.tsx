@@ -12,9 +12,14 @@ function NavBar() {
       </Link>
       <div className="navbar__btn">
         {isLoggedIn ? (
-          <Link to="/logout" className="nav__link">
-            <button className="nav__btn">Logout</button>
-          </Link>
+          <>
+            <Link to="/change-data" className="nav__link">
+              <button className="nav__btn">Change data</button>
+            </Link>
+            <Link to="/logout" className="nav__link">
+              <button className="nav__btn">Logout</button>
+            </Link>
+          </>
         ) : (
           <>
             <Link to="/register" className="nav__link">

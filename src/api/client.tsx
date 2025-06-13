@@ -3,6 +3,9 @@ import loginData from '../types/LoginData';
 import registerData from '../types/RegisterData';
 import verifyData from '../types/VerifyData';
 import UserData from '../types/UserData';
+import ChangeInfoData from '../types/ChangeInfoData';
+import ChangeEmailData from '../types/ChangeEmailData';
+import ChangePasswordData from '../types/ChangePasswordData';
 import AddProjectData from '../types/AddProjectData';
 import SaveSceneData from '../types/SaveSceneData';
 
@@ -62,13 +65,22 @@ export const refreshToken = async () => {
   return await apiClient.post('/users/refresh');
 };
 
+export const changeUserInfo = async (data: ChangeInfoData) =>
+  await apiClient.put('/users/change-info', data);
+
 export const getAllProjects = async () => {
   return await apiClient.get('/users/projects');
 };
 
+export const changeUserEmail = async (data: ChangeEmailData) =>
+  await apiClient.post('/users/change-email', data);
+
 export const modifyProject = async (uuid: string, data: AddProjectData) => {
   return await apiClient.put(`/users/modify-project/${uuid}`, data);
 };
+
+export const changeUserPassword = async (data: ChangePasswordData) =>
+  await apiClient.post('/users/change-password', data);
 
 export const addProject = async (data: AddProjectData) => {
   return await apiClient.post('/users/add-project', data);
