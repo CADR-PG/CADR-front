@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import EmailConfirmation from './pages/EmailConfirmation.tsx';
 import RegistrationSuccessful from './pages/RegistrationSuccessful.tsx';
 import Logout from './pages/Logout.tsx';
+import ChangeData from './pages/ChangeData.tsx';
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
   {
     path: '/logout',
     element: <Logout />,
+  },
+  {
+    path: '/change-data',
+    element: <ChangeData />,
   },
 ]);
 

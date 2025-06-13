@@ -3,6 +3,9 @@ import loginData from '../types/LoginData';
 import registerData from '../types/RegisterData';
 import verifyData from '../types/VerifyData';
 import UserData from '../types/UserData';
+import ChangeInfoData from '../types/ChangeInfoData';
+import ChangeEmailData from '../types/ChangeEmailData';
+import ChangePasswordData from '../types/ChangePasswordData';
 
 const localApiUrl = '/api';
 const productionApiUrl = ' https://api.cadr.studio';
@@ -59,3 +62,12 @@ export const logout = async () => {
 export const refreshToken = async () => {
   return await apiClient.post('/users/refresh');
 };
+
+export const changeUserInfo = async (data: ChangeInfoData) =>
+  await apiClient.put('/users/change-info', data);
+
+export const changeUserEmail = async (data: ChangeEmailData) =>
+  await apiClient.post('/users/change-email', data);
+
+export const changeUserPassword = async (data: ChangePasswordData) =>
+  await apiClient.post('/users/change-password', data);
