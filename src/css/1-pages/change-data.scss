@@ -1,0 +1,54 @@
+@use "../0-site/variables";
+
+.change-data {
+
+    &-hld {
+        display: grid;
+        justify-content: center;
+        background-color: variables.$c-beige;
+        max-width: 500px;
+        width: 75vw;
+        border-radius: 20px;
+
+        .logo {
+            position: relative;
+            left: 21%;
+        }
+    }
+
+    &-form {
+        display: flex;
+        flex-direction: column;
+        padding: 5px 0;
+
+        &__form {
+            display: grid;
+            justify-content: center;
+        }
+
+        &__text {
+            font-family: variables.$f-montserrat;
+            color: variables.$c-dark;
+        }
+
+        &__btn {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-radius: 20px;
+            font-family: variables.$f-montserrat;
+        }
+
+        &-error {
+            &__text {
+                color: variables.$c-error
+            }
+        }
+
+        .input {
+            border-radius: 15px;
+            padding-left: 15px;
+            height: 27px;
+            width: 200px;
+        }
+    }
+}

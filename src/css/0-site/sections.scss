@@ -19,5 +19,13 @@
         align-items: center;
         justify-content: center;
     }
+
+    &--change-data {
+        color: black;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        overflow: auto;
+    }
 }
   
