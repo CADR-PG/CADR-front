@@ -8,7 +8,7 @@ export default function useLogin() {
   return useMutation({
     mutationFn: userLogin,
     onSuccess: () => {
-      navigate('/');
+      navigate('/dashboard');
     },
   });
 }

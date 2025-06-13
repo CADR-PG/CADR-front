@@ -1,0 +1,14 @@
+@use "../0-site/variables";
+
+.dashboard {
+    &-hld {
+    }
+
+    &-projects {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+    }
+}

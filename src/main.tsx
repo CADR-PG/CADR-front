@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import EmailConfirmation from './pages/EmailConfirmation.tsx';
 import RegistrationSuccessful from './pages/RegistrationSuccessful.tsx';
 import Logout from './pages/Logout.tsx';
+import Dashboard from './pages/Dashboard.tsx';
 
 const router = createBrowserRouter([
   {
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: '/editor',
+    path: '/editor/:guid',
     element: <App />,
   },
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
     path: '/logout',
     element: <Logout />,
   },
+  {
+    path: '/dashboard',
+    element: <Dashboard />,
+  }
 ]);
 
 const queryClient = new QueryClient();
