@@ -4,15 +4,16 @@ import registerData from '../types/RegisterData';
 import verifyData from '../types/VerifyData';
 import UserData from '../types/UserData';
 
-//const API_BASE_URL = ' https://cadr-api.azurewebsites.net';
-const API_BASE_URL = '/api';
+const localApiUrl = '/api';
+const productionApiUrl = ' https://api.cadr.studio';
+export const apiUrl = import.meta.env.DEV ? localApiUrl : productionApiUrl;
 
-const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+export const apiClient = axios.create({
+  baseURL: apiUrl,
   headers: {
     'Content-Type': 'application/json',
-    withCredentials: true,
   },
+  withCredentials: true,
 });
 
 apiClient.interceptors.response.use(
