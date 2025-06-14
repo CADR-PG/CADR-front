@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Allotment } from 'allotment';
 import CanvasController from '../components/editor/CanvasController';
 import HierarchyWindow from '../components/editor/HierarchyWindow';
@@ -8,10 +8,27 @@ import Navigation from '../components/editor/Navigation';
 import { SceneObjects } from '../types/SceneObject';
 import { EditorContextValues, EditorContext } from '../data/EditorContext';
 import KeyboardController from '../components/editor/KeyboardController';
+import useLoadScene from '../hooks/useLoadScene';
+import { useParams } from 'react-router-dom';
+import * as THREE from 'three';
+import { parseScene } from '../utils';
 
 function Editor() {
   const [sceneObjects, setSceneObjects] = useState<SceneObjects>({});
   const [focused, focus] = useState<string | null>(null);
+  const { uuid } = useParams();
+  const { data, isError } = useLoadScene(uuid!);
+
+  useEffect(() => {
+    const loader = new THREE.ObjectLoader();
+    if (data) {
+      // TODO: xdd
+      loader.parse(data.data.data, (obj) => setSceneObjects(parseScene(obj)));
+    }
+    if (isError) {
+      setSceneObjects({});
+    }
+  }, [data, isError]);
 
   const contextValue: EditorContextValues = {
     sceneObjects,
