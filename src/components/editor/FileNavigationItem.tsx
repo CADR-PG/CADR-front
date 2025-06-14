@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import GenericGLTF from '../GLTFController';
 import useSaveScene from '../../hooks/useSaveScene';
 import { useParams } from 'react-router-dom';
+import SnackbarProvider from '../SnackbarProvider';
 
 function FileNavigationItem() {
   const { sceneObjects, setSceneObjects, focus } = useEditorContext();
@@ -79,6 +80,7 @@ function FileNavigationItem() {
       </NavigationItem>
       <input ref={setRef(0)} type="file" onChange={openScene} hidden />
       <input ref={setRef(1)} type="file" onChange={openModel} hidden />
+      <SnackbarProvider />
     </>
   );
 }
