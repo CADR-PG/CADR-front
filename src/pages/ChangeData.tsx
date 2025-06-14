@@ -6,14 +6,11 @@ import logo from '../assets/logo.png';
 import ChangeInfoData from '../types/ChangeInfoData';
 import ChangeEmailData from '../types/ChangeEmailData';
 import ChangePasswordData from '../types/ChangePasswordData';
+import ServerError from '../types/ServerError';
 import { fetchUser } from '../api/client';
 import useChangeUserInfo from '../hooks/useChangeUserInfo';
 import useChangeUserEmail from '../hooks/useChangeUserEmail';
 import useChangeUserPassword from '../hooks/useChangeUserPassword';
-
-interface ApiError {
-  message: string;
-}
 
 function ChangeData() {
   const infoMut = useChangeUserInfo();
@@ -107,7 +104,7 @@ function ChangeData() {
             )}
             {infoMut.isError && (
               <p className="change-data-form-error__text">
-                {(infoMut.error as AxiosError<ApiError>)?.response?.data
+                {(infoMut.error as AxiosError<ServerError>)?.response?.data
                   .message || 'Data change error'}
               </p>
             )}
@@ -147,7 +144,7 @@ function ChangeData() {
             )}
             {emailMut.isError && (
               <p className="change-data-form-error__text">
-                {(emailMut.error as AxiosError<ApiError>)?.response?.data
+                {(emailMut.error as AxiosError<ServerError>)?.response?.data
                   .message || 'Email change error'}
               </p>
             )}
@@ -199,7 +196,7 @@ function ChangeData() {
             )}
             {passMut.isError && (
               <p className="change-data-form-error__text">
-                {(passMut.error as AxiosError<ApiError>)?.response?.data
+                {(passMut.error as AxiosError<ServerError>)?.response?.data
                   .message || 'Password change error'}
               </p>
             )}
