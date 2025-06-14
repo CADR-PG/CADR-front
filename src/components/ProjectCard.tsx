@@ -9,6 +9,7 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import ProjectData from '../types/ProjectData';
 
 interface ProjectCardProps {
   project: ProjectData;
