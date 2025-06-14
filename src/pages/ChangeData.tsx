@@ -1,38 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { useQuery } from '@tanstack/react-query';
 import NavBar from '../components/NavBar';
 import logo from '../assets/logo.png';
-import {
-  fetchUser,
-  changeUserInfo,
-  changeUserEmail,
-  changeUserPassword,
-} from '../api/client';
 import ChangeInfoData from '../types/ChangeInfoData';
 import ChangeEmailData from '../types/ChangeEmailData';
 import ChangePasswordData from '../types/ChangePasswordData';
+import { fetchUser } from '../api/client';
+import useChangeUserInfo from '../hooks/useChangeUserInfo';
+import useChangeUserEmail from '../hooks/useChangeUserEmail';
+import useChangeUserPassword from '../hooks/useChangeUserPassword';
+
+interface ApiError {
+  message: string;
+}
 
 function ChangeData() {
-  const qc = useQueryClient();
-
-  // pobranie aktualnego usera
-  const { data: user, isLoading } = useQuery({
-    queryKey: ['me'],
-    queryFn: fetchUser,
-  });
-
-  // mutacje
-  const infoMut = useMutation({
-    mutationFn: changeUserInfo,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['me'] }),
-  });
-  const emailMut = useMutation({
-    mutationFn: changeUserEmail,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['me'] }),
-  });
-  const passMut = useMutation({
-    mutationFn: changeUserPassword,
-  });
+  const infoMut = useChangeUserInfo();
+  const emailMut = useChangeUserEmail();
+  const passMut = useChangeUserPassword();
 
   const [infoForm, setInfoForm] = useState<ChangeInfoData>({
     firstName: '',
@@ -44,17 +30,24 @@ function ChangeData() {
     newPassword: '',
   });
 
+  const { data: userResponse, isLoading } = useQuery({
+    queryKey: ['me'],
+    queryFn: fetchUser,
+    retry: false,
+  });
+  const user = userResponse?.data;
+
   useEffect(() => {
-    if (user?.data) {
+    if (user) {
       setInfoForm({
-        firstName: user.data.firstName,
-        lastName: user.data.lastName,
+        firstName: user.firstName,
+        lastName: user.lastName,
       });
-      setEmailForm({ newEmail: user.data.email });
+      setEmailForm({ newEmail: user.email });
     }
   }, [user]);
 
-  if (isLoading) return <p>Ładowanie…</p>;
+  if (isLoading) return <p>Loading...</p>;
 
   const handleChange =
     <F extends object>(setter: React.Dispatch<React.SetStateAction<F>>) =>
@@ -70,7 +63,7 @@ function ChangeData() {
         <div className="change-data-hld">
           <img className="logo" src={logo} height="125px" alt="Logo" />
 
-          <h2>Zmiana Imienia i Nazwiska</h2>
+          <h2>Change Name</h2>
           <form
             className="change-data-form__form"
             onSubmit={(e) => {
@@ -79,24 +72,24 @@ function ChangeData() {
             }}
           >
             <div className="change-data-form change-data-form--email">
-              <label className="change-data-form__text">Imię</label>
+              <label className="change-data-form__text">First name</label>
               <input
                 name="firstName"
                 className="input"
                 value={infoForm.firstName}
                 onChange={handleChange(setInfoForm)}
-                placeholder="Imię"
+                placeholder="FirstName"
                 required
               />
             </div>
             <div className="change-data-form change-data-form--password">
-              <label className="change-data-form__text">Nazwisko</label>
+              <label className="change-data-form__text">Last name</label>
               <input
                 name="lastName"
                 className="input"
                 value={infoForm.lastName}
                 onChange={handleChange(setInfoForm)}
-                placeholder="Nazwisko"
+                placeholder="LastName"
                 required
               />
             </div>
@@ -105,14 +98,22 @@ function ChangeData() {
               type="submit"
               disabled={infoMut.isPending}
             >
-              {infoMut.isPending ? 'Wysyłam…' : 'Zmień dane'}
+              {infoMut.isPending ? 'Sending...' : 'Change Data'}
             </button>
+            {infoMut.isSuccess && (
+              <p className="change-data-form-success__text">
+                Data successfully changed!
+              </p>
+            )}
             {infoMut.isError && (
-              <p className="change-data-form-error__text">Błąd zmiany danych</p>
+              <p className="change-data-form-error__text">
+                {(infoMut.error as AxiosError<ApiError>)?.response?.data
+                  .message || 'Data change error'}
+              </p>
             )}
           </form>
 
-          <h2>Zmiana Emaila</h2>
+          <h2>Change Email</h2>
           <form
             className="change-data-form__form"
             onSubmit={(e) => {
@@ -121,14 +122,14 @@ function ChangeData() {
             }}
           >
             <div className="change-data-form change-data-form--email">
-              <label className="change-data-form__text">Nowy Email</label>
+              <label className="change-data-form__text">New Email</label>
               <input
                 name="newEmail"
                 type="email"
                 className="input"
                 value={emailForm.newEmail}
                 onChange={handleChange(setEmailForm)}
-                placeholder="Nowy Email"
+                placeholder="New Email"
                 required
               />
             </div>
@@ -137,14 +138,22 @@ function ChangeData() {
               type="submit"
               disabled={emailMut.isPending}
             >
-              {emailMut.isPending ? 'Wysyłam…' : 'Zmień email'}
+              {emailMut.isPending ? 'Sending...' : 'Change Email'}
             </button>
+            {emailMut.isSuccess && (
+              <p className="change-data-form-success__text">
+                Email successfully changed!
+              </p>
+            )}
             {emailMut.isError && (
-              <p className="change-data-form-error__text">Błąd zmiany emaila</p>
+              <p className="change-data-form-error__text">
+                {(emailMut.error as AxiosError<ApiError>)?.response?.data
+                  .message || 'Email change error'}
+              </p>
             )}
           </form>
 
-          <h2>Zmiana Hasła</h2>
+          <h2>Change Password</h2>
           <form
             className="change-data-form__form"
             onSubmit={(e) => {
@@ -153,26 +162,26 @@ function ChangeData() {
             }}
           >
             <div className="change-data-form change-data-form--password">
-              <label className="change-data-form__text">Aktualne hasło</label>
+              <label className="change-data-form__text">Current password</label>
               <input
                 name="currentPassword"
                 type="password"
                 className="input"
                 value={passForm.currentPassword}
                 onChange={handleChange(setPassForm)}
-                placeholder="Aktualne hasło"
+                placeholder="Current Password"
                 required
               />
             </div>
             <div className="change-data-form change-data-form--password">
-              <label className="change-data-form__text">Nowe hasło</label>
+              <label className="change-data-form__text">New password</label>
               <input
                 name="newPassword"
                 type="password"
                 className="input"
                 value={passForm.newPassword}
                 onChange={handleChange(setPassForm)}
-                placeholder="Nowe hasło"
+                placeholder="New Password"
                 required
               />
             </div>
@@ -181,10 +190,18 @@ function ChangeData() {
               type="submit"
               disabled={passMut.isPending}
             >
-              {passMut.isPending ? 'Wysyłam…' : 'Zmień hasło'}
+              {passMut.isPending ? 'Sending...' : 'Change Password'}
             </button>
+            {passMut.isSuccess && (
+              <p className="change-data-form-success__text">
+                Password successfully changed!
+              </p>
+            )}
             {passMut.isError && (
-              <p className="change-data-form-error__text">Błąd zmiany hasła</p>
+              <p className="change-data-form-error__text">
+                {(passMut.error as AxiosError<ApiError>)?.response?.data
+                  .message || 'Password change error'}
+              </p>
             )}
           </form>
         </div>
