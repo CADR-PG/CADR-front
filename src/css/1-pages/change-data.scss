@@ -50,5 +50,12 @@
             height: 27px;
             width: 200px;
         }
+
+        &-success {
+            &__text {
+                color: variables.$c-success;
+                font-family: variables.$f-montserrat;
+            }
+        }
     }
 }
