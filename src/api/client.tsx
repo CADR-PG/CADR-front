@@ -6,6 +6,8 @@ import UserData from '../types/UserData';
 import ChangeInfoData from '../types/ChangeInfoData';
 import ChangeEmailData from '../types/ChangeEmailData';
 import ChangePasswordData from '../types/ChangePasswordData';
+import AddProjectData from '../types/AddProjectData';
+import SaveSceneData from '../types/SaveSceneData';
 
 const localApiUrl = '/api';
 const productionApiUrl = ' https://api.cadr.studio';
@@ -66,8 +68,32 @@ export const refreshToken = async () => {
 export const changeUserInfo = async (data: ChangeInfoData) =>
   await apiClient.put('/users/change-info', data);
 
+export const getAllProjects = async () => {
+  return await apiClient.get('/users/projects');
+};
+
 export const changeUserEmail = async (data: ChangeEmailData) =>
   await apiClient.post('/users/change-email', data);
 
+export const modifyProject = async (uuid: string, data: AddProjectData) => {
+  return await apiClient.put(`/users/modify-project/${uuid}`, data);
+};
+
 export const changeUserPassword = async (data: ChangePasswordData) =>
   await apiClient.post('/users/change-password', data);
+
+export const addProject = async (data: AddProjectData) => {
+  return await apiClient.post('/users/add-project', data);
+};
+
+export const saveScene = async (data: SaveSceneData) => {
+  return await apiClient.post(`/users/save-scene/${data.id}`, data, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
+
+export const loadScene = async (uuid: string) => {
+  return await apiClient.get<SaveSceneData>(`/users/load-scene/${uuid}`);
+};

@@ -1,49 +1,25 @@
 import { MenuItem } from '@mui/material';
 import NavigationItem from './NavigationItem';
-import { SceneObject, SceneObjects } from '../../types/SceneObject';
+import { SceneObject } from '../../types/SceneObject';
 import { useEditorContext } from '../../hooks/useEditorContext';
-import { downloadJSON } from '../../utils';
+import { parseScene } from '../../utils';
 import { ChangeEvent, useCallback, useRef } from 'react';
 import * as THREE from 'three';
 import GenericGLTF from '../GLTFController';
-import GenericPrimitive from '../PrimitiveController';
-
-function parseScene(obj: THREE.Object3D): SceneObjects {
-  const newObjects: SceneObjects = {};
-
-  obj.traverse((o) => {
-    const mesh = o as THREE.Mesh;
-    console.log(mesh);
-    //if (!mesh.isMesh) return;
-
-    const uuid = crypto.randomUUID();
-    const object: SceneObject = {
-      name: mesh.geometry ? mesh.geometry.type.replace('Geometry', '') : 'dupa',
-      component: () => (
-        <GenericPrimitive
-          objectUuid={uuid}
-          position={mesh.position}
-          rotation={mesh.rotation}
-          scale={mesh.scale}
-          object={mesh}
-        />
-      ),
-    };
-
-    newObjects[uuid] = object;
-  });
-
-  return newObjects;
-}
+import useSaveScene from '../../hooks/useSaveScene';
+import { useParams } from 'react-router-dom';
 
 function FileNavigationItem() {
   const { sceneObjects, setSceneObjects, focus } = useEditorContext();
+  const { mutate } = useSaveScene();
+  const { uuid } = useParams();
   const filePickerRef = useRef<(HTMLInputElement | null)[]>([]);
   const loader = new THREE.ObjectLoader();
 
   const saveScene = () => {
     if (Object.values(sceneObjects).length == 0) return;
 
+    /*
     console.log(Object.values(sceneObjects)[0].ref?.parent?.toJSON());
     downloadJSON(
       // TODO: this is quite dumb, but will work for now.
@@ -52,6 +28,12 @@ function FileNavigationItem() {
       Object.values(sceneObjects)[0].ref?.parent?.toJSON(),
       'scene.json',
     );
+     */
+    const scene = Object.values(sceneObjects)[0].ref?.parent?.toJSON();
+    mutate({
+      id: uuid ? uuid : '',
+      data: scene!,
+    });
   };
 
   const openScene = async (e: ChangeEvent<HTMLInputElement>) => {

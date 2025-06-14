@@ -2,8 +2,10 @@ import { Link } from 'react-router-dom';
 import NavBar from './../components/NavBar';
 import SnackbarProvider from '../components/SnackbarProvider';
 import useAuth from '../hooks/useAuth';
+import useUserStore from '../stores/useUserStore';
 
 function Home() {
+  const { isLoggedIn } = useUserStore();
   useAuth();
 
   return (
@@ -13,9 +15,11 @@ function Home() {
         <h1>Welcome to CADR</h1>
         <p>Your 3D modeling and rendering tool.</p>
         <div className="home__btn--section">
-          <Link to="/editor" className="home__link">
-            <button className="home__btn">Go to Editor</button>
-          </Link>
+          {isLoggedIn ? (
+            <Link to="/dashboard" className="home__link">
+              <button className="home__btn">Go to dashboard</button>
+            </Link>
+          ) : null}
         </div>
       </section>
       <SnackbarProvider />
