@@ -10,6 +10,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import ProjectData from '../types/ProjectData';
+import thumbnail from '../assets/thumbnail.jpg';
 
 interface ProjectCardProps {
   project: ProjectData;
@@ -46,12 +47,7 @@ function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Card className="dashboard-item" key={project.id}>
       <CardActionArea onClick={() => redirect(project.id)}>
-        <CardMedia
-          component="img"
-          height="194"
-          image="/src/assets/thumbnail.jpg"
-          alt="box"
-        />
+        <CardMedia component="img" height="194" image={thumbnail} alt="box" />
         <CardHeader
           title={project.name}
           subheader={
