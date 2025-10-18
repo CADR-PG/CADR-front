@@ -21,7 +21,7 @@ function CanvasController() {
   return (
     <div className="canvas-container">
       <ToolbarComponent editingMode={mode} selectMode={selectMode} />
-      <StartStopBtnToolbar></StartStopBtnToolbar>
+      <StartStopBtnToolbar/>
       <Canvas
         className="canvas"
         onPointerMissed={() => focus(null)}
