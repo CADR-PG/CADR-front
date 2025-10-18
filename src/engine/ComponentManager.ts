@@ -1,0 +1,5 @@
+class ComponentManager {
+  registerComponent<T>() {
+
+  }
+}
