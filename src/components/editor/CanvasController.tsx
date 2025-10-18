@@ -11,7 +11,6 @@ import { useState } from 'react';
 import EditingMode from '../../types/EditingMode';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEditorKeys from '../../hooks/useEditorKeys';
-import { UNSAFE_getPatchRoutesOnNavigationFunction } from 'react-router-dom';
 import StartStopBtnToolbar from './StartStopBtnToolbar';
 
 function CanvasController() {
