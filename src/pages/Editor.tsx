@@ -37,7 +37,7 @@ function Editor() {
     focused,
     focus,
     running,
-    setRunning
+    setRunning,
   };
 
   return (

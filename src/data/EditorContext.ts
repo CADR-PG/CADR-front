@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction, ReactNode, useContext, useState } from 'react';
+import { createContext, Dispatch, SetStateAction } from 'react';
 import { SceneObjects } from '../types/SceneObject';
 
 export interface EditorContextValues {
