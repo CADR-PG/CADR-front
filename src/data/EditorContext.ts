@@ -6,6 +6,8 @@ export interface EditorContextValues {
   setSceneObjects: Dispatch<SetStateAction<SceneObjects>>;
   focused: string | null;
   focus: Dispatch<SetStateAction<string | null>>;
+  running: boolean; // nowy stan
+  setRunning: Dispatch<SetStateAction<boolean>>;
 }
 
 export const EditorContext = createContext<EditorContextValues | undefined>(

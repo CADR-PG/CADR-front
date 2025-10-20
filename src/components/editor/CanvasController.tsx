@@ -11,6 +11,7 @@ import { useState } from 'react';
 import EditingMode from '../../types/EditingMode';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEditorKeys from '../../hooks/useEditorKeys';
+import StartStopBtnToolbar from './StartStopBtnToolbar';
 
 function CanvasController() {
   const [mode, selectMode] = useState<EditingMode>('translate');
@@ -20,6 +21,7 @@ function CanvasController() {
   return (
     <div className="canvas-container">
       <ToolbarComponent editingMode={mode} selectMode={selectMode} />
+      <StartStopBtnToolbar />
       <Canvas
         className="canvas"
         onPointerMissed={() => focus(null)}

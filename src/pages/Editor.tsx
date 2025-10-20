@@ -18,6 +18,7 @@ function Editor() {
   const [focused, focus] = useState<string | null>(null);
   const { uuid } = useParams();
   const { data, isError } = useLoadScene(uuid!);
+  const [running, setRunning] = useState(false);
 
   useEffect(() => {
     const loader = new THREE.ObjectLoader();
@@ -35,6 +36,8 @@ function Editor() {
     setSceneObjects,
     focused,
     focus,
+    running,
+    setRunning,
   };
 
   return (
