@@ -1,14 +1,14 @@
-import { Entities, Entity, EUID } from "../types/Entity";
+import { Entities, Entity, EUID } from '../types/Entity';
 
 export default class EntityManager {
-  createEntity(name: string): Entity {
+  createEntity(name: string): EUID {
     const entity: Entity = {
       name: name,
     };
-    const uuid = crypto.randomUUID();
-    this.entities[uuid] = entity;
+    const euid = crypto.randomUUID();
+    this.entities[euid] = entity;
 
-    return entity;
+    return euid;
   }
 
   getEntities(): Entities {
@@ -19,5 +19,5 @@ export default class EntityManager {
     delete this.entities[euid];
   }
 
-  private entities: Entities = {}
+  private entities: Entities = {};
 }
