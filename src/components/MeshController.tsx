@@ -1,8 +1,9 @@
 import ControllerProps from '../types/ControllerProps';
 import { useMesh } from '../hooks/useMesh';
 import HighlightHelper from './HighlightHelper';
+import { ThreeEvent } from '@react-three/fiber';
 
-function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
+function GenericMesh({ children, objectUuid, running, ...props }: ControllerProps) {
   const {
     focused,
     hovered,
@@ -16,14 +17,20 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
     <mesh
       {...props}
       ref={handleRef}
-      onClick={handleClick}
-      onPointerOver={handlePointerOver}
-      onPointerOut={handlePointerOut}
+      onClick={(e: ThreeEvent<PointerEvent>) => {
+        if (!running) handleClick(e);
+      }}
+      onPointerOver={(e: ThreeEvent<PointerEvent>) => {
+        if (!running) handlePointerOver(e);
+      }}
+      onPointerOut={(e: ThreeEvent<PointerEvent>)=>{
+        if (!running) handlePointerOut(e);
+      }}
     >
       <HighlightHelper
         objectUuid={objectUuid}
-        focused={focused}
-        hovered={hovered}
+        focused={!running ? focused : false}
+        hovered={!running ? hovered : false}
       />
       {children}
     </mesh>
