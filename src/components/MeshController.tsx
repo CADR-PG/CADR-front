@@ -2,8 +2,9 @@ import ControllerProps from '../types/ControllerProps';
 import { useMesh } from '../hooks/useMesh';
 import HighlightHelper from './HighlightHelper';
 import { ThreeEvent } from '@react-three/fiber';
+import { useEditorContext } from '../hooks/useEditorContext';
 
-function GenericMesh({ children, objectUuid, running, ...props }: ControllerProps) {
+function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
   const {
     focused,
     hovered,
@@ -13,6 +14,7 @@ function GenericMesh({ children, objectUuid, running, ...props }: ControllerProp
     handlePointerOut,
   } = useMesh(objectUuid);
 
+  const {running} = useEditorContext();
   return (
     <mesh
       {...props}

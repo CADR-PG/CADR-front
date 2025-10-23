@@ -49,7 +49,6 @@ function CanvasController() {
               <object.component
                 key={uuid}
                 objectUuid={uuid}
-                running={running}
               />
             ) : null,
           )}
