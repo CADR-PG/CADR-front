@@ -19,8 +19,8 @@ function CanvasController() {
   useEditorKeys();
   return (
     <div className="canvas-container">
-      {!running &&(
-        <ToolbarComponent editingMode={mode} selectMode={selectMode}/>
+      {!running && (
+        <ToolbarComponent editingMode={mode} selectMode={selectMode} />
       )}
       <StartStopBtnToolbar />
       <Canvas
@@ -32,7 +32,7 @@ function CanvasController() {
         <directionalLight position={[10, 10, 10]} />
         <OrbitControls makeDefault enableDamping={false} enabled={!running} />
         {focused && focused in sceneObjects && !running ? (
-          <TransformControls object={sceneObjects[focused].ref} mode={mode}/>
+          <TransformControls object={sceneObjects[focused].ref} mode={mode} />
         ) : null}
         <Grid sectionSize={2} infiniteGrid />
         {!running && (
@@ -46,7 +46,11 @@ function CanvasController() {
         <group>
           {Object.entries(sceneObjects).map(([uuid, object]) =>
             object.component ? (
-              <object.component key={uuid} objectUuid={uuid} running={running}/>
+              <object.component
+                key={uuid}
+                objectUuid={uuid}
+                running={running}
+              />
             ) : null,
           )}
         </group>
