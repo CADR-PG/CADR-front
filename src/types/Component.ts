@@ -1,5 +1,6 @@
 export abstract class Component {
   static name: string;
+  abstract element?: string;
 }
 
 // TODO: Since we don't know the potential arguments for component's constructor,

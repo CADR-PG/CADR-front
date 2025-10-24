@@ -15,12 +15,12 @@ type MaterialData = BasicMaterialData | PhongMaterialData;
 
 export default class Material implements Component {
   constructor(type: MaterialType, data: MaterialData) {
-    this.type = type;
+    this.element = type;
     this.data = data;
   }
 
   name = 'Material';
-  type: MaterialType;
+  element: MaterialType;
   data: MaterialData;
 }
 

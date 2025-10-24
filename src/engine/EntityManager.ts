@@ -1,4 +1,5 @@
 import { Entity } from '../types/Entity';
+import { proxy } from 'valtio';
 
 export default class EntityManager {
   createEntity(): Entity {
@@ -23,5 +24,5 @@ export default class EntityManager {
     this.entities.pop();
   }
 
-  private entities: Entity[] = [];
+  private entities = proxy<Entity[]>([]);
 }

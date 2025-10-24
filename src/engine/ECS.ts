@@ -48,6 +48,10 @@ export class ECS {
     this.entityManager.destroyEntity(entity);
   }
 
+  getEntities(): Entity[] {
+    return this.entityManager.getEntities();
+  }
+
   // Components
   addComponent<T extends Component>(
     component: ComponentType<T>,
