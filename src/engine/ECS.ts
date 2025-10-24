@@ -1,32 +1,49 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { Component, ComponentType } from '../types/Component';
-import { Entities, EUID } from '../types/Entity';
-import { SystemType } from '../types/System';
+import { Entity } from '../types/Entity';
+import { System, SystemJSX } from '../types/System';
 import { ComponentManager } from './ComponentManager';
 import EntityManager from './EntityManager';
 import { SystemManager } from './SystemManager';
 
 // Glue class that contains the whole logic of ECS.
+// TODO: Maybe add unit tests for this?
 export class ECS {
-  entityManager: EntityManager;
-  componentManager: ComponentManager;
-  systemManager: SystemManager;
+  private entityManager: EntityManager;
+  private componentManager: ComponentManager;
+  private systemManager: SystemManager;
+  static #instance: ECS;
 
-  constructor() {
+  private constructor() {
     this.entityManager = new EntityManager();
     this.componentManager = new ComponentManager();
     this.systemManager = new SystemManager();
   }
 
-  // TODO: Do we want to specify the same functions in two places?
-  // ECS class and *Manager classes? Maybe the stuff that managers hold
-  // should all be in the same class for simplicity?
-
-  // Entities
-  createEntity(name: string): EUID {
-    return this.entityManager.createEntity(name);
+  // Let it be a singleton, why the fuck not.
+  // Systems probably would want to access components data, so I guess
+  // we are either making the whole class a singleton or we pass
+  // a reference to the ECS class directly to the systems.
+  // Singleton is easier in my opinion, so I'm doing it this way.
+  // Also, I don't think we will ever need more than one ECS class,
+  // so this further validates the idea of making it a singleton.
+  public static get instance(): ECS {
+    if (!ECS.#instance) {
+      ECS.#instance = new ECS();
+    }
+    return ECS.#instance;
   }
 
-  destroyEntity(entity: EUID): void {
+  // TODO: Do we want to specify the same functions in two places?
+  // ECS class and *Manager classes? Maybe the stuff that managers hold
+  // should all be in the same ECS class for simplicity?
+
+  // Entities
+  createEntity(): Entity {
+    return this.entityManager.createEntity();
+  }
+
+  destroyEntity(entity: Entity): void {
     this.componentManager.destroyComponents(entity);
     this.entityManager.destroyEntity(entity);
   }
@@ -34,42 +51,56 @@ export class ECS {
   // Components
   addComponent<T extends Component>(
     component: ComponentType<T>,
-    entity: EUID,
+    entity: Entity,
   ): void {
     this.componentManager.addComponent(component, entity);
   }
 
   removeComponent<T extends Component>(
     component: ComponentType<T>,
-    entity: EUID,
+    entity: Entity,
   ): void {
     this.componentManager.removeComponent(component, entity);
   }
 
-  has<T extends Component>(component: ComponentType<T>, entity: EUID): boolean {
+  getComponents(entity: Entity): { [name: string]: Component } {
+    return this.componentManager.getComponents(entity);
+  }
+
+  has(component: Function, entity: Entity): boolean {
     return this.componentManager.has(component, entity);
   }
 
-  hasAll<T extends Component>(
-    components: Iterable<ComponentType<T>>,
-    entity: EUID,
-  ): boolean {
+  hasAll(components: Iterable<Function>, entity: Entity): boolean {
     return this.componentManager.hasAll(components, entity);
   }
 
   // Systems
-  registerSystem<T extends SystemType>(system: T) {
+  registerSystem<T extends System>(system: T) {
     this.systemManager.registerSystem(system);
+  }
+
+  registerSystemJSX<T extends SystemJSX>(system: T) {
+    this.systemManager.registerSystemJSX(system);
   }
 
   // Systems API
   update() {
-    // TODO: most likely a performance hit
+    // TODO: Most likely a performance hit. Another way of doing this
+    // is to specify an array of entities for each system beforehand
+    // and updating it once entities change their components.
+    // Let's take an easy path for now.
     for (const system of this.systemManager.systems) {
+      const matchingEntities: Entity[] = [];
       for (const entity of Object.keys(this.entityManager.getEntities())) {
+        // When an entity satisfies a component condition for particular system,
+        // add it to the array of matching entities.
         if (this.hasAll(system.components, entity)) {
+          matchingEntities.push(entity);
         }
       }
+      // When we find all relevant entities, run the system.
+      system.update(matchingEntities);
     }
   }
 }
