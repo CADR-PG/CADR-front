@@ -26,7 +26,7 @@ function GenericPrimitive({ children, objectUuid, ...props }: PrimitiveProps) {
       onPointerOut={handlePointerOut}
     >
       <HighlightHelper
-        objectUuid={objectUuid}
+        entity={objectUuid}
         focused={focused}
         hovered={hovered}
       />
