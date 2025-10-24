@@ -1,5 +1,5 @@
-import { ComponentType } from 'react';
-import { EUID } from './Entity';
+import { ComponentType, JSX } from 'react';
+import { Entity } from './Entity';
 
 // Instantiate every system with the components that it requires.
 // Components should never change.
@@ -9,5 +9,14 @@ export abstract class System<T extends ComponentType[] = ComponentType[]> {
     this.components = components;
   }
 
-  abstract update(entities: EUID[]): void;
+  abstract update(entities: Entity[]): void;
+}
+
+export abstract class SystemJSX<T extends ComponentType[] = ComponentType[]> {
+  components: T;
+  constructor(...components: T) {
+    this.components = components;
+  }
+
+  abstract updateJSX(entities: Entity[]): JSX.Element;
 }
