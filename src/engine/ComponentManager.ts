@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
+import { proxy } from 'valtio';
 import { Component, ComponentType } from '../types/Component';
 import { Entity } from '../types/Entity';
 
@@ -66,5 +67,5 @@ export class ComponentManager {
   }
 
   mapNameToClass: NameToClass = {};
-  components: EntityToComponent = {};
+  components = proxy<EntityToComponent>({});
 }

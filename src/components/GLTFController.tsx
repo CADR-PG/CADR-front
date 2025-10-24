@@ -32,7 +32,7 @@ function GenericGLTF({ children, objectUuid, url, ...props }: GLTFProps) {
       onPointerOut={handlePointerOut}
     >
       <HighlightHelper
-        objectUuid={objectUuid}
+        entity={objectUuid}
         focused={!running ? focused : ''}
         hovered={!running ? hovered : false}
       />

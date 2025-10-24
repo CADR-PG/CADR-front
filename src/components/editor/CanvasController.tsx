@@ -46,7 +46,7 @@ function CanvasController() {
         <group>
           {Object.entries(sceneObjects).map(([uuid, object]) =>
             object.component ? (
-              <object.component key={uuid} objectUuid={uuid} />
+              <object.component key={uuid} entity={uuid} />
             ) : null,
           )}
         </group>

@@ -1,8 +1,13 @@
 import ControllerProps from '../types/ControllerProps';
 import { useMesh } from '../hooks/useMesh';
 import HighlightHelper from './HighlightHelper';
+import { useSnapshot } from 'valtio';
+import { ECS } from '../engine/ECS';
 
-function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
+function GenericMesh({ children, entity, ...props }: ControllerProps) {
+  const components = useSnapshot(ECS.instance.getComponents(entity));
+  const componentKeys = Object.keys(components);
+
   const {
     focused,
     hovered,
@@ -11,7 +16,7 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
     handleClick,
     handlePointerOver,
     handlePointerOut,
-  } = useMesh(objectUuid);
+  } = useMesh(entity);
 
   return (
     <mesh
@@ -22,7 +27,7 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
       onPointerOut={handlePointerOut}
     >
       <HighlightHelper
-        objectUuid={objectUuid}
+        entity={entity}
         focused={!running ? focused : ''}
         hovered={!running ? hovered : false}
       />
