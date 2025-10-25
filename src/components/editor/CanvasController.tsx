@@ -7,17 +7,39 @@ import {
   TransformControls,
 } from '@react-three/drei';
 import ToolbarComponent from './Toolbar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import EditingMode from '../../types/EditingMode';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEditorKeys from '../../hooks/useEditorKeys';
 import StartStopBtnToolbar from './StartStopBtnToolbar';
+import { RenderSystem } from '../../engine/systems/RenderSystem';
+import { ECS } from '../../engine/ECS';
+import Material, { BasicMaterialData } from '../../engine/components/Material';
+import Transform from '../../engine/components/Transform';
+import Geometry, { BoxGeometryData } from '../../engine/components/Geometry';
 
 function CanvasController() {
   const [mode, selectMode] = useState<EditingMode>('translate');
   const { sceneObjects, focused, focus } = useEditorContext();
   useEditorKeys();
-
+  useEffect(() => {
+    console.log('test');
+  });
+  useEffect(() => {
+    const entity = ECS.instance.createEntity();
+    const materialData: BasicMaterialData = {
+      color: 0xff0000,
+    };
+    ECS.instance.addComponent(new Material('basic', materialData), entity);
+    ECS.instance.addComponent(
+      new Transform([0, 0, 0], [0, 0, 0], [1, 1, 1]),
+      entity,
+    );
+    const geometryData: BoxGeometryData = {
+      dimensions: [2, 2, 2],
+    };
+    ECS.instance.addComponent(new Geometry('box', geometryData), entity);
+  }, []);
   return (
     <div className="canvas-container">
       <ToolbarComponent editingMode={mode} selectMode={selectMode} />
@@ -40,13 +62,7 @@ function CanvasController() {
             labelColor="black"
           />
         </GizmoHelper>
-        <group>
-          {Object.entries(sceneObjects).map(([uuid, object]) =>
-            object.component ? (
-              <object.component key={uuid} entity={uuid} />
-            ) : null,
-          )}
-        </group>
+        <RenderSystem />
       </Canvas>
     </div>
   );

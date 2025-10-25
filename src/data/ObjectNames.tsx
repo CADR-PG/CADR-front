@@ -1,27 +1,21 @@
-import TorusController from '../components/editor/objects/TorusController';
-import BoxController from '../components/editor/objects/BoxController';
-import CapsuleController from '../components/editor/objects/CapsuleController';
-import CircleController from '../components/editor/objects/CircleController';
-import ConeController from '../components/editor/objects/ConeController';
-import CylinderController from '../components/editor/objects/CylinderController';
-import DodecahedronController from '../components/editor/objects/DodecahedronController';
-import ExtrudeController from '../components/editor/objects/ExtrudeController';
-import LatheController from '../components/editor/objects/LatheController';
-import OctahedronController from '../components/editor/objects/OctahedronController';
-import PlaneController from '../components/editor/objects/PlaneController';
-import SphereController from '../components/editor/objects/SphereController';
-import TetrahedronController from '../components/editor/objects/TetrahedronController';
+import TorusController from '../components/editor/geometries/TorusController';
+import CapsuleController from '../components/editor/geometries/CapsuleController';
+import CircleController from '../components/editor/geometries/CircleController';
+import ConeController from '../components/editor/geometries/ConeController';
+import CylinderController from '../components/editor/geometries/CylinderController';
+import DodecahedronController from '../components/editor/geometries/DodecahedronController';
+import ExtrudeController from '../components/editor/geometries/ExtrudeController';
+import LatheController from '../components/editor/geometries/LatheController';
+import OctahedronController from '../components/editor/geometries/OctahedronController';
+import PlaneController from '../components/editor/geometries/PlaneController';
+import SphereController from '../components/editor/geometries/SphereController';
+import TetrahedronController from '../components/editor/geometries/TetrahedronController';
 import { SceneObject } from '../types/SceneObject';
 
 const Objects: SceneObject[] = [
   {
     name: 'Torus',
     component: TorusController,
-  },
-
-  {
-    name: 'Box',
-    component: BoxController,
   },
 
   {

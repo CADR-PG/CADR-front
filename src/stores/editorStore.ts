@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { Dispatch, SetStateAction } from 'react';
 import { SceneObjects } from '../types/SceneObject';
-import { Entity } from '../types/Entity';
-import { Component } from '../types/Component';
+import { Entity } from '../engine/Entity';
+import { Component } from '../engine/Component';
 
 interface State {
   sceneObjects: SceneObjects;

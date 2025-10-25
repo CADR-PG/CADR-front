@@ -1,4 +1,4 @@
-import { ComponentType, JSX } from 'react';
+import { ComponentType } from 'react';
 import { Entity } from './Entity';
 
 // Instantiate every system with the components that it requires.
@@ -10,13 +10,4 @@ export abstract class System<T extends ComponentType[] = ComponentType[]> {
   }
 
   abstract update(entities: Entity[]): void;
-}
-
-export abstract class SystemJSX<T extends ComponentType[] = ComponentType[]> {
-  components: T;
-  constructor(...components: T) {
-    this.components = components;
-  }
-
-  abstract updateJSX(entities: Entity[]): JSX.Element;
 }
