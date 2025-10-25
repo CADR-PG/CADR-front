@@ -1,10 +1,22 @@
-/* eslint-disable @typescript-eslint/no-unsafe-function-type */
-import { Component, ComponentType } from '../types/Component';
-import { Entity } from '../types/Entity';
-import { System, SystemJSX } from '../types/System';
+import { Component, ComponentType } from './Component';
+import { Entity } from './Entity';
+import { System } from './System';
 import { ComponentManager } from './ComponentManager';
+import BasicMaterial from '../components/editor/materials/BasicMaterial';
 import EntityManager from './EntityManager';
 import { SystemManager } from './SystemManager';
+import { JSX } from 'react';
+import BoxController from '../components/editor/geometries/BoxController';
+
+interface ComponentToElement {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [name: string]: (...args: any[]) => JSX.Element | undefined;
+}
+
+export const mapComponentToElement: ComponentToElement = {
+  basic: BasicMaterial,
+  box: BoxController,
+};
 
 // Glue class that contains the whole logic of ECS.
 // TODO: Maybe add unit tests for this?
@@ -40,7 +52,9 @@ export class ECS {
 
   // Entities
   createEntity(): Entity {
-    return this.entityManager.createEntity();
+    const entity = this.entityManager.createEntity();
+    this.componentManager.addEntity(entity);
+    return entity;
   }
 
   destroyEntity(entity: Entity): void {
@@ -53,10 +67,7 @@ export class ECS {
   }
 
   // Components
-  addComponent<T extends Component>(
-    component: ComponentType<T>,
-    entity: Entity,
-  ): void {
+  addComponent(component: Component, entity: Entity): void {
     this.componentManager.addComponent(component, entity);
   }
 
@@ -71,11 +82,21 @@ export class ECS {
     return this.componentManager.getComponents(entity);
   }
 
-  has(component: Function, entity: Entity): boolean {
+  getComponent<T extends Component>(
+    component: ComponentType<T>,
+    entity: Entity,
+  ): T | null {
+    return this.componentManager.getComponent(component, entity);
+  }
+
+  has<T extends Component>(
+    component: ComponentType<T>,
+    entity: Entity,
+  ): boolean {
     return this.componentManager.has(component, entity);
   }
 
-  hasAll(components: Iterable<Function>, entity: Entity): boolean {
+  hasAll(components: Component[], entity: Entity): boolean {
     return this.componentManager.hasAll(components, entity);
   }
 
@@ -84,27 +105,31 @@ export class ECS {
     this.systemManager.registerSystem(system);
   }
 
-  registerSystemJSX<T extends SystemJSX>(system: T) {
-    this.systemManager.registerSystemJSX(system);
-  }
-
   // Systems API
   update() {
     // TODO: Most likely a performance hit. Another way of doing this
     // is to specify an array of entities for each system beforehand
     // and updating it once entities change their components.
     // Let's take an easy path for now.
+    // TODO2: Another way of optimization is to swap the structure from
+    // entity -> component, to component -> entity, just like I wanted
+    // from the beginning but go biased by tutorials lol.
     for (const system of this.systemManager.systems) {
-      const matchingEntities: Entity[] = [];
-      for (const entity of Object.keys(this.entityManager.getEntities())) {
-        // When an entity satisfies a component condition for particular system,
-        // add it to the array of matching entities.
-        if (this.hasAll(system.components, entity)) {
-          matchingEntities.push(entity);
-        }
-      }
       // When we find all relevant entities, run the system.
-      system.update(matchingEntities);
+      system.update(this.query(system.components));
     }
+  }
+
+  query(components: Component[]) {
+    const matchingEntities: Entity[] = [];
+
+    // When an entity satisfies a component condition for particular system,
+    // add it to the array of matching entities.
+    for (const entity of Object.keys(this.entityManager.getEntities())) {
+      if (this.hasAll(components, entity)) {
+        matchingEntities.push(entity);
+      }
+    }
+    return matchingEntities;
   }
 }
