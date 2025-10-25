@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import NavBar from './../components/NavBar';
-import logo from './../assets/logo.png';
 import useRegister from '../hooks/useRegister';
 import registerData from '../types/RegisterData';
 import { AxiosError } from 'axios';
@@ -34,58 +33,64 @@ function Register() {
       <NavBar />
       <div className="l-section l-section--register">
         <div className="register-hld">
-          <img className="logo" src={logo} height="125px" alt="Logo" />
+          <h1 className="register__title">Zarejestruj się</h1>
+          <p className="register__subtitle">Utwórz konto CADR i rozpocznij tworzenie</p>
           <form className="register-form__form" onSubmit={handleSubmit}>
             <div className="register-form register-form--firstName">
-              <label className="register-form__text">First Name</label>
+              <label htmlFor="firstName" className="register-form__text">First Name</label>
               <input
                 type="text"
                 name="firstName"
-                className="input"
+                className="input form-first-name"
+                placeholder="Jan"
                 value={formData.firstName}
                 onChange={handleChange}
                 required
               />
             </div>
             <div className="register-form register-form--lastName">
-              <label className="register-form__text">Last Name</label>
+              <label htmlFor="lastName" className="register-form__text">Last Name</label>
               <input
                 type="text"
                 name="lastName"
-                className="input"
+                className="input form-last-name"
+                placeholder="Kowalski"
                 value={formData.lastName}
                 onChange={handleChange}
                 required
               />
             </div>
             <div className="register-form register-form--email">
-              <label className="register-form__text">Email</label>
+              <label htmlFor="email" className="register-form__text">Email</label>
               <input
                 type="email"
                 name="email"
-                className="input"
+                className="input form-email"
+                placeholder="you@example.com"
                 value={formData.email}
                 onChange={handleChange}
                 required
               />
             </div>
             <div className="register-form register-form--password">
-              <label className="register-form__text">Password</label>
+              <label htmlFor="password" className="register-form__text">Password</label>
               <input
                 type="password"
                 name="password"
-                className="input"
+                className="input form-password"
+                placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
                 required
               />
             </div>
             <div className="register-form register-form--phoneNumber">
-              <label className="register-form__text">Phone Number</label>
+              <label htmlFor="phone" className="register-form__text">Phone Number</label>
               <input
                 type="tel"
                 name="phoneNumber"
-                className="input"
+                className="input form-phone"
+                placeholder="+48 123 456 789"
                 value={formData.phoneNumber}
                 onChange={handleChange}
                 pattern="[0-9]{9,15}"
@@ -93,12 +98,13 @@ function Register() {
               />
             </div>
             <button
-              className="register-form__btn"
+              className="btn-primary btn-primary-register"
               type="submit"
               disabled={isPending}
             >
               {isPending ? 'Registering...' : 'Register'}
             </button>
+            <p className="register-form__content"> Masz już konto? <a href="/login" className="register-form__link">Zaloguj się</a></p>
           </form>
           {isError && (
             <p className="register-form-error__text">

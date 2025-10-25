@@ -29,7 +29,7 @@ function Login() {
     <div className="container">
       <NavBar />
       <div className="l-section l-section--login">
-        <div className="login__container">
+        <div className="login-hld">
           <h1 className="login__title">Zaloguj się</h1>
           <p className="login__subtitle">Uzyskaj dostęp do panelu CADR</p>
             <form className="login-form__form" onSubmit={handleSubmit}>
@@ -38,7 +38,7 @@ function Login() {
                 <input
                   type="email"
                   name="email"
-                  className="input email"
+                  className="input form-email"
                   placeholder="you@example.com"
                   value={formData.email}
                   onChange={handleChange}
@@ -46,11 +46,11 @@ function Login() {
                 />
               </div>
               <div className="login-form login-form--password">
-                <label className="login-form__text">Password</label>
+                <label htmlFor="password" className="login-form__text">Password</label>
                 <input
                   type="password"
                   name="password"
-                  className="input password"
+                  className="input form-password"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
@@ -58,7 +58,7 @@ function Login() {
                 />
               </div>
               <button
-                className="btn-primary btn-primary--login"
+                className="btn-primary btn-primary-login"
                 type="submit"
                 disabled={isPending}
               >
