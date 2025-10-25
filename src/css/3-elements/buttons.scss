@@ -1,0 +1,26 @@
+@use "../0-site/variables";
+    
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: variables.$c-cyan;
+    color: variables.$c-button-text;
+    margin-right: 10px;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 4px 16px variables.$c-cyan-hover;
+    transition: background 0.3s, box-shadow 0.3s;
+
+    &:hover {
+        background: variables.$c-cyan-hover;
+    }
+
+    .dark & {
+        background: variables.$c-cyan-dark;
+        color: variables.$c-button-text-dark;
+        box-shadow: 0 4px 16px variables.$c-cyan-hover-dark;
+    }
+}
