@@ -1,9 +1,7 @@
-import { JSX } from 'react';
-import BasicMaterial from '../engine/components/BasicMaterial';
-import { Component } from './Component';
+import { Component } from '../Component';
 
 export interface BasicMaterialData {
-  color: [number, number, number];
+  color: number;
 }
 
 export interface PhongMaterialData {
@@ -23,11 +21,3 @@ export default class Material implements Component {
   element: MaterialType;
   data: MaterialData;
 }
-
-interface MaterialToComponent {
-  [name: string]: (...args: any[]) => JSX.Element;
-}
-
-export const mapMaterialToComponent: MaterialToComponent = {
-  basic: BasicMaterial,
-};
