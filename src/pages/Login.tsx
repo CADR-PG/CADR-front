@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import NavBar from './../components/NavBar';
-import logo from './../assets/logo.png';
 import useLogin from '../hooks/useLogin';
 import loginData from '../types/LoginData';
 import { AxiosError } from 'axios';
@@ -30,47 +29,51 @@ function Login() {
     <div className="container">
       <NavBar />
       <div className="l-section l-section--login">
-        <div className="login-hld">
-          <img className="logo" src={logo} height="125px" alt="Logo" />
-          <form className="login-form__form" onSubmit={handleSubmit}>
-            <div className="login-form login-form--email">
-              <label className="login-form__text">Email</label>
-              <input
-                type="email"
-                name="email"
-                className="input"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="login-form login-form--password">
-              <label className="login-form__text">Password</label>
-              <input
-                type="password"
-                name="password"
-                className="input"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <button
-              className="login-form__btn"
-              type="submit"
-              disabled={isPending}
-            >
-              {isPending ? 'Logging in...' : 'Login'}
-            </button>
-          </form>
-          {isError && (
-            <p className="login-form-error__text">
-              {(error as AxiosError<ServerError>).response?.data.message}
-            </p>
-          )}
+        <div className="login__container">
+          <h1 className="login__title">Zaloguj się</h1>
+          <p className="login__subtitle">Uzyskaj dostęp do panelu CADR</p>
+            <form className="login-form__form" onSubmit={handleSubmit}>
+              <div className="login-form login-form--email">
+                <label htmlFor="email" className="login-form__text">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  className="input email"
+                  placeholder="you@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="login-form login-form--password">
+                <label className="login-form__text">Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  className="input password"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <button
+                className="btn-primary btn-primary--login"
+                type="submit"
+                disabled={isPending}
+              >
+                {isPending ? 'Logging in...' : 'Login'}
+              </button>
+              <p className="login-form__content"> Nie masz konta? <a href="/register" className="login-form__link">Zarejestruj się</a></p>
+            </form>
+            {isError && (
+              <p className="login-form-error__text">
+                {(error as AxiosError<ServerError>).response?.data.message}
+              </p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
   );
 }
 
