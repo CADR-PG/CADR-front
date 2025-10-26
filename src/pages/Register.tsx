@@ -33,8 +33,8 @@ function Register() {
       <NavBar />
       <div className="l-section l-section--register">
         <div className="register-hld">
-          <h1 className="register__title">Zarejestruj się</h1>
-          <p className="register__subtitle">Utwórz konto CADR i rozpocznij tworzenie</p>
+          <h1 className="register__title">Sign up</h1>
+          <p className="register__subtitle">Create a CADR account and start creating</p>
           <form className="register-form__form" onSubmit={handleSubmit}>
             <div className="register-form register-form--firstName">
               <label htmlFor="firstName" className="register-form__text">First Name</label>
@@ -42,7 +42,7 @@ function Register() {
                 type="text"
                 name="firstName"
                 className="input form-first-name"
-                placeholder="Jan"
+                placeholder="John"
                 value={formData.firstName}
                 onChange={handleChange}
                 required
@@ -54,7 +54,7 @@ function Register() {
                 type="text"
                 name="lastName"
                 className="input form-last-name"
-                placeholder="Kowalski"
+                placeholder="Smith"
                 value={formData.lastName}
                 onChange={handleChange}
                 required
@@ -104,7 +104,7 @@ function Register() {
             >
               {isPending ? 'Registering...' : 'Register'}
             </button>
-            <p className="register-form__content"> Masz już konto? <a href="/login" className="register-form__link">Zaloguj się</a></p>
+            <p className="register-form__content"> Do you already have an account? <a href="/login" className="register-form__link">Log in</a></p>
           </form>
           {isError && (
             <p className="register-form-error__text">

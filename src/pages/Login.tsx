@@ -30,8 +30,8 @@ function Login() {
       <NavBar />
       <div className="l-section l-section--login">
         <div className="login-hld">
-          <h1 className="login__title">Zaloguj się</h1>
-          <p className="login__subtitle">Uzyskaj dostęp do panelu CADR</p>
+          <h1 className="login__title">Log in</h1>
+          <p className="login__subtitle">Access the CADR panel</p>
             <form className="login-form__form" onSubmit={handleSubmit}>
               <div className="login-form login-form--email">
                 <label htmlFor="email" className="login-form__text">Email</label>
@@ -64,7 +64,7 @@ function Login() {
               >
                 {isPending ? 'Logging in...' : 'Login'}
               </button>
-              <p className="login-form__content"> Nie masz konta? <a href="/register" className="login-form__link">Zarejestruj się</a></p>
+              <p className="login-form__content"> Don't have an account? <a href="/register" className="login-form__link">Sign up</a></p>
             </form>
             {isError && (
               <p className="login-form-error__text">

@@ -13,8 +13,8 @@ function Home() {
       <NavBar />
       <section className="l-section l-section--home">
         <div className="home__container">
-          <h1 className="home__title">Silnik <span className="home__subtitle">3D</span> w przeglądarce dla twórców gier</h1>
-          <p className="home__content">CADR łączy renderowanie, edytor scen, przetrzymywanie assetów i system buildów. Zalogowany? Wskakuj prosto do panelu i odpalaj projekt.</p>
+          <h1 className="home__title"><span className="home__subtitle">3D</span> engine in the browser for game developers</h1>
+          <p className="home__content">CADR combines rendering, scene editor, asset storage, and build system. Logged in? Jump straight to the panel and launch your project.</p>
           <div className="home__btn">
             {isLoggedIn ? (
               <Link to="/dashboard" className="btn-primary">
