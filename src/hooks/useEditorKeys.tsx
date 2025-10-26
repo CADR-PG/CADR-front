@@ -4,6 +4,8 @@ import { useEditorContext } from './useEditorContext';
 import { useEffect, useState } from 'react';
 import { SceneObject } from '../types/SceneObject';
 import GenericPrimitive from '../components/PrimitiveController';
+import { proxy } from 'valtio';
+import { ECS } from '../engine/ECS';
 
 function useEditorKeys() {
   const { sceneObjects, setSceneObjects, focused, focus } = useEditorContext();
@@ -19,9 +21,7 @@ function useEditorKeys() {
     if (!focused) return;
 
     if (del) {
-      const copyObjects = { ...sceneObjects };
-      delete copyObjects[focused];
-      setSceneObjects(copyObjects);
+      ECS.instance.destroyEntity(focused);
       focus(null);
     }
 

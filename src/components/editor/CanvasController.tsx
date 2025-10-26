@@ -17,6 +17,7 @@ import { ECS } from '../../engine/ECS';
 import Material, { BasicMaterialData } from '../../engine/components/Material';
 import Transform from '../../engine/components/Transform';
 import Geometry, { BoxGeometryData } from '../../engine/components/Geometry';
+import Name from '../../engine/components/Name';
 
 function CanvasController() {
   const [mode, selectMode] = useState<EditingMode>('translate');
@@ -39,6 +40,7 @@ function CanvasController() {
       dimensions: [2, 2, 2],
     };
     ECS.instance.addComponent(new Geometry('box', geometryData), entity);
+    ECS.instance.addComponent(new Name('Box'), entity);
   }, []);
   return (
     <div className="canvas-container">

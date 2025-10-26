@@ -3,6 +3,8 @@ import { useEditorContext } from '../../hooks/useEditorContext';
 import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import { SceneObject } from '../../types/SceneObject';
+import { ECS } from '../../engine/ECS';
+import Name from '../../engine/components/Name';
 
 function HierarchyWindow() {
   const { sceneObjects, focused, focus } = useEditorContext();
@@ -34,26 +36,28 @@ function HierarchyWindow() {
   return (
     <div className="hierarchy-window" ref={parentRef}>
       <h3>Hierarchy</h3>
-      {Object.entries(sceneObjects).map(([uuid, object]) => (
+      {ECS.instance.getEntities().map((entity) => (
         <div
-          key={uuid}
+          key={entity}
           className="hierarchy-window__item"
-          onClick={() => focus(uuid)}
-          style={{ background: focused == uuid ? '#555' : '' }}
+          onClick={() => focus(entity)}
+          style={{ background: focused == entity ? '#555' : '' }}
         >
-          {object.name}
-          <div className="buttonContainer">
-            <button
-              className="visibilityButton"
-              onClick={() => handleClick(object)}
-            >
-              {object.ref && object.ref!.visible ? (
-                <VisibilityOutlined />
-              ) : (
-                <VisibilityOffOutlinedIcon />
-              )}
-            </button>
-          </div>
+          {ECS.instance.getComponent(Name, entity)?.displayName || entity}
+          {
+            // <div className="buttonContainer">
+            //   <button
+            //     className="visibilityButton"
+            //     onClick={() => handleClick(object)}
+            //   >
+            //     {object.ref && object.ref!.visible ? (
+            //       <VisibilityOutlined />
+            //     ) : (
+            //       <VisibilityOffOutlinedIcon />
+            //     )}
+            //   </button>
+            // </div>
+          }
         </div>
       ))}
     </div>
