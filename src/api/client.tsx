@@ -86,6 +86,10 @@ export const addProject = async (data: AddProjectData) => {
   return await apiClient.post('/projects/add-project', data);
 };
 
+export const deleteProject = async (uuid: string) => {
+  return await apiClient.delete(`/projects/delete-project/${uuid}`);
+}
+
 export const saveScene = async (data: SaveSceneData) => {
   return await apiClient.post(`/projects/save-scene/${data.id}`, data, {
     headers: {
