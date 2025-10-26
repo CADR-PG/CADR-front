@@ -2,46 +2,84 @@
 
 .email-confirmation {
     &-hld {
-        color: black;
-        justify-content: center;
-        background-color: variables.$c-beige;
-        max-width: 700px;
-        width: 75vw;
-        border-radius: 20px;
+        max-width: 420px;
+        margin: 0 auto;
+        background: variables.$c-bg-header;
+        border: 1px solid variables.$c-border;
+        border-radius: 16px;
+        padding: 40px 32px;
+        backdrop-filter: blur(16px);
+        box-shadow: 0 0 40px rgba(0,0,0,0.05);
+        text-align: center;
 
-        .logo {
-            position: relative;
-            left: 21%;
-        }
-
-        h1 {
-            font-size: 32px;
+        .dark & {
+            background: variables.$c-bg-header-dark;
+            border: 1px solid variables.$c-border-dark;
         }
     }
 
-    &__btn-hld {
+    &__title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom:10px;
+    }
+
+    &__subtitle {
+        color: variables.$c-text-secondary;
+        margin-bottom: 32px;
+
+        .dark & {
+            color: variables.$c-text-secondary-dark;
+        }
+    }
+
+    &__form {
         display: flex;
-        justify-content: space-evenly;
+        flex-direction: column;
+        gap: 24px;
     }
 
-    &__btn {
-        padding: 10px 20px;
-        margin-top: 45px;
-        font-size: 1rem;
-        background-color: variables.$c-blue;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+    &__code {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
 
-        &--section {
-            display: flex;
-            margin-top: 20px;
-            flex-direction: column;
+    &-otp {
+        width: 48px;
+        height: 56px;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 600;
+        border: 1px solid variables.$c-border;
+        border-radius: 10px;
+        background: variables.$c-bg;
+        color: variables.$c-text;
+        transition: border 0.2s, box-shadow 0.2s;
+
+        .dark & {
+            background: variables.$c-bg-dark;
+            border: 1px solid variables.$c-border-dark;
+            color: variables.$c-text-dark;
         }
     }
 
-    &__resend:hover {
-        cursor: pointer;
+    &__content {
+        font-size: 0.9rem;
+        color: variables.$c-text-secondary;
+
+        .dark & {
+            color: variables.$c-text-secondary-dark;
+        }
+    }
+
+    &__link {
+        color: variables.$c-cyan;
+        text-decoration: none;
+
+        .dark {
+            color: variables.$c-cyan-dark;
+        }
     }
 }
 
