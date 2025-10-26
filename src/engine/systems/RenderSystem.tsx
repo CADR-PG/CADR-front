@@ -8,7 +8,7 @@ export function RenderSystem() {
   return (
     <>
       {entities.map((entity) => (
-        <GenericMesh entity={entity} />
+        <GenericMesh key={entity} entity={entity} />
       ))}
     </>
   );
