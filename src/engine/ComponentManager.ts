@@ -64,7 +64,9 @@ export class ComponentManager {
   ): T | null {
     const instance: T = new component();
 
+    console.log(`Does entity ${entity} have ${instance.name}?`);
     if (this.has(component, entity)) {
+      console.log(`${entity} has ${instance.name}`);
       return this.components[entity][instance.name] as T;
     } else {
       return null;

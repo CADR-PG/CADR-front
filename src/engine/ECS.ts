@@ -105,7 +105,7 @@ export class ECS {
     this.systemManager.registerSystem(system);
   }
 
-  // Systems API
+  // API
   update() {
     // TODO: Most likely a performance hit. Another way of doing this
     // is to specify an array of entities for each system beforehand
@@ -131,5 +131,10 @@ export class ECS {
       }
     }
     return matchingEntities;
+  }
+
+  clone(entity: Entity) {
+    const newEntity = this.entityManager.createEntity();
+    //const components = 
   }
 }
