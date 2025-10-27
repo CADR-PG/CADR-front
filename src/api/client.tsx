@@ -69,25 +69,29 @@ export const changeUserInfo = async (data: ChangeInfoData) =>
   await apiClient.put('/users/change-info', data);
 
 export const getAllProjects = async () => {
-  return await apiClient.get('/users/projects');
+  return await apiClient.get('/projects/projects');
 };
 
 export const changeUserEmail = async (data: ChangeEmailData) =>
   await apiClient.post('/users/change-email', data);
 
 export const modifyProject = async (uuid: string, data: AddProjectData) => {
-  return await apiClient.put(`/users/modify-project/${uuid}`, data);
+  return await apiClient.put(`/projects/modify-project/${uuid}`, data);
 };
 
 export const changeUserPassword = async (data: ChangePasswordData) =>
   await apiClient.post('/users/change-password', data);
 
 export const addProject = async (data: AddProjectData) => {
-  return await apiClient.post('/users/add-project', data);
+  return await apiClient.post('/projects/add-project', data);
+};
+
+export const deleteProject = async (uuid: string) => {
+  return await apiClient.delete(`/projects/delete-project/${uuid}`);
 };
 
 export const saveScene = async (data: SaveSceneData) => {
-  return await apiClient.post(`/users/save-scene/${data.id}`, data, {
+  return await apiClient.post(`/projects/save-scene/${data.id}`, data, {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -95,5 +99,5 @@ export const saveScene = async (data: SaveSceneData) => {
 };
 
 export const loadScene = async (uuid: string) => {
-  return await apiClient.get<SaveSceneData>(`/users/load-scene/${uuid}`);
+  return await apiClient.get<SaveSceneData>(`/projects/load-scene/${uuid}`);
 };
