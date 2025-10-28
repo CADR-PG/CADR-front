@@ -9,7 +9,7 @@ export function useMesh(objectUuid: string) {
   const { focus, focused, running, setSceneObjects } = useEditorContext();
 
   const handleClick = (e: ThreeEvent<PointerEvent>) => {
-    if (!running){
+    if (!running) {
       e.stopPropagation();
       click(!clicked);
       focus(objectUuid);
@@ -17,14 +17,14 @@ export function useMesh(objectUuid: string) {
   };
 
   const handlePointerOver = (e: ThreeEvent<PointerEvent>) => {
-    if (!running){
+    if (!running) {
       e.stopPropagation();
       hover(true);
     }
   };
 
   const handlePointerOut = (e: ThreeEvent<PointerEvent>) => {
-    if (!running){
+    if (!running) {
       e.stopPropagation();
       hover(false);
     }

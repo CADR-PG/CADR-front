@@ -23,7 +23,7 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
     >
       <HighlightHelper
         objectUuid={objectUuid}
-        focused={!running ? focused : ""}
+        focused={!running ? focused : ''}
         hovered={!running ? hovered : false}
       />
       {children}
