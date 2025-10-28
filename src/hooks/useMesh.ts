@@ -6,22 +6,28 @@ import { useEditorContext } from '../hooks/useEditorContext';
 export function useMesh(objectUuid: string) {
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
-  const { focus, focused, setSceneObjects } = useEditorContext();
+  const { focus, focused, running, setSceneObjects } = useEditorContext();
 
   const handleClick = (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    click(!clicked);
-    focus(objectUuid);
+    if (!running){
+      e.stopPropagation();
+      click(!clicked);
+      focus(objectUuid);
+    }
   };
 
   const handlePointerOver = (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    hover(true);
+    if (!running){
+      e.stopPropagation();
+      hover(true);
+    }
   };
 
   const handlePointerOut = (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    hover(false);
+    if (!running){
+      e.stopPropagation();
+      hover(false);
+    }
   };
 
   const handleRef = useCallback(
@@ -46,6 +52,7 @@ export function useMesh(objectUuid: string) {
     handlePointerOver,
     handlePointerOut,
     handleRef,
+    running,
     hovered,
     clicked,
     focused,

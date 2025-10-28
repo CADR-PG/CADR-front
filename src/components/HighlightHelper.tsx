@@ -3,7 +3,7 @@ import { BoxHelper } from 'three';
 
 interface HighlightHelperProps {
   objectUuid: string;
-  focused: string | boolean | null;
+  focused: string | null;
   hovered: boolean;
 }
 
