@@ -1,8 +1,12 @@
-import * as THREE from 'three';
+import { Entity } from '../engine/Entity';
+import { EntityToComponent } from '../engine/ComponentManager';
 
-interface SaveSceneData {
+interface SceneData {
   id: string;
-  data: THREE.Object3DJSON;
+  data: {
+    entities: Entity[];
+    components: EntityToComponent;
+  };
 }
 
-export default SaveSceneData;
+export default SceneData;

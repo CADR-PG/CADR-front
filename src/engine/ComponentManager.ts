@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { proxy } from 'valtio';
 import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
@@ -10,7 +9,7 @@ interface NameToClass {
 // The structure for keeping components is like this:
 // { myEntity1: [Material: data, RigidBody: data], myEntity2: [Geometry: data]}
 // It won't be the most performant, but I wanted to keep it simple.
-interface EntityToComponent {
+export interface EntityToComponent {
   [euid: Entity]: { [name: string]: Component };
 }
 
@@ -22,6 +21,14 @@ export class ComponentManager {
     const instance: T = new component();
 
     this.mapNameToClass[instance.name] = component;
+  }
+
+  getAllComponents() {
+    return this.components;
+  }
+
+  setComponents(components: EntityToComponent) {
+    this.components = proxy<EntityToComponent>(components);
   }
 
   addEntity(entity: Entity) {
@@ -37,7 +44,10 @@ export class ComponentManager {
     if (component.name in this.components[entity]) {
       return;
     }
-    this.components[entity][component.name] = component;
+    // how THE FUCK does this shit work??????
+    // why this { ...component } shit doesn't cause a type error????
+    // this works greatly in my favor, but still wtf?
+    this.components[entity][component.name] = { ...component };
   }
 
   // Removing is easy. Just delete the key with the component's name.

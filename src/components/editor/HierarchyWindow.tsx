@@ -7,7 +7,7 @@ import { ECS } from '../../engine/ECS';
 import Name from '../../engine/components/Name';
 
 function HierarchyWindow() {
-  const { sceneObjects, focused, focus } = useEditorContext();
+  const { focused, focus } = useEditorContext();
   const parentRef = useRef<HTMLDivElement>(null);
 
   const handleClick = (object: SceneObject) => {
