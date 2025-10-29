@@ -13,6 +13,10 @@ export default class EntityManager {
     return this.entities;
   }
 
+  setEntities(entities: Entity[]) {
+    this.entities = proxy<Entity[]>(entities);
+  }
+
   destroyEntity(entity: Entity): void {
     const index = this.entities.findIndex((e) => e === entity);
 

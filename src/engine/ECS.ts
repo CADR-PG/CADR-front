@@ -1,7 +1,7 @@
 import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
 import { System } from './System';
-import { ComponentManager } from './ComponentManager';
+import { ComponentManager, EntityToComponent } from './ComponentManager';
 import BasicMaterial from '../components/editor/materials/BasicMaterial';
 import EntityManager from './EntityManager';
 import { SystemManager } from './SystemManager';
@@ -66,7 +66,19 @@ export class ECS {
     return this.entityManager.getEntities();
   }
 
+  setEntities(entities: Entity[]) {
+    return this.entityManager.setEntities(entities);
+  }
+
   // Components
+  getAllComponents() {
+    return this.componentManager.getAllComponents();
+  }
+
+  setComponents(components: EntityToComponent) {
+    return this.componentManager.setComponents(components);
+  }
+
   addComponent(component: Component, entity: Entity): void {
     this.componentManager.addComponent(component, entity);
   }
@@ -134,7 +146,10 @@ export class ECS {
   }
 
   clone(entity: Entity) {
-    const newEntity = this.entityManager.createEntity();
-    //const components = 
+    const newEntity = this.createEntity();
+    // TODO: not sure about this...
+    const components = JSON.parse(JSON.stringify(this.getComponents(entity)));
+    this.componentManager.components[newEntity] = components;
+    return newEntity;
   }
 }
