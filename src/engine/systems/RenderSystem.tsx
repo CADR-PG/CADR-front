@@ -1,9 +1,8 @@
-import { useSnapshot } from 'valtio';
-import { ECS } from '../ECS';
 import GenericMesh from '../../components/MeshController';
+import useEntities from '../../hooks/useEntities';
 
 export function RenderSystem() {
-  const entities = useSnapshot(ECS.instance.getEntities());
+  const entities = useEntities();
 
   return (
     <group position={[0, 0, 0]}>

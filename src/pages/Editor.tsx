@@ -10,9 +10,6 @@ import { EditorContextValues, EditorContext } from '../data/EditorContext';
 import KeyboardController from '../components/editor/KeyboardController';
 import useLoadScene from '../hooks/useLoadScene';
 import { useParams } from 'react-router-dom';
-import * as THREE from 'three';
-import { parseScene } from '../utils';
-import SceneData from '../types/SaveSceneData';
 import { ECS } from '../engine/ECS';
 
 function Editor() {
@@ -29,8 +26,7 @@ function Editor() {
       // loader.parse(data.data.data, (obj) => setSceneObjects(parseScene(obj)));
       //focus(null);
       const json = data.data.data;
-      ECS.instance.setEntities(json.entities);
-      ECS.instance.setComponents(json.components);
+      ECS.instance.entityManager.setScene(json);
     }
     if (isError) {
       // setSceneObjects({});

@@ -1,22 +1,24 @@
 import ControllerProps from '../types/ControllerProps';
 import { useMesh } from '../hooks/useMesh';
 import HighlightHelper from './HighlightHelper';
-import { useSnapshot } from 'valtio';
 import { ECS, mapComponentToElement } from '../engine/ECS';
 import Transform from '../engine/components/Transform';
 import { useRef } from 'react';
 import { TransformControls } from '@react-three/drei';
 import * as THREE from 'three';
+import useEntityManager from '../hooks/useEntityManager';
 
 function GenericMesh({ entity, ...props }: ControllerProps) {
-  const components = useSnapshot(ECS.instance.getComponents(entity));
+  const em = useEntityManager();
+  const components = em.getComponents(entity);
+  const transformRead = em.getComponent(Transform, entity);
   const componentKeys = Object.keys(components);
-  const transform = ECS.instance.getComponent(Transform, entity);
+  const transform = ECS.instance.entityManager.getComponent(Transform, entity);
   const meshRef = useRef(null!);
   const {
     focused,
     hovered,
-    handleRef,
+    // handleRef,
     handleClick,
     handlePointerOver,
     handlePointerOut,
@@ -46,6 +48,9 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
       position={transform?.position}
       rotation={transform?.rotation}
       scale={transform?.scale}
+      // position={transformRead?.position}
+      // rotation={transformRead?.rotation}
+      // scale={transformRead?.scale}
       onChange={handleChange}
     >
       <mesh

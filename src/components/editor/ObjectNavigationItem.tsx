@@ -15,20 +15,26 @@ function ObjectNavigationItem() {
   const handleAdd = (object: SceneObject) => {
     //const uuid = crypto.randomUUID();
     //setSceneObjects({ ...sceneObjects, [uuid]: object });
-    const entity = ECS.instance.createEntity();
+    const entity = ECS.instance.entityManager.createEntity();
     const materialData: BasicMaterialData = {
       color: 0xff0000,
     };
-    ECS.instance.addComponent(new Material('basic', materialData), entity);
-    ECS.instance.addComponent(
+    ECS.instance.entityManager.addComponent(
+      new Material('basic', materialData),
+      entity,
+    );
+    ECS.instance.entityManager.addComponent(
       new Transform([0, 0, 0], [0, 0, 0], [1, 1, 1]),
       entity,
     );
     const geometryData: BoxGeometryData = {
       dimensions: [2, 2, 2],
     };
-    ECS.instance.addComponent(new Geometry('box', geometryData), entity);
-    ECS.instance.addComponent(new Name('Box'), entity);
+    ECS.instance.entityManager.addComponent(
+      new Geometry('box', geometryData),
+      entity,
+    );
+    ECS.instance.entityManager.addComponent(new Name('Box'), entity);
 
     focus(entity);
   };
