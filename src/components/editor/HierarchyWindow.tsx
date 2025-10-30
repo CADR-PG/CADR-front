@@ -3,10 +3,11 @@ import { useEditorContext } from '../../hooks/useEditorContext';
 import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import { SceneObject } from '../../types/SceneObject';
-import { ECS } from '../../engine/ECS';
 import Name from '../../engine/components/Name';
+import useEntityManager from '../../hooks/useEntityManager';
 
 function HierarchyWindow() {
+  const em = useEntityManager();
   const { focused, focus } = useEditorContext();
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -36,14 +37,14 @@ function HierarchyWindow() {
   return (
     <div className="hierarchy-window" ref={parentRef}>
       <h3>Hierarchy</h3>
-      {ECS.instance.getEntities().map((entity) => (
+      {em.getEntities().map((entity) => (
         <div
           key={entity}
           className="hierarchy-window__item"
           onClick={() => focus(entity)}
           style={{ background: focused == entity ? '#555' : '' }}
         >
-          {ECS.instance.getComponent(Name, entity)?.displayName || entity}
+          {em.getComponent(Name, entity)?.displayName || entity}
           {
             // <div className="buttonContainer">
             //   <button
