@@ -1,9 +1,10 @@
 import ControllerProps from '../../../types/ControllerProps';
-import { ECS } from '../../../engine/ECS';
 import Geometry, { BoxGeometryData } from '../../../engine/components/Geometry';
+import useEntityManager from '../../../hooks/useEntityManager';
 
 export default function BoxController({ entity }: ControllerProps) {
-  const geometry = ECS.instance.getComponent(Geometry, entity);
+  const em = useEntityManager();
+  const geometry = em.getComponent(Geometry, entity);
   let boxGeometry;
 
   if (geometry && geometry.element === 'box') {

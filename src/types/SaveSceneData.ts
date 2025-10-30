@@ -1,12 +1,8 @@
-import { Entity } from '../engine/Entity';
-import { EntityToComponent } from '../engine/ComponentManager';
+import { EntityToComponent } from '../engine/EntityManager';
 
 interface SceneData {
   id: string;
-  data: {
-    entities: Entity[];
-    components: EntityToComponent;
-  };
+  data: EntityToComponent;
 }
 
 export default SceneData;

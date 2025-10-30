@@ -7,27 +7,21 @@ import GenericGLTF from '../GLTFController';
 import useSaveScene from '../../hooks/useSaveScene';
 import { useParams } from 'react-router-dom';
 import SnackbarProvider from '../SnackbarProvider';
-import { ECS } from '../../engine/ECS';
 import SceneData from '../../types/SaveSceneData';
+import useEntityManager from '../../hooks/useEntityManager';
 
 function FileNavigationItem() {
+  const em = useEntityManager();
   const { sceneObjects, setSceneObjects, focus } = useEditorContext();
   const { mutate } = useSaveScene();
   const { uuid } = useParams();
   const filePickerRef = useRef<(HTMLInputElement | null)[]>([]);
 
   const serializeScene = () => {
-    const entities = ECS.instance.getEntities();
-    const components = ECS.instance.getAllComponents();
-    const sceneData = {
-      entities,
-      components,
-    };
-    console.log('saving data');
-    console.log(sceneData);
+    const entities = em.getScene();
     mutate({
       id: uuid ? uuid : '',
-      data: sceneData,
+      data: entities,
     });
   };
 
@@ -37,8 +31,7 @@ function FileNavigationItem() {
     focus(null);
     const text = await e.target.files[0].text();
     const json = JSON.parse(text) as SceneData;
-    ECS.instance.setEntities(json.data.entities);
-    ECS.instance.setComponents(json.data.components);
+    em.setScene(json.data);
   };
 
   const openModel = (e: ChangeEvent<HTMLInputElement>) => {
