@@ -15,12 +15,13 @@ import StartStopBtnToolbar from './StartStopBtnToolbar';
 
 function CanvasController() {
   const [mode, selectMode] = useState<EditingMode>('translate');
-  const { sceneObjects, focused, focus } = useEditorContext();
+  const { sceneObjects, running, focused, focus } = useEditorContext();
   useEditorKeys();
-
   return (
     <div className="canvas-container">
-      <ToolbarComponent editingMode={mode} selectMode={selectMode} />
+      {!running && (
+        <ToolbarComponent editingMode={mode} selectMode={selectMode} />
+      )}
       <StartStopBtnToolbar />
       <Canvas
         className="canvas"
@@ -29,17 +30,19 @@ function CanvasController() {
       >
         <ambientLight />
         <directionalLight position={[10, 10, 10]} />
-        <OrbitControls makeDefault enableDamping={false} />
-        {focused && focused in sceneObjects ? (
+        <OrbitControls makeDefault enableDamping={false} enabled={!running} />
+        {focused && focused in sceneObjects && !running ? (
           <TransformControls object={sceneObjects[focused].ref} mode={mode} />
         ) : null}
         <Grid sectionSize={2} infiniteGrid />
-        <GizmoHelper alignment="top-right" margin={[80, 80]}>
-          <GizmoViewport
-            axisColors={['red', 'green', 'blue']}
-            labelColor="black"
-          />
-        </GizmoHelper>
+        {!running && (
+          <GizmoHelper alignment="top-right" margin={[80, 80]}>
+            <GizmoViewport
+              axisColors={['red', 'green', 'blue']}
+              labelColor="black"
+            />
+          </GizmoHelper>
+        )}
         <group>
           {Object.entries(sceneObjects).map(([uuid, object]) =>
             object.component ? (

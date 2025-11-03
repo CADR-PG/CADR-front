@@ -2,6 +2,7 @@ import { useMesh } from '../hooks/useMesh';
 import { useGLTF } from '@react-three/drei';
 import { ReactNode } from 'react';
 import HighlightHelper from './HighlightHelper';
+import { useEditorContext } from '../hooks/useEditorContext';
 
 interface GLTFProps {
   children?: ReactNode;
@@ -19,6 +20,7 @@ function GenericGLTF({ children, objectUuid, url, ...props }: GLTFProps) {
     handlePointerOut,
   } = useMesh(objectUuid);
   const model = useGLTF(url);
+  const { running } = useEditorContext();
 
   return (
     <primitive
@@ -31,8 +33,8 @@ function GenericGLTF({ children, objectUuid, url, ...props }: GLTFProps) {
     >
       <HighlightHelper
         objectUuid={objectUuid}
-        focused={focused}
-        hovered={hovered}
+        focused={!running ? focused : ''}
+        hovered={!running ? hovered : false}
       />
       {children}
     </primitive>

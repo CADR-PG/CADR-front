@@ -6,6 +6,7 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
   const {
     focused,
     hovered,
+    running,
     handleRef,
     handleClick,
     handlePointerOver,
@@ -22,8 +23,8 @@ function GenericMesh({ children, objectUuid, ...props }: ControllerProps) {
     >
       <HighlightHelper
         objectUuid={objectUuid}
-        focused={focused}
-        hovered={hovered}
+        focused={!running ? focused : ''}
+        hovered={!running ? hovered : false}
       />
       {children}
     </mesh>
