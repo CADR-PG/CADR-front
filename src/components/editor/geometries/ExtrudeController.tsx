@@ -1,30 +1,33 @@
-import GenericMesh from '../../MeshController';
-import * as THREE from 'three';
 import ControllerProps from '../../../types/ControllerProps';
+import useEntityManager from '../../../hooks/useEntityManager';
+import Geometry from '../../../engine/components/Geometry';
+import ExtrudeGeometryData from '../../../engine/components/geometries/ExtrudeGeometryData';
 
-function ExtrudeController({ children, ...props }: ControllerProps) {
-  const shape = new THREE.Shape();
-  shape.moveTo(0, 0);
-  shape.lineTo(1, 0);
-  shape.lineTo(1, 1);
-  shape.lineTo(0, 1);
-  shape.lineTo(0, 0);
+function ExtrudeController({ entity }: ControllerProps) {
+  const em = useEntityManager();
+  const geometry = em.getComponent(Geometry, entity);
+  let extrudeGeometry;
 
-  const extrudeSettings = {
-    steps: 2,
-    depth: 1,
-    bevelEnabled: true,
-    bevelThickness: 0.2,
-    bevelSize: 0.2,
-    bevelSegments: 1,
-  };
+  if (geometry) {
+    extrudeGeometry = geometry.data as ExtrudeGeometryData;
+  }
 
   return (
-    <GenericMesh {...props}>
-      <extrudeGeometry args={[shape, extrudeSettings]} />
-      <meshStandardMaterial color="orange" />
-      {children}
-    </GenericMesh>
+    extrudeGeometry && (
+      <extrudeGeometry
+        args={[
+          extrudeGeometry.shape,
+          {
+            steps: extrudeGeometry?.steps,
+            depth: extrudeGeometry?.depth,
+            bevelEnabled: extrudeGeometry?.bevelEnabled,
+            bevelThickness: extrudeGeometry?.bevelThickness,
+            bevelSize: extrudeGeometry?.bevelSize,
+            bevelSegments: extrudeGeometry?.bevelSegments,
+          },
+        ]}
+      />
+    )
   );
 }
 

@@ -1,13 +1,30 @@
+import CapsuleGeometryData from '../../../engine/components/geometries/CapsuleGeometryData';
+import Geometry from '../../../engine/components/Geometry';
+import useEntityManager from '../../../hooks/useEntityManager';
 import ControllerProps from '../../../types/ControllerProps';
-import GenericMesh from '../../MeshController';
 
-function CapsuleController({ children, ...props }: ControllerProps) {
+function CapsuleController({ entity }: ControllerProps) {
+  const em = useEntityManager();
+  const geometry = em.getComponent(Geometry, entity);
+  let capsuleGeometry;
+
+  if (geometry) {
+    capsuleGeometry = geometry.data as CapsuleGeometryData;
+  }
+
   return (
-    <GenericMesh {...props}>
-      <capsuleGeometry args={[1, 2, 8, 16]} />
-      <meshStandardMaterial color="orange" />
-      {children}
-    </GenericMesh>
+    capsuleGeometry && (
+      <capsuleGeometry
+        args={[
+          capsuleGeometry.radius,
+          capsuleGeometry.height,
+          capsuleGeometry.capSegments,
+          capsuleGeometry.radialSegments,
+          // TODO: ????
+          // capsuleGeometry.heightSegments,
+        ]}
+      />
+    )
   );
 }
 

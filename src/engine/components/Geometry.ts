@@ -1,23 +1,16 @@
 import { Component } from '../Component';
 
-export interface BoxGeometryData {
-  dimensions: [number, number, number];
+export abstract class GeometryData {
+  abstract type: string;
 }
-
-export interface CapsuleGeometryData {
-  radius: number;
-}
-
-type GeometryType = 'box' | 'capsule';
-type GeometryData = BoxGeometryData | CapsuleGeometryData;
 
 export default class Geometry implements Component {
-  constructor(type: GeometryType, data: GeometryData) {
-    this.element = type;
-    this.data = data;
+  constructor(data: GeometryData) {
+    this.data = { ...data };
+    this.element = this.data.type;
   }
 
   name = 'Geometry';
-  element: GeometryType;
   data: GeometryData;
+  element?: string;
 }

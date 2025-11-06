@@ -992,9 +992,6 @@ packages:
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
-  '@types/estree@1.0.8':
-    resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
-
   '@types/get-port@3.2.0':
     resolution: {integrity: sha512-TiNg8R1kjDde5Pub9F9vCwZA/BNW9HeXP5b9j7Qucqncy/McfPZ6xze/EyBdXS5FhMIGN6Fx3vg75l5KHy3V1Q==}
 
@@ -4028,8 +4025,6 @@ snapshots:
 
   '@types/estree@1.0.8': {}
 
-  '@types/estree@1.0.8': {}
-
   '@types/get-port@3.2.0': {}
 
   '@types/glob@5.0.38':
@@ -5644,7 +5639,6 @@ snapshots:
 
   rollup@4.52.4:
     dependencies:
-      '@types/estree': 1.0.8
       '@types/estree': 1.0.8
     optionalDependencies:
       '@rollup/rollup-android-arm-eabi': 4.52.4
