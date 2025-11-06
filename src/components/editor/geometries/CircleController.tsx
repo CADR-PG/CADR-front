@@ -1,13 +1,28 @@
-import GenericMesh from '../../MeshController';
 import ControllerProps from '../../../types/ControllerProps';
+import CircleGeometryData from '../../../engine/components/geometries/CircleGeometryData';
+import useEntityManager from '../../../hooks/useEntityManager';
+import Geometry from '../../../engine/components/Geometry';
 
-function CircleController({ children, ...props }: ControllerProps) {
+function CircleController({ entity }: ControllerProps) {
+  const em = useEntityManager();
+  const geometry = em.getComponent(Geometry, entity);
+  let circleGeometry;
+
+  if (geometry) {
+    circleGeometry = geometry.data as CircleGeometryData;
+  }
+
   return (
-    <GenericMesh {...props}>
-      <circleGeometry args={[1.5, 32]} />
-      <meshStandardMaterial color="orange" />
-      {children}
-    </GenericMesh>
+    circleGeometry && (
+      <circleGeometry
+        args={[
+          circleGeometry.radius,
+          circleGeometry.segments,
+          circleGeometry.thetaStart,
+          circleGeometry.thetaLength,
+        ]}
+      />
+    )
   );
 }
 

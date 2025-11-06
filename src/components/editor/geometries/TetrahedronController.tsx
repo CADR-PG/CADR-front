@@ -1,13 +1,23 @@
-import GenericMesh from '../../MeshController';
 import ControllerProps from '../../../types/ControllerProps';
+import useEntityManager from '../../../hooks/useEntityManager';
+import Geometry from '../../../engine/components/Geometry';
+import TetrahedronGeometryData from '../../../engine/components/geometries/TetrahedronGeometryData';
 
-function TetrahedronController({ children, ...props }: ControllerProps) {
+function TetrahedronController({ entity }: ControllerProps) {
+  const em = useEntityManager();
+  const geometry = em.getComponent(Geometry, entity);
+  let tetrahedronGeometry;
+
+  if (geometry) {
+    tetrahedronGeometry = geometry.data as TetrahedronGeometryData;
+  }
+
   return (
-    <GenericMesh {...props}>
-      <tetrahedronGeometry args={[1, 0]} />
-      <meshStandardMaterial color="orange" />
-      {children}
-    </GenericMesh>
+    tetrahedronGeometry && (
+      <tetrahedronGeometry
+        args={[tetrahedronGeometry.radius, tetrahedronGeometry.detail]}
+      />
+    )
   );
 }
 

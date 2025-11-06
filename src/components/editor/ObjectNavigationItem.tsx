@@ -1,40 +1,30 @@
 import { MenuItem } from '@mui/material';
 import NavigationItem from './NavigationItem';
 import { useEditorContext } from '../../hooks/useEditorContext';
-import { SceneObject } from '../../types/SceneObject';
 import Objects from '../../data/ObjectNames';
 import { ECS } from '../../engine/ECS';
-import Material, { BasicMaterialData } from '../../engine/components/Material';
+import Material from '../../engine/components/Material';
 import Transform from '../../engine/components/Transform';
-import Geometry, { BoxGeometryData } from '../../engine/components/Geometry';
+import Geometry from '../../engine/components/Geometry';
 import Name from '../../engine/components/Name';
+import GeometryItem from '../../types/GeometryItem';
+import BasicMaterialData from '../../engine/components/materials/BasicMaterialData';
 
 function ObjectNavigationItem() {
-  const { sceneObjects, setSceneObjects, focus } = useEditorContext();
+  const { focus } = useEditorContext();
 
-  const handleAdd = (object: SceneObject) => {
-    //const uuid = crypto.randomUUID();
-    //setSceneObjects({ ...sceneObjects, [uuid]: object });
+  const handleAdd = (object: GeometryItem) => {
     const entity = ECS.instance.entityManager.createEntity();
-    const materialData: BasicMaterialData = {
-      color: 0xff0000,
-    };
     ECS.instance.entityManager.addComponent(
-      new Material('basic', materialData),
+      new Material(new BasicMaterialData()),
       entity,
     );
+    ECS.instance.entityManager.addComponent(new Transform(), entity);
     ECS.instance.entityManager.addComponent(
-      new Transform([0, 0, 0], [0, 0, 0], [1, 1, 1]),
+      new Geometry(new object.geometry()),
       entity,
     );
-    const geometryData: BoxGeometryData = {
-      dimensions: [2, 2, 2],
-    };
-    ECS.instance.entityManager.addComponent(
-      new Geometry('box', geometryData),
-      entity,
-    );
-    ECS.instance.entityManager.addComponent(new Name('Box'), entity);
+    ECS.instance.entityManager.addComponent(new Name(object.name), entity);
 
     focus(entity);
   };

@@ -47,7 +47,6 @@ export class EntityManager {
   // TODO: This function creates an instance of Component and assigns it to the entity.
   // Components shouldn't be created in any other way. Maybe we should somehow restrict it?
   addComponent(component: Component, entity: Entity): void {
-    console.log(this.entities[entity]);
     if (component.name in this.entities[entity]) {
       return;
     }
@@ -81,9 +80,7 @@ export class EntityManager {
   ): T | null {
     const instance: T = new component();
 
-    console.log(`Does entity ${entity} have ${instance.name}?`);
     if (this.has(component, entity)) {
-      console.log(`${entity} has ${instance.name}`);
       return this.entities[entity][instance.name] as T;
     } else {
       return null;
@@ -98,7 +95,6 @@ export class EntityManager {
     entity: Entity,
   ): boolean {
     if (!this.entities[entity]) return false;
-    console.log(this.entities[entity]);
 
     const instance = new component();
 

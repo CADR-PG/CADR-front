@@ -1,13 +1,29 @@
-import GenericMesh from '../../MeshController';
 import ControllerProps from '../../../types/ControllerProps';
+import useEntityManager from '../../../hooks/useEntityManager';
+import Geometry from '../../../engine/components/Geometry';
+import TorusGeometryData from '../../../engine/components/geometries/TorusGeometryData';
 
-function TorusController({ children, ...props }: ControllerProps) {
+function TorusController({ entity }: ControllerProps) {
+  const em = useEntityManager();
+  const geometry = em.getComponent(Geometry, entity);
+  let torusGeometry;
+
+  if (geometry) {
+    torusGeometry = geometry.data as TorusGeometryData;
+  }
+
   return (
-    <GenericMesh {...props}>
-      <torusGeometry args={[0.4, 0.1, 16, 100]} />
-      <meshStandardMaterial color="orange" />
-      {children}
-    </GenericMesh>
+    torusGeometry && (
+      <torusGeometry
+        args={[
+          torusGeometry.radius,
+          torusGeometry.tube,
+          torusGeometry.radialSegments,
+          torusGeometry.tubularSegments,
+          torusGeometry.arc,
+        ]}
+      />
+    )
   );
 }
 

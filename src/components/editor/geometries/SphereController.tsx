@@ -1,13 +1,31 @@
-import GenericMesh from '../../MeshController';
 import ControllerProps from '../../../types/ControllerProps';
+import useEntityManager from '../../../hooks/useEntityManager';
+import Geometry from '../../../engine/components/Geometry';
+import SphereGeometryData from '../../../engine/components/geometries/SphereGeometryData';
 
-function SphereController({ children, ...props }: ControllerProps) {
+function SphereController({ entity }: ControllerProps) {
+  const em = useEntityManager();
+  const geometry = em.getComponent(Geometry, entity);
+  let sphereGeometry;
+
+  if (geometry) {
+    sphereGeometry = geometry.data as SphereGeometryData;
+  }
+
   return (
-    <GenericMesh {...props}>
-      <sphereGeometry args={[1, 32, 32]} />
-      <meshStandardMaterial color="orange" />
-      {children}
-    </GenericMesh>
+    sphereGeometry && (
+      <sphereGeometry
+        args={[
+          sphereGeometry.radius,
+          sphereGeometry.widthSegments,
+          sphereGeometry.heightSegments,
+          sphereGeometry.phiStart,
+          sphereGeometry.phiLength,
+          sphereGeometry.thetaStart,
+          sphereGeometry.thetaLength,
+        ]}
+      />
+    )
   );
 }
 

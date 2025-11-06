@@ -1,13 +1,23 @@
-import GenericMesh from '../../MeshController';
 import ControllerProps from '../../../types/ControllerProps';
+import useEntityManager from '../../../hooks/useEntityManager';
+import Geometry from '../../../engine/components/Geometry';
+import DodecahedronGeometryData from '../../../engine/components/geometries/DodecahedronGeometryData';
 
-function DodecahedronController({ children, ...props }: ControllerProps) {
+function DodecahedronController({ entity }: ControllerProps) {
+  const em = useEntityManager();
+  const geometry = em.getComponent(Geometry, entity);
+  let dodecahedronGeometry;
+
+  if (geometry) {
+    dodecahedronGeometry = geometry.data as DodecahedronGeometryData;
+  }
+
   return (
-    <GenericMesh {...props}>
-      <dodecahedronGeometry args={[1, 0]} />
-      <meshStandardMaterial color="orange" />
-      {children}
-    </GenericMesh>
+    dodecahedronGeometry && (
+      <dodecahedronGeometry
+        args={[dodecahedronGeometry.radius, dodecahedronGeometry.detail]}
+      />
+    )
   );
 }
 

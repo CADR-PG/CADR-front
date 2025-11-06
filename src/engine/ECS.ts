@@ -2,20 +2,7 @@ import { Component } from './Component';
 import { Entity } from './Entity';
 import { System } from './System';
 import { EntityManager } from './EntityManager';
-import BasicMaterial from '../components/editor/materials/BasicMaterial';
-import { JSX } from 'react';
-import BoxController from '../components/editor/geometries/BoxController';
 import { proxy } from 'valtio';
-
-interface ComponentToElement {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [name: string]: (...args: any[]) => JSX.Element | undefined;
-}
-
-export const mapComponentToElement: ComponentToElement = {
-  basic: BasicMaterial,
-  box: BoxController,
-};
 
 // Glue class that contains the whole logic of ECS.
 // TODO: Maybe add unit tests for this?
