@@ -51,7 +51,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   return (
     !invisible && (
       <TransformControls
-        size={entity === focused ? 1 : 0}
+        size={!running && entity === focused ? 1 : 0}
         enabled={!running && entity === focused}
         // TODO: this is a bad idea. we are using non-reactive write-only property
         // to render transformations, because TrasnsformControls are a bitch
@@ -70,8 +70,8 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
         >
           <HighlightHelper
             entity={entity}
-            focused={focused}
-            hovered={hovered}
+            focused={!running ? focused : ''}
+            hovered={!running ? hovered : false}
           />
           {componentKeys.map((component, index) => {
             const element = components[component].element;
