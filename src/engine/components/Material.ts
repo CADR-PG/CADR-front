@@ -1,23 +1,16 @@
 import { Component } from '../Component';
 
-export interface BasicMaterialData {
-  color: number;
+export abstract class MaterialData {
+  abstract type: string;
 }
-
-export interface PhongMaterialData {
-  emissive: [number, number, number];
-}
-
-type MaterialType = 'basic' | 'phong' | 'toon';
-type MaterialData = BasicMaterialData | PhongMaterialData;
 
 export default class Material implements Component {
-  constructor(type: MaterialType, data: MaterialData) {
-    this.element = type;
-    this.data = data;
+  constructor(data: MaterialData) {
+    this.data = { ...data };
+    this.element = this.data.type;
   }
 
   name = 'Material';
-  element: MaterialType;
   data: MaterialData;
+  element?: string;
 }

@@ -1,13 +1,28 @@
-import GenericMesh from '../../MeshController';
 import ControllerProps from '../../../types/ControllerProps';
+import useEntityManager from '../../../hooks/useEntityManager';
+import Geometry from '../../../engine/components/Geometry';
+import PlaneGeometryData from '../../../engine/components/geometries/PlaneGeometryData';
 
-function PlaneController({ children, ...props }: ControllerProps) {
+function PlaneController({ entity }: ControllerProps) {
+  const em = useEntityManager();
+  const geometry = em.getComponent(Geometry, entity);
+  let planeGeometry;
+
+  if (geometry) {
+    planeGeometry = geometry.data as PlaneGeometryData;
+  }
+
   return (
-    <GenericMesh {...props}>
-      <planeGeometry args={[3, 3, 32, 32]} />
-      <meshStandardMaterial color="orange" />
-      {children}
-    </GenericMesh>
+    planeGeometry && (
+      <planeGeometry
+        args={[
+          planeGeometry.width,
+          planeGeometry.height,
+          planeGeometry.widthSegments,
+          planeGeometry.heightSegments,
+        ]}
+      />
+    )
   );
 }
 

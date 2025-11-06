@@ -5,41 +5,38 @@ import HierarchyWindow from '../components/editor/HierarchyWindow';
 import ProjectWindow from '../components/editor/ProjectWindow';
 import InspectorWindow from '../components/editor/InspectorWindow';
 import Navigation from '../components/editor/Navigation';
-import { SceneObjects } from '../types/SceneObject';
 import { EditorContextValues, EditorContext } from '../data/EditorContext';
 import KeyboardController from '../components/editor/KeyboardController';
 import useLoadScene from '../hooks/useLoadScene';
 import { useParams } from 'react-router-dom';
 import { ECS } from '../engine/ECS';
+import EditingMode from '../types/EditingMode';
 
 function Editor() {
-  const [sceneObjects, setSceneObjects] = useState<SceneObjects>({});
   const [focused, focus] = useState<string | null>(null);
   const { uuid } = useParams();
   const { data, isError } = useLoadScene(uuid!);
   const [running, setRunning] = useState(false);
+  const [editingMode, selectMode] = useState<EditingMode>('translate');
 
   useEffect(() => {
-    // const loader = new THREE.ObjectLoader();
     if (data) {
       // TODO: xdd
-      // loader.parse(data.data.data, (obj) => setSceneObjects(parseScene(obj)));
-      //focus(null);
       const json = data.data.data;
       ECS.instance.entityManager.setScene(json);
     }
     if (isError) {
-      // setSceneObjects({});
+      ECS.instance.entityManager.setScene({});
     }
   }, [data, isError]);
 
   const contextValue: EditorContextValues = {
-    sceneObjects,
-    setSceneObjects,
     focused,
     focus,
     running,
     setRunning,
+    editingMode,
+    selectMode,
   };
 
   return (

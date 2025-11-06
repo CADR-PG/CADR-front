@@ -1,9 +1,7 @@
 import { MenuItem } from '@mui/material';
 import NavigationItem from './NavigationItem';
-import { SceneObject } from '../../types/SceneObject';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import { ChangeEvent, useCallback, useRef } from 'react';
-import GenericGLTF from '../GLTFController';
 import useSaveScene from '../../hooks/useSaveScene';
 import { useParams } from 'react-router-dom';
 import SnackbarProvider from '../SnackbarProvider';
@@ -12,7 +10,7 @@ import useEntityManager from '../../hooks/useEntityManager';
 
 function FileNavigationItem() {
   const em = useEntityManager();
-  const { sceneObjects, setSceneObjects, focus } = useEditorContext();
+  const { focus } = useEditorContext();
   const { mutate } = useSaveScene();
   const { uuid } = useParams();
   const filePickerRef = useRef<(HTMLInputElement | null)[]>([]);
@@ -34,19 +32,17 @@ function FileNavigationItem() {
     em.setScene(json.data);
   };
 
-  const openModel = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files == null) return;
-
-    const model = e.target.files[0];
-    const url = URL.createObjectURL(model);
-
-    const uuid = crypto.randomUUID();
-    const object: SceneObject = {
-      name: 'Model',
-      component: () => <GenericGLTF objectUuid={uuid} url={url} />,
-    };
-
-    setSceneObjects({ ...sceneObjects, [uuid]: object });
+  // TODO: this shit not worky right now. sowwy :(
+  const openModel = (/*e: ChangeEvent<HTMLInputElement>*/) => {
+    // if (e.target.files == null) return;
+    // const model = e.target.files[0];
+    // const url = URL.createObjectURL(model);
+    // const uuid = crypto.randomUUID();
+    // const object: SceneObject = {
+    //   name: 'Model',
+    //   component: () => <GenericGLTF objectUuid={uuid} url={url} />,
+    // };
+    // setSceneObjects({ ...sceneObjects, [uuid]: object });
   };
 
   const setRef = useCallback((index: number) => {

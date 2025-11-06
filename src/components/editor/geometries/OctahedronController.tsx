@@ -1,13 +1,23 @@
-import GenericMesh from '../../MeshController';
 import ControllerProps from '../../../types/ControllerProps';
+import useEntityManager from '../../../hooks/useEntityManager';
+import Geometry from '../../../engine/components/Geometry';
+import OctahedronGeometryData from '../../../engine/components/geometries/OctahedronGeometryData';
 
-function OctahedronController({ children, ...props }: ControllerProps) {
+function OctahedronController({ entity }: ControllerProps) {
+  const em = useEntityManager();
+  const geometry = em.getComponent(Geometry, entity);
+  let octahedronGeometry;
+
+  if (geometry) {
+    octahedronGeometry = geometry.data as OctahedronGeometryData;
+  }
+
   return (
-    <GenericMesh {...props}>
-      <octahedronGeometry args={[1, 0]} />
-      <meshStandardMaterial color="orange" />
-      {children}
-    </GenericMesh>
+    octahedronGeometry && (
+      <octahedronGeometry
+        args={[octahedronGeometry.radius, octahedronGeometry.detail]}
+      />
+    )
   );
 }
 

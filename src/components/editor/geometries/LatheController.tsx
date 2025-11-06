@@ -1,19 +1,28 @@
-import GenericMesh from '../../MeshController';
-import * as THREE from 'three';
 import ControllerProps from '../../../types/ControllerProps';
+import useEntityManager from '../../../hooks/useEntityManager';
+import Geometry from '../../../engine/components/Geometry';
+import LatheGeometryData from '../../../engine/components/geometries/LatheGeometryData';
 
-function LatheController({ children, ...props }: ControllerProps) {
-  const points = [];
-  for (let i = 0; i < 10; i++) {
-    points.push(new THREE.Vector2(Math.sin(i * 0.2) * 1.5 + 1, (i - 5) * 0.4));
+function LatheController({ entity }: ControllerProps) {
+  const em = useEntityManager();
+  const geometry = em.getComponent(Geometry, entity);
+  let latheGeometry;
+
+  if (geometry) {
+    latheGeometry = geometry.data as LatheGeometryData;
   }
 
   return (
-    <GenericMesh {...props}>
-      <latheGeometry args={[points, 32]} />
-      <meshStandardMaterial color="orange" />
-      {children}
-    </GenericMesh>
+    latheGeometry && (
+      <latheGeometry
+        args={[
+          latheGeometry.points,
+          latheGeometry.segments,
+          latheGeometry.phiStart,
+          latheGeometry.phiLength,
+        ]}
+      />
+    )
   );
 }
 

@@ -1,13 +1,31 @@
-import GenericMesh from '../../MeshController';
 import ControllerProps from '../../../types/ControllerProps';
+import ConeGeometryData from '../../../engine/components/geometries/ConeGeometryData';
+import useEntityManager from '../../../hooks/useEntityManager';
+import Geometry from '../../../engine/components/Geometry';
 
-function ConeController({ children, ...props }: ControllerProps) {
+function ConeController({ entity }: ControllerProps) {
+  const em = useEntityManager();
+  const geometry = em.getComponent(Geometry, entity);
+  let coneGeometry;
+
+  if (geometry) {
+    coneGeometry = geometry.data as ConeGeometryData;
+  }
+
   return (
-    <GenericMesh {...props}>
-      <coneGeometry args={[1, 2, 32]} />
-      <meshStandardMaterial color="orange" />
-      {children}
-    </GenericMesh>
+    coneGeometry && (
+      <coneGeometry
+        args={[
+          coneGeometry.radius,
+          coneGeometry.height,
+          coneGeometry.radialSegments,
+          coneGeometry.heightSegments,
+          coneGeometry.openEnded,
+          coneGeometry.thetaStart,
+          coneGeometry.thetaLength,
+        ]}
+      />
+    )
   );
 }
 
