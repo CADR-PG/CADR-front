@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { ECS } from '../engine/ECS';
 import Transform from '../engine/components/Transform';
 
+const MOVEMENT_CHANGE = 0.5;
+
 function useEditorKeys() {
   const { focused, focus } = useEditorContext();
   const [copiedUuid, copyUuid] = useState<string>('');
@@ -29,22 +31,22 @@ function useEditorKeys() {
 
     if (moveU) {
       if (!transform) return;
-      transform.position[1] += 0.5;
+      transform.position[1] += MOVEMENT_CHANGE;
     }
 
     if (moveD) {
       if (!transform) return;
-      transform.position[1] -= 0.5;
+      transform.position[1] -= MOVEMENT_CHANGE;
     }
 
     if (moveL) {
       if (!transform) return;
-      transform.position[0] -= 0.5;
+      transform.position[0] -= MOVEMENT_CHANGE;
     }
 
     if (moveR) {
       if (!transform) return;
-      transform.position[0] += 0.5;
+      transform.position[0] += MOVEMENT_CHANGE;
     }
 
     if (del) {

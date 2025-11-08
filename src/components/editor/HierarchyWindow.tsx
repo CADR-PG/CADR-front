@@ -15,7 +15,7 @@ function HierarchyWindow() {
 
   const handleClick = (entity: Entity) => {
     if (!em.has(Invisible, entity)) {
-      ECS.instance.entityManager.addComponent(Invisible, entity);
+      ECS.instance.entityManager.addComponent(new Invisible(), entity);
     } else {
       ECS.instance.entityManager.removeComponent(Invisible, entity);
     }

@@ -1,3 +1,4 @@
+import { proxy } from 'valtio';
 import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
 
@@ -41,12 +42,15 @@ export class EntityManager {
   }
 
   setScene(entities: EntityToComponent) {
-    this.entities = entities;
+    this.entities = proxy(entities);
   }
 
   // TODO: This function creates an instance of Component and assigns it to the entity.
   // Components shouldn't be created in any other way. Maybe we should somehow restrict it?
+  // TODO2: maybe proper error handling instead of void?
   addComponent(component: Component, entity: Entity): void {
+    if (!(entity in this.entities)) return;
+
     if (component.name in this.entities[entity]) {
       return;
     }
@@ -71,6 +75,8 @@ export class EntityManager {
   }
 
   getComponents(entity: Entity): { [name: string]: Component } {
+    if (!(entity in this.entities)) return {};
+
     return this.entities[entity];
   }
 
