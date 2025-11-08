@@ -20,6 +20,7 @@ export default function BoxController({ entity }: ControllerProps) {
           boxGeometry.height,
           boxGeometry.depth,
           boxGeometry.widthSegments,
+          boxGeometry.heightSegments,
           boxGeometry.depthSegments,
         ]}
       />

@@ -1,14 +1,21 @@
-import { Euler, MeshBasicMaterialParameters, MultiplyOperation } from 'three';
+import { MeshBasicMaterialParameters, MultiplyOperation } from 'three';
 import { MaterialData } from '../Material';
+
+type MeshBasicMaterialParametersData = Omit<
+  MeshBasicMaterialParameters,
+  'envMapRotation'
+> & {
+  envMapRotation: [number, number, number];
+};
 
 export default class BasicMaterialData implements MaterialData {
   type: string = 'basic';
   constructor(
-    public parameters: MeshBasicMaterialParameters = {
+    public parameters: MeshBasicMaterialParametersData = {
       aoMapIntensity: 1,
       color: 'orange',
       combine: MultiplyOperation,
-      envMapRotation: new Euler(0, 0, 0),
+      envMapRotation: [0, 0, 0],
       fog: true,
       lightMapIntensity: 1,
       reflectivity: 1,

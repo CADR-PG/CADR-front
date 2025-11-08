@@ -2,7 +2,7 @@ import { Component } from './Component';
 import { Entity } from './Entity';
 import { System } from './System';
 import { EntityManager } from './EntityManager';
-import { proxy } from 'valtio';
+import { proxy, snapshot } from 'valtio';
 
 // Glue class that contains the whole logic of ECS.
 // TODO: Maybe add unit tests for this?
@@ -54,7 +54,7 @@ export class ECS {
 
     // When an entity satisfies a component condition for particular system,
     // add it to the array of matching entities.
-    for (const entity of Object.keys(this.entityManager.getEntities())) {
+    for (const entity of this.entityManager.getEntities()) {
       if (this.entityManager.hasAll(components, entity)) {
         matchingEntities.push(entity);
       }
@@ -64,11 +64,10 @@ export class ECS {
 
   clone(entity: Entity) {
     const newEntity = this.entityManager.createEntity();
-    // TODO: not sure about this...
-    const components = JSON.parse(
-      JSON.stringify(this.entityManager.getComponents(entity)),
+    const components = structuredClone(
+      snapshot(this.entityManager.getComponents(entity)),
     );
-    this.entityManager.entities[newEntity] = components;
+    this.entityManager.entities[newEntity] = proxy(components);
     return newEntity;
   }
 }

@@ -79,6 +79,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
               const ComponentElement = ComponentNames[element];
               return <ComponentElement key={index} entity={entity} />;
             }
+            return null;
           })}
         </mesh>
       </TransformControls>

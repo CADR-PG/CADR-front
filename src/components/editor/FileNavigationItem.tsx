@@ -8,6 +8,7 @@ import SnackbarProvider from '../SnackbarProvider';
 import { useState } from 'react';
 import SceneData from '../../types/SaveSceneData';
 import useEntityManager from '../../hooks/useEntityManager';
+import { useSnackbarStore } from '../../stores/snackbarStore';
 
 function FileNavigationItem() {
   const em = useEntityManager();
@@ -15,6 +16,7 @@ function FileNavigationItem() {
   const { mutate } = useSaveScene();
   const { uuid } = useParams();
   const filePickerRef = useRef<(HTMLInputElement | null)[]>([]);
+  const { openSnackbar } = useSnackbarStore();
 
   const [secondsLeft, setSecondsLeft] = useState(60);
 
@@ -56,8 +58,12 @@ function FileNavigationItem() {
 
     focus(null);
     const text = await e.target.files[0].text();
-    const json = JSON.parse(text) as SceneData;
-    em.setScene(json.data);
+    try {
+      const json = JSON.parse(text) as SceneData;
+      em.setScene(json.data);
+    } catch (error) {
+      openSnackbar(`Error while parsing JSON: ${error}`, 'error');
+    }
   };
 
   // TODO: this shit not worky right now. sowwy :(
