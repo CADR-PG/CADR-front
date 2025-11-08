@@ -38,19 +38,6 @@ function FileNavigationItem() {
     }
   };
 
-  // TODO: this shit not worky right now. sowwy :(
-  const openModel = (/*e: ChangeEvent<HTMLInputElement>*/) => {
-    // if (e.target.files == null) return;
-    // const model = e.target.files[0];
-    // const url = URL.createObjectURL(model);
-    // const uuid = crypto.randomUUID();
-    // const object: SceneObject = {
-    //   name: 'Model',
-    //   component: () => <GenericGLTF objectUuid={uuid} url={url} />,
-    // };
-    // setSceneObjects({ ...sceneObjects, [uuid]: object });
-  };
-
   const setRef = useCallback((index: number) => {
     return (node: HTMLInputElement | null) => {
       filePickerRef.current[index] = node;
@@ -69,7 +56,6 @@ function FileNavigationItem() {
         </MenuItem>
       </NavigationItem>
       <input ref={setRef(0)} type="file" onChange={deserializeScene} hidden />
-      <input ref={setRef(1)} type="file" onChange={openModel} hidden />
       <SnackbarProvider />
     </>
   );
