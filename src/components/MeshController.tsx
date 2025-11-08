@@ -49,31 +49,31 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   };
 
   return (
-    !invisible && (
-      <TransformControls
-        size={!running && entity === focused ? 1 : 0}
-        enabled={!running && entity === focused}
-        // TODO: this is a bad idea. we are using non-reactive write-only property
-        // to render transformations, because TrasnsformControls are a bitch
-        position={transform?.position}
-        rotation={transform?.rotation}
-        scale={transform?.scale}
-        onChange={handleChange}
-        mode={editingMode}
+    <TransformControls
+      size={!running && entity === focused ? 1 : 0}
+      enabled={!running && entity === focused}
+      // TODO: this is a bad idea. we are using non-reactive write-only property
+      // to render transformations, because TrasnsformControls are a bitch
+      position={transform?.position}
+      rotation={transform?.rotation}
+      scale={transform?.scale}
+      onChange={handleChange}
+      mode={editingMode}
+    >
+      <mesh
+        {...props}
+        onClick={handleClick}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
+        ref={meshRef}
       >
-        <mesh
-          {...props}
-          onClick={handleClick}
-          onPointerOver={handlePointerOver}
-          onPointerOut={handlePointerOut}
-          ref={meshRef}
-        >
-          <HighlightHelper
-            entity={entity}
-            focused={!running ? focused : ''}
-            hovered={!running ? hovered : false}
-          />
-          {componentKeys.map((component, index) => {
+        <HighlightHelper
+          entity={entity}
+          focused={!running ? focused : ''}
+          hovered={!running ? hovered : false}
+        />
+        {!invisible &&
+          componentKeys.map((component, index) => {
             const element = components[component].element;
             if (element) {
               const ComponentElement = ComponentNames[element];
@@ -81,9 +81,8 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
             }
             return null;
           })}
-        </mesh>
-      </TransformControls>
-    )
+      </mesh>
+    </TransformControls>
   );
 }
 

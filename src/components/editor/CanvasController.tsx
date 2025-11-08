@@ -26,7 +26,7 @@ function CanvasController() {
       >
         <ambientLight />
         <directionalLight position={[10, 10, 10]} />
-        <OrbitControls makeDefault enableDamping={false} />
+        <OrbitControls makeDefault enableDamping={false} enabled={!running} />
         <Grid sectionSize={2} infiniteGrid />
         {!running && (
           <GizmoHelper alignment="top-right" margin={[80, 80]}>

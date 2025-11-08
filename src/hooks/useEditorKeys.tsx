@@ -29,24 +29,22 @@ function useEditorKeys() {
       focused,
     );
 
-    if (moveU) {
-      if (!transform) return;
-      transform.position[1] += MOVEMENT_CHANGE;
-    }
+    if (transform) {
+      if (moveU) {
+        transform.position[1] += MOVEMENT_CHANGE;
+      }
 
-    if (moveD) {
-      if (!transform) return;
-      transform.position[1] -= MOVEMENT_CHANGE;
-    }
+      if (moveD) {
+        transform.position[1] -= MOVEMENT_CHANGE;
+      }
 
-    if (moveL) {
-      if (!transform) return;
-      transform.position[0] -= MOVEMENT_CHANGE;
-    }
+      if (moveL) {
+        transform.position[0] -= MOVEMENT_CHANGE;
+      }
 
-    if (moveR) {
-      if (!transform) return;
-      transform.position[0] += MOVEMENT_CHANGE;
+      if (moveR) {
+        transform.position[0] += MOVEMENT_CHANGE;
+      }
     }
 
     if (del) {
