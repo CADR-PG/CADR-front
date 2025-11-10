@@ -2,22 +2,16 @@ import { Helper, Outlines } from '@react-three/drei';
 import { BoxHelper } from 'three';
 
 interface HighlightHelperProps {
-  objectUuid: string;
+  entity: string;
   focused: string | null;
   hovered: boolean;
 }
 
-function HighlightHelper({
-  objectUuid,
-  focused,
-  hovered,
-}: HighlightHelperProps) {
+function HighlightHelper({ entity, focused, hovered }: HighlightHelperProps) {
   return (
     <>
       {hovered ? <Outlines thickness={2} color="yellow" /> : null}
-      {objectUuid == focused ? (
-        <Helper type={BoxHelper} args={['yellow']} />
-      ) : null}
+      {entity == focused ? <Helper type={BoxHelper} args={['yellow']} /> : null}
     </>
   );
 }

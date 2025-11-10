@@ -1,64 +1,41 @@
 import { MenuItem } from '@mui/material';
 import NavigationItem from './NavigationItem';
-import { SceneObject } from '../../types/SceneObject';
 import { useEditorContext } from '../../hooks/useEditorContext';
-import { parseScene } from '../../utils';
 import { ChangeEvent, useCallback, useRef } from 'react';
-import * as THREE from 'three';
-import GenericGLTF from '../GLTFController';
 import useSaveScene from '../../hooks/useSaveScene';
 import { useParams } from 'react-router-dom';
 import SnackbarProvider from '../SnackbarProvider';
+import SceneData from '../../types/SaveSceneData';
+import useEntityManager from '../../hooks/useEntityManager';
+import { useSnackbarStore } from '../../stores/snackbarStore';
 
 function FileNavigationItem() {
-  const { sceneObjects, setSceneObjects, focus } = useEditorContext();
+  const em = useEntityManager();
+  const { focus } = useEditorContext();
   const { mutate } = useSaveScene();
   const { uuid } = useParams();
   const filePickerRef = useRef<(HTMLInputElement | null)[]>([]);
-  const loader = new THREE.ObjectLoader();
+  const { openSnackbar } = useSnackbarStore();
 
-  const saveScene = () => {
-    if (Object.values(sceneObjects).length == 0) return;
-
-    /*
-    console.log(Object.values(sceneObjects)[0].ref?.parent?.toJSON());
-    downloadJSON(
-      // TODO: this is quite dumb, but will work for now.
-      // if we add support for groups in the future
-      // then this shit has to be changed
-      Object.values(sceneObjects)[0].ref?.parent?.toJSON(),
-      'scene.json',
-    );
-     */
-    const scene = Object.values(sceneObjects)[0].ref?.parent?.toJSON();
+  const serializeScene = () => {
+    const entities = em.getScene();
     mutate({
       id: uuid ? uuid : '',
-      data: scene!,
+      data: entities,
     });
   };
 
-  const openScene = async (e: ChangeEvent<HTMLInputElement>) => {
+  const deserializeScene = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files == null) return;
 
     focus(null);
     const text = await e.target.files[0].text();
-    const json = JSON.parse(text);
-    loader.parse(json, (obj) => setSceneObjects(parseScene(obj)));
-  };
-
-  const openModel = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files == null) return;
-
-    const model = e.target.files[0];
-    const url = URL.createObjectURL(model);
-
-    const uuid = crypto.randomUUID();
-    const object: SceneObject = {
-      name: 'Model',
-      component: () => <GenericGLTF objectUuid={uuid} url={url} />,
-    };
-
-    setSceneObjects({ ...sceneObjects, [uuid]: object });
+    try {
+      const json = JSON.parse(text) as SceneData;
+      em.setScene(json.data);
+    } catch (error) {
+      openSnackbar(`Error while parsing JSON: ${error}`, 'error');
+    }
   };
 
   const setRef = useCallback((index: number) => {
@@ -70,7 +47,7 @@ function FileNavigationItem() {
   return (
     <>
       <NavigationItem label="File">
-        <MenuItem onClick={() => saveScene()}>Save</MenuItem>
+        <MenuItem onClick={() => serializeScene()}>Save</MenuItem>
         <MenuItem onClick={() => filePickerRef.current[0]?.click()}>
           Open...
         </MenuItem>
@@ -78,8 +55,7 @@ function FileNavigationItem() {
           Import...
         </MenuItem>
       </NavigationItem>
-      <input ref={setRef(0)} type="file" onChange={openScene} hidden />
-      <input ref={setRef(1)} type="file" onChange={openModel} hidden />
+      <input ref={setRef(0)} type="file" onChange={deserializeScene} hidden />
       <SnackbarProvider />
     </>
   );

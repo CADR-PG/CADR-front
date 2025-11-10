@@ -4,24 +4,20 @@ import {
   GizmoViewport,
   Grid,
   OrbitControls,
-  TransformControls,
 } from '@react-three/drei';
 import ToolbarComponent from './Toolbar';
-import { useState } from 'react';
-import EditingMode from '../../types/EditingMode';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEditorKeys from '../../hooks/useEditorKeys';
 import StartStopBtnToolbar from './StartStopBtnToolbar';
+import { RenderSystem } from '../../engine/systems/RenderSystem';
 
 function CanvasController() {
-  const [mode, selectMode] = useState<EditingMode>('translate');
-  const { sceneObjects, running, focused, focus } = useEditorContext();
+  const { running, focus } = useEditorContext();
   useEditorKeys();
+
   return (
     <div className="canvas-container">
-      {!running && (
-        <ToolbarComponent editingMode={mode} selectMode={selectMode} />
-      )}
+      {!running && <ToolbarComponent />}
       <StartStopBtnToolbar />
       <Canvas
         className="canvas"
@@ -31,9 +27,6 @@ function CanvasController() {
         <ambientLight />
         <directionalLight position={[10, 10, 10]} />
         <OrbitControls makeDefault enableDamping={false} enabled={!running} />
-        {focused && focused in sceneObjects && !running ? (
-          <TransformControls object={sceneObjects[focused].ref} mode={mode} />
-        ) : null}
         <Grid sectionSize={2} infiniteGrid />
         {!running && (
           <GizmoHelper alignment="top-right" margin={[80, 80]}>
@@ -43,13 +36,7 @@ function CanvasController() {
             />
           </GizmoHelper>
         )}
-        <group>
-          {Object.entries(sceneObjects).map(([uuid, object]) =>
-            object.component ? (
-              <object.component key={uuid} objectUuid={uuid} />
-            ) : null,
-          )}
-        </group>
+        <RenderSystem />
       </Canvas>
     </div>
   );

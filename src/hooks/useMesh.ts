@@ -1,12 +1,11 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { ThreeEvent } from '@react-three/fiber';
-import * as THREE from 'three';
 import { useEditorContext } from '../hooks/useEditorContext';
 
 export function useMesh(objectUuid: string) {
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
-  const { focus, focused, running, setSceneObjects } = useEditorContext();
+  const { focus, focused, running } = useEditorContext();
 
   const handleClick = (e: ThreeEvent<PointerEvent>) => {
     if (!running) {
@@ -30,28 +29,10 @@ export function useMesh(objectUuid: string) {
     }
   };
 
-  const handleRef = useCallback(
-    (node: THREE.Mesh) => {
-      // this piece of shit took like an hour of my life
-      // because it fires when the ref gets set to null
-      if (!node) return;
-
-      setSceneObjects((prevObjects) => ({
-        ...prevObjects,
-        [objectUuid]: {
-          ...prevObjects[objectUuid],
-          ref: node,
-        },
-      }));
-    },
-    [objectUuid, setSceneObjects],
-  );
-
   const props = {
     handleClick,
     handlePointerOver,
     handlePointerOut,
-    handleRef,
     running,
     hovered,
     clicked,

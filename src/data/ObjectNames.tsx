@@ -1,81 +1,80 @@
-import TorusController from '../components/editor/objects/TorusController';
-import BoxController from '../components/editor/objects/BoxController';
-import CapsuleController from '../components/editor/objects/CapsuleController';
-import CircleController from '../components/editor/objects/CircleController';
-import ConeController from '../components/editor/objects/ConeController';
-import CylinderController from '../components/editor/objects/CylinderController';
-import DodecahedronController from '../components/editor/objects/DodecahedronController';
-import ExtrudeController from '../components/editor/objects/ExtrudeController';
-import LatheController from '../components/editor/objects/LatheController';
-import OctahedronController from '../components/editor/objects/OctahedronController';
-import PlaneController from '../components/editor/objects/PlaneController';
-import SphereController from '../components/editor/objects/SphereController';
-import TetrahedronController from '../components/editor/objects/TetrahedronController';
-import { SceneObject } from '../types/SceneObject';
+import TorusGeometryData from '../engine/components/geometries/TorusGeometryData';
+import CapsuleGeometryData from '../engine/components/geometries/CapsuleGeometryData';
+import CircleGeometryData from '../engine/components/geometries/CircleGeometryData';
+import ConeGeometryData from '../engine/components/geometries/ConeGeometryData';
+import CylinderGeometryData from '../engine/components/geometries/CylinderGeometryData';
+import DodecahedronGeometryData from '../engine/components/geometries/DodecahedronGeometryData';
+import ExtrudeGeometryData from '../engine/components/geometries/ExtrudeGeometryData';
+import LatheGeometryData from '../engine/components/geometries/LatheGeometryData';
+import OctahedronGeometryData from '../engine/components/geometries/OctahedronGeometryData';
+import PlaneGeometryData from '../engine/components/geometries/PlaneGeometryData';
+import SphereGeometryData from '../engine/components/geometries/SphereGeometryData';
+import TetrahedronGeometryData from '../engine/components/geometries/TetrahedronGeometryData';
+import GeometryItem from '../types/GeometryItem';
+import BoxGeometryData from '../engine/components/geometries/BoxGeometryData';
 
-const Objects: SceneObject[] = [
-  {
-    name: 'Torus',
-    component: TorusController,
-  },
-
+const Objects: GeometryItem[] = [
   {
     name: 'Box',
-    component: BoxController,
+    geometry: BoxGeometryData,
+  },
+  {
+    name: 'Torus',
+    geometry: TorusGeometryData,
   },
 
   {
     name: 'Capsule',
-    component: CapsuleController,
+    geometry: CapsuleGeometryData,
   },
 
   {
     name: 'Circle',
-    component: CircleController,
+    geometry: CircleGeometryData,
   },
 
   {
     name: 'Cone',
-    component: ConeController,
+    geometry: ConeGeometryData,
   },
 
   {
     name: 'Cylinder',
-    component: CylinderController,
+    geometry: CylinderGeometryData,
   },
 
   {
     name: 'Dodecahedron',
-    component: DodecahedronController,
+    geometry: DodecahedronGeometryData,
   },
 
   {
     name: 'Extrude',
-    component: ExtrudeController,
+    geometry: ExtrudeGeometryData,
   },
   {
     name: 'Lathe',
-    component: LatheController,
+    geometry: LatheGeometryData,
   },
 
   {
     name: 'Octahedron',
-    component: OctahedronController,
+    geometry: OctahedronGeometryData,
   },
 
   {
     name: 'Plane',
-    component: PlaneController,
+    geometry: PlaneGeometryData,
   },
 
   {
     name: 'Sphere',
-    component: SphereController,
+    geometry: SphereGeometryData,
   },
 
   {
     name: 'Tetrahedron',
-    component: TetrahedronController,
+    geometry: TetrahedronGeometryData,
   },
 ];
 
