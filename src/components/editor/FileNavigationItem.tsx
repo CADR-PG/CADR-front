@@ -29,10 +29,10 @@ function FileNavigationItem() {
     });
   }, [sceneObjects, mutate, uuid]);
 
-  useEffect(()=>{
-    const timer = setInterval(() =>{
-      setSecondsLeft((prev)=>{
-        if (prev <= 1){
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSecondsLeft((prev) => {
+        if (prev <= 1) {
           saveScene();
           return 60;
         }
@@ -45,13 +45,13 @@ function FileNavigationItem() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if((e.ctrlKey || e.metaKey) && e.key === 's'){
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
         saveScene();
       }
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [saveScene]);
 
   const openScene = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -94,9 +94,7 @@ function FileNavigationItem() {
         <MenuItem onClick={() => filePickerRef.current[1]?.click()}>
           Import...
         </MenuItem>
-        <MenuItem disabled>
-          Autosave in: {secondsLeft}s
-        </MenuItem>
+        <MenuItem disabled>Autosave in: {secondsLeft}s</MenuItem>
       </NavigationItem>
       <input ref={setRef(0)} type="file" onChange={openScene} hidden />
       <input ref={setRef(1)} type="file" onChange={openModel} hidden />
