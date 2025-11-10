@@ -43,25 +43,16 @@ function FileNavigationItem() {
     return () => clearInterval(timer);
   }, [saveScene]);
 
-  // const saveScene = () => {
-  //   if (Object.values(sceneObjects).length == 0) return;
-
-  //   /*
-  //   console.log(Object.values(sceneObjects)[0].ref?.parent?.toJSON());
-  //   downloadJSON(
-  //     // TODO: this is quite dumb, but will work for now.
-  //     // if we add support for groups in the future
-  //     // then this shit has to be changed
-  //     Object.values(sceneObjects)[0].ref?.parent?.toJSON(),
-  //     'scene.json',
-  //   );
-  //    */
-  //   const scene = Object.values(sceneObjects)[0].ref?.parent?.toJSON();
-  //   mutate({
-  //     id: uuid ? uuid : '',
-  //     data: scene!,
-  //   });
-  // };
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if((e.ctrlKey || e.metaKey) && e.key === 's'){
+        e.preventDefault();
+        saveScene();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [saveScene]);
 
   const openScene = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files == null) return;
