@@ -1,10 +1,9 @@
 import { Component } from '../Component';
+import { ECS } from '../ECS';
 
-export default class Name extends Component {
-  constructor(displayName: string) {
-    super();
-    this.displayName = displayName;
-  }
+export default class Name implements Component {
+  constructor(public displayName: string = '') {}
   name = 'Name';
-  displayName: string;
 }
+
+ECS.instance.entityManager.registerComponent(Name);

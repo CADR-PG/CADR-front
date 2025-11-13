@@ -10,72 +10,23 @@ import OctahedronGeometryData from '../engine/components/geometries/OctahedronGe
 import PlaneGeometryData from '../engine/components/geometries/PlaneGeometryData';
 import SphereGeometryData from '../engine/components/geometries/SphereGeometryData';
 import TetrahedronGeometryData from '../engine/components/geometries/TetrahedronGeometryData';
-import GeometryItem from '../types/GeometryItem';
+import GeometryItems from '../types/GeometryItem';
 import BoxGeometryData from '../engine/components/geometries/BoxGeometryData';
 
-const Objects: GeometryItem[] = [
-  {
-    name: 'Box',
-    geometry: BoxGeometryData,
-  },
-  {
-    name: 'Torus',
-    geometry: TorusGeometryData,
-  },
-
-  {
-    name: 'Capsule',
-    geometry: CapsuleGeometryData,
-  },
-
-  {
-    name: 'Circle',
-    geometry: CircleGeometryData,
-  },
-
-  {
-    name: 'Cone',
-    geometry: ConeGeometryData,
-  },
-
-  {
-    name: 'Cylinder',
-    geometry: CylinderGeometryData,
-  },
-
-  {
-    name: 'Dodecahedron',
-    geometry: DodecahedronGeometryData,
-  },
-
-  {
-    name: 'Extrude',
-    geometry: ExtrudeGeometryData,
-  },
-  {
-    name: 'Lathe',
-    geometry: LatheGeometryData,
-  },
-
-  {
-    name: 'Octahedron',
-    geometry: OctahedronGeometryData,
-  },
-
-  {
-    name: 'Plane',
-    geometry: PlaneGeometryData,
-  },
-
-  {
-    name: 'Sphere',
-    geometry: SphereGeometryData,
-  },
-
-  {
-    name: 'Tetrahedron',
-    geometry: TetrahedronGeometryData,
-  },
-];
+const Objects: GeometryItems = {
+  box: BoxGeometryData,
+  torus: TorusGeometryData,
+  capsule: CapsuleGeometryData,
+  circle: CircleGeometryData,
+  cone: ConeGeometryData,
+  cylinder: CylinderGeometryData,
+  dodecahedron: DodecahedronGeometryData,
+  extrude: ExtrudeGeometryData,
+  lathe: LatheGeometryData,
+  octahedron: OctahedronGeometryData,
+  plane: PlaneGeometryData,
+  sphere: SphereGeometryData,
+  tetrahedron: TetrahedronGeometryData,
+};
 
 export default Objects;
