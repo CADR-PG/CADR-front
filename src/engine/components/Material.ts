@@ -1,4 +1,5 @@
 import { Component } from '../Component';
+import { ECS } from '../ECS';
 
 export abstract class MaterialData {
   abstract type: string;
@@ -14,3 +15,5 @@ export default class Material implements Component {
   data: MaterialData;
   element?: string;
 }
+
+ECS.instance.entityManager.registerComponent(Material);

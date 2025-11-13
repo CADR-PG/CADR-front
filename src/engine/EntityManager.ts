@@ -34,6 +34,7 @@ export class EntityManager {
   registerComponent<T extends Component>(component: ComponentType<T>): void {
     const instance: T = new component();
 
+    console.log(`registering component: ${instance.name}`);
     this.mapNameToClass[instance.name] = component;
   }
 
@@ -74,8 +75,8 @@ export class EntityManager {
     delete this.entities[entity];
   }
 
-  getComponents(entity: Entity): { [name: string]: Component } {
-    if (!(entity in this.entities)) return {};
+  getComponents(entity: Entity | null): { [name: string]: Component } {
+    if (!entity || !(entity in this.entities)) return proxy({});
 
     return this.entities[entity];
   }

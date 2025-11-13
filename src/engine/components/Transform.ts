@@ -1,6 +1,7 @@
 import { Component } from '../Component';
+import { ECS } from '../ECS';
 
-type Vec3 = [number, number, number];
+export type Vec3 = [number, number, number];
 
 export default class Transform implements Component {
   constructor(
@@ -11,3 +12,5 @@ export default class Transform implements Component {
 
   name = 'Transform';
 }
+
+ECS.instance.entityManager.registerComponent(Transform);
