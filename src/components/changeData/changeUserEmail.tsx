@@ -8,7 +8,7 @@ import useChangeUserEmail from '../../hooks/useChangeUserEmail';
 
 function ChangeData() {
   const emailMut = useChangeUserEmail();
-  
+
   const [emailForm, setEmailForm] = useState<ChangeEmailData>({ newEmail: '' });
 
   const { data: userResponse, isLoading } = useQuery({
@@ -44,7 +44,9 @@ function ChangeData() {
         }}
       >
         <div className="change-data-form">
-          <label htmlFor="email" className="change-data-form__text">New Email</label>
+          <label htmlFor="email" className="change-data-form__text">
+            New Email
+          </label>
           <input
             name="email"
             type="email"

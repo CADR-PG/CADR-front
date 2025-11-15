@@ -34,10 +34,14 @@ function Register() {
       <div className="l-section l-section--register">
         <div className="register-hld">
           <h1 className="register__title">Sign up</h1>
-          <p className="register__subtitle">Create a CADR account and start creating</p>
+          <p className="register__subtitle">
+            Create a CADR account and start creating
+          </p>
           <form className="register-form__form" onSubmit={handleSubmit}>
             <div className="register-form register-form--firstName">
-              <label htmlFor="firstName" className="register-form__text">First Name</label>
+              <label htmlFor="firstName" className="register-form__text">
+                First Name
+              </label>
               <input
                 type="text"
                 name="firstName"
@@ -49,7 +53,9 @@ function Register() {
               />
             </div>
             <div className="register-form register-form--lastName">
-              <label htmlFor="lastName" className="register-form__text">Last Name</label>
+              <label htmlFor="lastName" className="register-form__text">
+                Last Name
+              </label>
               <input
                 type="text"
                 name="lastName"
@@ -61,7 +67,9 @@ function Register() {
               />
             </div>
             <div className="register-form register-form--email">
-              <label htmlFor="email" className="register-form__text">Email</label>
+              <label htmlFor="email" className="register-form__text">
+                Email
+              </label>
               <input
                 type="email"
                 name="email"
@@ -73,7 +81,9 @@ function Register() {
               />
             </div>
             <div className="register-form register-form--password">
-              <label htmlFor="password" className="register-form__text">Password</label>
+              <label htmlFor="password" className="register-form__text">
+                Password
+              </label>
               <input
                 type="password"
                 name="password"
@@ -85,7 +95,9 @@ function Register() {
               />
             </div>
             <div className="register-form register-form--phoneNumber">
-              <label htmlFor="phone" className="register-form__text">Phone Number</label>
+              <label htmlFor="phone" className="register-form__text">
+                Phone Number
+              </label>
               <input
                 type="tel"
                 name="phoneNumber"
@@ -104,7 +116,13 @@ function Register() {
             >
               {isPending ? 'Registering...' : 'Register'}
             </button>
-            <p className="register-form__content"> Do you already have an account? <a href="/login" className="register-form__link">Log in</a></p>
+            <p className="register-form__content">
+              {' '}
+              Do you already have an account?{' '}
+              <a href="/login" className="register-form__link">
+                Log in
+              </a>
+            </p>
           </form>
           {isError && (
             <p className="register-form-error__text">

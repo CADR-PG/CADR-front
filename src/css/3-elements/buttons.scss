@@ -32,3 +32,32 @@
         box-shadow: 0 4px 16px variables.$c-cyan-hover-dark;
     }
 }
+
+.btn-small {
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid variables.$c-border;
+    background: variables.$c-bg;
+    color: variables.$c-text;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        background: variables.$c-cyan;
+        color: variables.$c-button-text;
+        border-color: variables.$c-cyan-hover;
+
+        .dark & {
+            background: variables.$c-cyan-dark;
+            color: variables.$c-button-text-dark;
+            border-color: variables.$c-cyan-hover-dark;
+        }
+    }
+
+    .dark & {
+        background: variables.$c-bg-dark;
+        border: 1px solid variables.$c-border-dark;
+        color: variables.$c-text-dark;
+    }
+}

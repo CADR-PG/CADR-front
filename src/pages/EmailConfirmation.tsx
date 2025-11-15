@@ -56,14 +56,23 @@ function EmailConfirmation() {
       <div className="l-section l-section--email-confirmation">
         <div className="email-confirmation-hld">
           <h1 className="email-confirmation__title">Verify</h1>
-          <p className="email-confirmation__subtitle">Paste the code that was sent to you in the email!</p>
-          <form className="email-confirmation__form"onSubmit={verifyCode}>
+          <p className="email-confirmation__subtitle">
+            Paste the code that was sent to you in the email!
+          </p>
+          <form className="email-confirmation__form" onSubmit={verifyCode}>
             <OtpInput
               value={otp}
               onChange={setOtp}
               numInputs={6}
               renderInput={() => (
-                <input type="text" maxLength={1} pattern="[0-9]*" inputMode="numeric" required className="email-confirmation-otp" />
+                <input
+                  type="text"
+                  maxLength={1}
+                  pattern="[0-9]*"
+                  inputMode="numeric"
+                  required
+                  className="email-confirmation-otp"
+                />
               )}
               containerStyle="email-confirmation__code"
             />

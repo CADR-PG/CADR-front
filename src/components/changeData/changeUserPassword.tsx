@@ -30,7 +30,9 @@ function ChangeData() {
         }}
       >
         <div className="change-data-form">
-          <label htmlFor="currentPassword" className="change-data-form__text">Current password</label>
+          <label htmlFor="currentPassword" className="change-data-form__text">
+            Current password
+          </label>
           <input
             name="currentPassword"
             type="password"
@@ -42,7 +44,9 @@ function ChangeData() {
           />
         </div>
         <div className="change-data-form">
-          <label htmlFor="newPassword" className="change-data-form__text">New password</label>
+          <label htmlFor="newPassword" className="change-data-form__text">
+            New password
+          </label>
           <input
             name="newPassword"
             type="password"

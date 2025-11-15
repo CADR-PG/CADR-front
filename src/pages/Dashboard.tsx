@@ -1,7 +1,5 @@
 import {
   Button,
-  Card,
-  CardActionArea,
   Dialog,
   DialogActions,
   DialogContent,
@@ -24,6 +22,8 @@ function Dashboard() {
   const [open, setOpen] = useState(false);
   const addProject = useAddProject();
 
+  const [query, setQuery] = useState<string>('');
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -33,50 +33,53 @@ function Dashboard() {
   };
 
   return (
-    <div>
+    <div className="container">
       <NavBar />
-      <div className="dashboard-hld">
-        <h1>Dashboard</h1>
-        <hr className="dashboard-separator" />
-        <h2>Recent</h2>
-        <div className="dashboard-projects">
-          <Card className="dashboard-new">
-            <CardActionArea className="dashboard-action" onClick={handleOpen}>
-              <div className="dashboard-area">
-                <AddIcon />
-                <p>Create</p>
-              </div>
-            </CardActionArea>
-          </Card>
-          {getProjects.isSuccess &&
-            getProjects.data?.data.items
-              // TODO: ja pierdole xd
-              .sort(
-                (a: ProjectData, b: ProjectData) =>
-                  new Date(b.lastUpdate).getTime() -
-                  new Date(a.lastUpdate).getTime(),
-              )
-              .slice(0, 6)
-              .map((project: ProjectData) => (
-                <ProjectCard project={project} key={project.id} />
-              ))}
+      <section className="l-section l-section--dashboard">
+        <div className="dashboard-hld">
+          <h1>Twoje sceny</h1>
+          <div className="dashboard-panel">
+            <input
+              type="text"
+              className="search-bar"
+              placeholder="Search scene..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <button className="btn-primary" onClick={handleOpen}>
+              <AddIcon /> Nowa scena
+            </button>
+          </div>
         </div>
-        <hr className="dashboard-separator" />
-        <h2>Projects</h2>
         <div className="dashboard-projects">
           {getProjects.isSuccess &&
-            getProjects.data?.data.items
-              // TODO: ja pierdole xd
-              .sort(
-                (a: ProjectData, b: ProjectData) =>
-                  new Date(b.lastUpdate).getTime() -
-                  new Date(a.lastUpdate).getTime(),
-              )
-              .slice(5)
-              .map((project: ProjectData) => (
-                <ProjectCard project={project} key={project.id} />
-              ))}
+            (() => {
+              const items: ProjectData[] = getProjects.data?.data.items || [];
+              const q = query.trim().toLowerCase();
+              const filtered = items.filter((p) =>
+                q === '' ? true : (p.name || '').toLowerCase().includes(q),
+              );
+              return filtered
+                .sort(
+                  (a: ProjectData, b: ProjectData) =>
+                    new Date(b.lastUpdate).getTime() -
+                    new Date(a.lastUpdate).getTime(),
+                )
+                .slice(0, 6)
+                .map((project: ProjectData) => (
+                  <ProjectCard project={project} key={project.id} />
+                ));
+            })()}
+
+          <div
+            className="dashboard-item-add dashboard-item"
+            onClick={handleOpen}
+            role="button"
+          >
+            Create new project
+          </div>
         </div>
+
         <Dialog
           open={open}
           onClose={handleClose}
@@ -88,9 +91,10 @@ function Dashboard() {
                 const formData = new FormData(event.currentTarget);
                 const formObject = Object.fromEntries(formData.entries());
                 const data: AddProjectData = {
-                  name: formObject.name.toString(),
-                  description: formObject.description.toString(),
+                  name: String(formObject.name || '').trim(),
+                  description: String(formObject.description || '').trim(),
                 };
+                if (!data.name) return;
                 addProject.mutate(data);
               },
             },
@@ -110,7 +114,6 @@ function Dashboard() {
               variant="standard"
             />
             <TextField
-              autoFocus
               margin="dense"
               id="description"
               name="description"
@@ -121,11 +124,18 @@ function Dashboard() {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button type="submit">Create</Button>
+            <Button
+              onClick={handleClose}
+              disabled={addProject.status === 'pending'}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={addProject.status === 'pending'}>
+              Create
+            </Button>
           </DialogActions>
         </Dialog>
-      </div>
+      </section>
     </div>
   );
 }

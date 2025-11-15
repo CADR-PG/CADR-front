@@ -43,52 +43,56 @@ function ChangeData() {
     <section className="l-section l-section--change-data">
       <h2 className="change-data__title">Change Name</h2>
       <form
-      className="change-data-form__form"
-      onSubmit={(e) => {
+        className="change-data-form__form"
+        onSubmit={(e) => {
           e.preventDefault();
           infoMut.mutate(infoForm);
-      }}
+        }}
       >
-      <div className="change-data-form">
-          <label htmlFor="firstName" className="change-data-form__text">First name</label>
+        <div className="change-data-form">
+          <label htmlFor="firstName" className="change-data-form__text">
+            First name
+          </label>
           <input
-          name="firstName"
-          className="input"
-          value={infoForm.firstName}
-          onChange={handleChange(setInfoForm)}
-          placeholder="John"
-          required
+            name="firstName"
+            className="input"
+            value={infoForm.firstName}
+            onChange={handleChange(setInfoForm)}
+            placeholder="John"
+            required
           />
-      </div>
-      <div className="change-data-form">
-          <label htmlFor="lastName" className="change-data-form__text">Last name</label>
+        </div>
+        <div className="change-data-form">
+          <label htmlFor="lastName" className="change-data-form__text">
+            Last name
+          </label>
           <input
-          name="lastName"
-          className="input"
-          value={infoForm.lastName}
-          onChange={handleChange(setInfoForm)}
-          placeholder="Smith"
-          required
+            name="lastName"
+            className="input"
+            value={infoForm.lastName}
+            onChange={handleChange(setInfoForm)}
+            placeholder="Smith"
+            required
           />
-      </div>
-      <button
+        </div>
+        <button
           className="btn-primary"
           type="submit"
           disabled={infoMut.isPending}
-      >
+        >
           {infoMut.isPending ? 'Sending...' : 'Change Data'}
-      </button>
-      {infoMut.isSuccess && (
+        </button>
+        {infoMut.isSuccess && (
           <p className="change-data-form-success__text">
-          Data successfully changed!
+            Data successfully changed!
           </p>
-      )}
-      {infoMut.isError && (
+        )}
+        {infoMut.isError && (
           <p className="change-data-form-error__text">
-          {(infoMut.error as AxiosError<ServerError>)?.response?.data
+            {(infoMut.error as AxiosError<ServerError>)?.response?.data
               .message || 'Data change error'}
           </p>
-      )}
+        )}
       </form>
     </section>
   );
