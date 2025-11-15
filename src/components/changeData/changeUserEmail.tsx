@@ -44,11 +44,12 @@ function ChangeData() {
         }}
       >
         <div className="change-data-form">
-          <label htmlFor="email" className="change-data-form__text">
+          <label htmlFor="newEmail" className="change-data-form__text">
             New Email
           </label>
           <input
-            name="email"
+            id="newEmail"
+            name="newEmail"
             type="email"
             className="input"
             value={emailForm.newEmail}
