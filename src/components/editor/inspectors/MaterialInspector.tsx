@@ -2,7 +2,9 @@ import { ChangeEvent } from 'react';
 import Material from '../../../engine/components/Material';
 import { Entity } from '../../../engine/Entity';
 import { ECS } from '../../../engine/ECS';
-import { SketchPicker } from 'react-color';
+import ColorPicker from './ColorPicker';
+import EnvMapRotation from './EnvMapRotation';
+import Wireframe from './Wireframe';
 
 interface MaterialInspectorProps {
   entity: Entity;
@@ -19,6 +21,8 @@ export default function MaterialInspector({
     entity,
   );
 
+  if (!materialWrite) return;
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>, key: string) => {
     if (!materialWrite) return;
 
@@ -30,8 +34,8 @@ export default function MaterialInspector({
       case 'number':
         materialWrite.data.parameters[key] = Number(e.currentTarget.value);
         break;
-      case 'boolean':
-        materialWrite.data.parameters[key] = !!e.currentTarget.value;
+      case 'checkbox':
+        materialWrite.data.parameters[key] = e.currentTarget.checked;
         break;
     }
   };
@@ -39,8 +43,28 @@ export default function MaterialInspector({
   const renderSwitch = (key: string) => {
     switch (key) {
       case 'color':
-        <SketchPicker />;
-        break;
+        return (
+          <ColorPicker
+            entity={entity}
+            componentColor={component.data.parameters.color}
+          />
+        );
+      case 'envMapRotation':
+        return (
+          <EnvMapRotation
+            entity={entity}
+            envMapRotation={component.data.parameters.envMapRotation}
+          />
+        );
+      case 'wireframeLinecap':
+      case 'wireframeLinejoin':
+        return (
+          <Wireframe
+            entity={entity}
+            wireframe={component.data.parameters[key]}
+            wireframeKey={key}
+          />
+        );
       default:
         return (
           <input
@@ -53,6 +77,7 @@ export default function MaterialInspector({
             }
             value={snap.data.parameters[key]}
             onChange={(e) => handleChange(e, key)}
+            onClick={(e) => handleChange(e, key)}
           ></input>
         );
     }
