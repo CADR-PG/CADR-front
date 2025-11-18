@@ -7,7 +7,7 @@ import { IconButton, Menu, MenuItem } from '@mui/material';
 import { ECS } from '../../engine/ECS';
 import DeleteIcon from '@mui/icons-material/Delete';
 import GeometryInspector from './inspectors/GeometryInspector';
-import Geometry, { GeometryData } from '../../engine/components/Geometry';
+import Geometry from '../../engine/components/Geometry';
 import TransformInspector from './inspectors/TransformInspector';
 import Transform from '../../engine/components/Transform';
 import MaterialInspector from './inspectors/MaterialInspector';

@@ -3,9 +3,10 @@ import { MaterialData } from '../Material';
 
 type MeshBasicMaterialParametersData = Omit<
   MeshBasicMaterialParameters,
-  'envMapRotation'
+  'envMapRotation' | 'color'
 > & {
   envMapRotation: [number, number, number];
+  color: number;
 };
 
 export default class BasicMaterialData implements MaterialData {
@@ -13,7 +14,7 @@ export default class BasicMaterialData implements MaterialData {
   constructor(
     public parameters: MeshBasicMaterialParametersData = {
       aoMapIntensity: 1,
-      color: 'orange',
+      color: 0xffffff,
       combine: MultiplyOperation,
       envMapRotation: [0, 0, 0],
       fog: true,

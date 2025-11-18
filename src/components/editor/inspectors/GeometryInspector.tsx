@@ -90,7 +90,7 @@ export default function GeometryInspector({
           <>
             {(data as LatheGeometryData).points.map((point, index) => {
               return (
-                <div className="inspector-input-columns">
+                <div className="inspector-input-columns" key={index}>
                   x:
                   <input
                     className="inspector-input-columns-column"

@@ -1,0 +1,13 @@
+.picker {
+  margin: 8px;
+  &-container {
+    padding: 4px;
+  }
+}
+
+.picker-container .react-colorful__hue-pointer,
+.picker-container .react-colorful__alpha-pointer,
+.picker-container .react-colorful__saturation-pointer {
+  width: 16px;
+  height: 16px;
+}
