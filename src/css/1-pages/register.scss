@@ -2,53 +2,91 @@
 
 .register {
 
-    &-hld {
-        display: grid;
-        justify-content: center;
-        background-color: variables.$c-beige;
-        max-width: 500px;
-        width: 75vw;
-        border-radius: 20px;
+   &-hld {
+        max-width: 480px;
+        margin: 0 auto;
+        background: variables.$c-bg-header;
+        border: 1px solid variables.$c-border;
+        border-radius: 16px;
+        padding: 40px 32px;
+        backdrop-filter: blur(16px);
+        box-shadow: 0 0 40px rgba(0,0,0,0.05);
 
-        .logo {
-            position: relative;
-            left: 21%;
+        .dark & {
+            background: variables.$c-bg-header-dark;
+            border: 1px solid variables.$c-border-dark;
         }
+   }
+
+    &__title {
+          text-align: center;
+          font-size: 1.8rem;
+          font-weight: 700;
+          margin-bottom: 10px;
+    }
+
+    &__subtitle {
+          text-align: center;
+          color: variables.$c-text-secondary;
+          margin-bottom: 32px;
+
+          .dark & {
+              color: variables.$c-text-secondary-dark;
+          }
     }
 
     &-form {
-        display: flex;
-        flex-direction: column;
-        padding: 5px 0;
-
         &__form {
-            display: grid;
-            justify-content: center;
-        }
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
 
-        &__text {
-            font-family: variables.$f-montserrat;
-            color: variables.$c-dark;
-        }
+            .input {
+                width: 93%;
+                padding: 12px 14px;
+                border: 1px solid variables.$c-border;
+                border-radius: 10px;
+                background: variables.$c-bg;
+                color: variables.$c-text;
+                font-size: 1rem;
 
-        &__btn {
-            margin-top: 20px;
-            margin-bottom: 10px;
-            border-radius: 20px;
-            font-family: variables.$f-montserrat;
-        }
-
-        &-error {
-            &__text {
-                color: variables.$c-error
+                .dark & {
+                    background: variables.$c-bg-dark;
+                    border: 1px solid variables.$c-border-dark;
+                    color: variables.$c-text-dark;
+                }
             }
         }
 
-        .input {
-            border-radius: 15px;
-            padding-left: 15px;
-            height: 27px;
-            width: 200px;
+        &__text {
+            display: block;
+            font-size: 0.9rem;
+            color: variables.$c-text-secondary;
+            margin-bottom: 6px;
+
+            .dark & {
+                color: variables.$c-text-secondary-dark;
+            }
+        }
+
+        &__content {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: variables.$c-text-secondary;
+
+            .dark & {
+                color: variables.$c-text-secondary-dark;
+            }
+        }
+
+        &__link {
+            color: variables.$c-cyan; 
+            text-decoration: none;
+
+            .dark & {
+                color: variables.$c-cyan-dark;
+            }
         }
     }
 }

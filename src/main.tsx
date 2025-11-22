@@ -11,7 +11,7 @@ import EmailConfirmation from './pages/EmailConfirmation.tsx';
 import RegistrationSuccessful from './pages/RegistrationSuccessful.tsx';
 import Logout from './pages/Logout.tsx';
 import Dashboard from './pages/Dashboard.tsx';
-import ChangeData from './pages/ChangeData.tsx';
+import ChangeData from './pages/Profile.tsx';
 
 const router = createBrowserRouter([
   {
