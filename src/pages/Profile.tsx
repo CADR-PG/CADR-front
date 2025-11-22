@@ -1,7 +1,7 @@
 import NavBar from '../components/NavBar';
-import ChangeUserInfo from '../components/changeData/changeUserInfo';
-import ChangeUserEmail from '../components/changeData/changeUserEmail';
-import ChangeUserPassword from '../components/changeData/changeUserPassword';
+import ChangeUserInfo from '../components/profile/changeUserInfo';
+import ChangeUserEmail from '../components/profile/changeUserEmail';
+import ChangeUserPassword from '../components/profile/changeUserPassword';
 
 function ChangeData() {
   return (
