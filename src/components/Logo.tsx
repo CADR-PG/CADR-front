@@ -12,6 +12,7 @@ export default function Logo() {
       >
         <path d="M12 2L2 7l10 5l10-5zm0 7L2 4v13l10 5zm0 0l10-5v13l-10 5z" />
       </svg>
+      <span className="logo__title">CADR</span>
     </Link>
   );
 }
