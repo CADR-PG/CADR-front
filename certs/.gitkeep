@@ -1,0 +1,19 @@
+# SSL Certificates Directory
+
+This directory should contain SSL certificates generated with mkcert for local HTTPS development.
+
+**Do not commit certificate files to version control!**
+
+## Setup
+
+Generate certificates using:
+
+```bash
+mkcert -key-file certs/localhost+2-key.pem -cert-file certs/localhost+2.pem localhost 127.0.0.1 ::1
+```
+
+This will create:
+- `localhost+2-key.pem` - Private key (never commit!)
+- `localhost+2.pem` - Certificate
+
+These files are excluded from git via `.gitignore`.
