@@ -5,6 +5,10 @@ import useRegister from '../hooks/useRegister';
 import registerData from '../types/RegisterData';
 import { AxiosError } from 'axios';
 import ServerError from '../types/ServerError';
+import { useQuery } from '@tanstack/react-query';
+import { fetchUser } from '../api/client';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
   const [formData, setFormData] = useState<registerData>({
@@ -15,6 +19,17 @@ function Register() {
     phoneNumber: '',
   });
   const { mutate, error, isError, isPending } = useRegister(formData.email);
+
+  const { data: userResponse, isLoading: meLoading } = useQuery({
+    queryKey: ['me'],
+    queryFn: fetchUser,
+    retry: false,
+  });
+  const user = userResponse?.data;
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!meLoading && user) navigate('/');
+  }, [meLoading, user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
