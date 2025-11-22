@@ -1,16 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AxiosError } from 'axios';
 import ChangePasswordData from '../../types/ChangePasswordData';
 import ServerError from '../../types/ServerError';
 import useChangeUserPassword from '../../hooks/useChangeUserPassword';
+import { useSnackbarStore } from '../../stores/snackbarStore';
+import SnackbarProvider from '../SnackbarProvider';
 
 function ChangeData() {
-  const passMut = useChangeUserPassword();
+  const { isSuccess, isError, error, isPending, mutate } =
+    useChangeUserPassword();
+  const { openSnackbar } = useSnackbarStore();
 
   const [passForm, setPassForm] = useState<ChangePasswordData>({
     currentPassword: '',
     newPassword: '',
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      openSnackbar('Password successfully changed!', 'success');
+    } else if (isError) {
+      const errMsg =
+        (error as AxiosError<ServerError>)?.response?.data.message ||
+        'Password change error';
+      openSnackbar(errMsg, 'error');
+    }
+  }, [isSuccess, isError, error, openSnackbar]);
 
   const handleChange =
     <F extends object>(setter: React.Dispatch<React.SetStateAction<F>>) =>
@@ -26,7 +41,7 @@ function ChangeData() {
         className="change-data-form__form"
         onSubmit={(e) => {
           e.preventDefault();
-          passMut.mutate(passForm);
+          mutate(passForm);
         }}
       >
         <div className="change-data-form">
@@ -57,25 +72,14 @@ function ChangeData() {
             required
           />
         </div>
-        <button
-          className="btn-primary"
-          type="submit"
-          disabled={passMut.isPending}
-        >
-          {passMut.isPending ? 'Sending...' : 'Change Password'}
+        <button className="btn-primary" type="submit" disabled={isPending}>
+          {isPending ? 'Sending...' : 'Change Password'}
         </button>
-        {passMut.isSuccess && (
-          <p className="change-data-form-success__text">
-            Password successfully changed!
-          </p>
-        )}
-        {passMut.isError && (
-          <p className="change-data-form-error__text">
-            {(passMut.error as AxiosError<ServerError>)?.response?.data
-              .message || 'Password change error'}
-          </p>
-        )}
+
+        {/* komunikaty zastąpione snackbarami */}
       </form>
+
+      <SnackbarProvider />
     </section>
   );
 }

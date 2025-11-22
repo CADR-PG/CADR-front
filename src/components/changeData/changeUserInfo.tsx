@@ -5,9 +5,14 @@ import ChangeInfoData from '../../types/ChangeInfoData';
 import ServerError from '../../types/ServerError';
 import { fetchUser } from '../../api/client';
 import useChangeUserInfo from '../../hooks/useChangeUserInfo';
+import { useSnackbarStore } from '../../stores/snackbarStore';
+import useUserStore from '../../stores/useUserStore';
+import SnackbarProvider from '../SnackbarProvider';
 
-function ChangeData() {
-  const infoMut = useChangeUserInfo();
+function ChangeUserInfo() {
+  const { isSuccess, isError, error, isPending, mutate } = useChangeUserInfo();
+  const { openSnackbar } = useSnackbarStore();
+  const setUser = useUserStore((s) => s.setUser);
 
   const [infoForm, setInfoForm] = useState<ChangeInfoData>({
     firstName: '',
@@ -30,13 +35,36 @@ function ChangeData() {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      openSnackbar('Data successfully changed!', 'success');
+    } else if (isError) {
+      const errMsg =
+        (error as AxiosError<ServerError>)?.response?.data.message ||
+        'Data change error';
+      openSnackbar(errMsg, 'error');
+    }
+  }, [isSuccess, isError, error, openSnackbar]);
+
   if (isLoading) return <p>Loading...</p>;
 
   const handleChange =
     <F extends object>(setter: React.Dispatch<React.SetStateAction<F>>) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
-      setter((prev: F) => ({ ...prev, [name]: value }) as F);
+      setter((prev: F) => {
+        const updated = { ...prev, [name]: value } as F;
+        if (name === 'firstName' || name === 'lastName') {
+          setUser({
+            firstName: (updated as ChangeInfoData).firstName,
+            lastName: (updated as ChangeInfoData).lastName,
+            isLoggedIn: true,
+            email: '',
+            isEmailConfirmed: false,
+          });
+        }
+        return updated;
+      });
     };
 
   return (
@@ -46,7 +74,7 @@ function ChangeData() {
         className="change-data-form__form"
         onSubmit={(e) => {
           e.preventDefault();
-          infoMut.mutate(infoForm);
+          mutate(infoForm);
         }}
       >
         <div className="change-data-form">
@@ -75,27 +103,14 @@ function ChangeData() {
             required
           />
         </div>
-        <button
-          className="btn-primary"
-          type="submit"
-          disabled={infoMut.isPending}
-        >
-          {infoMut.isPending ? 'Sending...' : 'Change Data'}
+        <button className="btn-primary" type="submit" disabled={isPending}>
+          {isPending ? 'Sending...' : 'Change Data'}
         </button>
-        {infoMut.isSuccess && (
-          <p className="change-data-form-success__text">
-            Data successfully changed!
-          </p>
-        )}
-        {infoMut.isError && (
-          <p className="change-data-form-error__text">
-            {(infoMut.error as AxiosError<ServerError>)?.response?.data
-              .message || 'Data change error'}
-          </p>
-        )}
+
+        <SnackbarProvider />
       </form>
     </section>
   );
 }
 
-export default ChangeData;
+export default ChangeUserInfo;

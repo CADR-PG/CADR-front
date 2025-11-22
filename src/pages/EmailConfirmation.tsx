@@ -64,8 +64,10 @@ function EmailConfirmation() {
               value={otp}
               onChange={setOtp}
               numInputs={6}
-              renderInput={() => (
+              shouldAutoFocus
+              renderInput={(inputProps) => (
                 <input
+                  {...inputProps}
                   type="text"
                   maxLength={1}
                   pattern="[0-9]*"

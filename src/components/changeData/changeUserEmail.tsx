@@ -5,9 +5,14 @@ import ChangeEmailData from '../../types/ChangeEmailData';
 import ServerError from '../../types/ServerError';
 import { fetchUser } from '../../api/client';
 import useChangeUserEmail from '../../hooks/useChangeUserEmail';
+import useUserStore from '../../stores/useUserStore';
+import { useSnackbarStore } from '../../stores/snackbarStore';
+import SnackbarProvider from '../SnackbarProvider';
 
-function ChangeData() {
-  const emailMut = useChangeUserEmail();
+function ChangeUserEmail() {
+  const { isSuccess, isError, error, isPending, mutate } = useChangeUserEmail();
+  const { openSnackbar } = useSnackbarStore();
+  const setUser = useUserStore((s) => s.setUser);
 
   const [emailForm, setEmailForm] = useState<ChangeEmailData>({ newEmail: '' });
 
@@ -20,9 +25,22 @@ function ChangeData() {
 
   useEffect(() => {
     if (user) {
-      setEmailForm({ newEmail: user.email });
+      setEmailForm({
+        newEmail: user.email,
+      });
     }
   }, [user]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      openSnackbar('Email successfully changed!', 'success');
+    } else if (isError) {
+      const errMsg =
+        (error as AxiosError<ServerError>)?.response?.data.message ||
+        'Email change error';
+      openSnackbar(errMsg, 'error');
+    }
+  }, [isSuccess, isError, error, openSnackbar]);
 
   if (isLoading) return <p>Loading...</p>;
 
@@ -30,7 +48,19 @@ function ChangeData() {
     <F extends object>(setter: React.Dispatch<React.SetStateAction<F>>) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
-      setter((prev: F) => ({ ...prev, [name]: value }) as F);
+      setter((prev: F) => {
+        const updated = { ...prev, [name]: value } as F;
+        if (name === 'newEmail') {
+          setUser({
+            email: (updated as ChangeEmailData).newEmail,
+            isLoggedIn: true,
+            firstName: '',
+            lastName: '',
+            isEmailConfirmed: false,
+          });
+        }
+        return updated;
+      });
     };
 
   return (
@@ -40,7 +70,7 @@ function ChangeData() {
         className="change-data-form__form"
         onSubmit={(e) => {
           e.preventDefault();
-          emailMut.mutate(emailForm);
+          mutate(emailForm);
         }}
       >
         <div className="change-data-form">
@@ -58,27 +88,14 @@ function ChangeData() {
             required
           />
         </div>
-        <button
-          className="btn-primary"
-          type="submit"
-          disabled={emailMut.isPending}
-        >
-          {emailMut.isPending ? 'Sending...' : 'Change Email'}
+        <button className="btn-primary" type="submit" disabled={isPending}>
+          {isPending ? 'Sending...' : 'Change Email'}
         </button>
-        {emailMut.isSuccess && (
-          <p className="change-data-form-success__text">
-            Email successfully changed!
-          </p>
-        )}
-        {emailMut.isError && (
-          <p className="change-data-form-error__text">
-            {(emailMut.error as AxiosError<ServerError>)?.response?.data
-              .message || 'Email change error'}
-          </p>
-        )}
+
+        <SnackbarProvider />
       </form>
     </section>
   );
 }
 
-export default ChangeData;
+export default ChangeUserEmail;
