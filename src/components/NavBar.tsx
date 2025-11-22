@@ -29,6 +29,7 @@ function NavBar() {
   return (
     <header className="site-top">
       <Logo />
+      <span className="logo__title">CADR</span>
       <nav className="navbar">
         {isLoggedIn ? (
           <Link to="/change-data" className="navbar__link">
