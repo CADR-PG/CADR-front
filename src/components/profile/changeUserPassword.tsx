@@ -1,38 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { AxiosError } from 'axios';
+import React, { useState } from 'react';
 import ChangePasswordData from '../../types/ChangePasswordData';
-import ServerError from '../../types/ServerError';
 import useChangeUserPassword from '../../hooks/useChangeUserPassword';
-import { useSnackbarStore } from '../../stores/snackbarStore';
 import SnackbarProvider from '../SnackbarProvider';
 
-function ChangeData() {
-  const { isSuccess, isError, error, isPending, mutate } =
-    useChangeUserPassword();
-  const { openSnackbar } = useSnackbarStore();
+function ChangeUserPassword() {
+  const { isPending, mutate } = useChangeUserPassword();
 
   const [passForm, setPassForm] = useState<ChangePasswordData>({
     currentPassword: '',
     newPassword: '',
   });
 
-  useEffect(() => {
-    if (isSuccess) {
-      openSnackbar('Password successfully changed!', 'success');
-    } else if (isError) {
-      const errMsg =
-        (error as AxiosError<ServerError>)?.response?.data.message ||
-        'Password change error';
-      openSnackbar(errMsg, 'error');
-    }
-  }, [isSuccess, isError, error, openSnackbar]);
-
-  const handleChange =
-    <F extends object>(setter: React.Dispatch<React.SetStateAction<F>>) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      setter((prev: F) => ({ ...prev, [name]: value }) as F);
-    };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPassForm((prev) => ({ ...prev, [name]: value }) as ChangePasswordData);
+  };
 
   return (
     <section className="l-section l-section--change-data">
@@ -53,7 +35,7 @@ function ChangeData() {
             type="password"
             className="input"
             value={passForm.currentPassword}
-            onChange={handleChange(setPassForm)}
+            onChange={handleChange}
             placeholder="••••••••"
             required
           />
@@ -67,7 +49,7 @@ function ChangeData() {
             type="password"
             className="input"
             value={passForm.newPassword}
-            onChange={handleChange(setPassForm)}
+            onChange={handleChange}
             placeholder="••••••••"
             required
           />
@@ -75,8 +57,6 @@ function ChangeData() {
         <button className="btn-primary" type="submit" disabled={isPending}>
           {isPending ? 'Sending...' : 'Change Password'}
         </button>
-
-        {/* komunikaty zastąpione snackbarami */}
       </form>
 
       <SnackbarProvider />
@@ -84,4 +64,4 @@ function ChangeData() {
   );
 }
 
-export default ChangeData;
+export default ChangeUserPassword;

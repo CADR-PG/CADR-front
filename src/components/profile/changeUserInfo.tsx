@@ -48,24 +48,21 @@ function ChangeUserInfo() {
 
   if (isLoading) return <p>Loading...</p>;
 
-  const handleChange =
-    <F extends object>(setter: React.Dispatch<React.SetStateAction<F>>) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      setter((prev: F) => {
-        const updated = { ...prev, [name]: value } as F;
-        if (name === 'firstName' || name === 'lastName') {
-          setUser({
-            firstName: (updated as ChangeInfoData).firstName,
-            lastName: (updated as ChangeInfoData).lastName,
-            isLoggedIn: true,
-            email: '',
-            isEmailConfirmed: false,
-          });
-        }
-        return updated;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const updated = { ...infoForm, [name]: value } as ChangeInfoData;
+    setInfoForm(updated);
+
+    if (name === 'firstName' || name === 'lastName') {
+      setUser({
+        firstName: updated.firstName,
+        lastName: updated.lastName,
+        isLoggedIn: true,
+        email: '',
+        isEmailConfirmed: false,
       });
-    };
+    }
+  };
 
   return (
     <section className="l-section l-section--change-data">
@@ -85,7 +82,7 @@ function ChangeUserInfo() {
             name="firstName"
             className="input"
             value={infoForm.firstName}
-            onChange={handleChange(setInfoForm)}
+            onChange={handleChange}
             placeholder="John"
             required
           />
@@ -98,7 +95,7 @@ function ChangeUserInfo() {
             name="lastName"
             className="input"
             value={infoForm.lastName}
-            onChange={handleChange(setInfoForm)}
+            onChange={handleChange}
             placeholder="Smith"
             required
           />

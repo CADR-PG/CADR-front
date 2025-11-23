@@ -31,9 +31,14 @@ function NavBar() {
       <Logo />
       <nav className="navbar">
         {isLoggedIn ? (
-          <Link to="/change-data" className="navbar__link">
-            Change data
-          </Link>
+          <>
+            <Link to="/change-data" className="navbar__link">
+              Change data
+            </Link>
+            <Link to="/dashboard" className="navbar__link">
+              Dashboard
+            </Link>
+          </>
         ) : null}
       </nav>
       <div className="navbar-right">

@@ -38,13 +38,7 @@ function Dashboard() {
               onChange={(e) => setQuery(e.target.value)}
             />
             <button className="btn-primary" onClick={handleOpen}>
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                }}
-              >
+              <span className="btn-content">
                 <svg
                   width="16"
                   height="16"
@@ -106,29 +100,9 @@ function Dashboard() {
             aria-modal="true"
             className="modal-overlay"
             onClick={handleClose}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              background: 'rgba(0,0,0,0.5)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 9999,
-            }}
           >
-            <div
-              className="modal-content"
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                background: '#fff',
-                borderRadius: 8,
-                width: 480,
-                maxWidth: '90%',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
-                padding: 16,
-              }}
-            >
-              <h2 style={{ marginTop: 0 }}>Create new project</h2>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <h2 className="modal-title">Create new project</h2>
               <form
                 onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
                   event.preventDefault();
@@ -146,11 +120,8 @@ function Dashboard() {
                   });
                 }}
               >
-                <div style={{ marginBottom: 12 }}>
-                  <label
-                    htmlFor="name"
-                    style={{ display: 'block', marginBottom: 6 }}
-                  >
+                <div className="form-row">
+                  <label htmlFor="name" className="form-label">
                     Name
                   </label>
                   <input
@@ -159,68 +130,34 @@ function Dashboard() {
                     required
                     autoFocus
                     type="text"
-                    style={{
-                      width: '100%',
-                      padding: '8px 10px',
-                      borderRadius: 4,
-                      border: '1px solid #ccc',
-                      boxSizing: 'border-box',
-                    }}
+                    className="input"
                   />
                 </div>
-                <div style={{ marginBottom: 12 }}>
-                  <label
-                    htmlFor="description"
-                    style={{ display: 'block', marginBottom: 6 }}
-                  >
+                <div className="form-row">
+                  <label htmlFor="description" className="form-label">
                     Description
                   </label>
                   <input
                     id="description"
                     name="description"
                     type="text"
-                    style={{
-                      width: '100%',
-                      padding: '8px 10px',
-                      borderRadius: 4,
-                      border: '1px solid #ccc',
-                      boxSizing: 'border-box',
-                    }}
+                    className="input"
                   />
                 </div>
 
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    gap: 8,
-                  }}
-                >
+                <div className="modal-actions">
                   <button
                     type="button"
                     onClick={handleClose}
                     disabled={addProject.status === 'pending'}
-                    style={{
-                      padding: '8px 12px',
-                      borderRadius: 4,
-                      border: '1px solid #ccc',
-                      background: '#fff',
-                      cursor: 'pointer',
-                    }}
+                    className="btn btn-secondary"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={addProject.status === 'pending'}
-                    style={{
-                      padding: '8px 12px',
-                      borderRadius: 4,
-                      border: 'none',
-                      background: '#1976d2',
-                      color: '#fff',
-                      cursor: 'pointer',
-                    }}
+                    className="btn btn-primary"
                   >
                     Create
                   </button>

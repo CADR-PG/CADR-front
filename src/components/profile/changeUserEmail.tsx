@@ -5,14 +5,12 @@ import ChangeEmailData from '../../types/ChangeEmailData';
 import ServerError from '../../types/ServerError';
 import { fetchUser } from '../../api/client';
 import useChangeUserEmail from '../../hooks/useChangeUserEmail';
-import useUserStore from '../../stores/useUserStore';
 import { useSnackbarStore } from '../../stores/snackbarStore';
 import SnackbarProvider from '../SnackbarProvider';
 
 function ChangeUserEmail() {
   const { isSuccess, isError, error, isPending, mutate } = useChangeUserEmail();
   const { openSnackbar } = useSnackbarStore();
-  const setUser = useUserStore((s) => s.setUser);
 
   const [emailForm, setEmailForm] = useState<ChangeEmailData>({ newEmail: '' });
 
@@ -44,24 +42,10 @@ function ChangeUserEmail() {
 
   if (isLoading) return <p>Loading...</p>;
 
-  const handleChange =
-    <F extends object>(setter: React.Dispatch<React.SetStateAction<F>>) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      setter((prev: F) => {
-        const updated = { ...prev, [name]: value } as F;
-        if (name === 'newEmail') {
-          setUser({
-            email: (updated as ChangeEmailData).newEmail,
-            isLoggedIn: true,
-            firstName: '',
-            lastName: '',
-            isEmailConfirmed: false,
-          });
-        }
-        return updated;
-      });
-    };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    setEmailForm((prev) => ({ ...prev, newEmail: value }));
+  };
 
   return (
     <section className="l-section l-section--change-data">
@@ -83,7 +67,7 @@ function ChangeUserEmail() {
             type="email"
             className="input"
             value={emailForm.newEmail}
-            onChange={handleChange(setEmailForm)}
+            onChange={handleChange}
             placeholder="New Email"
             required
           />

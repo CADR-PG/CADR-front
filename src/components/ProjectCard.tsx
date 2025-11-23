@@ -10,7 +10,6 @@ interface ProjectCardProps {
 
 function ProjectCard({ project }: ProjectCardProps) {
   const navigate = useNavigate();
-  const [, setAnchorEl] = useState<null | HTMLElement>(null);
   const [editOpen, setEditOpen] = useState(false);
   const [name, setName] = useState(project.name);
   const [description, setDescription] = useState(project.description || '');
@@ -22,12 +21,11 @@ function ProjectCard({ project }: ProjectCardProps) {
 
   const deleteProject = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    setAnchorEl(null);
+    setEditOpen(false);
   };
 
   const handleEditOpen = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    setAnchorEl(null);
     setName(project.name);
     setDescription(project.description || '');
     setEditOpen(true);
@@ -56,11 +54,7 @@ function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <div className="dashboard-item">
-      <img
-        src={thumbnail}
-        alt="box"
-        style={{ width: '100%', height: 194, objectFit: 'cover' }}
-      />
+      <img src={thumbnail} alt="box" className="project-thumbnail" />
       <div className="scene-content">
         <div className="scene-info">
           <h3>{project.name}</h3>
@@ -106,35 +100,12 @@ function ProjectCard({ project }: ProjectCardProps) {
           aria-modal="true"
           className="modal-overlay"
           onClick={handleEditClose}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-          }}
         >
-          <div
-            className="modal-content"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              background: '#fff',
-              borderRadius: 8,
-              width: 480,
-              maxWidth: '90%',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
-              padding: 16,
-            }}
-          >
-            <h2 style={{ marginTop: 0 }}>Edit project</h2>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modal-title">Edit project</h2>
             <form onSubmit={handleEditSubmit}>
-              <div style={{ marginBottom: 12 }}>
-                <label
-                  htmlFor="edit-name"
-                  style={{ display: 'block', marginBottom: 6 }}
-                >
+              <div className="form-row">
+                <label htmlFor="edit-name" className="form-label">
                   Name
                 </label>
                 <input
@@ -145,20 +116,11 @@ function ProjectCard({ project }: ProjectCardProps) {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '8px 10px',
-                    borderRadius: 4,
-                    border: '1px solid #ccc',
-                    boxSizing: 'border-box',
-                  }}
+                  className="input"
                 />
               </div>
-              <div style={{ marginBottom: 12 }}>
-                <label
-                  htmlFor="edit-description"
-                  style={{ display: 'block', marginBottom: 6 }}
-                >
+              <div className="form-row">
+                <label htmlFor="edit-description" className="form-label">
                   Description
                 </label>
                 <textarea
@@ -167,48 +129,22 @@ function ProjectCard({ project }: ProjectCardProps) {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
-                  style={{
-                    width: '100%',
-                    padding: '8px 10px',
-                    borderRadius: 4,
-                    border: '1px solid #ccc',
-                    boxSizing: 'border-box',
-                    resize: 'vertical',
-                  }}
+                  className="textarea"
                 />
               </div>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  gap: 8,
-                }}
-              >
+              <div className="modal-actions">
                 <button
                   type="button"
                   onClick={handleEditClose}
                   disabled={editProject.status === 'pending'}
-                  style={{
-                    padding: '8px 12px',
-                    borderRadius: 4,
-                    border: '1px solid #ccc',
-                    background: '#fff',
-                    cursor: 'pointer',
-                  }}
+                  className="btn btn-secondary"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={editProject.status === 'pending'}
-                  style={{
-                    padding: '8px 12px',
-                    borderRadius: 4,
-                    border: 'none',
-                    background: '#1976d2',
-                    color: '#fff',
-                    cursor: 'pointer',
-                  }}
+                  className="btn btn-primary"
                 >
                   Save
                 </button>
