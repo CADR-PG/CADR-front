@@ -20,18 +20,26 @@ export default function TransformInspector({
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement>,
-    key: string,
+    // NOTE(m1k53r): I'm not sure if using keyof typeof is
+    // readable enough. here I'm saying that key is either
+    // 'position', 'rotation' or 'scale'.
+    key: keyof typeof snap,
     position: number,
   ) => {
     if (!transformWrite) return;
 
-    transformWrite[key][position] = e.currentTarget.value;
+    transformWrite[key][position] = Number(e.currentTarget.value);
   };
 
   return (
     <>
-      {Object.keys(snap).map((key) => {
+      {(Object.keys(snap) as (keyof typeof snap)[]).map((key) => {
         return (
+          // TODO(m1k53r): I'm not a fan of typing the classes
+          // everytime we create an inspector for new component.
+          // I'm thinking about making a HOC out of this, but
+          // on the other hand it seems too abstract
+          // for such little component. idk.
           <div className="inspector-panel" key={key}>
             <div className="inspector-field">{key}</div>
             <div className="inspector-input">

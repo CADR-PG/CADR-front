@@ -76,6 +76,7 @@ export default function MaterialInspector({
                   : ''
             }
             value={snap.data.parameters[key]}
+            checked={snap.data.parameters[key]}
             onChange={(e) => handleChange(e, key)}
             onClick={(e) => handleChange(e, key)}
           ></input>
