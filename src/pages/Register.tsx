@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchUser } from '../api/client';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useRedirectIfAuthenticated from '../hooks/useRedirectIfAuthenticated';
 
 function Register() {
   const [formData, setFormData] = useState<registerData>({
@@ -19,6 +20,8 @@ function Register() {
     phoneNumber: '',
   });
   const { mutate, error, isError, isPending } = useRegister(formData.email);
+
+  useRedirectIfAuthenticated();
 
   const { data: userResponse, isLoading: meLoading } = useQuery({
     queryKey: ['me'],

@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchUser } from '../api/client';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useRedirectIfAuthenticated from '../hooks/useRedirectIfAuthenticated';
 
 function Login() {
   const { mutate, error, isError, isPending } = useLogin();
@@ -16,6 +17,8 @@ function Login() {
     email: '',
     password: '',
   });
+
+  useRedirectIfAuthenticated();
 
   const { data: userResponse, isLoading: meLoading } = useQuery({
     queryKey: ['me'],
