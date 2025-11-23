@@ -1,32 +1,23 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import fs from 'fs'
-import path from 'path'
-import https from 'https'
+import mkcert from 'vite-plugin-mkcert'
 
-const keyPath = path.resolve(__dirname, 'certs', 'localhost+2-key.pem')
-const certPath = path.resolve(__dirname, 'certs', 'localhost+2.pem')
-
-if (!fs.existsSync(keyPath) || !fs.existsSync(certPath)) {
-  throw new Error('Brak plików certs/localhost+2-key.pem i localhost+2.pem (uruchom mkcert).')
-}
-
+// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), mkcert()],
+
   server: {
-    https: {
-      key: fs.readFileSync(keyPath),
-      cert: fs.readFileSync(certPath),
-    },
+    https: true as any,
+    host: true,
     proxy: {
       '/api': {
         target: 'https://localhost:8081',
         changeOrigin: true,
         secure: false,
-        agent: new https.Agent({ rejectUnauthorized: false }),
-        rewrite: p => p.replace(/^\/api/, ''),
+        rewrite: path => path.replace(/^\/api/, ''),
       }
     }
-  }
+  },
+  base: '/'
 })
 
