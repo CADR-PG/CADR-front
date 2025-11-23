@@ -3,10 +3,8 @@ import Geometry, { GeometryData } from '../../../engine/components/Geometry';
 import { ECS } from '../../../engine/ECS';
 import { Entity } from '../../../engine/Entity';
 import Objects from '../../../data/ObjectNames';
-import LatheGeometryData from '../../../engine/components/geometries/LatheGeometryData';
-import { IconButton } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import CloseIcon from '@mui/icons-material/Close';
+import Points from './Points';
+import Type from './Type';
 
 interface GeometryInspectorProps {
   entity: Entity;
@@ -17,137 +15,70 @@ export default function GeometryInspector({
   entity,
   data,
 }: GeometryInspectorProps) {
-  const geometryData = ECS.instance.entityManager.getComponent(
+  const geometryWrite = ECS.instance.entityManager.getComponent(
     Geometry,
     entity,
   );
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    key: keyof GeometryData,
-  ) => {
-    if (!geometryData) return;
+  if (!geometryWrite) return;
 
+  const handleChange = (e: ChangeEvent<HTMLInputElement>, key: string) => {
     const type = e.currentTarget.type;
 
-    // TODO: ehhh.....
+    console.log('click');
+
     switch (type) {
       case 'text':
-        geometryData.data[key] = e.currentTarget.value;
+        geometryWrite.data[key] = e.currentTarget.value;
         break;
       case 'number':
-        geometryData.data[key] = Number(e.currentTarget.value);
+        geometryWrite.data[key] = Number(e.currentTarget.value);
         break;
       case 'boolean':
-        geometryData.data[key] = !!e.currentTarget.value;
+        geometryWrite.data[key] = e.currentTarget.checked;
         break;
     }
   };
 
-  const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
-    if (!geometryData) return;
-
-    const name = e.currentTarget.value;
-
-    ECS.instance.entityManager.removeComponent(Geometry, entity);
-    ECS.instance.entityManager.addComponent(
-      new Geometry(new Objects[name]()),
-      entity,
-    );
-  };
-
-  const handlePoints = (
-    e: ChangeEvent<HTMLInputElement>,
-    index: number,
-    xy: number,
-  ) => {
-    if (!geometryData) return;
-
-    geometryData.data.points[index][xy] = e.currentTarget.value;
-  };
-
-  const renderSwitch = (key: keyof GeometryData) => {
-    if (!geometryData) return;
+  const renderSwitch = (key: string) => {
+    if (!geometryWrite) return;
 
     switch (key) {
       case 'type':
-        return (
-          <select
-            onChange={handleSelect}
-            defaultValue={geometryData?.data.type}
-          >
-            {Object.keys(Objects).map((object) => {
-              return (
-                <option key={object} value={object}>
-                  {object}
-                </option>
-              );
-            })}
-          </select>
-        );
+        return <Type entity={entity} type={data.type} />;
       case 'points':
-        return (
-          <>
-            {(data as LatheGeometryData).points.map((point, index) => {
-              return (
-                <div className="inspector-input-columns" key={index}>
-                  x:
-                  <input
-                    className="inspector-input-columns-column"
-                    type="number"
-                    value={point[0]}
-                    onChange={(e) => handlePoints(e, index, 0)}
-                  />
-                  y:
-                  <input
-                    className="inspector-input-columns-column"
-                    type="number"
-                    value={point[1]}
-                    onChange={(e) => handlePoints(e, index, 1)}
-                  />
-                </div>
-              );
-            })}
-            <div className="inspector-input-buttons">
-              <button
-                className="inspector-input-buttons-button"
-                onClick={() => geometryData.data.points.push([0, 0])}
-              >
-                <AddIcon
-                  fontSize="small"
-                  className="inspector-input-buttons-button-icon"
-                />
-              </button>
-              <button
-                className="inspector-input-buttons-button"
-                onClick={() =>
-                  geometryData.data.points.length > 2
-                    ? geometryData.data.points.pop()
-                    : null
-                }
-              >
-                <CloseIcon
-                  fontSize="small"
-                  className="inspector-input-buttons-button-icon"
-                />
-              </button>
-            </div>
-          </>
-        );
+        return <Points entity={entity} points={data.points} />;
       default:
+        break;
+    }
+
+    switch (typeof data[key as keyof GeometryData]) {
+      case 'number':
         return (
           <input
+            type="number"
             value={data[key as keyof GeometryData]}
-            type={
-              typeof data[key as keyof GeometryData] === 'boolean'
-                ? 'checkbox'
-                : typeof data[key as keyof GeometryData] === 'number'
-                  ? 'number'
-                  : ''
-            }
             onChange={(e) => handleChange(e, key)}
           />
         );
+      case 'boolean':
+        return (
+          <input
+            type="checkbox"
+            // TODO(m1k53r): this doesn't work lol
+            checked={data[key as keyof GeometryData]}
+            onChange={(e) => handleChange(e, key)}
+          />
+        );
+      case 'string':
+        return (
+          <input
+            value={data[key as keyof GeometryData]}
+            onChange={(e) => handleChange(e, key)}
+          />
+        );
+      default:
+        break;
     }
   };
 
@@ -157,9 +88,7 @@ export default function GeometryInspector({
         return (
           <div className="inspector-panel" key={key}>
             <div className="inspector-field">{key}</div>
-            <div className="inspector-input">
-              {renderSwitch(key as keyof GeometryData)}
-            </div>
+            <div className="inspector-input">{renderSwitch(key)}</div>
           </div>
         );
       })}

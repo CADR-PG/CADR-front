@@ -23,6 +23,7 @@ function Editor() {
     if (data) {
       // TODO: xdd
       const json = data.data.data;
+      console.log(json);
       ECS.instance.entityManager.setScene(json);
     }
     if (isError) {
