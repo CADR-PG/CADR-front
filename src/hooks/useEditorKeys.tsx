@@ -3,9 +3,6 @@ import Controls from '../types/Controls';
 import { useEditorContext } from './useEditorContext';
 import { useEffect, useState } from 'react';
 import { ECS } from '../engine/ECS';
-import Transform from '../engine/components/Transform';
-
-const MOVEMENT_CHANGE = 0.5;
 
 function useEditorKeys() {
   const { focused, focus } = useEditorContext();
@@ -16,36 +13,9 @@ function useEditorKeys() {
   const ctrl = useKeyboardControls<Controls>((state) => state.ctrl);
   const copy = useKeyboardControls<Controls>((state) => state.copy);
   const paste = useKeyboardControls<Controls>((state) => state.paste);
-  const moveL = useKeyboardControls<Controls>((state) => state.moveL);
-  const moveR = useKeyboardControls<Controls>((state) => state.moveR);
-  const moveU = useKeyboardControls<Controls>((state) => state.moveU);
-  const moveD = useKeyboardControls<Controls>((state) => state.moveD);
 
   useEffect(() => {
     if (!focused) return;
-
-    const transform = ECS.instance.entityManager.getComponent(
-      Transform,
-      focused,
-    );
-
-    if (transform) {
-      if (moveU) {
-        transform.position[1] += MOVEMENT_CHANGE;
-      }
-
-      if (moveD) {
-        transform.position[1] -= MOVEMENT_CHANGE;
-      }
-
-      if (moveL) {
-        transform.position[0] -= MOVEMENT_CHANGE;
-      }
-
-      if (moveR) {
-        transform.position[0] += MOVEMENT_CHANGE;
-      }
-    }
 
     if (del) {
       ECS.instance.entityManager.destroyEntity(focused);
@@ -65,7 +35,7 @@ function useEditorKeys() {
     // TODO: we absolutely shouldn't do this but I can't be bothered right now
     // with fixing this shit
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [del, ctrl, copy, paste, moveU, moveD, moveL, moveR]);
+  }, [del, ctrl, copy, paste]);
 }
 
 export default useEditorKeys;
