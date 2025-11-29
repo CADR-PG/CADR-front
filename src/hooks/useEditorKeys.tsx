@@ -2,11 +2,10 @@ import { useKeyboardControls } from '@react-three/drei';
 import Controls from '../types/Controls';
 import { useEditorContext } from './useEditorContext';
 import { useEffect, useState } from 'react';
-import { SceneObject } from '../types/SceneObject';
-import GenericPrimitive from '../components/PrimitiveController';
+import { ECS } from '../engine/ECS';
 
 function useEditorKeys() {
-  const { sceneObjects, setSceneObjects, focused, focus } = useEditorContext();
+  const { focused, focus } = useEditorContext();
   const [copiedUuid, copyUuid] = useState<string>('');
   // TODO: making new variable for every key like this is going to suck.
   // need a better way to handle this
@@ -19,9 +18,7 @@ function useEditorKeys() {
     if (!focused) return;
 
     if (del) {
-      const copyObjects = { ...sceneObjects };
-      delete copyObjects[focused];
-      setSceneObjects(copyObjects);
+      ECS.instance.entityManager.destroyEntity(focused);
       focus(null);
     }
 
@@ -31,16 +28,8 @@ function useEditorKeys() {
       }
 
       if (paste && copiedUuid) {
-        const uuid = crypto.randomUUID();
-        const object = sceneObjects[copiedUuid];
-        const c = object.ref?.clone();
-        const sceneObject: SceneObject = {
-          name: object.name,
-          component: () => <GenericPrimitive objectUuid={uuid} object={c!} />,
-        };
-
-        setSceneObjects({ ...sceneObjects, [uuid]: sceneObject });
-        focus(uuid);
+        const entity = ECS.instance.clone(copiedUuid);
+        focus(entity);
       }
     }
     // TODO: we absolutely shouldn't do this but I can't be bothered right now

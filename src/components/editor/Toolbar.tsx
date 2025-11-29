@@ -1,12 +1,8 @@
-import { Dispatch } from 'react';
-import EditingMode from '../../types/EditingMode';
+import { useEditorContext } from '../../hooks/useEditorContext';
 
-interface ToolbarProps {
-  editingMode: EditingMode;
-  selectMode: Dispatch<EditingMode>;
-}
+function Toolbar() {
+  const { editingMode, selectMode } = useEditorContext();
 
-function Toolbar({ editingMode, selectMode }: ToolbarProps) {
   return (
     <div className="toolbar">
       <button

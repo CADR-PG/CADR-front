@@ -2,17 +2,22 @@ import { useEffect, useRef } from 'react';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import { SceneObject } from '../../types/SceneObject';
+import Name from '../../engine/components/Name';
+import useEntityManager from '../../hooks/useEntityManager';
+import Invisible from '../../engine/components/Invisible';
+import { Entity } from '../../engine/Entity';
+import { ECS } from '../../engine/ECS';
 
 function HierarchyWindow() {
-  const { sceneObjects, focused, focus } = useEditorContext();
+  const em = useEntityManager();
+  const { focused, focus } = useEditorContext();
   const parentRef = useRef<HTMLDivElement>(null);
 
-  const handleClick = (object: SceneObject) => {
-    if (object.ref!.visible) {
-      object.ref!.visible = false;
+  const handleClick = (entity: Entity) => {
+    if (!em.has(Invisible, entity)) {
+      ECS.instance.entityManager.addComponent(new Invisible(), entity);
     } else {
-      object.ref!.visible = true;
+      ECS.instance.entityManager.removeComponent(Invisible, entity);
     }
   };
 
@@ -34,20 +39,20 @@ function HierarchyWindow() {
   return (
     <div className="hierarchy-window" ref={parentRef}>
       <h3>Hierarchy</h3>
-      {Object.entries(sceneObjects).map(([uuid, object]) => (
+      {em.getEntities().map((entity) => (
         <div
-          key={uuid}
+          key={entity}
           className="hierarchy-window__item"
-          onClick={() => focus(uuid)}
-          style={{ background: focused == uuid ? '#555' : '' }}
+          onClick={() => focus(entity)}
+          style={{ background: focused == entity ? '#555' : '' }}
         >
-          {object.name}
+          {em.getComponent(Name, entity)?.displayName || entity}
           <div className="buttonContainer">
             <button
               className="visibilityButton"
-              onClick={() => handleClick(object)}
+              onClick={() => handleClick(entity)}
             >
-              {object.ref && object.ref!.visible ? (
+              {!em.has(Invisible, entity) ? (
                 <VisibilityOutlined />
               ) : (
                 <VisibilityOffOutlinedIcon />
