@@ -1,0 +1,124 @@
+@use "../0-site/variables";
+
+.modal {
+
+    &-overlay {
+        display: flex;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    &-content {
+        background: #fff;
+        border-radius: 8px;
+        width: 400px;
+        max-width: 90%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        padding: 24px;
+
+        .dark & {
+            background: variables.$c-bg-dark;
+            color: variables.$c-text-dark;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6;
+
+            input {
+                width: 100%;
+                padding: 8px 10px;
+                border-radius: 4;
+                border: 1px solid #ccc;
+                box-sizing: border-box;
+            }
+        }
+
+        .form-row {
+            margin-bottom: 12px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+    }
+
+    &-title {
+        margin: 0 0 20px 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: variables.$c-text;
+
+        .dark & {
+            color: variables.$c-text-dark;
+        }
+    }
+
+    &-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 20px;
+    }
+}
+
+.form {
+    &-row {
+        margin-bottom: 16px;
+
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+    }
+
+    &-label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        color: variables.$c-text;
+
+        .dark & {
+            color: variables.$c-text-dark;
+        }
+    }
+}
+
+.input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid variables.$c-border;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: border-color 0.2s;
+
+    &:focus {
+        outline: none;
+        border-color: variables.$c-cyan;
+    }
+
+    .dark & {
+        background: variables.$c-bg-dark;
+        border-color: variables.$c-border-dark;
+        color: variables.$c-text-dark;
+
+        &:focus {
+            border-color: variables.$c-cyan-dark;
+        }
+    }
+}
+
+textarea.input {
+    resize: vertical;
+    min-height: 80px;
+}

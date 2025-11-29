@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import ChangePasswordData from '../../types/ChangePasswordData';
 import useChangeUserPassword from '../../hooks/useChangeUserPassword';
-import SnackbarProvider from '../SnackbarProvider';
 
 function ChangeUserPassword() {
   const { isPending, mutate } = useChangeUserPassword();
@@ -58,8 +57,6 @@ function ChangeUserPassword() {
           {isPending ? 'Sending...' : 'Change Password'}
         </button>
       </form>
-
-      <SnackbarProvider />
     </section>
   );
 }

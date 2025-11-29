@@ -23,6 +23,44 @@ function Dashboard() {
     setOpen(false);
   };
 
+  const handleCreateProject = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const formObject = Object.fromEntries(formData.entries());
+    const data: AddProjectData = {
+      name: String(formObject.name || '').trim(),
+      description: String(formObject.description || '').trim(),
+    };
+    if (!data.name) return;
+    addProject.mutate(data, {
+      onSuccess: () => {
+        setOpen(false);
+      },
+    });
+  };
+
+  const renderProjects = () => {
+    const items: ProjectData[] = getProjects.data?.data.items || [];
+    const q = query.trim().toLowerCase();
+    const filtered = items.filter((p) =>
+      q === '' ? true : (p.name || '').toLowerCase().includes(q),
+    );
+
+    if (filtered.length === 0) {
+      return <div className="empty-state">You don't have any scenes yet</div>;
+    }
+
+    return filtered
+      .sort(
+        (a: ProjectData, b: ProjectData) =>
+          new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime(),
+      )
+      .slice(0, 6)
+      .map((project: ProjectData) => (
+        <ProjectCard project={project} key={project.id} />
+      ));
+  };
+
   return (
     <div className="container">
       <NavBar />
@@ -65,33 +103,7 @@ function Dashboard() {
           </div>
         </div>
         <div className="dashboard-projects">
-          {getProjects.isSuccess &&
-            (() => {
-              const items: ProjectData[] = getProjects.data?.data.items || [];
-              const q = query.trim().toLowerCase();
-              const filtered = items.filter((p) =>
-                q === '' ? true : (p.name || '').toLowerCase().includes(q),
-              );
-
-              if (filtered.length === 0) {
-                return (
-                  <div className="empty-state">
-                    You don't have any scenes yet
-                  </div>
-                );
-              }
-
-              return filtered
-                .sort(
-                  (a: ProjectData, b: ProjectData) =>
-                    new Date(b.lastUpdate).getTime() -
-                    new Date(a.lastUpdate).getTime(),
-                )
-                .slice(0, 6)
-                .map((project: ProjectData) => (
-                  <ProjectCard project={project} key={project.id} />
-                ));
-            })()}
+          {getProjects.isSuccess && renderProjects()}
         </div>
 
         {open && (
@@ -103,23 +115,7 @@ function Dashboard() {
           >
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
               <h2 className="modal-title">Create new project</h2>
-              <form
-                onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
-                  event.preventDefault();
-                  const formData = new FormData(event.currentTarget);
-                  const formObject = Object.fromEntries(formData.entries());
-                  const data: AddProjectData = {
-                    name: String(formObject.name || '').trim(),
-                    description: String(formObject.description || '').trim(),
-                  };
-                  if (!data.name) return;
-                  addProject.mutate(data, {
-                    onSuccess: () => {
-                      setOpen(false);
-                    },
-                  });
-                }}
-              >
+              <form onSubmit={handleCreateProject}>
                 <div className="form-row">
                   <label htmlFor="name" className="form-label">
                     Name

@@ -1,25 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { AxiosError } from 'axios';
-import { useQuery } from '@tanstack/react-query';
 import ChangeEmailData from '../../types/ChangeEmailData';
-import ServerError from '../../types/ServerError';
-import { fetchUser } from '../../api/client';
 import useChangeUserEmail from '../../hooks/useChangeUserEmail';
-import { useSnackbarStore } from '../../stores/snackbarStore';
-import SnackbarProvider from '../SnackbarProvider';
+import useUserStore from '../../stores/useUserStore';
 
 function ChangeUserEmail() {
-  const { isSuccess, isError, error, isPending, mutate } = useChangeUserEmail();
-  const { openSnackbar } = useSnackbarStore();
+  const { isPending, mutate } = useChangeUserEmail();
+  const user = useUserStore();
 
   const [emailForm, setEmailForm] = useState<ChangeEmailData>({ newEmail: '' });
-
-  const { data: userResponse, isLoading } = useQuery({
-    queryKey: ['me'],
-    queryFn: fetchUser,
-    retry: false,
-  });
-  const user = userResponse?.data;
 
   useEffect(() => {
     if (user) {
@@ -28,19 +16,6 @@ function ChangeUserEmail() {
       });
     }
   }, [user]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      openSnackbar('Email successfully changed!', 'success');
-    } else if (isError) {
-      const errMsg =
-        (error as AxiosError<ServerError>)?.response?.data.message ||
-        'Email change error';
-      openSnackbar(errMsg, 'error');
-    }
-  }, [isSuccess, isError, error, openSnackbar]);
-
-  if (isLoading) return <p>Loading...</p>;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
@@ -75,8 +50,6 @@ function ChangeUserEmail() {
         <button className="btn-primary" type="submit" disabled={isPending}>
           {isPending ? 'Sending...' : 'Change Email'}
         </button>
-
-        <SnackbarProvider />
       </form>
     </section>
   );

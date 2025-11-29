@@ -3,6 +3,7 @@ import ChangeUserInfo from '../components/profile/changeUserInfo';
 import ChangeUserEmail from '../components/profile/changeUserEmail';
 import ChangeUserPassword from '../components/profile/changeUserPassword';
 import useAuth from '../hooks/useAuth';
+import SnackbarProvider from '../components/SnackbarProvider';
 
 function ChangeData() {
   useAuth();
@@ -14,6 +15,7 @@ function ChangeData() {
         <ChangeUserEmail />
         <ChangeUserPassword />
       </div>
+      <SnackbarProvider />
     </div>
   );
 }
