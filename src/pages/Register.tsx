@@ -5,6 +5,7 @@ import useRegister from '../hooks/useRegister';
 import registerData from '../types/RegisterData';
 import { AxiosError } from 'axios';
 import ServerError from '../types/ServerError';
+import useRedirectIfAuthenticated from '../hooks/useRedirectIfAuthenticated';
 
 function Register() {
   const [formData, setFormData] = useState<registerData>({
@@ -15,6 +16,8 @@ function Register() {
     phoneNumber: '',
   });
   const { mutate, error, isError, isPending } = useRegister(formData.email);
+
+  useRedirectIfAuthenticated();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

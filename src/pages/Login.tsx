@@ -5,6 +5,7 @@ import useLogin from '../hooks/useLogin';
 import loginData from '../types/LoginData';
 import { AxiosError } from 'axios';
 import ServerError from '../types/ServerError';
+import useRedirectIfAuthenticated from '../hooks/useRedirectIfAuthenticated';
 
 function Login() {
   const { mutate, error, isError, isPending } = useLogin();
@@ -12,6 +13,8 @@ function Login() {
     email: '',
     password: '',
   });
+
+  useRedirectIfAuthenticated();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

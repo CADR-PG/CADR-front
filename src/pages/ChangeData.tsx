@@ -11,8 +11,10 @@ import { fetchUser } from '../api/client';
 import useChangeUserInfo from '../hooks/useChangeUserInfo';
 import useChangeUserEmail from '../hooks/useChangeUserEmail';
 import useChangeUserPassword from '../hooks/useChangeUserPassword';
+import useAuth from '../hooks/useAuth';
 
 function ChangeData() {
+  useAuth();
   const infoMut = useChangeUserInfo();
   const emailMut = useChangeUserEmail();
   const passMut = useChangeUserPassword();
