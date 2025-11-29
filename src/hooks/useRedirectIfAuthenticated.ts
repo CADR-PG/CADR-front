@@ -1,14 +1,9 @@
 import { useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { fetchUser } from '../api/client';
 import { useNavigate } from 'react-router-dom';
+import useFetchUser from './useFetchUser';
 
 export default function useRedirectIfAuthenticated(redirectTo = '/') {
-  const { data: userResponse, isLoading: meLoading } = useQuery({
-    queryKey: ['me'],
-    queryFn: fetchUser,
-    retry: false,
-  });
+  const { data: userResponse, isLoading: meLoading } = useFetchUser();
 
   const user = userResponse?.data;
   const navigate = useNavigate();
@@ -16,6 +11,4 @@ export default function useRedirectIfAuthenticated(redirectTo = '/') {
   useEffect(() => {
     if (!meLoading && user) navigate(redirectTo);
   }, [meLoading, user, navigate, redirectTo]);
-
-  return { user, meLoading };
 }
