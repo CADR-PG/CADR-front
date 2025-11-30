@@ -199,7 +199,13 @@
         }
     }
 
-    @media (max-width: 768px) {
+    .navbar.open {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .site-top {
         padding: 10px 12px;
 
         .mobile-menu-button { 
@@ -231,8 +237,7 @@
                 display: flex;
                 position: absolute;
                 top: calc(100% + 8px);
-                right: 0;
-                left: auto;
+                left: calc(50% - 85px);
                 min-width: 170px;
                 padding: 12px;
                 border-radius: 10px;
@@ -267,5 +272,6 @@
             transform: translateY(0) scale(1);
             opacity: 1;
         }
+
     }
 }
