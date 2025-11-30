@@ -4,7 +4,7 @@ import EditingMode from '../types/EditingMode';
 export interface EditorContextValues {
   focused: string | null;
   focus: Dispatch<SetStateAction<string | null>>;
-  running: boolean; // nowy stan
+  running: boolean;
   setRunning: Dispatch<SetStateAction<boolean>>;
   editingMode: EditingMode;
   selectMode: Dispatch<SetStateAction<EditingMode>>;
