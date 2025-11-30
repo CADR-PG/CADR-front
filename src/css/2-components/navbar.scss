@@ -79,7 +79,6 @@
         }
     }
 
-    // shared navbar styles
     .navbar {
         display: flex;
         align-items: center;
@@ -129,12 +128,15 @@
         }
     }
 
-    // desktop-specific nav (visible on desktop)
     .navbar-desktop {
       display: flex;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 52;
     }
 
-    // mobile nav (hidden on desktop by default)
     .navbar-mobile {
       display: none;
     }
@@ -188,7 +190,6 @@
     }
 }
 
-// mobile breakpoint
 @media (max-width: 768px) {
   .site-top {
     padding: 10px 12px;
@@ -197,14 +198,12 @@
       display: inline-flex;
     }
 
-    // hide desktop nav on mobile
     .navbar-desktop {
       display: none;
     }
 
-    // mobile nav base hidden; opens when .open applied
     .navbar-mobile {
-      display: none; /* default hidden */
+      display: none; 
     }
 
     .mobile-overlay {
