@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import NavBar from './../components/NavBar';
 import useRegister from '../hooks/useRegister';
 import registerData from '../types/RegisterData';
+import useRedirectIfAuthenticated from '../hooks/useRedirectIfAuthenticated';
 import SnackbarProvider from '../components/SnackbarProvider';
 
 function Register() {
@@ -13,6 +14,8 @@ function Register() {
     phoneNumber: '',
   });
   const { mutate, isPending } = useRegister(formData.email);
+
+  useRedirectIfAuthenticated();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

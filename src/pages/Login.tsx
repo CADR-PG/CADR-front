@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import NavBar from './../components/NavBar';
 import useLogin from '../hooks/useLogin';
 import loginData from '../types/LoginData';
+import useRedirectIfAuthenticated from '../hooks/useRedirectIfAuthenticated';
 import SnackbarProvider from '../components/SnackbarProvider';
 import { useSnackbarStore } from '../stores/snackbarStore';
 
@@ -12,6 +13,8 @@ function Login() {
     email: '',
     password: '',
   });
+
+  useRedirectIfAuthenticated();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
