@@ -1,31 +1,28 @@
+@use "variables";
+
 .l-section {
-    max-width: 100vw;
-    height: 100%;
-    text-align: center;
-
-    &--home{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 20px;
-    }
-
-    &--email-confirmation,
-    &--registration-successful,
-    &--login,
-    &--register {
-        color: black;
-        display: grid;
-        align-items: center;
-        justify-content: center;
-    }
+    position: relative;
+    overflow: hidden;
+    padding: 80px 20px;
 
     &--change-data {
-        color: black;
-        display: grid;
-        align-items: center;
-        justify-content: center;
-        overflow: auto;
-        height: calc(100% - 46px);
+        background: variables.$c-card-bg;
+        border: 1px solid variables.$c-border;
+        border-radius: 16px;
+        padding: 32px;
+        margin-bottom: 28px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+
+        .dark & {
+            background: variables.$c-card-bg-dark;
+            border: 1px solid variables.$c-border-dark;
+        }
+    }
+
+    &--dashboard {
+        padding: 60px 20px;
+        max-width: 1200px;
+        margin: 0 auto;
     }
 }

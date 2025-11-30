@@ -54,36 +54,44 @@ function EmailConfirmation() {
       <NavBar />
       <div className="l-section l-section--email-confirmation">
         <div className="email-confirmation-hld">
-          <div className="">
-            <h1>Verify</h1>
-            <p>Paste the code that was sent to you in the email!</p>
-          </div>
-          <form onSubmit={verifyCode}>
+          <h1 className="email-confirmation__title">Verify</h1>
+          <p className="email-confirmation__subtitle">
+            Paste the code that was sent to you in the email!
+          </p>
+          <form className="email-confirmation__form" onSubmit={verifyCode}>
             <OtpInput
               value={otp}
               onChange={setOtp}
               numInputs={6}
-              renderSeparator={<span className="otp-sep">-</span>}
-              renderInput={(props) => (
-                <input {...props} className="otp-input" />
+              shouldAutoFocus
+              renderInput={(inputProps) => (
+                <input
+                  {...inputProps}
+                  type="text"
+                  maxLength={1}
+                  pattern="[0-9]*"
+                  inputMode="numeric"
+                  required
+                  className="email-confirmation-otp"
+                />
               )}
-              containerStyle="otp-hld"
+              containerStyle="email-confirmation__code"
             />
             <button
               type="submit"
               disabled={verify.isPending}
-              className="email-confirmation__btn"
+              className="btn-primary btn-primary-email-confirmation"
             >
               {verify.isPending ? 'Verifying...' : 'Verify'}
             </button>
+            <p className="email-confirmation__content">
+              Didn't receive code?
+              <a onClick={resendCode} className="email-confirmation__link">
+                {' '}
+                Request again
+              </a>
+            </p>
           </form>
-          <p>
-            Didn't receive code?
-            <a onClick={resendCode} className="email-confirmation__resend">
-              {' '}
-              Request again
-            </a>
-          </p>
         </div>
         <SnackbarProvider />
       </div>
