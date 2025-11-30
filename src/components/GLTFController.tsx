@@ -11,14 +11,8 @@ interface GLTFProps {
 }
 
 function GenericGLTF({ children, objectUuid, url, ...props }: GLTFProps) {
-  const {
-    focused,
-    hovered,
-    handleRef,
-    handleClick,
-    handlePointerOver,
-    handlePointerOut,
-  } = useMesh(objectUuid);
+  const { focused, hovered, handleClick, handlePointerOver, handlePointerOut } =
+    useMesh(objectUuid);
   const model = useGLTF(url);
   const { running } = useEditorContext();
 
@@ -26,13 +20,12 @@ function GenericGLTF({ children, objectUuid, url, ...props }: GLTFProps) {
     <primitive
       {...props}
       object={model.scene}
-      ref={handleRef}
       onClick={handleClick}
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
       <HighlightHelper
-        objectUuid={objectUuid}
+        entity={objectUuid}
         focused={!running ? focused : ''}
         hovered={!running ? hovered : false}
       />

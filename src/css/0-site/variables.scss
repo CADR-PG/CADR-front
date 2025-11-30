@@ -1,10 +1,43 @@
-$c-white: #FFF;
-$c-black: #000;
+//old colors
 $c-beige: #F5F5DC;
 $c-dark: #242424;
 $c-blue: #007BFF;
 $c-error: #A31621;
 $c-border: #ccc;
 $c-success: #28a745;
+
+//tradicional colors 
+$c-white: #FFF;
+$c-black: #000;
+
+//modern colors lights
+$c-bg: #f8fafc;
+$c-bg-header: rgba(255, 255, 255, 0.7);
+$c-text: #0f172a;
+$c-text-secondary: #475569;
+$c-border: rgba(0, 0, 0, 0.1);
+$c-cyan: #0ea5e9;
+$c-cyan-hover: #38bdf8;
+$c-button-text: #fff;
+$c-dot-color: rgba(0, 0, 0, 0.08);
+$c-card-bg: rgba(255,255,255,0.6);
+
+//modern colors darks
+$c-bg-dark: #0f172a;
+$c-bg-header-dark: rgba(15, 23, 42, 0.8);
+$c-text-dark: #f1f5f9;
+$c-text-secondary-dark: #cbd5e1;
+$c-border-dark: rgba(255, 255, 255, 0.1);
+$c-cyan-dark: #38bdf8;
+$c-cyan-hover-dark: #7dd3fc;
+$c-button-text-dark: #0f172a;
+$c-dot-color-dark: rgba(255, 255, 255, 0.08);
+$c-card-bg-dark: rgba(15, 23, 42, 0.6);
+
+//common colors
+$c-glow1: rgba(56,189,248,0.25);
+$c-glow2: rgba(99,102,241,0.25);
+
+
 
 $f-montserrat: "Montserrat" sans-serif;
