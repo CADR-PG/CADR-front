@@ -89,22 +89,31 @@ function NavBar() {
           )}
 
           <nav
-            className={`navbar ${menuOpen ? 'open' : ''}`}
+            className={`navbar-mobile navbar ${menuOpen ? 'open' : ''}`}
             onClick={closeMenu}
           >
-            {isLoggedIn ? (
-              <>
-                <Link to="/change-data" className="navbar__link">
-                  Change data
-                </Link>
-                <Link to="/dashboard" className="navbar__link">
-                  Dashboard
-                </Link>
-              </>
-            ) : null}
+            <Link to="/change-data" className="navbar__link">
+              Change data
+            </Link>
+            <Link to="/dashboard" className="navbar__link">
+              Dashboard
+            </Link>
           </nav>
         </div>
       )}
+
+      <nav className="navbar-desktop navbar">
+        {isLoggedIn ? (
+          <>
+            <Link to="/change-data" className="navbar__link">
+              Change data
+            </Link>
+            <Link to="/dashboard" className="navbar__link">
+              Dashboard
+            </Link>
+          </>
+        ) : null}
+      </nav>
 
       <div className="navbar-right">
         <button

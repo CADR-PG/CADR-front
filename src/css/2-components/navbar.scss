@@ -79,6 +79,7 @@
         }
     }
 
+    // shared navbar styles
     .navbar {
         display: flex;
         align-items: center;
@@ -126,29 +127,16 @@
                 color: variables.$c-text-secondary-dark;
             }
         }
+    }
 
-        &.open {
-            display: flex;
-            flex-direction: column;
-            background: variables.$c-bg-header;
-            border: 1px solid variables.$c-border;
-            border-radius: 12px;
-            padding: 10px;
-            box-shadow: 0 18px 40px rgba(8,12,20,0.12);
-            z-index: 60;
-            transform: translateY(-4px);
-            opacity: 0;
-            animation: slideFadeIn 260ms forwards cubic-bezier(.2,.9,.3,1);
+    // desktop-specific nav (visible on desktop)
+    .navbar-desktop {
+      display: flex;
+    }
 
-            .dark & {
-                background: variables.$c-bg-header-dark;
-                border-color: variables.$c-border-dark;
-            }
-
-            &__link {
-                margin: 6px 0;
-            }
-        }
+    // mobile nav (hidden on desktop by default)
+    .navbar-mobile {
+      display: none;
     }
 
     .theme-toggle {
@@ -198,80 +186,85 @@
             }
         }
     }
-
-    .navbar.open {
-        display: none;
-    }
 }
 
+// mobile breakpoint
 @media (max-width: 768px) {
-    .site-top {
-        padding: 10px 12px;
+  .site-top {
+    padding: 10px 12px;
 
-        .mobile-menu-button { 
-            display: inline-flex; 
-        }
+    .mobile-menu-button {
+      display: inline-flex;
+    }
 
-        .navbar { 
-            display: none; 
-        }
+    // hide desktop nav on mobile
+    .navbar-desktop {
+      display: none;
+    }
 
-        .navbar-right {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .mobile-overlay {
-            display: block;
-            position: fixed;
-            inset: 0;
-            background: rgba(8, 12, 20, 0.35);
-            backdrop-filter: blur(2px);
-            z-index: 55;
-            transition: opacity 200ms;
-        }
-
-        .mobile-menu-container {
-            .navbar.open {
-                display: flex;
-                position: absolute;
-                top: calc(100% + 8px);
-                left: calc(50% - 85px);
-                min-width: 170px;
-                padding: 12px;
-                border-radius: 10px;
-            }
-        } 
-
-
-        
-        .mobile-menu-container {
-            .navbar {
-                .open {
-                    &::before {
-                        background: variables.$c-bg-header-dark;
-                        border-left-color: variables.$c-border-dark;
-                        border-top-color: variables.$c-border-dark;
-                    }
-                }
-            }
-        }
+    // mobile nav base hidden; opens when .open applied
+    .navbar-mobile {
+      display: none; /* default hidden */
     }
 
     .mobile-overlay {
-        display: none;
+      display: block;
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 12, 20, 0.35);
+      backdrop-filter: blur(2px);
+      z-index: 55;
+      transition: opacity 200ms;
     }
 
-    @keyframes slideFadeIn {
-        from {
-            transform: translateY(-8px) scale(0.98);
-            opacity: 0;
-        }
-        to {
-            transform: translateY(0) scale(1);
-            opacity: 1;
+    .mobile-menu-container {
+      .navbar-mobile.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: calc(100% + 8px);
+        left: calc(50% - 85px);
+        min-width: 170px;
+        padding: 12px;
+        border-radius: 10px;
+        background: variables.$c-bg-header;
+        border: 1px solid variables.$c-border;
+        box-shadow: 0 18px 40px rgba(8,12,20,0.12);
+        z-index: 60;
+        transform: translateY(-4px);
+        opacity: 0;
+        animation: slideFadeIn 260ms forwards cubic-bezier(.2,.9,.3,1);
+
+        .dark & {
+          background: variables.$c-bg-header-dark;
+          border-color: variables.$c-border-dark;
         }
 
+        &__link {
+          margin: 6px 0;
+        }
+      }
     }
+
+    .mobile-menu-container {
+      .open {
+        &::before {
+          background: variables.$c-bg-header-dark;
+          border-left-color: variables.$c-border-dark;
+          border-top-color: variables.$c-border-dark;
+        }
+      }
+    }
+  }
+
+  @keyframes slideFadeIn {
+    from {
+      transform: translateY(-8px) scale(0.98);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  }
 }
