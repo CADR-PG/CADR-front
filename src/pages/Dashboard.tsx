@@ -10,6 +10,7 @@ import { AxiosError } from 'axios';
 import ServerError from '../types/ServerError';
 import SnackbarProvider from '../components/SnackbarProvider';
 import { useSnackbarStore } from '../stores/snackbarStore';
+import Modal from '../components/Modal';
 
 function Dashboard() {
   useAuth();
@@ -117,62 +118,52 @@ function Dashboard() {
           {getProjects.isSuccess && renderProjects()}
         </div>
 
-        {open && (
-          <div
-            role="dialog"
-            aria-modal="true"
-            className="modal-overlay"
-            onClick={handleClose}
-          >
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <h2 className="modal-title">Create new project</h2>
-              <form onSubmit={handleCreateProject}>
-                <div className="form-row">
-                  <label htmlFor="name" className="form-label">
-                    Name
-                  </label>
-                  <input
-                    id="name"
-                    name="name"
-                    required
-                    autoFocus
-                    type="text"
-                    className="input"
-                  />
-                </div>
-                <div className="form-row">
-                  <label htmlFor="description" className="form-label">
-                    Description
-                  </label>
-                  <input
-                    id="description"
-                    name="description"
-                    type="text"
-                    className="input"
-                  />
-                </div>
-
-                <div className="modal-actions">
-                  <button
-                    type="button"
-                    onClick={handleClose}
-                    disabled={addProject.status === 'pending'}
-                    className="btn btn-secondary"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={addProject.status === 'pending'}
-                    className="btn btn-primary"
-                  >
-                    Create
-                  </button>
-                </div>
-              </form>
+        <Modal open={open} onClose={handleClose} title="Create new project">
+          <form onSubmit={handleCreateProject}>
+            <div className="form-row">
+              <label htmlFor="name" className="form-label">
+                Name
+              </label>
+              <input
+                id="name"
+                name="name"
+                required
+                autoFocus
+                type="text"
+                className="input"
+              />
             </div>
-          </div>
-        )}
+            <div className="form-row">
+              <label htmlFor="description" className="form-label">
+                Description
+              </label>
+              <input
+                id="description"
+                name="description"
+                type="text"
+                className="input"
+              />
+            </div>
+
+            <div className="modal-actions">
+              <button
+                type="button"
+                onClick={handleClose}
+                disabled={addProject.status === 'pending'}
+                className="btn btn-secondary"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={addProject.status === 'pending'}
+                className="btn btn-primary"
+              >
+                Create
+              </button>
+            </div>
+          </form>
+        </Modal>
       </section>
       <SnackbarProvider />
     </div>

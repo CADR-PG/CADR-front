@@ -5,7 +5,6 @@ import useUserStore from '../../stores/useUserStore';
 
 function ChangeUserInfo() {
   const { isPending, mutate } = useChangeUserInfo();
-  useUserStore((s) => s.setUser);
   const storeUser = useUserStore();
 
   const [infoForm, setInfoForm] = useState<ChangeInfoData>({
