@@ -8,25 +8,18 @@ interface PrimitiveProps extends React.ComponentProps<'primitive'> {
 }
 
 function GenericPrimitive({ children, objectUuid, ...props }: PrimitiveProps) {
-  const {
-    focused,
-    hovered,
-    handleRef,
-    handleClick,
-    handlePointerOver,
-    handlePointerOut,
-  } = useMesh(objectUuid);
+  const { focused, hovered, handleClick, handlePointerOver, handlePointerOut } =
+    useMesh(objectUuid);
 
   return (
     <primitive
       {...props}
-      ref={handleRef}
       onClick={handleClick}
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
       <HighlightHelper
-        objectUuid={objectUuid}
+        entity={objectUuid}
         focused={focused}
         hovered={hovered}
       />

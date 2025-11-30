@@ -1,13 +1,13 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
-import { SceneObjects } from '../types/SceneObject';
+import EditingMode from '../types/EditingMode';
 
 export interface EditorContextValues {
-  sceneObjects: SceneObjects;
-  setSceneObjects: Dispatch<SetStateAction<SceneObjects>>;
   focused: string | null;
   focus: Dispatch<SetStateAction<string | null>>;
   running: boolean;
   setRunning: Dispatch<SetStateAction<boolean>>;
+  editingMode: EditingMode;
+  selectMode: Dispatch<SetStateAction<EditingMode>>;
 }
 
 export const EditorContext = createContext<EditorContextValues | undefined>(

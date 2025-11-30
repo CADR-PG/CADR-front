@@ -29,7 +29,6 @@ function EmailConfirmation() {
   });
 
   const resendCode = () => {
-    console.log(searchParams);
     resend.mutate(searchParams.get('email')!);
   };
 
