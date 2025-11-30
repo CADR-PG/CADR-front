@@ -1,25 +1,34 @@
 @use "../0-site/variables";
 
 .home {
-
-    &__link {
-        text-decoration: none;
-        color: variables.$c-white;
+    &__container {
+        max-width: 1000px;
+        margin: 0 auto;
     }
 
-    &__btn {
-        padding: 10px 20px;
-        margin-top: 15px;
-        font-size: 1rem;
-        background-color: variables.$c-blue;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+    &__title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        line-height: 1.2;
+    }
 
-        &--section {
-            display: flex;
-            margin-top: 20px;
-            flex-direction: column;
+    &__subtitle {
+        color: variables.$c-cyan;
+
+        .dark & {
+            color: variables.$c-cyan-dark;
+        }
+    }
+
+    &__content {
+        max-width: 600px;
+        margin-top: 16px;
+        font-size: 1.1rem;
+        color: variables.$c-text-secondary;
+        line-height: 1.6;
+
+        .dark & {
+            color: variables.$c-text-secondary-dark;
         }
     }
 }

@@ -1,34 +1,171 @@
 @use "../0-site/variables";
 
 .dashboard {
+
     &-hld {
-        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 32px;
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+    }
+
+    &-panel {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .search-bar {
+            padding: 10px 14px;
+            border: 1px solid variables.$c-border;
+            border-radius: 10px;
+            background: variables.$c-bg;
+            color: variables.$c-text;
+            font-size: 1rem;
+
+            .dark & {
+                background: variables.$c-bg-dark;
+                border: 1px solid variables.$c-border-dark;
+                color: variables.$c-text-dark;
+            }
+        }
     }
 
     &-projects {
         display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        grid-template-rows: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 280px));
         gap: 24px;
-        align-items: stretch;
-        height: 320px;
+        justify-content: start;
     }
 
-    &-separator {
-        border: none;
-        border-top: 2px solid white;
-        margin: 1rem 0;
-    }
-
-    &-action {
-        height: 100%;
-    }
-
-    &-area {
-        height: 100%;
+    &-item {
+        background: variables.$c-card-bg;
+        border: 1px solid variables.$c-border;
+        border-radius: 16px;
+        overflow: hidden;
+        width: 280px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        backdrop-filter: blur(12px);
+        transition: transform 0.3s, box-shadow 0.3s;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+
+        &-add {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: variables.$c-text-secondary;
+            cursor: pointer;
+            border: 2px dashed variables.$c-border;
+            transition: background 0.3s, transform 0.3s;
+
+            .dark & {
+                color: variables.$c-text-secondary-dark;
+                border: 2px dashed variables.$c-border-dark;
+            }
+
+            :hover {
+                background: variables.$c-cyan;
+                color: variables.$c-button-text;
+                border-color: variables.$c-cyan;
+                transform: scale(1.05);
+
+                .dark & {
+                    background: variables.$c-cyan-dark;
+                    color: variables.$c-button-text-dark;
+                }
+            }
+        }
+
+        .dark & {
+            background: variables.$c-card-bg-dark;
+            border: 1px solid variables.$c-border-dark;
+        }
+
+        &:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+        }
+
+        .project-thumbnail {
+            width: 100%;
+            height: 194px;
+            object-fit: cover;
+        }
+    }
+
+}
+
+.scene {
+    &-preview {
+        background-size: cover;
+        background-position: center;
+        position: relative;
+
+        &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+        }
+    }
+
+    &-content {
+        padding: 16px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    &-info {
+        h3 {
+            font-size: 1.1rem;
+            margin: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        p {
+            margin: 6px 0 0;
+            font-size: 0.85rem;
+            color: variables.$c-text-secondary;
+
+            .dark & {
+                color: variables.$c-text-secondary-dark;
+            }
+        }
+    }
+
+    &-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 14px;
+    }
+}
+
+@media (max-width: 584px) {
+
+    .dashboard {
+        &-projects {
+            justify-content: center;
+            justify-items: center;
+        }
+
+        &-item {
+            width: 100%;
+            max-width: 280px;
+            margin-left: auto;
+            margin-right: auto;
+        }
     }
 }
