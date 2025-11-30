@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NavBar from './../components/NavBar';
 import useRegister from '../hooks/useRegister';
 import registerData from '../types/RegisterData';
 import { AxiosError } from 'axios';
 import ServerError from '../types/ServerError';
+import SnackbarProvider from '../components/SnackbarProvider';
+import { useSnackbarStore } from '../stores/snackbarStore';
 
 function Register() {
   const [formData, setFormData] = useState<registerData>({
@@ -14,6 +16,17 @@ function Register() {
     phoneNumber: '',
   });
   const { mutate, error, isError, isPending } = useRegister(formData.email);
+  const { openSnackbar } = useSnackbarStore();
+
+  useEffect(() => {
+    if (isError) {
+      openSnackbar(
+        (error as AxiosError<ServerError>).response?.data.message ||
+          'Registration failed',
+        'error',
+      );
+    }
+  }, [isError, error, openSnackbar]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -124,13 +137,9 @@ function Register() {
               </a>
             </p>
           </form>
-          {isError && (
-            <p className="register-form-error__text">
-              {(error as AxiosError<ServerError>).response?.data.message}
-            </p>
-          )}
         </div>
       </div>
+      <SnackbarProvider />
     </div>
   );
 }

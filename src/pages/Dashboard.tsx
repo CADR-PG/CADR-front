@@ -6,12 +6,17 @@ import NavBar from '../components/NavBar';
 import useAuth from '../hooks/useAuth';
 import ProjectCard from '../components/ProjectCard';
 import ProjectData from '../types/ProjectData';
+import { AxiosError } from 'axios';
+import ServerError from '../types/ServerError';
+import SnackbarProvider from '../components/SnackbarProvider';
+import { useSnackbarStore } from '../stores/snackbarStore';
 
 function Dashboard() {
   useAuth();
   const getProjects = useGetProjects();
   const [open, setOpen] = useState(false);
   const addProject = useAddProject();
+  const { openSnackbar } = useSnackbarStore();
 
   const [query, setQuery] = useState<string>('');
 
@@ -35,6 +40,12 @@ function Dashboard() {
     addProject.mutate(data, {
       onSuccess: () => {
         setOpen(false);
+      },
+      onError: (err: unknown) => {
+        const message =
+          (err as AxiosError<ServerError>).response?.data.message ||
+          'Failed to create project';
+        openSnackbar(message, 'error');
       },
     });
   };
@@ -163,6 +174,7 @@ function Dashboard() {
           </div>
         )}
       </section>
+      <SnackbarProvider />
     </div>
   );
 }

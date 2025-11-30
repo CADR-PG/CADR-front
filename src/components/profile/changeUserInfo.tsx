@@ -13,16 +13,14 @@ function ChangeUserInfo() {
     lastName: '',
   });
 
-  const fetchedUser = storeUser;
-
   useEffect(() => {
-    if (fetchedUser) {
+    if (storeUser) {
       setInfoForm({
-        firstName: fetchedUser.firstName,
-        lastName: fetchedUser.lastName,
+        firstName: storeUser.firstName,
+        lastName: storeUser.lastName,
       });
     }
-  }, [fetchedUser]);
+  }, [storeUser]);
 
   if (isPending) return <p>Loading...</p>;
 

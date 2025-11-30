@@ -1,16 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NavBar from './../components/NavBar';
 import useLogin from '../hooks/useLogin';
 import loginData from '../types/LoginData';
 import { AxiosError } from 'axios';
 import ServerError from '../types/ServerError';
+import SnackbarProvider from '../components/SnackbarProvider';
+import { useSnackbarStore } from '../stores/snackbarStore';
 
 function Login() {
   const { mutate, error, isError, isPending } = useLogin();
+  const { openSnackbar } = useSnackbarStore();
   const [formData, setFormData] = useState<loginData>({
     email: '',
     password: '',
   });
+
+  useEffect(() => {
+    if (isError) {
+      openSnackbar(
+        (error as AxiosError<ServerError>).response?.data.message ||
+          'Login failed',
+        'error',
+      );
+    }
+  }, [isError, error, openSnackbar]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -76,13 +89,9 @@ function Login() {
               </a>
             </p>
           </form>
-          {isError && (
-            <p className="login-form-error__text">
-              {(error as AxiosError<ServerError>).response?.data.message}
-            </p>
-          )}
         </div>
       </div>
+      <SnackbarProvider />
     </div>
   );
 }

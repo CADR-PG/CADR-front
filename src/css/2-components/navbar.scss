@@ -11,11 +11,46 @@
         justify-content: space-between;
         align-items: center;
         padding: 12px 24px;
-        transition: background-color 0.4s, border-color 0.4s;
+        transition: background-color 0.4s, border-color 0.4s, box-shadow 0.3s;
 
         .dark & {
             background: variables.$c-bg-header-dark;
             border-color: variables.$c-border-dark;
+        }
+
+        .mobile-menu-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mobile-menu-button {
+            display: none;
+            background: linear-gradient(135deg, rgba(variables.$c-cyan,0.06), rgba(0,0,0,0.02));
+            border: none;
+            padding: 8px;
+            margin-right: 8px;
+            cursor: pointer;
+            color: variables.$c-text-secondary;
+            border-radius: 10px;
+            transition: transform 220ms cubic-bezier(.2,.9,.3,1), background 180ms, box-shadow 180ms;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+
+            &:hover {
+                transform: translateY(-2px) scale(1.02);
+                background: linear-gradient(135deg, rgba(variables.$c-cyan,0.09), rgba(0,0,0,0.03));
+            }
+
+            &.open {
+                transform: rotate(90deg) scale(1.02);
+                box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            }
+
+            svg {
+                display: block;
+                transition: transform 220ms;
+            }
         }
 
     &__logo {
@@ -45,23 +80,73 @@
     }
 
     .navbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: transform 260ms cubic-bezier(.2,.9,.3,1), opacity 200ms;
+
         &__link {
             color: variables.$c-text-secondary;
             text-decoration: none;
             margin: 0 12px;
-            font-size: 0.9rem;
-            transition: color 0.3s;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 8px 10px;
+            border-radius: 8px;
+            transition: color 200ms, transform 200ms, background 200ms;
+            position: relative;
+            overflow: visible;
 
             &:hover {
                 color: variables.$c-text;
+                transform: translateY(-3px);
+                background: linear-gradient(90deg, rgba(variables.$c-cyan,0.06), rgba(0,0,0,0.02));
+            }
 
-                .dark & {
-                    color: variables.$c-text-dark;
-                }
+            &::after {
+                content: "";
+                position: absolute;
+                left: 12%;
+                right: 12%;
+                bottom: 8px;
+                height: 2px;
+                background: linear-gradient(90deg, variables.$c-cyan, rgba(0,0,0,0.06));
+                transform: scaleX(0);
+                transform-origin: left center;
+                transition: transform 240ms cubic-bezier(.2,.9,.3,1);
+                border-radius: 2px;
+                opacity: 0.95;
+            }
+
+            &:hover::after {
+                transform: scaleX(1);
             }
 
             .dark & {
                 color: variables.$c-text-secondary-dark;
+            }
+        }
+
+        &.open {
+            display: flex;
+            flex-direction: column;
+            background: variables.$c-bg-header;
+            border: 1px solid variables.$c-border;
+            border-radius: 12px;
+            padding: 10px;
+            box-shadow: 0 18px 40px rgba(8,12,20,0.12);
+            z-index: 60;
+            transform: translateY(-4px);
+            opacity: 0;
+            animation: slideFadeIn 260ms forwards cubic-bezier(.2,.9,.3,1);
+
+            .dark & {
+                background: variables.$c-bg-header-dark;
+                border-color: variables.$c-border-dark;
+            }
+
+            &__link {
+                margin: 6px 0;
             }
         }
     }
@@ -74,7 +159,9 @@
         cursor: pointer;
         padding: 6px;
         border-radius: 6px;
-        transition: background 0.3s;
+        transition: background 0.3s, transform 180ms;
+        display: inline-flex;
+        align-items: center;
 
         .svg-darkmode-icons {
             width: 22px;
@@ -103,11 +190,82 @@
         }
 
         &:hover {
-            background: rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+            background: rgba(0, 0, 0, 0.04);
 
             .dark & {
-                background: rgba(255, 255, 255, 0.1);
+                background: rgba(255, 255, 255, 0.06);
             }
+        }
+    }
+
+    @media (max-width: 768px) {
+        padding: 10px 12px;
+
+        .mobile-menu-button { 
+            display: inline-flex; 
+        }
+
+        .navbar { 
+            display: none; 
+        }
+
+        .navbar-right {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .mobile-overlay {
+            display: block;
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 12, 20, 0.35);
+            backdrop-filter: blur(2px);
+            z-index: 55;
+            transition: opacity 200ms;
+        }
+
+        .mobile-menu-container {
+            .navbar.open {
+                display: flex;
+                position: absolute;
+                top: calc(100% + 8px);
+                right: 0;
+                left: auto;
+                min-width: 170px;
+                padding: 12px;
+                border-radius: 10px;
+            }
+        } 
+
+
+        
+        .mobile-menu-container {
+            .navbar {
+                .open {
+                    &::before {
+                        background: variables.$c-bg-header-dark;
+                        border-left-color: variables.$c-border-dark;
+                        border-top-color: variables.$c-border-dark;
+                    }
+                }
+            }
+        }
+    }
+
+    .mobile-overlay {
+        display: none;
+    }
+
+    @keyframes slideFadeIn {
+        from {
+            transform: translateY(-8px) scale(0.98);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0) scale(1);
+            opacity: 1;
         }
     }
 }

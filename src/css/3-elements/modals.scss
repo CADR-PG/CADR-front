@@ -49,6 +49,36 @@
             border: 1px solid #ccc;
             box-sizing: border-box;
             resize: vertical;
+
+            .input {
+                resize: vertical;
+                min-height: 80px;
+            }
+        }
+
+        .input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid variables.$c-border;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: border-color 0.2s;
+
+            &:focus {
+                outline: none;
+                border-color: variables.$c-cyan;
+            }
+
+            .dark & {
+                background: variables.$c-bg-dark;
+                border-color: variables.$c-border-dark;
+                color: variables.$c-text-dark;
+
+                &:focus {
+                    border-color: variables.$c-cyan-dark;
+                }
+            }
         }
     }
 
@@ -65,7 +95,7 @@
 
     &-actions {
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
         gap: 12px;
         margin-top: 20px;
     }
@@ -91,34 +121,4 @@
             color: variables.$c-text-dark;
         }
     }
-}
-
-.input {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 6px;
-    border: 1px solid variables.$c-border;
-    box-sizing: border-box;
-    font-size: 14px;
-    transition: border-color 0.2s;
-
-    &:focus {
-        outline: none;
-        border-color: variables.$c-cyan;
-    }
-
-    .dark & {
-        background: variables.$c-bg-dark;
-        border-color: variables.$c-border-dark;
-        color: variables.$c-text-dark;
-
-        &:focus {
-            border-color: variables.$c-cyan-dark;
-        }
-    }
-}
-
-textarea.input {
-    resize: vertical;
-    min-height: 80px;
 }

@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useUserStore from '../stores/useUserStore';
 import Logo from './Logo';
 
 function NavBar() {
   const { isLoggedIn } = useUserStore();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -26,21 +27,80 @@ function NavBar() {
     localStorage.theme = isDark ? 'dark' : 'light';
   }
 
+  function toggleMenu() {
+    setMenuOpen((s) => !s);
+  }
+
+  function closeMenu() {
+    setMenuOpen(false);
+  }
+
   return (
     <header className="site-top">
       <Logo />
-      <nav className="navbar">
-        {isLoggedIn ? (
-          <>
-            <Link to="/change-data" className="navbar__link">
-              Change data
-            </Link>
-            <Link to="/dashboard" className="navbar__link">
-              Dashboard
-            </Link>
-          </>
-        ) : null}
-      </nav>
+
+      <div className="mobile-menu-container">
+        <button
+          className={`mobile-menu-button ${menuOpen ? 'open' : ''}`}
+          onClick={toggleMenu}
+          aria-label={menuOpen ? 'Zamknij menu' : 'Otwórz menu'}
+          aria-expanded={menuOpen}
+        >
+          {menuOpen ? (
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M18 6L6 18M6 6l12 12"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          ) : (
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3 12h18M3 6h18M3 18h18"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
+        </button>
+
+        {menuOpen && (
+          <div
+            className="mobile-overlay"
+            onClick={closeMenu}
+            aria-hidden="true"
+          />
+        )}
+
+        <nav className={`navbar ${menuOpen ? 'open' : ''}`} onClick={closeMenu}>
+          {isLoggedIn ? (
+            <>
+              <Link to="/change-data" className="navbar__link">
+                Change data
+              </Link>
+              <Link to="/dashboard" className="navbar__link">
+                Dashboard
+              </Link>
+            </>
+          ) : null}
+        </nav>
+      </div>
+
       <div className="navbar-right">
         <button
           className="theme-toggle"

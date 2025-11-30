@@ -36,10 +36,16 @@
 
     &-secondary {
         padding: 8px 12px;
-        border-radius: 4;
+        border-radius: 12px;
         border: 1px solid #ccc;
         background: #fff;
         cursor: pointer;
+
+        .dark & {
+            background: variables.$c-bg-dark;
+            border: 1px solid variables.$c-border-dark;
+            color: variables.$c-text-dark;
+        }
     }
 
     &-small {
