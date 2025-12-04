@@ -9,26 +9,26 @@ export default function BasicMaterial({ entity }: ControllerProps) {
   let params;
 
   if (materialData) {
-    params = (materialData.data as BasicMaterialData).parameters;
+    params = materialData.data as BasicMaterialData;
   }
 
   return (
     params && (
       <meshBasicMaterial
-        alphaMap={params.alphaMap}
-        aoMap={params.aoMap}
+        // alphaMap={params.alphaMap}
+        // aoMap={params.aoMap}
         aoMapIntensity={params.aoMapIntensity}
         color={params.color}
         combine={params.combine}
-        envMap={params.envMap}
-        envMapRotation={params.envMapRotation}
+        // envMap={params.envMap}
+        // envMapRotation={params.envMapRotation}
         fog={params.fog}
-        lightMap={params.lightMap}
+        // lightMap={params.lightMap}
         lightMapIntensity={params.lightMapIntensity}
-        map={params.map}
+        // map={params.map}
         reflectivity={params.reflectivity}
         refractionRatio={params.refractionRatio}
-        specularMap={params.specularMap}
+        // specularMap={params.specularMap}
         wireframe={params.wireframe}
         wireframeLinecap={params.wireframeLinecap}
         wireframeLinejoin={params.wireframeLinejoin}
