@@ -1,21 +1,20 @@
 import { ChangeEvent } from 'react';
-import Material from '../../../engine/components/Material';
+import Material, { MaterialData } from '../../../engine/components/Material';
 import { Entity } from '../../../engine/Entity';
 import { ECS } from '../../../engine/ECS';
 import ColorPicker from './ColorPicker';
 import EnvMapRotation from './EnvMapRotation';
 import Wireframe from './Wireframe';
 
-interface MaterialInspectorProps {
+interface MaterialInspectorProps<T extends MaterialData> {
   entity: Entity;
-  component: Material;
+  data: T;
 }
 
-export default function MaterialInspector({
+export default function MaterialInspector<T extends MaterialData>({
   entity,
-  component,
-}: MaterialInspectorProps) {
-  const { name: _name, ...snap } = component;
+  data,
+}: MaterialInspectorProps<T>) {
   const materialWrite = ECS.instance.entityManager.getComponent(
     Material,
     entity,
@@ -23,37 +22,46 @@ export default function MaterialInspector({
 
   if (!materialWrite) return;
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>, key: string) => {
+  function handleChange<K extends keyof T>(
+    e: ChangeEvent<HTMLInputElement>,
+    key: K,
+  ) {
     if (!materialWrite) return;
 
     const type = e.currentTarget.type;
     switch (type) {
       case 'text':
-        materialWrite.data.parameters[key] = e.currentTarget.value;
+        (materialWrite.data as T)[key] = e.currentTarget.value as T[K];
         break;
       case 'number':
-        materialWrite.data.parameters[key] = Number(e.currentTarget.value);
+        (materialWrite.data as T)[key] = Number(e.currentTarget.value) as T[K];
         break;
       case 'checkbox':
-        materialWrite.data.parameters[key] = e.currentTarget.checked;
+        (materialWrite.data as T)[key] = e.currentTarget.checked as T[K];
         break;
     }
-  };
+  }
 
-  const renderSwitch = (key: string) => {
+  function renderSwitch<K extends keyof T>(key: K) {
     switch (key) {
+      case 'type':
+        return null;
       case 'color':
         return (
           <ColorPicker
             entity={entity}
-            componentColor={component.data.parameters.color}
+            componentColor={'color' in data ? (data.color as number) : 0}
           />
         );
       case 'envMapRotation':
         return (
           <EnvMapRotation
             entity={entity}
-            envMapRotation={component.data.parameters.envMapRotation}
+            envMapRotation={
+              'envMapRotation' in data
+                ? (data.envMapRotation as [number, number, number])
+                : [0, 0, 0]
+            }
           />
         );
       case 'wireframeLinecap':
@@ -61,36 +69,46 @@ export default function MaterialInspector({
         return (
           <Wireframe
             entity={entity}
-            wireframe={component.data.parameters[key]}
+            // TODO(m1k53r): this is kinda stupid. we should probably have
+            // a separate type for this.
+            wireframe={data[key] as 'round' | 'bevel' | 'miter'}
             wireframeKey={key}
           />
         );
-      default:
+    }
+    switch (typeof data[key]) {
+      case 'string':
+        return (
+          <input value={data[key]} onChange={(e) => handleChange(e, key)} />
+        );
+      case 'number':
         return (
           <input
-            type={
-              typeof component.data.parameters[key] === 'boolean'
-                ? 'checkbox'
-                : typeof component.data.parameters[key] === 'number'
-                  ? 'number'
-                  : ''
-            }
-            value={snap.data.parameters[key]}
-            checked={snap.data.parameters[key]}
+            type="number"
+            value={data[key]}
             onChange={(e) => handleChange(e, key)}
-            onClick={(e) => handleChange(e, key)}
-          ></input>
+          />
+        );
+      case 'boolean':
+        return (
+          <input
+            type="checkbox"
+            checked={data[key]}
+            onChange={(e) => handleChange(e, key)}
+          />
         );
     }
-  };
+  }
 
   return (
     <>
-      {Object.keys(snap.data.parameters).map((key) => {
+      {Object.keys(data).map((key) => {
         return (
           <div className="inspector-panel" key={key}>
             <div className="inspector-field">{key}</div>
-            <div className="inspector-input">{renderSwitch(key)}</div>
+            <div className="inspector-input">
+              {renderSwitch(key as keyof T)}
+            </div>
           </div>
         );
       })}

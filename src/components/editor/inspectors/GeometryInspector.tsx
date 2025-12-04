@@ -1,20 +1,22 @@
 import { ChangeEvent } from 'react';
-import Geometry, { GeometryData } from '../../../engine/components/Geometry';
+import Geometry, {
+  GeometryData,
+  Point,
+} from '../../../engine/components/Geometry';
 import { ECS } from '../../../engine/ECS';
 import { Entity } from '../../../engine/Entity';
-import Objects from '../../../data/ObjectNames';
 import Points from './Points';
 import Type from './Type';
 
-interface GeometryInspectorProps {
+interface GeometryInspectorProps<T extends GeometryData> {
   entity: Entity;
-  data: GeometryData;
+  data: T;
 }
 
-export default function GeometryInspector({
+export default function GeometryInspector<T extends GeometryData>({
   entity,
   data,
-}: GeometryInspectorProps) {
+}: GeometryInspectorProps<T>) {
   const geometryWrite = ECS.instance.entityManager.getComponent(
     Geometry,
     entity,
@@ -22,65 +24,79 @@ export default function GeometryInspector({
 
   if (!geometryWrite) return;
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>, key: string) => {
-    const type = e.currentTarget.type;
-
-    console.log('click');
+  // NOTE(m1k53r): this is a little complicated, but it says that
+  // T is a child of GeometryData and K is a key of that type.
+  // This is exactly what I wanted (thanks ChatGPT),
+  // but as I said, a little hard to read. The same thing will probably
+  // be implemented for other inspectors.
+  //
+  // NOTE(m1k53r): this is a normal function instead of arrow, because
+  // Treesitter in NeoVim breaks with generic arrows lol.
+  function handleChange<K extends keyof T>(
+    e: ChangeEvent<HTMLInputElement>,
+    data: T,
+    key: K,
+  ) {
+    const type = typeof data[key];
 
     switch (type) {
-      case 'text':
-        geometryWrite.data[key] = e.currentTarget.value;
+      case 'string':
+        data[key] = e.currentTarget.value as T[K];
         break;
       case 'number':
-        geometryWrite.data[key] = Number(e.currentTarget.value);
+        data[key] = Number(e.currentTarget.value) as T[K];
         break;
       case 'boolean':
-        geometryWrite.data[key] = e.currentTarget.checked;
+        data[key] = e.currentTarget.checked as T[K];
         break;
     }
-  };
+  }
 
-  const renderSwitch = (key: string) => {
+  function renderSwitch<K extends keyof T>(key: K) {
     if (!geometryWrite) return;
 
     switch (key) {
       case 'type':
         return <Type entity={entity} type={data.type} />;
       case 'points':
-        return <Points entity={entity} points={data.points} />;
+        return (
+          <Points
+            entity={entity}
+            points={'points' in data ? (data.points as Point[]) : []}
+          />
+        );
       default:
         break;
     }
 
-    switch (typeof data[key as keyof GeometryData]) {
+    switch (typeof data[key]) {
       case 'number':
         return (
           <input
             type="number"
             value={data[key as keyof GeometryData]}
-            onChange={(e) => handleChange(e, key)}
+            onChange={(e) => handleChange(e, geometryWrite.data as T, key)}
           />
         );
       case 'boolean':
         return (
           <input
             type="checkbox"
-            // TODO(m1k53r): this doesn't work lol
-            checked={data[key as keyof GeometryData]}
-            onChange={(e) => handleChange(e, key)}
+            checked={data[key]}
+            onChange={(e) => handleChange(e, geometryWrite.data as T, key)}
           />
         );
       case 'string':
         return (
           <input
             value={data[key as keyof GeometryData]}
-            onChange={(e) => handleChange(e, key)}
+            onChange={(e) => handleChange(e, geometryWrite.data as T, key)}
           />
         );
       default:
         break;
     }
-  };
+  }
 
   return (
     <>
@@ -88,7 +104,9 @@ export default function GeometryInspector({
         return (
           <div className="inspector-panel" key={key}>
             <div className="inspector-field">{key}</div>
-            <div className="inspector-input">{renderSwitch(key)}</div>
+            <div className="inspector-input">
+              {renderSwitch(key as keyof T)}
+            </div>
           </div>
         );
       })}

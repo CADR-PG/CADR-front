@@ -12,9 +12,7 @@ import { InputAdornment, Popover, TextField } from '@mui/material';
 import { HexColorPicker } from 'react-colorful';
 
 interface ColorData extends MaterialData {
-  parameters: {
-    color: number;
-  };
+  color: number;
 }
 
 interface ColorMaterial extends Material {
@@ -34,9 +32,6 @@ export default function ColorPicker({
     Material,
     entity,
   ) as ColorMaterial;
-
-  if (!materialWrite) return;
-
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [color, setColor] = useState<string>('');
   const open = Boolean(anchorEl);
@@ -46,21 +41,21 @@ export default function ColorPicker({
   // so that both input forms are synchronized with each other.
   useEffect(() => {
     setColor(stringColor);
-  }, [componentColor]);
+  }, [componentColor, stringColor]);
 
   const handleHexColor = (
     e: FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>,
   ) => {
     const color = Number.parseInt(e.currentTarget.value, 16);
 
-    materialWrite.data.parameters.color = color;
+    materialWrite.data.color = color;
   };
 
   const handleColor = (color: string) => {
     // NOTE(m1k53r): `color` starts with '#' character,
     // so we have to start from the second character to parse it correctly.
     const c = Number.parseInt(color.slice(1), 16);
-    materialWrite.data.parameters.color = c;
+    materialWrite.data.color = c;
   };
 
   const handleOpen = (event: MouseEvent<HTMLButtonElement>) => {
