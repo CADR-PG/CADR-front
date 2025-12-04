@@ -6,9 +6,7 @@ import { Entity } from '../../../engine/Entity';
 type envMapRotationType = [number, number, number];
 
 interface MaterialEnvMapData extends MaterialData {
-  parameters: {
-    envMapRotation: envMapRotationType;
-  };
+  envMapRotation: envMapRotationType;
 }
 
 interface MaterialEnvMap extends Material {
@@ -32,8 +30,7 @@ export default function EnvMapRotation({
   if (!materialWrite) return;
 
   const handleEnvMap = (e: ChangeEvent<HTMLInputElement>, index: number) => {
-    materialWrite.data.parameters.envMapRotation[index] =
-      e.currentTarget.valueAsNumber;
+    materialWrite.data.envMapRotation[index] = e.currentTarget.valueAsNumber;
   };
 
   return (

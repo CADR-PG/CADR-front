@@ -58,7 +58,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
       position={transformRead?.position}
       rotation={transformRead?.rotation}
       scale={transformRead?.scale}
-      // onChange={handleChange}
+      onChange={handleChange}
       mode={editingMode}
     >
       <mesh

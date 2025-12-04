@@ -1,30 +1,20 @@
-import { MeshBasicMaterialParameters, MultiplyOperation } from 'three';
+import { MultiplyOperation } from 'three';
 import { MaterialData } from '../Material';
-
-type MeshBasicMaterialParametersData = Omit<
-  MeshBasicMaterialParameters,
-  'envMapRotation' | 'color'
-> & {
-  envMapRotation: [number, number, number];
-  color: number;
-};
 
 export default class BasicMaterialData implements MaterialData {
   type: string = 'basic';
   constructor(
-    public parameters: MeshBasicMaterialParametersData = {
-      aoMapIntensity: 1,
-      color: 0xffffff,
-      combine: MultiplyOperation,
-      envMapRotation: [0, 0, 0],
-      fog: true,
-      lightMapIntensity: 1,
-      reflectivity: 1,
-      refractionRatio: 0.98,
-      wireframe: false,
-      wireframeLinecap: 'round',
-      wireframeLinejoin: 'round',
-      wireframeLinewidth: 1,
-    },
+    public aoMapIntensity = 1,
+    public color = 0xffffff,
+    public combine = MultiplyOperation,
+    public envMapRotation = [0, 0, 0],
+    public fog = true,
+    public lightMapIntensity = 1,
+    public reflectivity = 1,
+    public refractionRatio = 0.98,
+    public wireframe = false,
+    public wireframeLinecap = 'round',
+    public wireframeLinejoin = 'round',
+    public wireframeLinewidth = 1,
   ) {}
 }

@@ -80,7 +80,7 @@ function InspectorWindow() {
         return (
           <MaterialInspector
             entity={focused}
-            component={snap[key] as Material}
+            data={(snap[key] as Material).data}
           />
         );
       default:
