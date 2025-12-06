@@ -7,26 +7,20 @@ import useAuth from '../hooks/useAuth';
 import NavBar from './../components/NavBar';
 
 export default function UserLocationMap() {
-  const [locations, setLocations] = useState([]);
-
-  useEffect(() => {
-    setLocations(mockLocations);
-  }, []);
+  const [locations, setLocations] = useState(mockLocations);
 
   useAuth();
 
-  if (locations.length === 0) return <p>Brak danych o lokalizacji.</p>;
-
-  const center = [
-    locations[0].latitude,
-    locations[0].longitude
-  ];
+  const center = locations.length > 0
+    ? [locations[0].latitude, locations[0].longitude]
+    : [0, 0];
+  const defaultZoom = locations.length > 0 ? 6 : 2;
 
   return (
     <div className="container">
       <NavBar />
       <div className="map-wrapper">
-        <MapContainer center={center} zoom={6} className="user-map">
+        <MapContainer center={center} zoom={defaultZoom} className="user-map">
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
           {locations.map(loc => (
