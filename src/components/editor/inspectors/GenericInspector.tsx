@@ -2,16 +2,18 @@ import { ChangeEvent } from 'react';
 import { Component } from '../../../engine/Component';
 import { Entity } from '../../../engine/Entity';
 import { ECS } from '../../../engine/ECS';
+import { Checkbox, TextField } from '@mui/material';
+import NumberField from '../../NumberField';
 
-interface GenericInspectorProps {
+interface GenericInspectorProps<T extends Component> {
   entity: Entity;
-  component: Component;
+  component: T;
 }
 
-export default function GenericInspector({
+export default function GenericInspector<T extends Component>({
   entity,
   component,
-}: GenericInspectorProps) {
+}: GenericInspectorProps<T>) {
   if (Object.keys(component).length === 0) return;
 
   const { name: name, element: _element, ...snap } = component;
@@ -20,14 +22,50 @@ export default function GenericInspector({
     entity,
   );
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    key: keyof Component,
-  ) => {
+  function handleNumber<K extends keyof T>(value: number | null, key: K) {
+    if (!value) return;
+
+    (writeComponent as T)[key] = value as T[K];
+  }
+
+  function handleChange<K extends keyof T>(
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    key: K,
+  ) {
     if (!writeComponent) return;
 
-    writeComponent[key] = e.target.value;
-  };
+    (writeComponent as T)[key] = e.target.value as T[K];
+  }
+
+  function renderSwitch<K extends keyof T>(key: K) {
+    switch (typeof component[key]) {
+      case 'number':
+        return (
+          <NumberField
+            value={component[key]}
+            size="small"
+            onValueChange={(num) => handleNumber(num, key)}
+          />
+        );
+      case 'boolean':
+        return (
+          <Checkbox
+            checked={component[key]}
+            onChange={(e) => handleChange(e, key)}
+          />
+        );
+      case 'string':
+        return (
+          <TextField
+            value={component[key]}
+            onChange={(e) => handleChange(e, key)}
+            size="small"
+          />
+        );
+      default:
+        break;
+    }
+  }
 
   return (
     <>
@@ -36,15 +74,7 @@ export default function GenericInspector({
           <div className="inspector-panel" key={key}>
             <div className="inspector-field">{key}</div>
             <div className="inspector-input">
-              <input
-                value={component[key as keyof Component]}
-                type={
-                  typeof component[key as keyof Component] === 'boolean'
-                    ? 'checkbox'
-                    : ''
-                }
-                onChange={(e) => handleChange(e, key as keyof Component)}
-              />
+              {renderSwitch(key as keyof T)}
             </div>
           </div>
         );

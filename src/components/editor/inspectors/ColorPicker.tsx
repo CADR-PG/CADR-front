@@ -8,7 +8,7 @@ import {
 import { Entity } from '../../../engine/Entity';
 import { ECS } from '../../../engine/ECS';
 import Material, { MaterialData } from '../../../engine/components/Material';
-import { InputAdornment, Popover, TextField } from '@mui/material';
+import { Button, InputAdornment, Popover, TextField } from '@mui/material';
 import { HexColorPicker } from 'react-colorful';
 
 interface ColorData extends MaterialData {
@@ -77,12 +77,13 @@ export default function ColorPicker({
 
   return (
     <>
-      <button
+      <Button
         // NOTE(m1k53r): this is for dynamically setting the button color.
         // let me know if we can do this wihout inline css.
         style={{ background: '#' + stringColor }}
         onClick={handleOpen}
-      ></button>
+        size="large"
+      ></Button>
       <Popover
         className="picker"
         anchorOrigin={{

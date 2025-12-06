@@ -2,6 +2,7 @@ import { ChangeEvent } from 'react';
 import Material, { MaterialData } from '../../../engine/components/Material';
 import { ECS } from '../../../engine/ECS';
 import { Entity } from '../../../engine/Entity';
+import NumberField from '../../NumberField';
 
 type envMapRotationType = [number, number, number];
 
@@ -29,32 +30,34 @@ export default function EnvMapRotation({
 
   if (!materialWrite) return;
 
-  const handleEnvMap = (e: ChangeEvent<HTMLInputElement>, index: number) => {
-    materialWrite.data.envMapRotation[index] = e.currentTarget.valueAsNumber;
+  const handleEnvMap = (value: number | null, index: number) => {
+    if (value === null) return;
+
+    materialWrite.data.envMapRotation[index] = value;
   };
 
   return (
     <div className="inspector-input-columns">
-      x:
-      <input
+      <NumberField
         className="inspector-input-columns-column"
-        type="number"
         value={envMapRotation[0]}
-        onChange={(e) => handleEnvMap(e, 0)}
+        onValueChange={(value) => handleEnvMap(value, 0)}
+        size="small"
+        label="x"
       />
-      y:
-      <input
+      <NumberField
         className="inspector-input-columns-column"
-        type="number"
         value={envMapRotation[1]}
-        onChange={(e) => handleEnvMap(e, 1)}
+        onValueChange={(value) => handleEnvMap(value, 1)}
+        size="small"
+        label="y"
       />
-      z:
-      <input
+      <NumberField
         className="inspector-input-columns-column"
-        type="number"
         value={envMapRotation[2]}
-        onChange={(e) => handleEnvMap(e, 2)}
+        onValueChange={(value) => handleEnvMap(value, 2)}
+        size="small"
+        label="z"
       />
     </div>
   );

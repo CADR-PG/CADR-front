@@ -5,6 +5,8 @@ import { ECS } from '../../../engine/ECS';
 import ColorPicker from './ColorPicker';
 import EnvMapRotation from './EnvMapRotation';
 import Wireframe from './Wireframe';
+import { Checkbox, TextField } from '@mui/material';
+import NumberField from '../../NumberField';
 
 interface MaterialInspectorProps<T extends MaterialData> {
   entity: Entity;
@@ -23,7 +25,7 @@ export default function MaterialInspector<T extends MaterialData>({
   if (!materialWrite) return;
 
   function handleChange<K extends keyof T>(
-    e: ChangeEvent<HTMLInputElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     key: K,
   ) {
     if (!materialWrite) return;
@@ -33,13 +35,16 @@ export default function MaterialInspector<T extends MaterialData>({
       case 'text':
         (materialWrite.data as T)[key] = e.currentTarget.value as T[K];
         break;
-      case 'number':
-        (materialWrite.data as T)[key] = Number(e.currentTarget.value) as T[K];
-        break;
       case 'checkbox':
         (materialWrite.data as T)[key] = e.currentTarget.checked as T[K];
         break;
     }
+  }
+
+  function handleNumber<K extends keyof T>(value: number | null, key: K) {
+    if (!materialWrite || value === null) return;
+
+    (materialWrite.data as T)[key] = value as T[K];
   }
 
   function renderSwitch<K extends keyof T>(key: K) {
@@ -79,22 +84,26 @@ export default function MaterialInspector<T extends MaterialData>({
     switch (typeof data[key]) {
       case 'string':
         return (
-          <input value={data[key]} onChange={(e) => handleChange(e, key)} />
-        );
-      case 'number':
-        return (
-          <input
-            type="number"
+          <TextField
+            size="small"
             value={data[key]}
             onChange={(e) => handleChange(e, key)}
           />
         );
+      case 'number':
+        return (
+          <NumberField
+            value={data[key]}
+            onValueChange={(value) => handleNumber(value, key)}
+            size="small"
+          />
+        );
       case 'boolean':
         return (
-          <input
-            type="checkbox"
+          <Checkbox
             checked={data[key]}
             onChange={(e) => handleChange(e, key)}
+            size="small"
           />
         );
     }

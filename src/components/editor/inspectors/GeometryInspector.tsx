@@ -7,6 +7,8 @@ import { ECS } from '../../../engine/ECS';
 import { Entity } from '../../../engine/Entity';
 import Points from './Points';
 import Type from './Type';
+import { Checkbox, TextField } from '@mui/material';
+import NumberField from '../../NumberField';
 
 interface GeometryInspectorProps<T extends GeometryData> {
   entity: Entity;
@@ -33,7 +35,7 @@ export default function GeometryInspector<T extends GeometryData>({
   // NOTE(m1k53r): this is a normal function instead of arrow, because
   // Treesitter in NeoVim breaks with generic arrows lol.
   function handleChange<K extends keyof T>(
-    e: ChangeEvent<HTMLInputElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     data: T,
     key: K,
   ) {
@@ -49,6 +51,12 @@ export default function GeometryInspector<T extends GeometryData>({
       case 'boolean':
         data[key] = e.currentTarget.checked as T[K];
         break;
+    }
+  }
+
+  function handleNumber<K extends keyof T>(value: number | null, key: K) {
+    if (geometryWrite && value !== null) {
+      (geometryWrite.data as T)[key] = value as T[K];
     }
   }
 
@@ -72,25 +80,26 @@ export default function GeometryInspector<T extends GeometryData>({
     switch (typeof data[key]) {
       case 'number':
         return (
-          <input
-            type="number"
-            value={data[key as keyof GeometryData]}
-            onChange={(e) => handleChange(e, geometryWrite.data as T, key)}
+          <NumberField
+            value={data[key as keyof T] as number}
+            onValueChange={(value) => handleNumber(value, key)}
+            size="small"
           />
         );
       case 'boolean':
         return (
-          <input
-            type="checkbox"
+          <Checkbox
             checked={data[key]}
             onChange={(e) => handleChange(e, geometryWrite.data as T, key)}
+            size="small"
           />
         );
       case 'string':
         return (
-          <input
+          <TextField
             value={data[key as keyof GeometryData]}
             onChange={(e) => handleChange(e, geometryWrite.data as T, key)}
+            size="small"
           />
         );
       default:
