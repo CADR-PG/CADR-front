@@ -1,0 +1,18 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-wrapper {
+  width: 100%;
+  flex: 1; 
+  -webkit-column-break-inside: avoid;
+  break-inside: avoid;
+  column-span: all;
+}
+
+.user-map {
+  width: 100vw;
+  height: calc(100vh - 66px);
+}
