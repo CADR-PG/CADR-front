@@ -1,0 +1,53 @@
+@use "../0-site/variables";
+
+.not-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+
+  &__inner {
+    max-width: 600px;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  &__code {
+    font-size: 6rem;
+    margin: 0;
+    color: variables.$c-cyan;
+
+    .dark & {
+      color: variables.$c-cyan-dark;
+    }
+  }
+
+  &__message {
+    font-size: 1.25rem;
+    margin-top: 0.5rem;
+    color: variables.$c-text-secondary;
+
+    .dark & {
+      color: variables.$c-text-secondary-dark;
+    }
+  }
+
+  &__link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: variables.$c-cyan;
+    text-decoration: none;
+    padding: 0.5rem 0.9rem;
+    border-radius: 6px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    .dark & {
+      color: variables.$c-cyan-dark;
+    }
+
+    &:hover {
+      text-decoration: underline;
+      background-color: rgba(0,0,0,0.03);
+    }
+  }
+}
