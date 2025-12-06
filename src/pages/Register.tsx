@@ -96,21 +96,6 @@ function Register() {
                 required
               />
             </div>
-            <div className="register-form register-form--phoneNumber">
-              <label htmlFor="phone" className="register-form__text">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                name="phoneNumber"
-                className="input form-phone"
-                placeholder="+48 123 456 789"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                pattern="[0-9]{9,15}"
-                required
-              />
-            </div>
             <button
               className="btn-primary btn-primary-register"
               type="submit"
