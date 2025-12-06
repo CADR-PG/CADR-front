@@ -2,6 +2,7 @@ import { ChangeEvent } from 'react';
 import Transform, { Vec3 } from '../../../engine/components/Transform';
 import { Entity } from '../../../engine/Entity';
 import { ECS } from '../../../engine/ECS';
+import NumberField from '../../NumberField';
 
 interface TransformInspectorProps {
   entity: Entity;
@@ -19,16 +20,16 @@ export default function TransformInspector({
   );
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement>,
+    value: number | null,
     // NOTE(m1k53r): I'm not sure if using keyof typeof is
     // readable enough. here I'm saying that key is either
     // 'position', 'rotation' or 'scale'.
     key: keyof typeof snap,
     position: number,
   ) => {
-    if (!transformWrite) return;
+    if (!transformWrite || value === null) return;
 
-    transformWrite[key][position] = Number(e.currentTarget.value);
+    transformWrite[key][position] = value;
   };
 
   return (
@@ -44,26 +45,26 @@ export default function TransformInspector({
             <div className="inspector-field">{key}</div>
             <div className="inspector-input">
               <div className="inspector-input-columns">
-                x:
-                <input
+                <NumberField
                   className="inspector-input-columns-column"
-                  type="number"
                   value={(snap[key] as Vec3)[0]}
-                  onChange={(e) => handleChange(e, key, 0)}
+                  onValueChange={(value) => handleChange(value, key, 0)}
+                  size="small"
+                  label="x"
                 />
-                y:
-                <input
+                <NumberField
                   className="inspector-input-columns-column"
-                  type="number"
                   value={(snap[key] as Vec3)[1]}
-                  onChange={(e) => handleChange(e, key, 1)}
+                  onValueChange={(value) => handleChange(value, key, 1)}
+                  size="small"
+                  label="y"
                 />
-                z:
-                <input
+                <NumberField
                   className="inspector-input-columns-column"
-                  type="number"
                   value={(snap[key] as Vec3)[2]}
-                  onChange={(e) => handleChange(e, key, 2)}
+                  onValueChange={(value) => handleChange(value, key, 2)}
+                  size="small"
+                  label="z"
                 />
               </div>
             </div>

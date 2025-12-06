@@ -3,7 +3,7 @@ import { useEditorContext } from '../../hooks/useEditorContext';
 import useEntityManager from '../../hooks/useEntityManager';
 import GenericInspector from './inspectors/GenericInspector';
 import AddIcon from '@mui/icons-material/Add';
-import { IconButton, Menu, MenuItem } from '@mui/material';
+import { Button, IconButton, Menu, MenuItem } from '@mui/material';
 import { ECS } from '../../engine/ECS';
 import DeleteIcon from '@mui/icons-material/Delete';
 import GeometryInspector from './inspectors/GeometryInspector';
@@ -103,7 +103,7 @@ function InspectorWindow() {
                     className="component-header-close-btn"
                     onClick={() => handleDelete(key)}
                   >
-                    <DeleteIcon className="component-header-close-btn-icon"></DeleteIcon>
+                    <DeleteIcon></DeleteIcon>
                   </IconButton>
                 </div>
                 {renderSwitch(key)}
@@ -112,13 +112,9 @@ function InspectorWindow() {
             );
           })}
           <div className="add-component">
-            <button
-              className="add-component-button"
-              type="button"
-              onClick={handleOpen}
-            >
+            <Button onClick={handleOpen} fullWidth variant="contained">
               <AddIcon />
-            </button>
+            </Button>
           </div>
           <Menu
             anchorReference="anchorPosition"

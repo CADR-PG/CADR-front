@@ -3,6 +3,7 @@ import Geometry from '../../../engine/components/Geometry';
 import { ECS } from '../../../engine/ECS';
 import { Entity } from '../../../engine/Entity';
 import Objects from '../../../data/ObjectNames';
+import { MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 
 interface TypeProps {
   entity: Entity;
@@ -17,10 +18,10 @@ export default function Type({ entity, type }: TypeProps) {
 
   if (!geometryWrite) return;
 
-  const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleSelect = (e: SelectChangeEvent) => {
     if (!geometryWrite) return;
 
-    const name = e.currentTarget.value;
+    const name = e.target.value;
 
     ECS.instance.entityManager.removeComponent(Geometry, entity);
     ECS.instance.entityManager.addComponent(
@@ -30,14 +31,14 @@ export default function Type({ entity, type }: TypeProps) {
   };
 
   return (
-    <select onChange={handleSelect} defaultValue={type}>
+    <Select onChange={handleSelect} value={type} size="small">
       {Object.keys(Objects).map((object) => {
         return (
-          <option key={object} value={object}>
+          <MenuItem key={object} value={object}>
             {object}
-          </option>
+          </MenuItem>
         );
       })}
-    </select>
+    </Select>
   );
 }
