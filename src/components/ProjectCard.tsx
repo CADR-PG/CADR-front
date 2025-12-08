@@ -3,7 +3,9 @@ import { useState } from 'react';
 import ProjectData from '../types/ProjectData';
 import thumbnail from '../assets/thumbnail.jpg';
 import useEditProject from '../hooks/useEditProject';
-import Modal from './Modal';
+import Modal from '../modals/ManageProjectModal';
+import DeleteProjectModal from '../modals/DeleteProjectModal';
+import { deleteProject as apiDeleteProject } from '../api/client';
 
 interface ProjectCardProps {
   project: ProjectData;
@@ -12,15 +14,12 @@ interface ProjectCardProps {
 export default function ProjectCard({ project }: ProjectCardProps) {
   const navigate = useNavigate();
   const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const editProject = useEditProject();
 
   const redirect = (uuid: string) => {
     navigate(`/editor/${uuid}`);
-  };
-
-  const deleteProject = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setEditOpen(false);
   };
 
   const handleEditOpen = (e: React.MouseEvent<HTMLElement>) => {
@@ -47,6 +46,32 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         },
       },
     );
+  };
+
+  // Delete handlers
+  const handleDeleteOpen = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    setDeleteOpen(true);
+  };
+
+  const handleDeleteClose = () => {
+    setDeleteOpen(false);
+  };
+
+  const handleDeleteConfirm = async (e?: React.MouseEvent<HTMLElement>) => {
+    if (e) e.stopPropagation();
+    setDeleting(true);
+    try {
+      await apiDeleteProject(project.id);
+      setDeleting(false);
+      setDeleteOpen(false);
+      // Proste odświeżenie listy po usunięciu. Można zastąpić callbackiem z rodzica.
+      window.location.reload();
+    } catch (err) {
+      setDeleting(false);
+      console.error(err);
+      alert('Nie udało się usunąć projektu.');
+    }
   };
 
   return (
@@ -84,7 +109,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               className="btn-small"
               onClick={(e) => {
                 e.stopPropagation();
-                deleteProject(e);
+                handleDeleteOpen(e);
               }}
             >
               Delete
@@ -93,6 +118,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </div>
       </div>
 
+      {/* edit modal (pozostaje bez zmian) */}
       <Modal open={editOpen} onClose={handleEditClose} title="Edit scene">
         <form onSubmit={handleEditSubmit}>
           <div className="form-row">
@@ -136,6 +162,15 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           </div>
         </form>
       </Modal>
+
+      {/* zmienione — użycie nowego komponentu potwierdzającego usunięcie */}
+      <DeleteProjectModal
+        open={deleteOpen}
+        onClose={handleDeleteClose}
+        projectName={project.name}
+        onConfirm={handleDeleteConfirm}
+        deleting={deleting}
+      />
     </>
   );
 }
