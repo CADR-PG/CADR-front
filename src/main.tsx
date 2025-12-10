@@ -57,9 +57,9 @@ const router = createBrowserRouter([
     element: <UserLocationMap />,
   },
   {
-      path: '*',
-      element: <NotFound />,
-  }
+    path: '*',
+    element: <NotFound />,
+  },
 ]);
 
 const queryClient = new QueryClient();
