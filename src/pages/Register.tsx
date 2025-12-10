@@ -10,8 +10,7 @@ function Register() {
     firstName: '',
     lastName: '',
     email: '',
-    password: '',
-    phoneNumber: '',
+    password: ''
   });
   const { mutate, isPending } = useRegister(formData.email);
 
