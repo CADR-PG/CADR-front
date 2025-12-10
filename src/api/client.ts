@@ -10,7 +10,7 @@ import AddProjectData from '../types/AddProjectData';
 import SaveSceneData from '../types/SaveSceneData';
 
 const localApiUrl = '/api';
-const productionApiUrl = ' https://api.cadr.studio';
+const productionApiUrl = 'https://api.cadr.studio';
 export const apiUrl = import.meta.env.DEV ? localApiUrl : productionApiUrl;
 
 export const apiClient = axios.create({
@@ -24,7 +24,7 @@ export const apiClient = axios.create({
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    if (error.status === 401) {
+    if (error.response?.status === 401) {
       const refreshResponse = await refreshToken();
       if (refreshResponse.status === 200) {
         return await apiClient(error.config!);
@@ -63,6 +63,10 @@ export const logout = async () => {
 
 export const refreshToken = async () => {
   return await apiClient.post('/users/refresh');
+};
+
+export const fetchLocationLogs = async () => {
+  return await apiClient.post('/users/location-logs');
 };
 
 export const changeUserInfo = async (data: ChangeInfoData) =>

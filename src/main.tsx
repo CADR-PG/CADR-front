@@ -53,8 +53,8 @@ const router = createBrowserRouter([
   },
   {
     path: '/user/map',
-    element: <UserLocationMap />
-  }
+    element: <UserLocationMap />,
+  },
 ]);
 
 const queryClient = new QueryClient();
