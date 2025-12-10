@@ -13,6 +13,7 @@ import Logout from './pages/Logout.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import ChangeData from './pages/Profile.tsx';
 import UserLocationMap from './pages/UserLocationMap.tsx';
+import NotFound from './pages/404.tsx';
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
     path: '/user/map',
     element: <UserLocationMap />,
   },
+  {
+      path: '*',
+      element: <NotFound />,
+  }
 ]);
 
 const queryClient = new QueryClient();
