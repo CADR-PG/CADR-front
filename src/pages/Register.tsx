@@ -11,7 +11,6 @@ function Register() {
     lastName: '',
     email: '',
     password: '',
-    phoneNumber: '',
   });
   const { mutate, isPending } = useRegister(formData.email);
 
@@ -93,21 +92,6 @@ function Register() {
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="register-form register-form--phoneNumber">
-              <label htmlFor="phone" className="register-form__text">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                name="phoneNumber"
-                className="input form-phone"
-                placeholder="+48 123 456 789"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                pattern="[0-9]{9,15}"
                 required
               />
             </div>
