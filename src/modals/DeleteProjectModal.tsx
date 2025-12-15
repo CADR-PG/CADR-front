@@ -18,10 +18,7 @@ export default function DeleteProjectModal({
 }: DeleteProjectModalProps) {
   return (
     <Modal open={open} onClose={onClose} title="Delete project">
-      <p>
-        Are you sure you want to delete "{projectName}"? This action cannot be
-        undone.
-      </p>
+      <p>Are you sure you want to delete "{projectName}"?</p>
       <div className="modal-actions">
         <button
           type="button"
@@ -33,7 +30,7 @@ export default function DeleteProjectModal({
         </button>
         <button
           type="button"
-          className="btn btn-primary"
+          className="btn btn-warning"
           onClick={onConfirm}
           disabled={deleting}
         >
