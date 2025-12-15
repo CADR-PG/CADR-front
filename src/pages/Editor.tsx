@@ -11,6 +11,9 @@ import useLoadScene from '../hooks/useLoadScene';
 import { useParams } from 'react-router-dom';
 import { ECS } from '../engine/ECS';
 import EditingMode from '../types/EditingMode';
+import { Camera } from '../engine/components/Camera';
+import Transform from '../engine/components/Transform';
+import Name from '../engine/components/Name';
 
 function Editor() {
   const [focused, focus] = useState<string | null>(null);
@@ -24,6 +27,11 @@ function Editor() {
       // TODO: xdd
       const json = data.data.data;
       ECS.instance.entityManager.setScene(json);
+      const entity = ECS.instance.entityManager.createEntity();
+      ECS.instance.entityManager.addComponent(new Camera(), entity);
+      ECS.instance.entityManager.addComponent(new Transform(), entity);
+      ECS.instance.entityManager.addComponent(new Name('camera'), entity);
+      console.log(ECS.instance.entityManager.getComponents(entity));
     }
     if (isError) {
       ECS.instance.entityManager.setScene({});
