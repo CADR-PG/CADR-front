@@ -12,10 +12,8 @@ export function RenderSystem() {
     <group position={[0, 0, 0]}>
       {entities.map((entity) => {
         if (em.has(Camera, entity)) {
-          console.log('CHUJKURWACOKOLWIEK');
           return <CameraController key={entity} entity={entity} />;
         }
-        console.log('cipkakurwacipka');
         return <GenericMesh key={entity} entity={entity} />;
       })}
     </group>
