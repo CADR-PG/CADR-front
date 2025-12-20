@@ -3,7 +3,6 @@ import { useEditorContext } from '../../hooks/useEditorContext';
 import ControllerProps from '../../types/ControllerProps';
 import { ECS } from '../../engine/ECS';
 import Transform from '../../engine/components/Transform';
-import * as THREE from 'three';
 import { RefObject } from 'react';
 
 interface RefObjectTen {
@@ -12,7 +11,6 @@ interface RefObjectTen {
 
 export default function TransformControlsController({
   entity,
-  meshRef,
   children,
 }: ControllerProps & RefObjectTen) {
   const { running, focused, editingMode } = useEditorContext();
