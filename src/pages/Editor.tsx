@@ -27,11 +27,19 @@ function Editor() {
       // TODO: xdd
       const json = data.data.data;
       ECS.instance.entityManager.setScene(json);
-      const entity = ECS.instance.entityManager.createEntity();
-      ECS.instance.entityManager.addComponent(new Camera(), entity);
-      ECS.instance.entityManager.addComponent(new Transform(), entity);
-      ECS.instance.entityManager.addComponent(new Name('camera'), entity);
-      console.log(ECS.instance.entityManager.getComponents(entity));
+
+      const hasCamera = ECS.instance.entityManager
+        .getEntities()
+        .some((entity) =>
+          ECS.instance.entityManager.getComponent(Camera, entity),
+        );
+
+      if (!hasCamera) {
+        const entity = ECS.instance.entityManager.createEntity();
+        ECS.instance.entityManager.addComponent(new Camera(), entity);
+        ECS.instance.entityManager.addComponent(new Transform(), entity);
+        ECS.instance.entityManager.addComponent(new Name('camera'), entity);
+      }
     }
     if (isError) {
       ECS.instance.entityManager.setScene({});
