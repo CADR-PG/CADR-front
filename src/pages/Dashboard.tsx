@@ -10,7 +10,7 @@ import { AxiosError } from 'axios';
 import ServerError from '../types/ServerError';
 import SnackbarProvider from '../components/SnackbarProvider';
 import { useSnackbarStore } from '../stores/snackbarStore';
-import Modal from '../components/Modal';
+import Modal from '../modals/ManageProjectModal';
 
 function Dashboard() {
   useAuth();
