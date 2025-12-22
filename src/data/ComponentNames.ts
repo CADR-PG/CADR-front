@@ -13,15 +13,16 @@ import PlaneController from '../components/editor/geometries/PlaneController';
 import SphereController from '../components/editor/geometries/SphereController';
 import TetrahedronController from '../components/editor/geometries/TetrahedronController';
 import TorusController from '../components/editor/geometries/TorusController';
-
 import BasicMaterial from '../components/editor/materials/BasicMaterial';
+import CameraController from '../components/editor/CameraController';
 
 interface ComponentToElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [name: string]: (...args: any[]) => JSX.Element | undefined;
+  [name: string]: (...args: any[]) => JSX.Element | undefined | null;
 }
 
 const ComponentNames: ComponentToElement = {
+  camera: CameraController,
   box: BoxController,
   capsule: CapsuleController,
   circle: CircleController,
