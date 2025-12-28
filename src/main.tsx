@@ -53,7 +53,7 @@ const router = createBrowserRouter([
     element: <Dashboard />,
   },
   {
-    path: '/user/map',
+    path: '/map',
     element: <UserLocationMap />,
   },
   {

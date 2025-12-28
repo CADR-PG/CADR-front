@@ -98,7 +98,7 @@ function NavBar() {
             <Link to="/change-data" className="navbar__link">
               Change data
             </Link>
-            <Link to="/user/map" className="navbar__link">
+            <Link to="/map" className="navbar__link">
               User Map
             </Link>
           </nav>
@@ -114,7 +114,7 @@ function NavBar() {
             <Link to="/change-data" className="navbar__link">
               Change data
             </Link>
-            <Link to="/user/map" className="navbar__link">
+            <Link to="/map" className="navbar__link">
               User Map
             </Link>
           </>

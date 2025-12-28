@@ -3,7 +3,9 @@ import { useState } from 'react';
 import ProjectData from '../types/ProjectData';
 import thumbnail from '../assets/thumbnail.jpg';
 import useEditProject from '../hooks/useEditProject';
-import Modal from './Modal';
+import useDeleteProject from '../hooks/useDeleteProject';
+import Modal from '../modals/ManageProjectModal';
+import DeleteProjectModal from '../modals/DeleteProjectModal';
 
 interface ProjectCardProps {
   project: ProjectData;
@@ -12,15 +14,13 @@ interface ProjectCardProps {
 export default function ProjectCard({ project }: ProjectCardProps) {
   const navigate = useNavigate();
   const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const deleteProject = useDeleteProject();
   const editProject = useEditProject();
+  const deleting = deleteProject.status === 'pending';
 
   const redirect = (uuid: string) => {
     navigate(`/editor/${uuid}`);
-  };
-
-  const deleteProject = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setEditOpen(false);
   };
 
   const handleEditOpen = (e: React.MouseEvent<HTMLElement>) => {
@@ -47,6 +47,24 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         },
       },
     );
+  };
+
+  const handleDeleteOpen = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    setDeleteOpen(true);
+  };
+
+  const handleDeleteClose = () => {
+    setDeleteOpen(false);
+  };
+
+  const handleDeleteConfirm = (e?: React.MouseEvent<HTMLElement>) => {
+    if (e) e.stopPropagation();
+    deleteProject.mutate(project.id, {
+      onSuccess: () => {
+        setDeleteOpen(false);
+      },
+    });
   };
 
   return (
@@ -84,7 +102,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               className="btn-small"
               onClick={(e) => {
                 e.stopPropagation();
-                deleteProject(e);
+                handleDeleteOpen(e);
               }}
             >
               Delete
@@ -136,6 +154,14 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           </div>
         </form>
       </Modal>
+
+      <DeleteProjectModal
+        open={deleteOpen}
+        onClose={handleDeleteClose}
+        projectName={project.name}
+        onConfirm={handleDeleteConfirm}
+        deleting={deleting}
+      />
     </>
   );
 }

@@ -2,10 +2,11 @@ import 'leaflet/dist/leaflet.css';
 import '../css/1-pages/user-location-map.scss';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import type { MapContainerProps } from 'react-leaflet';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import NavBar from './../components/NavBar';
-import { fetchLocationLogs } from '../api/client';
+import type NormalizedLocation from '../types/NormalizedLocation';
+import useLocationLogs from '../hooks/useLocationLogs';
 
 function Recenter({
   center,
@@ -23,95 +24,17 @@ function Recenter({
   return null;
 }
 
-type LocationRaw = {
-  id?: string;
-  ipAddress?: string;
-  ip?: string;
-  timestamp?: string;
-  occuredAt?: string;
-  occurredAt?: string;
-  city?: string;
-  country?: string;
-  latitude?: number | string;
-  longitude?: number | string;
-  lat?: number | string;
-  lon?: number | string;
-  lng?: number | string;
-  [key: string]: unknown;
-};
-
-type NormalizedLocation = {
-  id: string;
-  timestamp: string;
-  ipAddress: string;
-  city: string;
-  country: string;
-  latitude: number;
-  longitude: number;
-};
-
 export default function UserLocationMap() {
-  const [locations, setLocations] = useState<NormalizedLocation[]>([]);
+  const { locations } = useLocationLogs();
+  // kept local state removed — data comes from hook
 
   useAuth();
 
-  useEffect(() => {
-    let mounted = true;
-    const getLocationLogs = async () => {
-      try {
-        const resp = await fetchLocationLogs();
-        console.log('fetchLocationLogs resp:', resp);
-        console.log('fetchLocationLogs resp.data:', resp?.data);
-        const raw = resp?.data ?? resp;
-        console.log('raw logs:', raw);
+  const locArray: NormalizedLocation[] = Array.isArray(locations)
+    ? (locations as NormalizedLocation[])
+    : [];
 
-        const normalize = (
-          item: LocationRaw,
-          idx: number,
-        ): NormalizedLocation => ({
-          id: item.id ?? `${(item.ipAddress ?? 'loc') as string}_${idx}`,
-          timestamp:
-            (item.timestamp as string) ??
-            (item.occuredAt as string) ??
-            (item.occurredAt as string) ??
-            '',
-          ipAddress: (item.ipAddress ?? item.ip ?? '') as string,
-          city: (item.city ?? '') as string,
-          country: (item.country ?? '') as string,
-          latitude: Number(item.latitude ?? item.lat ?? 0),
-          longitude: Number(item.longitude ?? item.lon ?? item.lng ?? 0),
-        });
-
-        if (!mounted) return;
-
-        let normalized: NormalizedLocation[] = [];
-        if (Array.isArray(raw)) {
-          normalized = (raw as LocationRaw[]).map(normalize);
-        } else {
-          const maybeLogs = (raw as { logs?: unknown })?.logs;
-          if (Array.isArray(maybeLogs)) {
-            normalized = (maybeLogs as LocationRaw[]).map(normalize);
-          } else {
-            normalized = [];
-          }
-        }
-
-        console.log('normalized locations:', normalized);
-        setLocations(normalized);
-      } catch (err) {
-        console.error('fetchLocationLogs error', err);
-      }
-    };
-
-    getLocationLogs();
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  console.log('UserLocationMap locations', locations);
-
-  const validLocations = locations.filter(
+  const validLocations = locArray.filter(
     (l: NormalizedLocation) =>
       Number.isFinite(l.latitude) &&
       Number.isFinite(l.longitude) &&
