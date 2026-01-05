@@ -9,6 +9,7 @@ import Points from './Points';
 import Type from './Type';
 import { Checkbox, TextField } from '@mui/material';
 import NumberField from '../../NumberField';
+import InspectorKey from './InspectorKey';
 
 interface GeometryInspectorProps<T extends GeometryData> {
   entity: Entity;
@@ -88,11 +89,13 @@ export default function GeometryInspector<T extends GeometryData>({
         );
       case 'boolean':
         return (
-          <Checkbox
-            checked={data[key]}
-            onChange={(e) => handleChange(e, geometryWrite.data as T, key)}
-            size="small"
-          />
+          <div className="input-checkbox">
+            <Checkbox
+              checked={data[key]}
+              onChange={(e) => handleChange(e, geometryWrite.data as T, key)}
+              size="small"
+            />
+          </div>
         );
       case 'string':
         return (
@@ -107,18 +110,12 @@ export default function GeometryInspector<T extends GeometryData>({
     }
   }
 
-  return (
-    <>
-      {Object.keys(data).map((key) => {
-        return (
-          <div className="inspector-panel" key={key}>
-            <div className="inspector-field">{key}</div>
-            <div className="inspector-input">
-              {renderSwitch(key as keyof T)}
-            </div>
-          </div>
-        );
-      })}
-    </>
-  );
+  return Object.keys(data).map((key) => {
+    return (
+      <>
+        <InspectorKey keyName={key} />
+        {renderSwitch(key as keyof T)}
+      </>
+    );
+  });
 }

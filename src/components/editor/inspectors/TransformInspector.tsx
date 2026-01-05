@@ -1,8 +1,8 @@
-import { ChangeEvent } from 'react';
 import Transform, { Vec3 } from '../../../engine/components/Transform';
 import { Entity } from '../../../engine/Entity';
 import { ECS } from '../../../engine/ECS';
 import NumberField from '../../NumberField';
+import InspectorKey from './InspectorKey';
 
 interface TransformInspectorProps {
   entity: Entity;
@@ -32,45 +32,39 @@ export default function TransformInspector({
     transformWrite[key][position] = value;
   };
 
-  return (
-    <>
-      {(Object.keys(snap) as (keyof typeof snap)[]).map((key) => {
-        return (
-          // TODO(m1k53r): I'm not a fan of typing the classes
-          // everytime we create an inspector for new component.
-          // I'm thinking about making a HOC out of this, but
-          // on the other hand it seems too abstract
-          // for such little component. idk.
-          <div className="inspector-panel" key={key}>
-            <div className="inspector-field">{key}</div>
-            <div className="inspector-input">
-              <div className="inspector-input-columns">
-                <NumberField
-                  className="inspector-input-columns-column"
-                  value={(snap[key] as Vec3)[0]}
-                  onValueChange={(value) => handleChange(value, key, 0)}
-                  size="small"
-                  label="x"
-                />
-                <NumberField
-                  className="inspector-input-columns-column"
-                  value={(snap[key] as Vec3)[1]}
-                  onValueChange={(value) => handleChange(value, key, 1)}
-                  size="small"
-                  label="y"
-                />
-                <NumberField
-                  className="inspector-input-columns-column"
-                  value={(snap[key] as Vec3)[2]}
-                  onValueChange={(value) => handleChange(value, key, 2)}
-                  size="small"
-                  label="z"
-                />
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </>
-  );
+  return (Object.keys(snap) as (keyof typeof snap)[]).map((key) => {
+    return (
+      // TODO(m1k53r): I'm not a fan of typing the classes
+      // everytime we create an inspector for new component.
+      // I'm thinking about making a HOC out of this, but
+      // on the other hand it seems too abstract
+      // for such little component. idk.
+      <>
+        <InspectorKey keyName={key} />
+        <div className="inspector-input-columns">
+          <NumberField
+            className="inspector-input-columns-column"
+            value={(snap[key] as Vec3)[0]}
+            onValueChange={(value) => handleChange(value, key, 0)}
+            size="small"
+            label="x"
+          />
+          <NumberField
+            className="inspector-input-columns-column"
+            value={(snap[key] as Vec3)[1]}
+            onValueChange={(value) => handleChange(value, key, 1)}
+            size="small"
+            label="y"
+          />
+          <NumberField
+            className="inspector-input-columns-column"
+            value={(snap[key] as Vec3)[2]}
+            onValueChange={(value) => handleChange(value, key, 2)}
+            size="small"
+            label="z"
+          />
+        </div>
+      </>
+    );
+  });
 }

@@ -5,8 +5,11 @@ import { ECS } from '../../../engine/ECS';
 import ColorPicker from './ColorPicker';
 import EnvMapRotation from './EnvMapRotation';
 import Wireframe from './Wireframe';
-import { Checkbox, TextField } from '@mui/material';
+import { Checkbox, TextField, Tooltip } from '@mui/material';
 import NumberField from '../../NumberField';
+import InspectorKey from './InspectorKey';
+import MaterialType from './MaterialType';
+import WireframeType from '../../../types/WireframeType';
 
 interface MaterialInspectorProps<T extends MaterialData> {
   entity: Entity;
@@ -50,7 +53,7 @@ export default function MaterialInspector<T extends MaterialData>({
   function renderSwitch<K extends keyof T>(key: K) {
     switch (key) {
       case 'type':
-        return null;
+        return <MaterialType entity={entity} type={data.type} />;
       case 'color':
         return (
           <ColorPicker
@@ -74,9 +77,7 @@ export default function MaterialInspector<T extends MaterialData>({
         return (
           <Wireframe
             entity={entity}
-            // TODO(m1k53r): this is kinda stupid. we should probably have
-            // a separate type for this.
-            wireframe={data[key] as 'round' | 'bevel' | 'miter'}
+            wireframe={data[key] as WireframeType}
             wireframeKey={key}
           />
         );
@@ -100,27 +101,23 @@ export default function MaterialInspector<T extends MaterialData>({
         );
       case 'boolean':
         return (
-          <Checkbox
-            checked={data[key]}
-            onChange={(e) => handleChange(e, key)}
-            size="small"
-          />
+          <div className="input-checkbox">
+            <Checkbox
+              checked={data[key]}
+              onChange={(e) => handleChange(e, key)}
+              size="small"
+            />
+          </div>
         );
     }
   }
 
-  return (
-    <>
-      {Object.keys(data).map((key) => {
-        return (
-          <div className="inspector-panel" key={key}>
-            <div className="inspector-field">{key}</div>
-            <div className="inspector-input">
-              {renderSwitch(key as keyof T)}
-            </div>
-          </div>
-        );
-      })}
-    </>
-  );
+  return Object.keys(data).map((key) => {
+    return (
+      <>
+        <InspectorKey keyName={key} />
+        {renderSwitch(key as keyof T)}
+      </>
+    );
+  });
 }

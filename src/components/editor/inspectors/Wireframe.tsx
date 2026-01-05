@@ -1,10 +1,8 @@
 import { Entity } from '../../../engine/Entity';
 import { ECS } from '../../../engine/ECS';
-import { ChangeEvent } from 'react';
 import Material, { MaterialData } from '../../../engine/components/Material';
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
-
-type WireframeType = 'round' | 'bevel' | 'miter';
+import WireframeType from '../../../types/WireframeType';
 
 interface MaterialWireframeData extends MaterialData {
   wireframeLinecap: WireframeType;

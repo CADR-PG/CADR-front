@@ -53,32 +53,31 @@
 }
 
 .inspector-panel {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  gap: 8px;
+  user-select: none;
 }
 
 .inspector-field {
-  flex: 1 1 0;
+  min-width: 0;
+
+  &-key {
+    display: inline-block;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 }
 
 .inspector-input {
-  flex: 1 1 0;
-  display: flex;
-  justify-content: flex-end;
-  flex-direction: column;
-
+  justify-self: end;
   &-columns {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    &-column {
-      flex: 1 1 auto;
-      width: 0;
-      display:flex;
-      justify-content: space-between;
-    }
+    gap: 8px;
   }
 
   &-container {
@@ -86,21 +85,11 @@
     flex-direction: column;
   }
 
-  &-points {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    &-point {
-       flex: 1 1 auto;
-       width: 0;
-    }
-  }
-
   &-buttons {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 8px;
 
     &-button {
       flex-grow: 1;
@@ -110,6 +99,17 @@
       justify-content: center;
     }
   }
+
+  &-points {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.input-checkbox {
+  display: flex;
+  justify-content: center;
 }
 
 .component-header {
@@ -132,6 +132,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 8px;
 
   &-button {
     display: flex;

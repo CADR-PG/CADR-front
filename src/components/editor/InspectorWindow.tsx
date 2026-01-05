@@ -106,7 +106,7 @@ function InspectorWindow() {
                     <DeleteIcon></DeleteIcon>
                   </IconButton>
                 </div>
-                {renderSwitch(key)}
+                <div className="inspector-panel">{renderSwitch(key)}</div>
                 <hr />
               </div>
             );

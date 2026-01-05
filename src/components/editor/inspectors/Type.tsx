@@ -1,4 +1,3 @@
-import { ChangeEvent } from 'react';
 import Geometry from '../../../engine/components/Geometry';
 import { ECS } from '../../../engine/ECS';
 import { Entity } from '../../../engine/Entity';

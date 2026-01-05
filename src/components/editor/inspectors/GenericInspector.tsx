@@ -4,6 +4,7 @@ import { Entity } from '../../../engine/Entity';
 import { ECS } from '../../../engine/ECS';
 import { Checkbox, TextField } from '@mui/material';
 import NumberField from '../../NumberField';
+import InspectorKey from './InspectorKey';
 
 interface GenericInspectorProps<T extends Component> {
   entity: Entity;
@@ -49,10 +50,12 @@ export default function GenericInspector<T extends Component>({
         );
       case 'boolean':
         return (
-          <Checkbox
-            checked={component[key]}
-            onChange={(e) => handleChange(e, key)}
-          />
+          <div className="input-checkbox">
+            <Checkbox
+              checked={component[key]}
+              onChange={(e) => handleChange(e, key)}
+            />
+          </div>
         );
       case 'string':
         return (
@@ -67,18 +70,12 @@ export default function GenericInspector<T extends Component>({
     }
   }
 
-  return (
-    <>
-      {Object.keys(snap).map((key) => {
-        return (
-          <div className="inspector-panel" key={key}>
-            <div className="inspector-field">{key}</div>
-            <div className="inspector-input">
-              {renderSwitch(key as keyof T)}
-            </div>
-          </div>
-        );
-      })}
-    </>
-  );
+  return Object.keys(snap).map((key) => {
+    return (
+      <>
+        <InspectorKey keyName={key} />
+        {renderSwitch(key as keyof T)}
+      </>
+    );
+  });
 }
