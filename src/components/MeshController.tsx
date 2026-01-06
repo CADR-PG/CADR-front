@@ -3,7 +3,7 @@ import { useMesh } from '../hooks/useMesh';
 import HighlightHelper from './HighlightHelper';
 import { ECS } from '../engine/ECS';
 import Transform from '../engine/components/Transform';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { TransformControls } from '@react-three/drei';
 import * as THREE from 'three';
 import useEntityManager from '../hooks/useEntityManager';
@@ -16,6 +16,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   const components = em.getComponents(entity);
   const componentKeys = Object.keys(components);
   const transform = ECS.instance.entityManager.getComponent(Transform, entity);
+  const t = em.getComponent(Transform, entity);
   const invisible = em.getComponent(Invisible, entity);
   const meshRef = useRef(null!);
   const {
@@ -52,12 +53,10 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
     <TransformControls
       size={!running && entity === focused ? 1 : 0}
       enabled={!running && entity === focused}
-      // TODO: this is a bad idea. we are using non-reactive write-only property
-      // to render transformations, because TrasnsformControls are a bitch
-      position={transform?.position}
-      rotation={transform?.rotation}
-      scale={transform?.scale}
-      onChange={handleChange}
+      position={t?.position}
+      rotation={t?.rotation}
+      scale={t?.scale}
+      onMouseUp={handleChange}
       mode={editingMode}
     >
       <mesh
