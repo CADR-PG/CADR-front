@@ -3,7 +3,7 @@ import { useMesh } from '../hooks/useMesh';
 import HighlightHelper from './HighlightHelper';
 import { ECS } from '../engine/ECS';
 import Transform from '../engine/components/Transform';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { TransformControls } from '@react-three/drei';
 import * as THREE from 'three';
 import useEntityManager from '../hooks/useEntityManager';

@@ -1,4 +1,4 @@
-import { Component, ComponentType } from './Component';
+import { ComponentType } from './Component';
 import { Entity } from './Entity';
 import { System } from './System';
 import { EntityManager } from './EntityManager';
