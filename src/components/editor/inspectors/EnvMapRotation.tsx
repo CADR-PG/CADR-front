@@ -1,4 +1,3 @@
-import { ChangeEvent } from 'react';
 import Material, { MaterialData } from '../../../engine/components/Material';
 import { ECS } from '../../../engine/ECS';
 import { Entity } from '../../../engine/Entity';

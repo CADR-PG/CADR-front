@@ -35,6 +35,7 @@ export default function ColorPicker({
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [color, setColor] = useState<string>('');
   const open = Boolean(anchorEl);
+  console.log(componentColor);
   const stringColor = `${componentColor.toString(16).padStart(6, '0')}`;
 
   // NOTE(m1k53r): this is used only for the input below the picker,
@@ -66,9 +67,14 @@ export default function ColorPicker({
     setAnchorEl(null);
   };
 
+  // TODO(m1k53r): this works poorly.
   const validateInput = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
+    if (e.currentTarget.value === '') {
+      setColor('000000');
+      return;
+    }
     const regex = /^[0-9A-F]*$/gi;
     if (regex.test(e.currentTarget.value)) {
       setColor(e.currentTarget.value.slice(0, 6));
@@ -102,12 +108,20 @@ export default function ColorPicker({
             onBlur={(e) => handleHexColor(e)}
             label="Hex color"
             variant="filled"
+            size="small"
             slotProps={{
               input: {
                 startAdornment: (
                   <InputAdornment position="start">#</InputAdornment>
                 ),
               },
+            }}
+            className="picker-input"
+            onKeyDown={(ev) => {
+              if (ev.key === 'Enter') {
+                handleColor(`#${color}`);
+                ev.preventDefault();
+              }
             }}
           ></TextField>
         </div>

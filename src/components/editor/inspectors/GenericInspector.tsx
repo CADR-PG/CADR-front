@@ -29,6 +29,8 @@ export default function GenericInspector<T extends Component>({
     (writeComponent as T)[key] = value as T[K];
   }
 
+  // TODO(m1k53r): does this work correctly? I can't remeber it's been
+  // a whole month since I looked at this code lol.
   function handleChange<K extends keyof T>(
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     key: K,

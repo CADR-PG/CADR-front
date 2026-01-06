@@ -50,6 +50,7 @@ export default function GeometryInspector<T extends GeometryData>({
         data[key] = Number(e.currentTarget.value) as T[K];
         break;
       case 'boolean':
+        if (e.currentTarget instanceof HTMLTextAreaElement) return;
         data[key] = e.currentTarget.checked as T[K];
         break;
     }

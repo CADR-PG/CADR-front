@@ -5,6 +5,17 @@
   }
 }
 
+.picker-container {
+  display: flex;
+  flex: 2 1 auto;
+  align-items: center;
+  flex-direction: column;
+}
+
+.picker-input {
+  width: 200px;
+}
+
 .picker-container .react-colorful__hue-pointer,
 .picker-container .react-colorful__alpha-pointer,
 .picker-container .react-colorful__saturation-pointer {

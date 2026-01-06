@@ -2,7 +2,7 @@ import Geometry from '../../../engine/components/Geometry';
 import { ECS } from '../../../engine/ECS';
 import { Entity } from '../../../engine/Entity';
 import Objects from '../../../data/ObjectNames';
-import { MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
+import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 interface TypeProps {
   entity: Entity;

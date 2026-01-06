@@ -1,4 +1,3 @@
-import { ChangeEvent } from 'react';
 import Geometry, {
   GeometryData,
   Point,

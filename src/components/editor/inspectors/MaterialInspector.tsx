@@ -5,11 +5,13 @@ import { ECS } from '../../../engine/ECS';
 import ColorPicker from './ColorPicker';
 import EnvMapRotation from './EnvMapRotation';
 import Wireframe from './Wireframe';
-import { Checkbox, TextField, Tooltip } from '@mui/material';
+import { Checkbox, TextField } from '@mui/material';
 import NumberField from '../../NumberField';
 import InspectorKey from './InspectorKey';
 import MaterialType from './MaterialType';
 import WireframeType from '../../../types/WireframeType';
+import Combine from './Combine';
+import { Combine as CombineType } from 'three';
 
 interface MaterialInspectorProps<T extends MaterialData> {
   entity: Entity;
@@ -39,6 +41,7 @@ export default function MaterialInspector<T extends MaterialData>({
         (materialWrite.data as T)[key] = e.currentTarget.value as T[K];
         break;
       case 'checkbox':
+        if (e.currentTarget instanceof HTMLTextAreaElement) return;
         (materialWrite.data as T)[key] = e.currentTarget.checked as T[K];
         break;
     }
@@ -54,6 +57,8 @@ export default function MaterialInspector<T extends MaterialData>({
     switch (key) {
       case 'type':
         return <MaterialType entity={entity} type={data.type} />;
+      case 'combine':
+        return <Combine entity={entity} value={data[key] as CombineType} />;
       case 'color':
         return (
           <ColorPicker

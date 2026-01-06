@@ -15,6 +15,6 @@ export default class BasicMaterialData implements MaterialData {
     public wireframe = false,
     public wireframeLinecap = 'round',
     public wireframeLinejoin = 'round',
-    public wireframeLinewidth = 1,
+    public wireframeLinewidth = 30,
   ) {}
 }
