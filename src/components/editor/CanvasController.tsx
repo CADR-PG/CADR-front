@@ -10,6 +10,7 @@ import { useEditorContext } from '../../hooks/useEditorContext';
 import useEditorKeys from '../../hooks/useEditorKeys';
 import StartStopBtnToolbar from './StartStopBtnToolbar';
 import { RenderSystem } from '../../engine/systems/RenderSystem';
+import ScriptSystem from '../../engine/systems/ScriptSystem';
 
 function CanvasController() {
   const { running, focus } = useEditorContext();
@@ -37,6 +38,7 @@ function CanvasController() {
           </GizmoHelper>
         )}
         <RenderSystem />
+        {running && <ScriptSystem />}
       </Canvas>
     </div>
   );

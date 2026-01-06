@@ -1,4 +1,4 @@
-import { Component } from './Component';
+import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
 import { System } from './System';
 import { EntityManager } from './EntityManager';
@@ -35,7 +35,7 @@ export class ECS {
   }
 
   // API
-  update() {
+  update(delta: number) {
     // TODO: Most likely a performance hit. Another way of doing this
     // is to specify an array of entities for each system beforehand
     // and updating it once entities change their components.
@@ -45,11 +45,11 @@ export class ECS {
     // from the beginning but go biased by tutorials lol.
     for (const system of this.systems) {
       // When we find all relevant entities, run the system.
-      system.update(this.query(system.components));
+      system.update(this.query(system.components), delta);
     }
   }
 
-  query(components: Component[]) {
+  query(components: ComponentType[]) {
     const matchingEntities: Entity[] = [];
 
     // When an entity satisfies a component condition for particular system,
