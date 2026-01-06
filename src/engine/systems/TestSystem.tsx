@@ -6,7 +6,7 @@ import { System } from '../System';
 
 export default class TestSystem extends System {
   update(entities: Entity[], delta: number): void {
-    for (let entity of entities) {
+    for (const entity of entities) {
       const t = ECS.instance.entityManager.getComponent(Transform, entity);
       if (!t) continue;
       t.rotation[1] += 5 * delta;
