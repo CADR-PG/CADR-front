@@ -58,7 +58,7 @@ export default function useLocationLogs() {
       }
       openSnackbar(String(msg), 'error');
     },
-    staleTime: 1000 * 60, // 1 minute
+    staleTime: 1000 * 60,
   } as UseQueryOptions<NormalizedLocation[], Error>);
 
   return {

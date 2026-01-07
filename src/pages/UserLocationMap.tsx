@@ -1,7 +1,6 @@
 import 'leaflet/dist/leaflet.css';
 import '../css/1-pages/user-location-map.scss';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import type { MapContainerProps } from 'react-leaflet';
 import { useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import NavBar from './../components/NavBar';
@@ -26,20 +25,25 @@ function Recenter({
 
 export default function UserLocationMap() {
   const { locations } = useLocationLogs();
-  // kept local state removed — data comes from hook
 
   useAuth();
+
+  // bez użycia `any`
+  const MAPBOX_TOKEN: string | undefined = (
+    import.meta as unknown as {
+      env?: { VITE_MAPBOX_TOKEN?: string };
+    }
+  ).env?.VITE_MAPBOX_TOKEN;
 
   const locArray: NormalizedLocation[] = Array.isArray(locations)
     ? (locations as NormalizedLocation[])
     : [];
 
-  const validLocations = locArray.filter(
-    (l: NormalizedLocation) =>
-      Number.isFinite(l.latitude) &&
-      Number.isFinite(l.longitude) &&
-      !(l.latitude === 0 && l.longitude === 0),
-  );
+  const validLocations = locArray.map((l: NormalizedLocation) => ({
+    ...l,
+    latitude: Number(l.latitude),
+    longitude: Number(l.longitude),
+  }));
 
   const center: [number, number] =
     validLocations.length > 0
@@ -47,19 +51,20 @@ export default function UserLocationMap() {
       : [0, 0];
   const defaultZoom = validLocations.length > 0 ? 6 : 2;
 
-  const mapProps = {
-    center,
-    zoom: defaultZoom,
-    className: 'user-map',
-    key: String(center[0]) + ',' + String(center[1]),
-  } as MapContainerProps;
-
   return (
     <div className="container">
       <NavBar />
       <div className="map-wrapper">
-        <MapContainer {...mapProps}>
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <MapContainer key={`${center[0]},${center[1]}`} className="user-map">
+          <TileLayer
+            {...{
+              url: `https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=${MAPBOX_TOKEN ?? ''}`,
+              attribution:
+                '&copy; <a href="https://www.mapbox.com/">Mapbox</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+              tileSize: 512,
+              zoomOffset: -1,
+            }}
+          />
           <Recenter center={center as [number, number]} zoom={defaultZoom} />
 
           {validLocations.map((loc: NormalizedLocation) => (
