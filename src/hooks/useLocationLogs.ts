@@ -8,9 +8,7 @@ import type NormalizedLocation from '../types/NormalizedLocation';
 export default function useLocationLogs() {
   const { openSnackbar } = useSnackbarStore();
 
-  const { data, isLoading, isError, error, refetch } = useQuery<
-    NormalizedLocation[]
-  >({
+  const query = useQuery<NormalizedLocation[], Error>({
     queryKey: ['locationLogs'],
     queryFn: async () => {
       const resp = await fetchLocationLogs();
@@ -19,27 +17,40 @@ export default function useLocationLogs() {
       const normalize = (
         item: LocationRaw,
         idx: number,
-      ): NormalizedLocation => ({
-        id: item.id ?? `${(item.ipAddress ?? 'loc') as string}_${idx}`,
-        timestamp:
-          (item.timestamp as string) ??
-          (item.occuredAt as string) ??
-          (item.occurredAt as string) ??
-          '',
-        ipAddress: (item.ipAddress ?? item.ip ?? '') as string,
-        city: (item.city ?? '') as string,
-        country: (item.country ?? '') as string,
-        latitude: Number(item.latitude ?? item.lat ?? 0),
-        longitude: Number(item.longitude ?? item.lon ?? item.lng ?? 0),
-      });
+      ): NormalizedLocation => {
+        const latitude = Number(item.latitude ?? item.lat ?? NaN);
+        const longitude = Number(item.longitude ?? item.lon ?? item.lng ?? NaN);
+        return {
+          id: item.id ?? `${(item.ipAddress ?? 'loc') as string}_${idx}`,
+          timestamp:
+            (item.timestamp as string) ??
+            (item.occuredAt as string) ??
+            (item.occurredAt as string) ??
+            '',
+          ipAddress: (item.ipAddress ?? item.ip ?? '') as string,
+          city: (item.city ?? '') as string,
+          country: (item.country ?? '') as string,
+          latitude,
+          longitude,
+        };
+      };
 
       let normalized: NormalizedLocation[] = [];
       if (Array.isArray(raw)) {
-        normalized = (raw as LocationRaw[]).map(normalize);
+        normalized = (raw as LocationRaw[])
+          .map(normalize)
+          .filter(
+            (l) => Number.isFinite(l.latitude) && Number.isFinite(l.longitude),
+          );
       } else {
         const maybeLogs = (raw as { logs?: unknown })?.logs;
         if (Array.isArray(maybeLogs)) {
-          normalized = (maybeLogs as LocationRaw[]).map(normalize);
+          normalized = (maybeLogs as LocationRaw[])
+            .map(normalize)
+            .filter(
+              (l) =>
+                Number.isFinite(l.latitude) && Number.isFinite(l.longitude),
+            );
         }
       }
       return normalized;
@@ -61,11 +72,5 @@ export default function useLocationLogs() {
     staleTime: 1000 * 60,
   } as UseQueryOptions<NormalizedLocation[], Error>);
 
-  return {
-    locations: data ?? [],
-    isLoading,
-    isError,
-    error,
-    refetch,
-  };
+  return query;
 }

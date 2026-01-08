@@ -24,11 +24,10 @@ function Recenter({
 }
 
 export default function UserLocationMap() {
-  const { locations } = useLocationLogs();
+  const { data: locations } = useLocationLogs();
 
   useAuth();
 
-  // bez użycia `any`
   const MAPBOX_TOKEN: string | undefined = (
     import.meta as unknown as {
       env?: { VITE_MAPBOX_TOKEN?: string };
