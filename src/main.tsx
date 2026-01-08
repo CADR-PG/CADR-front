@@ -13,6 +13,8 @@ import Logout from './pages/Logout.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import ChangeData from './pages/Profile.tsx';
 import NotFound from './pages/404.tsx';
+import OAuthTest from './pages/OAuthTest.tsx';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const router = createBrowserRouter([
   {
@@ -54,6 +56,14 @@ const router = createBrowserRouter([
   {
     path: '*',
     element: <NotFound />,
+  },
+  {
+    path: '/oauth-test',
+    element: (
+      <GoogleOAuthProvider clientId="515786075614-c5iosdb5efelk7rfpm4o2btpradfusem.apps.googleusercontent.com">
+        <OAuthTest />{' '}
+      </GoogleOAuthProvider>
+    ),
   },
 ]);
 

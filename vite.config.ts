@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import mkcert from 'vite-plugin-mkcert'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import mkcert from 'vite-plugin-mkcert';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -14,10 +14,9 @@ export default defineConfig({
         target: 'https://localhost:8081',
         changeOrigin: true,
         secure: false,
-        rewrite: path => path.replace(/^\/api/, ''),
-      }
-    }
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
   },
-  base: '/'
-})
-
+  base: '/',
+});
