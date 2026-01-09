@@ -1,10 +1,9 @@
 import 'leaflet/dist/leaflet.css';
-import '../css/1-pages/user-location-map.scss';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import NavBar from './../components/NavBar';
-import type NormalizedLocation from '../types/NormalizedLocation';
+import type NormalizedLocation from '../types/UserLocationData';
 import useLocationLogs from '../hooks/useLocationLogs';
 
 function Recenter({
@@ -24,31 +23,53 @@ function Recenter({
 }
 
 export default function UserLocationMap() {
-  const { data: locations } = useLocationLogs();
+
+  const { data } = useLocationLogs();
 
   useAuth();
 
-  const MAPBOX_TOKEN: string | undefined = (
-    import.meta as unknown as {
-      env?: { VITE_MAPBOX_TOKEN?: string };
+  if (!data) return null;
+
+  const raw = (data as any)?.data ?? data;
+
+  const normalize = (item: any, idx: number): NormalizedLocation => {
+    const latitude = Number(item.latitude ?? item.lat ?? NaN);
+    const longitude = Number(
+      item.longitude ?? item.lon ?? item.lng ?? NaN,
+    );
+    return {
+      id: item.id ?? `${(item.ipAddress ?? 'loc') as string}_${idx}`,
+      timestamp:
+        (item.timestamp as string) ??
+        (item.occuredAt as string) ??
+        (item.occurredAt as string) ??
+        '',
+      ipAddress: (item.ipAddress ?? item.ip ?? '') as string,
+      city: (item.city ?? '') as string,
+      country: (item.country ?? '') as string,
+      latitude,
+      longitude,
+    };
+  };
+
+  let locations: NormalizedLocation[] = [];
+  if (Array.isArray(raw)) {
+    locations = (raw as any[]).map(normalize).filter(
+      (l) => Number.isFinite(l.latitude) && Number.isFinite(l.longitude),
+    );
+  } else {
+    const maybeLogs = (raw as { logs?: unknown })?.logs;
+    if (Array.isArray(maybeLogs)) {
+      locations = (maybeLogs as any[]).map(normalize).filter(
+        (l) => Number.isFinite(l.latitude) && Number.isFinite(l.longitude),
+      );
     }
-  ).env?.VITE_MAPBOX_TOKEN;
-
-  const locArray: NormalizedLocation[] = Array.isArray(locations)
-    ? (locations as NormalizedLocation[])
-    : [];
-
-  const validLocations = locArray.map((l: NormalizedLocation) => ({
-    ...l,
-    latitude: Number(l.latitude),
-    longitude: Number(l.longitude),
-  }));
-
+  }
   const center: [number, number] =
-    validLocations.length > 0
-      ? [validLocations[0].latitude, validLocations[0].longitude]
+    locations.length > 0
+      ? [locations[0].latitude, locations[0].longitude]
       : [0, 0];
-  const defaultZoom = validLocations.length > 0 ? 6 : 2;
+  const defaultZoom = locations.length > 0 ? 6 : 2;
 
   return (
     <div className="container">
@@ -57,7 +78,7 @@ export default function UserLocationMap() {
         <MapContainer key={`${center[0]},${center[1]}`} className="user-map">
           <TileLayer
             {...{
-              url: `https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=${MAPBOX_TOKEN ?? ''}`,
+              url: `https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=${import.meta.env.VITE_MAPBOX_TOKEN ?? ''}`,
               attribution:
                 '&copy; <a href="https://www.mapbox.com/">Mapbox</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
               tileSize: 512,
@@ -66,7 +87,7 @@ export default function UserLocationMap() {
           />
           <Recenter center={center as [number, number]} zoom={defaultZoom} />
 
-          {validLocations.map((loc: NormalizedLocation) => (
+          {locations.map((loc: NormalizedLocation) => (
             <Marker key={loc.id} position={[loc.latitude, loc.longitude]}>
               <Popup>
                 <b>
