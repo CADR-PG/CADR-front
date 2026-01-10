@@ -18,79 +18,35 @@ function Recenter({
     if (Number.isFinite(center[0]) && Number.isFinite(center[1])) {
       map.setView(center, zoom);
     }
-  }, [center, zoom, map]);
+  }, []);
   return null;
 }
 
+const normalize = (item: unknown): NormalizedLocation => {
+  if (typeof item !== 'object' || item === null) {
+    return { timestamp: '' } as NormalizedLocation;
+  }
+  const obj = item as Record<string, unknown>;
+
+  return {
+    timestamp: String(obj.occuredAt ?? ''),
+  } as NormalizedLocation;
+};
+
 export default function UserLocationMap() {
-  const { data } = useLocationLogs();
+  const { data: response } = useLocationLogs();
 
   useAuth();
 
-  if (!data) return null;
+  if (!response) return null;
+  const locations = (response.data.logs as unknown[]).map(
+    (item) =>
+      ({
+        ...(item as Record<string, unknown>),
+        ...normalize(item),
+      }) as NormalizedLocation,
+  );
 
-  const raw: unknown =
-    (data as unknown as Record<string, unknown>)?.data ?? data;
-
-  const toString = (v: unknown) =>
-    typeof v === 'string' ? v : v === undefined || v === null ? '' : String(v);
-  const toNumber = (v: unknown) => {
-    const n = Number(v as unknown);
-    return Number.isFinite(n) ? n : NaN;
-  };
-
-  const normalize = (item: unknown, idx: number): NormalizedLocation => {
-    if (typeof item !== 'object' || item === null) {
-      return {
-        id: `loc_${idx}`,
-        timestamp: '',
-        ipAddress: '',
-        city: '',
-        country: '',
-        latitude: NaN,
-        longitude: NaN,
-      };
-    }
-    const obj = item as Record<string, unknown>;
-
-    const latitude = toNumber(obj.latitude ?? obj.lat);
-    const longitude = toNumber(obj.longitude ?? obj.lon ?? obj.lng);
-
-    const ipAddr = toString(obj.ipAddress ?? obj.ip);
-    const idFromIp = ipAddr ? `${ipAddr}_${idx}` : `loc_${idx}`;
-
-    return {
-      id: toString(obj.id ?? idFromIp),
-      timestamp:
-        toString(obj.timestamp ?? obj.occuredAt ?? obj.occurredAt) ?? '',
-      ipAddress: ipAddr,
-      city: toString(obj.city ?? ''),
-      country: toString(obj.country ?? ''),
-      latitude,
-      longitude,
-    };
-  };
-
-  let locations: NormalizedLocation[] = [];
-  if (Array.isArray(raw)) {
-    locations = (raw as unknown[])
-      .map(normalize)
-      .filter(
-        (l) => Number.isFinite(l.latitude) && Number.isFinite(l.longitude),
-      );
-  } else {
-    const maybeLogs =
-      typeof raw === 'object' && raw !== null
-        ? (raw as Record<string, unknown>)?.logs
-        : undefined;
-    if (Array.isArray(maybeLogs)) {
-      locations = (maybeLogs as unknown[])
-        .map(normalize)
-        .filter(
-          (l) => Number.isFinite(l.latitude) && Number.isFinite(l.longitude),
-        );
-    }
-  }
   const center: [number, number] =
     locations.length > 0
       ? [locations[0].latitude, locations[0].longitude]

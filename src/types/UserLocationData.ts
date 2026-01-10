@@ -1,4 +1,4 @@
-interface NormalizedLocation {
+interface UserLocationData {
   id: string;
   timestamp: string;
   ipAddress: string;
@@ -8,4 +8,4 @@ interface NormalizedLocation {
   longitude: number;
 }
 
-export default NormalizedLocation;
+export default UserLocationData;
