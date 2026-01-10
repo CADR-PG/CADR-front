@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import NavBar from './../components/NavBar';
-import type NormalizedLocation from '../types/UserLocationData';
+import type UserLocationData from '../types/UserLocationData';
 import useLocationLogs from '../hooks/useLocationLogs';
 
 function Recenter({
@@ -24,31 +24,13 @@ function Recenter({
   return null;
 }
 
-const normalize = (item: unknown): NormalizedLocation => {
-  if (typeof item !== 'object' || item === null) {
-    return { timestamp: '' } as NormalizedLocation;
-  }
-  const obj = item as Record<string, unknown>;
-
-  return {
-    timestamp: String(obj.occuredAt ?? ''),
-  } as NormalizedLocation;
-};
-
 export default function UserLocationMap() {
   const { data: response } = useLocationLogs();
 
   useAuth();
 
   if (!response) return null;
-  const locations = (response.data.logs as unknown[]).map(
-    (item) =>
-      ({
-        ...(item as Record<string, unknown>),
-        ...normalize(item),
-      }) as NormalizedLocation,
-  );
-
+  const locations = response.data.logs;
   const center: [number, number] =
     locations.length > 0
       ? [locations[0].latitude, locations[0].longitude]
@@ -71,14 +53,14 @@ export default function UserLocationMap() {
           />
           <Recenter center={center as [number, number]} zoom={defaultZoom} />
 
-          {locations.map((loc: NormalizedLocation) => (
+          {locations.map((loc: UserLocationData) => (
             <Marker key={loc.id} position={[loc.latitude, loc.longitude]}>
               <Popup>
                 <b>
                   {loc.city}, {loc.country}
                 </b>
                 <br />
-                {loc.timestamp ? new Date(loc.timestamp).toLocaleString() : ''}
+                {loc.occuredAt ? new Date(loc.occuredAt).toLocaleString() : ''}
                 <br />
                 IP: {loc.ipAddress}
               </Popup>

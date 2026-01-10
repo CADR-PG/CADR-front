@@ -1,6 +1,6 @@
 interface UserLocationData {
   id: string;
-  timestamp: string;
+  occuredAt: string;
   ipAddress: string;
   city: string;
   country: string;
