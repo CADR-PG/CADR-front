@@ -14,10 +14,12 @@ function Recenter({
   zoom: number;
 }) {
   const map = useMap();
+
   useEffect(() => {
     if (Number.isFinite(center[0]) && Number.isFinite(center[1])) {
       map.setView(center, zoom);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return null;
 }
