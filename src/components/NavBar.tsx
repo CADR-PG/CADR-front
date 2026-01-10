@@ -92,11 +92,14 @@ function NavBar() {
             className={`navbar-mobile navbar ${menuOpen ? 'open' : ''}`}
             onClick={closeMenu}
           >
+            <Link to="/dashboard" className="navbar__link">
+              Dashboard
+            </Link>
             <Link to="/change-data" className="navbar__link">
               Change data
             </Link>
-            <Link to="/dashboard" className="navbar__link">
-              Dashboard
+            <Link to="/map" className="navbar__link">
+              User Map
             </Link>
           </nav>
         </div>
@@ -105,11 +108,14 @@ function NavBar() {
       <nav className="navbar-desktop navbar">
         {isLoggedIn ? (
           <>
+            <Link to="/dashboard" className="navbar__link">
+              Dashboard
+            </Link>
             <Link to="/change-data" className="navbar__link">
               Change data
             </Link>
-            <Link to="/dashboard" className="navbar__link">
-              Dashboard
+            <Link to="/map" className="navbar__link">
+              User Map
             </Link>
           </>
         ) : null}

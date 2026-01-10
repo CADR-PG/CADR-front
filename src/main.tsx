@@ -12,6 +12,7 @@ import RegistrationSuccessful from './pages/RegistrationSuccessful.tsx';
 import Logout from './pages/Logout.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import ChangeData from './pages/Profile.tsx';
+import UserLocationMap from './pages/UserLocationMap.tsx';
 import NotFound from './pages/404.tsx';
 
 const router = createBrowserRouter([
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
   {
     path: '/dashboard',
     element: <Dashboard />,
+  },
+  {
+    path: '/map',
+    element: <UserLocationMap />,
   },
   {
     path: '*',
