@@ -5,9 +5,11 @@ import loginData from '../types/LoginData';
 import useRedirectIfAuthenticated from '../hooks/useRedirectIfAuthenticated';
 import SnackbarProvider from '../components/SnackbarProvider';
 import { useSnackbarStore } from '../stores/snackbarStore';
+import useGoogleAuth from '../hooks/useGoogleAuth';
 
 function Login() {
   const { mutate, isPending } = useLogin();
+  const { mutate: googleMutate } = useGoogleAuth();
   useSnackbarStore();
   const [formData, setFormData] = useState<loginData>({
     email: '',
@@ -80,6 +82,14 @@ function Login() {
               </a>
             </p>
           </form>
+          <button
+            onClick={() => {
+              window.location.href =
+                'https://localhost:5173/api/users/google-login';
+            }}
+          >
+            Login with Github
+          </button>
         </div>
       </div>
       <SnackbarProvider />

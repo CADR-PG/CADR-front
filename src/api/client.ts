@@ -105,3 +105,15 @@ export const saveScene = async (data: SaveSceneData) => {
 export const loadScene = async (uuid: string) => {
   return await apiClient.get<SaveSceneData>(`/projects/load-scene/${uuid}`);
 };
+
+export const googleAuth = async () => {
+  return await fetch('https:localhost:5173/api/users/google-login', {
+    redirect: 'follow',
+  }).then((response) => {
+    console.log(response);
+    if (response.redirected) {
+      window.location.href = response.url;
+    }
+  });
+  // return await apiClient.get('/users/google-login');
+};

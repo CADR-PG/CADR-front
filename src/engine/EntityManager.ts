@@ -107,13 +107,8 @@ export class EntityManager {
     return instance.name in this.entities[entity];
   }
 
-  hasAll(components: Component[], entity: Entity): boolean {
-    // TODO: I think this gets too complicated idk
-    const c = components.map(
-      (component) => this.mapNameToClass[component.name],
-    );
-
-    for (const component of c) {
+  hasAll(components: ComponentType[], entity: Entity): boolean {
+    for (const component of components) {
       if (!this.has(component, entity)) {
         return false;
       }
