@@ -12,7 +12,6 @@ import SphereGeometryData from '../engine/components/geometries/SphereGeometryDa
 import TetrahedronGeometryData from '../engine/components/geometries/TetrahedronGeometryData';
 import GeometryItem from '../types/GeometryItem';
 import BoxGeometryData from '../engine/components/geometries/BoxGeometryData';
-
 const Objects: GeometryItem[] = [
   {
     name: 'Box',
