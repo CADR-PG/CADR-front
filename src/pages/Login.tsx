@@ -5,9 +5,11 @@ import loginData from '../types/LoginData';
 import useRedirectIfAuthenticated from '../hooks/useRedirectIfAuthenticated';
 import SnackbarProvider from '../components/SnackbarProvider';
 import { useSnackbarStore } from '../stores/snackbarStore';
+import useLoginWithGithub from '../hooks/useLoginWithGithub.ts';
 
 function Login() {
   const { mutate, isPending } = useLogin();
+  const loginWithGithub = useLoginWithGithub();
   useSnackbarStore();
   const [formData, setFormData] = useState<loginData>({
     email: '',
@@ -71,6 +73,14 @@ function Login() {
               disabled={isPending}
             >
               {isPending ? 'Logging in...' : 'Login'}
+            </button>
+            <button
+              className="btn-primary btn-primary-login"
+              type="button"
+              onClick={loginWithGithub}
+              disabled={isPending}
+            >
+              Login with Github
             </button>
             <p className="login-form__content">
               {' '}
