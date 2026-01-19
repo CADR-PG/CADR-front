@@ -100,13 +100,13 @@ export default function MaterialInspector<T extends MaterialData>({
         return (
           <NumberField
             value={data[key]}
-            onValueChange={(value) => handleNumber(value, key)}
+            onValueChange={(value: number) => handleNumber(value, key)}
             size="small"
           />
         );
       case 'boolean':
         return (
-          <div className="input-checkbox">
+          <div className="inspector-input-checkbox">
             <Checkbox
               checked={data[key]}
               onChange={(e) => handleChange(e, key)}

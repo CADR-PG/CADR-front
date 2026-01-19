@@ -105,11 +105,11 @@
     flex-direction: column;
     gap: 8px;
   }
-}
 
-.input-checkbox {
-  display: flex;
-  justify-content: center;
+  &-checkbox {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 .component-header {

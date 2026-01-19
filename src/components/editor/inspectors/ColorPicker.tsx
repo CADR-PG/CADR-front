@@ -35,7 +35,6 @@ export default function ColorPicker({
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [color, setColor] = useState<string>('');
   const open = Boolean(anchorEl);
-  console.log(componentColor);
   const stringColor = `${componentColor.toString(16).padStart(6, '0')}`;
 
   // NOTE(m1k53r): this is used only for the input below the picker,

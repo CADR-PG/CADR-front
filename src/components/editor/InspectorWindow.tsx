@@ -39,8 +39,6 @@ function InspectorWindow() {
   };
   const handleAdd = (name: string) => {
     if (focused) {
-      console.log(name);
-      console.log(ECS.instance.entityManager.mapNameToClass[name]);
       ECS.instance.entityManager.addComponent(
         new ECS.instance.entityManager.mapNameToClass[name](),
         focused,

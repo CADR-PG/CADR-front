@@ -47,12 +47,12 @@ export default function GenericInspector<T extends Component>({
           <NumberField
             value={component[key]}
             size="small"
-            onValueChange={(num) => handleNumber(num, key)}
+            onValueChange={(value: number) => handleNumber(value, key)}
           />
         );
       case 'boolean':
         return (
-          <div className="input-checkbox">
+          <div className="inspector-input-checkbox">
             <Checkbox
               checked={component[key]}
               onChange={(e) => handleChange(e, key)}

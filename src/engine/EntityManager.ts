@@ -34,7 +34,6 @@ export class EntityManager {
   registerComponent<T extends Component>(component: ComponentType<T>): void {
     const instance: T = new component();
 
-    console.log(`registering component: ${instance.name}`);
     this.mapNameToClass[instance.name] = component;
   }
 

@@ -84,13 +84,13 @@ export default function GeometryInspector<T extends GeometryData>({
         return (
           <NumberField
             value={data[key as keyof T] as number}
-            onValueChange={(value) => handleNumber(value, key)}
+            onValueChange={(value: number) => handleNumber(value, key)}
             size="small"
           />
         );
       case 'boolean':
         return (
-          <div className="input-checkbox">
+          <div className="inspector-input-checkbox">
             <Checkbox
               checked={data[key]}
               onChange={(e) => handleChange(e, geometryWrite.data as T, key)}
