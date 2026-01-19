@@ -74,8 +74,8 @@ export class EntityManager {
     delete this.entities[entity];
   }
 
-  getComponents(entity: Entity): { [name: string]: Component } {
-    if (!(entity in this.entities)) return {};
+  getComponents(entity: Entity | null): { [name: string]: Component } {
+    if (!entity || !(entity in this.entities)) return proxy({});
 
     return this.entities[entity];
   }

@@ -48,6 +48,99 @@
 .inspector-window {
   padding : 0 10px;
   min-width: 200px;
+  overflow: auto;
+  height: 100%;
+}
+
+.inspector-panel {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  gap: 8px;
+  user-select: none;
+}
+
+.inspector-field {
+  min-width: 0;
+
+  &-key {
+    display: inline-block;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}
+
+.inspector-input {
+  justify-self: end;
+  &-columns {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+
+    &-button {
+      flex-grow: 1;
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  &-points {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &-checkbox {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.component-header {
+  display: flex;
+  justify-content: space-between;
+
+  &-close-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: none;
+
+    &-icon {
+      color: #fff;
+    }
+  }
+}
+
+.add-component {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+
+  &-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 28px;
+  }
 }
 
 .toolbar {

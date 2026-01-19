@@ -1,0 +1,70 @@
+import Transform, { Vec3 } from '../../../engine/components/Transform';
+import { Entity } from '../../../engine/Entity';
+import { ECS } from '../../../engine/ECS';
+import NumberField from '../../NumberField';
+import InspectorKey from './InspectorKey';
+
+interface TransformInspectorProps {
+  entity: Entity;
+  component: Transform;
+}
+
+export default function TransformInspector({
+  entity,
+  component,
+}: TransformInspectorProps) {
+  const { name: _name, ...snap } = component;
+  const transformWrite = ECS.instance.entityManager.getComponent(
+    Transform,
+    entity,
+  );
+
+  const handleChange = (
+    value: number | null,
+    // NOTE(m1k53r): I'm not sure if using keyof typeof is
+    // readable enough. here I'm saying that key is either
+    // 'position', 'rotation' or 'scale'.
+    key: keyof typeof snap,
+    position: number,
+  ) => {
+    if (!transformWrite || value === null) return;
+
+    transformWrite[key][position] = value;
+  };
+
+  return (Object.keys(snap) as (keyof typeof snap)[]).map((key) => {
+    return (
+      // TODO(m1k53r): I'm not a fan of typing the classes
+      // everytime we create an inspector for new component.
+      // I'm thinking about making a HOC out of this, but
+      // on the other hand it seems too abstract
+      // for such little component. idk.
+      <>
+        <InspectorKey keyName={key} />
+        <div className="inspector-input-columns">
+          <NumberField
+            className="inspector-input-columns-column"
+            value={(snap[key] as Vec3)[0]}
+            onValueChange={(value) => handleChange(value, key, 0)}
+            size="small"
+            label="x"
+          />
+          <NumberField
+            className="inspector-input-columns-column"
+            value={(snap[key] as Vec3)[1]}
+            onValueChange={(value) => handleChange(value, key, 1)}
+            size="small"
+            label="y"
+          />
+          <NumberField
+            className="inspector-input-columns-column"
+            value={(snap[key] as Vec3)[2]}
+            onValueChange={(value) => handleChange(value, key, 2)}
+            size="small"
+            label="z"
+          />
+        </div>
+      </>
+    );
+  });
+}

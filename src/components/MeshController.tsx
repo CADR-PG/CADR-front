@@ -15,6 +15,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   const em = useEntityManager();
   const components = em.getComponents(entity);
   const componentKeys = Object.keys(components);
+  const transformRead = em.getComponent(Transform, entity);
   const transform = ECS.instance.entityManager.getComponent(Transform, entity);
   const invisible = em.getComponent(Invisible, entity);
   const meshRef = useRef(null!);
@@ -54,10 +55,10 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
       enabled={!running && entity === focused}
       // TODO: this is a bad idea. we are using non-reactive write-only property
       // to render transformations, because TrasnsformControls are a bitch
-      position={transform?.position}
-      rotation={transform?.rotation}
-      scale={transform?.scale}
-      onChange={handleChange}
+      position={transformRead?.position}
+      rotation={transformRead?.rotation}
+      scale={transformRead?.scale}
+      onMouseUp={handleChange}
       mode={editingMode}
     >
       <mesh
