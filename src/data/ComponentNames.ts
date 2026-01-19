@@ -15,6 +15,8 @@ import TetrahedronController from '../components/editor/geometries/TetrahedronCo
 import TorusController from '../components/editor/geometries/TorusController';
 
 import BasicMaterial from '../components/editor/materials/BasicMaterial';
+import DirectionalLightController from '../components/editor/lights/DirectionalLightController';
+import PointLightController from '../components/editor/lights/PointLightController';
 
 interface ComponentToElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,6 +39,9 @@ const ComponentNames: ComponentToElement = {
   torus: TorusController,
 
   basic: BasicMaterial,
+
+  directional: DirectionalLightController,
+  point: PointLightController,
 };
 
 export default ComponentNames;
