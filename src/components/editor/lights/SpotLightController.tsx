@@ -1,32 +1,34 @@
-import { useRef } from 'react';
+import { SpotLight, SpotLightHelper } from 'three';
 import Light from '../../../engine/components/Light';
-import DirectionalLightData from '../../../engine/components/lights/DirectionalLightData';
 import useEntityManager from '../../../hooks/useEntityManager';
 import ControllerProps from '../../../types/ControllerProps';
-import { DirectionalLight, DirectionalLightHelper } from 'three';
+import { useRef } from 'react';
 import { useHelper } from '@react-three/drei';
+import SpotLightData from '../../../engine/components/lights/SpotLightData';
 import { useEditorContext } from '../../../hooks/useEditorContext';
 
-export default function DirectionalLightController({
-  entity,
-}: ControllerProps) {
+export default function SpotLightController({ entity }: ControllerProps) {
   const { focused } = useEditorContext();
   const em = useEntityManager();
   const lightData = em.getComponent(Light, entity);
-  const ref = useRef<DirectionalLight>(null!);
-  useHelper(focused && ref, DirectionalLightHelper, 1, 'red');
+  const ref = useRef<SpotLight>(null!);
+  useHelper(focused && ref, SpotLightHelper, 'red');
   let params;
 
   if (lightData) {
-    params = lightData.data as DirectionalLightData;
+    params = lightData.data as SpotLightData;
   }
 
   return (
     params && (
-      <directionalLight
+      <spotLight
         ref={ref}
         color={params.color}
         intensity={params.intensity}
+        distance={params.distance}
+        angle={params.distance}
+        penumbra={params.penumbra}
+        decay={params.decay}
       />
     )
   );

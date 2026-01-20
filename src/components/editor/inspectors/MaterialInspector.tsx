@@ -100,7 +100,7 @@ export default function MaterialInspector<T extends MaterialData>({
         return (
           <NumberField
             value={data[key]}
-            onValueChange={(value: number) => handleNumber(value, key)}
+            onValueChange={(value: number | null) => handleNumber(value, key)}
             size="small"
           />
         );

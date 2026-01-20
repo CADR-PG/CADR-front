@@ -5,6 +5,7 @@ import NavigationItem from './NavigationItem';
 import Light from '../../engine/components/Light';
 import { ECS } from '../../engine/ECS';
 import Name from '../../engine/components/Name';
+import Transform from '../../engine/components/Transform';
 
 function LightNavigationItem() {
   const { focus } = useEditorContext();
@@ -17,6 +18,7 @@ function LightNavigationItem() {
       entity,
     );
     ECS.instance.entityManager.addComponent(new Name(light), entity);
+    ECS.instance.entityManager.addComponent(new Transform(), entity);
 
     focus(entity);
   };

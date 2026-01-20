@@ -1,40 +1,24 @@
-import { ChangeEvent } from 'react';
-import Geometry, {
-  GeometryData,
-  Point,
-} from '../../../engine/components/Geometry';
+import { Checkbox, TextField } from '@mui/material';
+import Light, { LightData } from '../../../engine/components/Light';
 import { ECS } from '../../../engine/ECS';
 import { Entity } from '../../../engine/Entity';
-import Points from './Points';
-import Type from './Type';
-import { Checkbox, TextField } from '@mui/material';
 import NumberField from '../../NumberField';
 import InspectorKey from './InspectorKey';
+import { ChangeEvent } from 'react';
+import ColorPicker from './ColorPicker';
+import LightType from './LightType';
 
-interface GeometryInspectorProps<T extends GeometryData> {
+interface LightInspectorProps<T extends LightData> {
   entity: Entity;
   data: T;
 }
 
-export default function GeometryInspector<T extends GeometryData>({
+export default function LightInspector<T extends LightData>({
   entity,
   data,
-}: GeometryInspectorProps<T>) {
-  const geometryWrite = ECS.instance.entityManager.getComponent(
-    Geometry,
-    entity,
-  );
+}: LightInspectorProps<T>) {
+  const lightWrite = ECS.instance.entityManager.getComponent(Light, entity);
 
-  if (!geometryWrite) return;
-
-  // NOTE(m1k53r): this is a little complicated, but it says that
-  // T is a child of GeometryData and K is a key of that type.
-  // This is exactly what I wanted (thanks ChatGPT),
-  // but as I said, a little hard to read. The same thing will probably
-  // be implemented for other inspectors.
-  //
-  // NOTE(m1k53r): this is a normal function instead of arrow, because
-  // Treesitter in NeoVim breaks with generic arrows lol.
   function handleChange<K extends keyof T>(
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     data: T,
@@ -57,26 +41,25 @@ export default function GeometryInspector<T extends GeometryData>({
   }
 
   function handleNumber<K extends keyof T>(value: number | null, key: K) {
-    if (geometryWrite && value !== null) {
-      (geometryWrite.data as T)[key] = value as T[K];
+    if (lightWrite && value !== null) {
+      (lightWrite.data as T)[key] = value as T[K];
     }
   }
 
   function renderSwitch<K extends keyof T>(key: K) {
-    if (!geometryWrite) return;
-
+    if (!lightWrite) return;
     switch (key) {
       case 'type':
-        return <Type entity={entity} type={data.type} />;
-      case 'points':
+        return <LightType entity={entity} type={data.type} />;
+      case 'color':
+      case 'groundColor':
+      case 'skyColor':
         return (
-          <Points
+          <ColorPicker
             entity={entity}
-            points={'points' in data ? (data.points as Point[]) : []}
+            componentColor={'color' in data ? (data.color as number) : 0}
           />
         );
-      default:
-        break;
     }
 
     switch (typeof data[key]) {
@@ -93,7 +76,7 @@ export default function GeometryInspector<T extends GeometryData>({
           <div className="inspector-input-checkbox">
             <Checkbox
               checked={data[key]}
-              onChange={(e) => handleChange(e, geometryWrite.data as T, key)}
+              onChange={(e) => handleChange(e, lightWrite.data as T, key)}
               size="small"
             />
           </div>
@@ -101,8 +84,8 @@ export default function GeometryInspector<T extends GeometryData>({
       case 'string':
         return (
           <TextField
-            value={data[key as keyof GeometryData]}
-            onChange={(e) => handleChange(e, geometryWrite.data as T, key)}
+            value={data[key as keyof LightData]}
+            onChange={(e) => handleChange(e, lightWrite.data as T, key)}
             size="small"
           />
         );

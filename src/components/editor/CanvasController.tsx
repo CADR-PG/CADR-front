@@ -10,10 +10,12 @@ import { useEditorContext } from '../../hooks/useEditorContext';
 import useEditorKeys from '../../hooks/useEditorKeys';
 import StartStopBtnToolbar from './StartStopBtnToolbar';
 import { RenderSystem } from '../../engine/systems/RenderSystem';
+import { RectAreaLightTexturesLib } from 'three/addons/lights/RectAreaLightTexturesLib.js';
 
 function CanvasController() {
   const { running, focus } = useEditorContext();
   useEditorKeys();
+  RectAreaLightTexturesLib.init();
 
   return (
     <div className="canvas-container">
@@ -29,9 +31,7 @@ function CanvasController() {
           // <directionalLight position={[10, 10, 10]} />
         }
         <OrbitControls makeDefault enableDamping={false} enabled={!running} />
-        {
-          // <Grid sectionSize={2} infiniteGrid />
-        }
+        <Grid sectionSize={2} infiniteGrid />
         {!running && (
           <GizmoHelper alignment="top-right" margin={[80, 80]}>
             <GizmoViewport
