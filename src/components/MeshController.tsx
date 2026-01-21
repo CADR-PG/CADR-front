@@ -10,6 +10,8 @@ import useEntityManager from '../hooks/useEntityManager';
 import { useEditorContext } from '../hooks/useEditorContext';
 import Invisible from '../engine/components/Invisible';
 import ComponentNames from '../data/ComponentNames';
+import Material from '../engine/components/Material';
+import Geometry from '../engine/components/Geometry';
 
 function GenericMesh({ entity, ...props }: ControllerProps) {
   const em = useEntityManager();
@@ -18,6 +20,8 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   const transformRead = em.getComponent(Transform, entity);
   const transform = ECS.instance.entityManager.getComponent(Transform, entity);
   const invisible = em.getComponent(Invisible, entity);
+  const material = em.getComponent(Material, entity);
+  const geometry = em.getComponent(Geometry, entity);
   const meshRef = useRef(null!);
   const {
     focused,
@@ -27,7 +31,17 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
     handlePointerOver,
     handlePointerOut,
   } = useMesh(entity);
+
   const { editingMode } = useEditorContext();
+
+  let MaterialComponent = null;
+  let GeometryComponent = null;
+  if (material && material.element) {
+    MaterialComponent = ComponentNames[material.element];
+  }
+  if (geometry && geometry.element) {
+    GeometryComponent = ComponentNames[geometry.element];
+  }
 
   // tbh I'm not a fan of this function. I think it could be simpler idk
   const handleChange = () => {
@@ -61,28 +75,37 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
       onMouseUp={handleChange}
       mode={editingMode}
     >
-      <mesh
-        {...props}
-        onClick={handleClick}
-        onPointerOver={handlePointerOver}
-        onPointerOut={handlePointerOut}
-        ref={meshRef}
-      >
-        <HighlightHelper
-          entity={entity}
-          focused={!running ? focused : ''}
-          hovered={!running ? hovered : false}
-        />
+      <group>
+        <mesh
+          {...props}
+          onClick={handleClick}
+          onPointerOver={handlePointerOver}
+          onPointerOut={handlePointerOut}
+          ref={meshRef}
+        >
+          <HighlightHelper
+            entity={entity}
+            focused={!running ? focused : ''}
+            hovered={!running ? hovered : false}
+          />
+          {MaterialComponent && <MaterialComponent entity={entity} />}
+          {GeometryComponent && <GeometryComponent entity={entity} />}
+        </mesh>
         {!invisible &&
           componentKeys.map((component, index) => {
             const element = components[component].element;
-            if (element) {
+            console.log(element);
+            if (
+              element &&
+              element !== geometry?.element &&
+              element !== material?.element
+            ) {
               const ComponentElement = ComponentNames[element];
               return <ComponentElement key={index} entity={entity} />;
             }
             return null;
           })}
-      </mesh>
+      </group>
     </TransformControls>
   );
 }

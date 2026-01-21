@@ -11,9 +11,6 @@ export function RenderSystem() {
   return (
     <group position={[0, 0, 0]}>
       {entities.map((entity) => {
-        if (em.has(Light, entity)) {
-          return <PointLightController entity={entity} />;
-        }
         return <GenericMesh key={entity} entity={entity} />;
       })}
     </group>

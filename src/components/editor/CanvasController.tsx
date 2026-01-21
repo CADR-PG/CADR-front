@@ -26,12 +26,8 @@ function CanvasController() {
         onPointerMissed={() => focus(null)}
         camera={{ position: [3, 2, -3] }}
       >
-        {
-          // <ambientLight />
-          // <directionalLight position={[10, 10, 10]} />
-        }
         <OrbitControls makeDefault enableDamping={false} enabled={!running} />
-        <Grid sectionSize={2} infiniteGrid />
+        {!running && <Grid sectionSize={2} infiniteGrid />}
         {!running && (
           <GizmoHelper alignment="top-right" margin={[80, 80]}>
             <GizmoViewport
@@ -40,8 +36,12 @@ function CanvasController() {
             />
           </GizmoHelper>
         )}
-        <mesh>
+        <mesh receiveShadow castShadow>
           <boxGeometry />
+          <meshStandardMaterial color="hotpink" />
+        </mesh>
+        <mesh position={[3, 0, 0]} receiveShadow castShadow>
+          <torusGeometry />
           <meshStandardMaterial color="hotpink" />
         </mesh>
         <RenderSystem />
