@@ -61,10 +61,13 @@ export default function MaterialInspector<T extends MaterialData>({
         return <Combine entity={entity} value={data[key] as CombineType} />;
       case 'color':
         return (
-          <ColorPicker
-            entity={entity}
-            componentColor={'color' in data ? (data.color as number) : 0}
-          />
+          materialWrite && (
+            <ColorPicker
+              componentColor={'color' in data ? (data.color as number) : 0}
+              data={materialWrite.data}
+              field={key as keyof typeof materialWrite.data}
+            />
+          )
         );
       case 'envMapRotation':
         return (

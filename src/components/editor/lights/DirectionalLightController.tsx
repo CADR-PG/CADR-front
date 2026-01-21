@@ -12,7 +12,7 @@ export default function DirectionalLightController({
   entity,
 }: ControllerProps) {
   const colorMap = useLoader(TextureLoader, '/public/lightbulb.png');
-  const { focus, focused } = useEditorContext();
+  const { focus, focused, running } = useEditorContext();
   const em = useEntityManager();
   const lightData = em.getComponent(Light, entity);
   const ref = useRef<DirectionalLight>(null!);

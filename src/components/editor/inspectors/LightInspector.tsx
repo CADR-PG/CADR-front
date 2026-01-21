@@ -55,10 +55,15 @@ export default function LightInspector<T extends LightData>({
       case 'groundColor':
       case 'skyColor':
         return (
-          <ColorPicker
-            entity={entity}
-            componentColor={'color' in data ? (data.color as number) : 0}
-          />
+          lightWrite.data && (
+            <ColorPicker
+              entity={entity}
+              componentColor={data[key] as number}
+              data={lightWrite.data}
+              // NOTE(m1k53r): xd
+              field={key as keyof typeof lightWrite.data}
+            />
+          )
         );
     }
 

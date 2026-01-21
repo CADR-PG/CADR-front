@@ -25,6 +25,7 @@ function CanvasController() {
         className="canvas"
         onPointerMissed={() => focus(null)}
         camera={{ position: [3, 2, -3] }}
+        shadows
       >
         <OrbitControls makeDefault enableDamping={false} enabled={!running} />
         {!running && <Grid sectionSize={2} infiniteGrid />}
