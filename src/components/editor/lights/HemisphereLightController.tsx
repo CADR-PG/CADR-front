@@ -29,6 +29,7 @@ export default function HemisphereLightController({ entity }: ControllerProps) {
           color={params.skyColor}
           groundColor={params.groundColor}
           intensity={params.intensity}
+          castShadow={params.castShadow}
         />
 
         {!running && (

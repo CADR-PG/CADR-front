@@ -6,5 +6,6 @@ export default class HemisphereLightData implements LightData {
     public skyColor = 0xffffff,
     public groundColor = 0xffffff,
     public intensity = 1,
+    public castShadow = false,
   ) {}
 }

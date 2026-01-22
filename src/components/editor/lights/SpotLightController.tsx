@@ -32,7 +32,7 @@ export default function SpotLightController({ entity }: ControllerProps) {
           angle={params.distance}
           penumbra={params.penumbra}
           decay={params.decay}
-          castShadow
+          castShadow={params.castShadow}
         />
 
         {!running && (

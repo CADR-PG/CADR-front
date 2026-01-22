@@ -30,6 +30,7 @@ export default function DirectionalLightController({
           ref={ref}
           color={params.color}
           intensity={params.intensity}
+          castShadow={params.castShadow}
         />
 
         {!running && (

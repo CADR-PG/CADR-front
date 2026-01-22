@@ -7,5 +7,6 @@ export default class RectAreaLightData implements LightData {
     public intensity = 1,
     public width = 10,
     public height = 10,
+    public castShadow = false,
   ) {}
 }

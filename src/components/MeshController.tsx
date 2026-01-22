@@ -12,6 +12,7 @@ import Invisible from '../engine/components/Invisible';
 import ComponentNames from '../data/ComponentNames';
 import Material from '../engine/components/Material';
 import Geometry from '../engine/components/Geometry';
+import Mesh from '../engine/components/Mesh';
 
 function GenericMesh({ entity, ...props }: ControllerProps) {
   const em = useEntityManager();
@@ -22,6 +23,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   const invisible = em.getComponent(Invisible, entity);
   const material = em.getComponent(Material, entity);
   const geometry = em.getComponent(Geometry, entity);
+  const mesh = em.getComponent(Mesh, entity);
   const meshRef = useRef(null!);
   const {
     focused,
@@ -64,35 +66,42 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   };
 
   return (
-    <TransformControls
-      size={!running && entity === focused ? 1 : 0}
-      enabled={!running && entity === focused}
-      // TODO: this is a bad idea. we are using non-reactive write-only property
-      // to render transformations, because TrasnsformControls are a bitch
-      position={transformRead?.position}
-      rotation={transformRead?.rotation}
-      scale={transformRead?.scale}
-      onMouseUp={handleChange}
-      mode={editingMode}
-    >
-      <group>
-        <mesh
-          {...props}
-          onClick={handleClick}
-          onPointerOver={handlePointerOver}
-          onPointerOut={handlePointerOut}
-          ref={meshRef}
-        >
-          <HighlightHelper
-            entity={entity}
-            focused={!running ? focused : ''}
-            hovered={!running ? hovered : false}
-          />
-          {MaterialComponent && <MaterialComponent entity={entity} />}
-          {GeometryComponent && <GeometryComponent entity={entity} />}
-        </mesh>
-        {!invisible &&
-          componentKeys.map((component, index) => {
+    !invisible && (
+      <TransformControls
+        size={!running && entity === focused ? 1 : 0}
+        enabled={!running && entity === focused}
+        // TODO: this is a bad idea. we are using non-reactive write-only property
+        // to render transformations, because TrasnsformControls are a bitch
+        position={transformRead?.position}
+        rotation={transformRead?.rotation}
+        scale={transformRead?.scale}
+        onMouseUp={handleChange}
+        mode={editingMode}
+      >
+        <group>
+          {
+            // TODO(m1k53r): export Mesh to different component
+            // TODO(m1k53r): for some God's forsaken reason,
+            // transform controls break when there is no mesh attached lol
+          }
+          <mesh
+            {...props}
+            onClick={handleClick}
+            onPointerOver={handlePointerOver}
+            onPointerOut={handlePointerOut}
+            ref={meshRef}
+            castShadow={mesh ? mesh.castShadow : false}
+            receiveShadow={mesh ? mesh.receiveShadow : false}
+          >
+            <HighlightHelper
+              entity={entity}
+              focused={!running ? focused : ''}
+              hovered={!running ? hovered : false}
+            />
+            {MaterialComponent && <MaterialComponent entity={entity} />}
+            {GeometryComponent && <GeometryComponent entity={entity} />}
+          </mesh>
+          {componentKeys.map((component, index) => {
             const element = components[component].element;
             console.log(element);
             if (
@@ -105,8 +114,9 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
             }
             return null;
           })}
-      </group>
-    </TransformControls>
+        </group>
+      </TransformControls>
+    )
   );
 }
 

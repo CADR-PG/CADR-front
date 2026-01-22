@@ -30,6 +30,7 @@ export default function PointLightController({ entity }: ControllerProps) {
           intensity={params.intensity}
           distance={params.distance}
           decay={params.decay}
+          castShadow={params.castShadow}
         />
 
         {!running && (

@@ -25,6 +25,7 @@ export default function RectAreaLightController({ entity }: ControllerProps) {
           intensity={params.intensity}
           width={params.width}
           height={params.height}
+          castShadow={params.castShadow}
         />
 
         {!running && (

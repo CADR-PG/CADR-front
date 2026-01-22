@@ -7,5 +7,6 @@ export default class PointLightData implements LightData {
     public intensity = 1,
     public distance = 100,
     public decay = 1,
+    public castShadow = false,
   ) {}
 }

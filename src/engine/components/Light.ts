@@ -1,8 +1,9 @@
 import { Component } from '../Component';
 import { ECS } from '../ECS';
-import DirectionalLightData from './lights/DirectionalLightData';
 import PointLightData from './lights/PointLightData';
 
+// TODO(m1k53r): move repeating properties like color or castShadow
+// into this abstract class. maybe.
 export abstract class LightData {
   abstract type: string;
 }

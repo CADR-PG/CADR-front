@@ -20,7 +20,11 @@ export default function AmbientLightController({ entity }: ControllerProps) {
   return (
     params && (
       <group>
-        <ambientLight color={params.color} intensity={params.intensity} />
+        <ambientLight
+          color={params.color}
+          intensity={params.intensity}
+          castShadow={params.castShadow}
+        />
 
         {!running && (
           <sprite scale={0.5} onClick={() => focus(entity)}>

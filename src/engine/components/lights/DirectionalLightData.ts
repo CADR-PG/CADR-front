@@ -5,5 +5,6 @@ export default class DirectionalLightData implements LightData {
   constructor(
     public color = 0xffffff,
     public intensity = 1,
+    public castShadow = false,
   ) {}
 }

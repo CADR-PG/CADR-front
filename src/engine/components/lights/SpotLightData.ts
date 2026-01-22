@@ -9,5 +9,6 @@ export default class SpotLightData implements LightData {
     public angle = Math.PI / 3,
     public penumbra = 0,
     public decay = 2,
+    public castShadow = false,
   ) {}
 }

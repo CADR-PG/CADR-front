@@ -33,21 +33,36 @@ export default function GenericInspector<T extends Component>({
   // a whole month since I looked at this code lol.
   function handleChange<K extends keyof T>(
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    data: T,
     key: K,
   ) {
     if (!writeComponent) return;
 
-    (writeComponent as T)[key] = e.target.value as T[K];
+    const type = typeof data[key];
+
+    switch (type) {
+      case 'string':
+        data[key] = e.currentTarget.value as T[K];
+        break;
+      case 'boolean':
+        if (e.currentTarget instanceof HTMLTextAreaElement) return;
+        data[key] = e.currentTarget.checked as T[K];
+        break;
+      default:
+        break;
+    }
   }
 
   function renderSwitch<K extends keyof T>(key: K) {
+    if (!writeComponent) return;
+
     switch (typeof component[key]) {
       case 'number':
         return (
           <NumberField
             value={component[key]}
             size="small"
-            onValueChange={(value: number) => handleNumber(value, key)}
+            onValueChange={(value: number | null) => handleNumber(value, key)}
           />
         );
       case 'boolean':
@@ -55,7 +70,8 @@ export default function GenericInspector<T extends Component>({
           <div className="inspector-input-checkbox">
             <Checkbox
               checked={component[key]}
-              onChange={(e) => handleChange(e, key)}
+              onChange={(e) => handleChange(e, writeComponent as T, key)}
+              size="small"
             />
           </div>
         );
@@ -63,7 +79,7 @@ export default function GenericInspector<T extends Component>({
         return (
           <TextField
             value={component[key]}
-            onChange={(e) => handleChange(e, key)}
+            onChange={(e) => handleChange(e, writeComponent as T, key)}
             size="small"
           />
         );
