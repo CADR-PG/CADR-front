@@ -12,7 +12,6 @@ import TransformInspector from './inspectors/TransformInspector';
 import Transform from '../../engine/components/Transform';
 import MaterialInspector from './inspectors/MaterialInspector';
 import Material from '../../engine/components/Material';
-import LightInsepctor from './inspectors/LightInspector';
 import Light from '../../engine/components/Light';
 import LightInspector from './inspectors/LightInspector';
 
