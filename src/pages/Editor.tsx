@@ -30,11 +30,23 @@ function Editor() {
     }
   }, [data, isError]);
 
+  const startstop = (newState: boolean) => {
+    console.log(`running: ${running}, newState: ${newState}`);
+    if (!running && newState) {
+      ECS.instance.entityManager.copyScene();
+    }
+    if (running && !newState) {
+      ECS.instance.entityManager.restoreScene();
+    }
+
+    setRunning(newState);
+  };
+
   const contextValue: EditorContextValues = {
     focused,
     focus,
     running,
-    setRunning,
+    setRunning: startstop,
     editingMode,
     selectMode,
   };

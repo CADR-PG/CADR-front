@@ -1,3 +1,4 @@
+import { RootState } from '@react-three/fiber';
 import { ComponentType } from './Component';
 import { Entity } from './Entity';
 
@@ -7,7 +8,9 @@ export abstract class System {
   components: ComponentType[];
   constructor(...components: ComponentType[]) {
     this.components = components;
+    this.start();
   }
 
-  abstract update(entities: Entity[], delta: number): void;
+  abstract update(entities: Entity[], state: RootState, delta: number): void;
+  abstract start(): void;
 }

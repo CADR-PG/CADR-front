@@ -12,7 +12,7 @@ import { useSnackbarStore } from '../../stores/snackbarStore';
 
 function FileNavigationItem() {
   const em = useEntityManager();
-  const { focus } = useEditorContext();
+  const { focus, running } = useEditorContext();
   const { mutate } = useSaveScene();
   const { uuid } = useParams();
   const filePickerRef = useRef<(HTMLInputElement | null)[]>([]);
@@ -35,7 +35,7 @@ function FileNavigationItem() {
           saveScene();
           return 60;
         }
-        return prev - 1;
+        return running ? prev : prev - 1;
       });
     }, 1000);
 
@@ -46,7 +46,11 @@ function FileNavigationItem() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
+
+        if (running) return;
+
         saveScene();
+        setSecondsLeft(60);
       }
     };
     window.addEventListener('keydown', handleKeyDown);

@@ -8,7 +8,7 @@ function StartStopBtnToolbar() {
 
   return (
     <div className="start-stop-btn-toolbar">
-      <button onClick={() => setRunning((prev) => !prev)}>
+      <button onClick={() => setRunning(!running)}>
         {running ? (
           <PauseIcon sx={{ color: grey[500] }} />
         ) : (

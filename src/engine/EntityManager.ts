@@ -1,4 +1,4 @@
-import { proxy } from 'valtio';
+import { proxy, snapshot } from 'valtio';
 import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
 
@@ -39,6 +39,16 @@ export class EntityManager {
 
   getScene() {
     return this.entities;
+  }
+
+  copyScene() {
+    const copy = structuredClone(snapshot(this.entities));
+    this.entitiesCopy = proxy(copy);
+  }
+
+  restoreScene() {
+    this.entities = this.entitiesCopy;
+    this.entitiesCopy = {};
   }
 
   setScene(entities: EntityToComponent) {
@@ -119,4 +129,5 @@ export class EntityManager {
 
   mapNameToClass: NameToClass = {};
   entities: EntityToComponent = {};
+  entitiesCopy: EntityToComponent = {};
 }
