@@ -15,6 +15,14 @@ import TetrahedronController from '../components/editor/geometries/TetrahedronCo
 import TorusController from '../components/editor/geometries/TorusController';
 
 import BasicMaterial from '../components/editor/materials/BasicMaterial';
+import DepthMaterial from '../components/editor/materials/DepthMaterial';
+import LambertMaterial from '../components/editor/materials/LambertMaterial';
+import MatcapMaterial from '../components/editor/materials/MatcapMaterial';
+import NormalMaterial from '../components/editor/materials/NormalMaterial';
+import PhongMaterial from '../components/editor/materials/PhongMaterial';
+import PhysicalMaterial from '../components/editor/materials/PhysicalMaterial';
+import StandardMaterial from '../components/editor/materials/StandardMaterial';
+import ToonMaterial from '../components/editor/materials/ToonMaterial';
 
 interface ComponentToElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,6 +45,14 @@ const ComponentNames: ComponentToElement = {
   torus: TorusController,
 
   basic: BasicMaterial,
+  depth: DepthMaterial,
+  lambert: LambertMaterial,
+  matcap: MatcapMaterial,
+  normal: NormalMaterial,
+  phong: PhongMaterial,
+  physical: PhysicalMaterial,
+  standard: StandardMaterial,
+  toon: ToonMaterial,
 };
 
 export default ComponentNames;
