@@ -12,12 +12,5 @@ export default function MatcapMaterial({ entity }: ControllerProps) {
     params = materialData.data as MatcapMaterialData;
   }
 
-  return (
-    params && (
-      <meshMatcapMaterial
-        color={params.color}
-        fog={params.fog}
-      />
-    )
-  );
+  return params && <meshMatcapMaterial color={params.color} fog={params.fog} />;
 }

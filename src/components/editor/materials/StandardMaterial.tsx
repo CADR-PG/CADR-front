@@ -22,7 +22,7 @@ export default function StandardMaterial({ entity }: ControllerProps) {
         aoMapIntensity={params.aoMapIntensity}
         lightMapIntensity={params.lightMapIntensity}
         bumpScale={params.bumpScale}
-        normalScale={params.normalScale as any}
+        normalScale={params.normalScale}
         displacementScale={params.displacementScale}
         displacementBias={params.displacementBias}
         emissive={params.emissive}
