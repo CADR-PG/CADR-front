@@ -1,5 +1,7 @@
 .hierarchy-window {
     user-select: none;
+    overflow: auto;
+    height: 100%;
     h3 {
         padding: 0 10px;
     }
