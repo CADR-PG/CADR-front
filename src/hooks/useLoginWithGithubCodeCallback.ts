@@ -22,5 +22,5 @@ export default function useLoginWithGithubCodeCallback() {
           openSnackbar('Failed to log in with GitHub', 'error');
         });
     }
-  }, [navigate, openSnackbar]);
+  }, [navigate]);
 }
