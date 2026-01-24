@@ -1,16 +1,7 @@
 import Material from '../../../engine/components/Material';
 import useEntityManager from '../../../hooks/useEntityManager';
 import ControllerProps from '../../../types/ControllerProps';
-
-interface DepthMaterialData {
-  displacementScale?: number;
-  displacementBias?: number;
-  fog?: boolean;
-  wireframe?: boolean;
-  wireframeLinecap?: string;
-  wireframeLinejoin?: string;
-  wireframeLinewidth?: number;
-}
+import DepthMaterialData from '../../../engine/components/materials/DepthMaterialData';
 
 export default function DepthMaterial({ entity }: ControllerProps) {
   const em = useEntityManager();

@@ -6,6 +6,7 @@ export default class DepthMaterialData implements MaterialData {
     public displacementBias = 0,
     public displacementScale = 1,
     public wireframe = false,
+    public wireframeLinecap = 'round',
     public wireframeLinewidth = 1,
   ) {}
 }
