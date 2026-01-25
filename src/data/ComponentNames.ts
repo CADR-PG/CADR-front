@@ -15,6 +15,12 @@ import TetrahedronController from '../components/editor/geometries/TetrahedronCo
 import TorusController from '../components/editor/geometries/TorusController';
 
 import BasicMaterial from '../components/editor/materials/BasicMaterial';
+import DirectionalLightController from '../components/editor/lights/DirectionalLightController';
+import PointLightController from '../components/editor/lights/PointLightController';
+import RectAreaLightController from '../components/editor/lights/RectAreaLightController';
+import HemisphereLightController from '../components/editor/lights/HemisphereLightController';
+import AmbientLightController from '../components/editor/lights/AmbientLightController';
+import SpotLightController from '../components/editor/lights/SpotLightController';
 
 interface ComponentToElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,6 +43,13 @@ const ComponentNames: ComponentToElement = {
   torus: TorusController,
 
   basic: BasicMaterial,
+
+  directional: DirectionalLightController,
+  point: PointLightController,
+  rectarea: RectAreaLightController,
+  hemisphere: HemisphereLightController,
+  ambient: AmbientLightController,
+  spotlight: SpotLightController,
 };
 
 export default ComponentNames;

@@ -6,9 +6,9 @@ export function RenderSystem() {
 
   return (
     <group position={[0, 0, 0]}>
-      {entities.map((entity) => (
-        <GenericMesh key={entity} entity={entity} />
-      ))}
+      {entities.map((entity) => {
+        return <GenericMesh key={entity} entity={entity} />;
+      })}
     </group>
   );
 }

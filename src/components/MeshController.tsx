@@ -10,6 +10,9 @@ import useEntityManager from '../hooks/useEntityManager';
 import { useEditorContext } from '../hooks/useEditorContext';
 import Invisible from '../engine/components/Invisible';
 import ComponentNames from '../data/ComponentNames';
+import Material from '../engine/components/Material';
+import Geometry from '../engine/components/Geometry';
+import Mesh from '../engine/components/Mesh';
 
 function GenericMesh({ entity, ...props }: ControllerProps) {
   const em = useEntityManager();
@@ -18,6 +21,9 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   const transformRead = em.getComponent(Transform, entity);
   const transform = ECS.instance.entityManager.getComponent(Transform, entity);
   const invisible = em.getComponent(Invisible, entity);
+  const material = em.getComponent(Material, entity);
+  const geometry = em.getComponent(Geometry, entity);
+  const mesh = em.getComponent(Mesh, entity);
   const meshRef = useRef(null!);
   const {
     focused,
@@ -27,7 +33,17 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
     handlePointerOver,
     handlePointerOut,
   } = useMesh(entity);
+
   const { editingMode } = useEditorContext();
+
+  let MaterialComponent = null;
+  let GeometryComponent = null;
+  if (material && material.element) {
+    MaterialComponent = ComponentNames[material.element];
+  }
+  if (geometry && geometry.element) {
+    GeometryComponent = ComponentNames[geometry.element];
+  }
 
   // tbh I'm not a fan of this function. I think it could be simpler idk
   const handleChange = () => {
@@ -50,40 +66,57 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   };
 
   return (
-    <TransformControls
-      size={!running && entity === focused ? 1 : 0}
-      enabled={!running && entity === focused}
-      // TODO: this is a bad idea. we are using non-reactive write-only property
-      // to render transformations, because TrasnsformControls are a bitch
-      position={transformRead?.position}
-      rotation={transformRead?.rotation}
-      scale={transformRead?.scale}
-      onMouseUp={handleChange}
-      mode={editingMode}
-    >
-      <mesh
-        {...props}
-        onClick={handleClick}
-        onPointerOver={handlePointerOver}
-        onPointerOut={handlePointerOut}
-        ref={meshRef}
+    !invisible && (
+      <TransformControls
+        size={!running && entity === focused ? 1 : 0}
+        enabled={!running && entity === focused}
+        // TODO: this is a bad idea. we are using non-reactive write-only property
+        // to render transformations, because TrasnsformControls are a bitch
+        position={transformRead?.position}
+        rotation={transformRead?.rotation}
+        scale={transformRead?.scale}
+        onMouseUp={handleChange}
+        mode={editingMode}
       >
-        <HighlightHelper
-          entity={entity}
-          focused={!running ? focused : ''}
-          hovered={!running ? hovered : false}
-        />
-        {!invisible &&
-          componentKeys.map((component, index) => {
+        <group>
+          {
+            // TODO(m1k53r): export Mesh to different component
+            // TODO(m1k53r): for some God's forsaken reason,
+            // transform controls break when there is no mesh attached lol
+          }
+          <mesh
+            {...props}
+            onClick={handleClick}
+            onPointerOver={handlePointerOver}
+            onPointerOut={handlePointerOut}
+            ref={meshRef}
+            castShadow={mesh ? mesh.castShadow : false}
+            receiveShadow={mesh ? mesh.receiveShadow : false}
+          >
+            <HighlightHelper
+              entity={entity}
+              focused={!running ? focused : ''}
+              hovered={!running ? hovered : false}
+            />
+            {MaterialComponent && <MaterialComponent entity={entity} />}
+            {GeometryComponent && <GeometryComponent entity={entity} />}
+          </mesh>
+          {componentKeys.map((component, index) => {
             const element = components[component].element;
-            if (element) {
+            console.log(element);
+            if (
+              element &&
+              element !== geometry?.element &&
+              element !== material?.element
+            ) {
               const ComponentElement = ComponentNames[element];
               return <ComponentElement key={index} entity={entity} />;
             }
             return null;
           })}
-      </mesh>
-    </TransformControls>
+        </group>
+      </TransformControls>
+    )
   );
 }
 
