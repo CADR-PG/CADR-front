@@ -42,6 +42,10 @@ export const userLogin = async (userData: loginData) => {
   return await apiClient.post('/users/login', userData);
 };
 
+export const userLoginWithGithub = async (userData: loginWithGithubData) => {
+  return await apiClient.post('/users/github-login', userData);
+};
+
 export const resendEmail = async (email: string) => {
   return await apiClient.post(
     `/users/resend-email-confirmation?email=${email}`,

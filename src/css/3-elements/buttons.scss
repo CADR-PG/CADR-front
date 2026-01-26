@@ -22,6 +22,16 @@
             justify-content: center;
             font-size: 1rem;
         }
+            &.btn-github,
+            &.github {
+                svg {
+                    width: 20px;
+                    height: 20px;
+                    flex: 0 0 20px;
+                    display: inline-block;
+                    margin-right: 8px;
+                }
+            }
 
         &:hover {
             background: variables.$c-cyan-hover;
