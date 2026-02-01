@@ -12,6 +12,8 @@ import TransformInspector from './inspectors/TransformInspector';
 import Transform from '../../engine/components/Transform';
 import MaterialInspector from './inspectors/MaterialInspector';
 import Material from '../../engine/components/Material';
+import Light from '../../engine/components/Light';
+import LightInspector from './inspectors/LightInspector';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -80,6 +82,10 @@ function InspectorWindow() {
             entity={focused}
             data={(snap[key] as Material).data}
           />
+        );
+      case 'Light':
+        return (
+          <LightInspector entity={focused} data={(snap[key] as Light).data} />
         );
       default:
         return <GenericInspector entity={focused} component={snap[key]} />;

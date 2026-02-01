@@ -23,6 +23,12 @@ import PhongMaterial from '../components/editor/materials/PhongMaterial';
 import PhysicalMaterial from '../components/editor/materials/PhysicalMaterial';
 import StandardMaterial from '../components/editor/materials/StandardMaterial';
 import ToonMaterial from '../components/editor/materials/ToonMaterial';
+import DirectionalLightController from '../components/editor/lights/DirectionalLightController';
+import PointLightController from '../components/editor/lights/PointLightController';
+import RectAreaLightController from '../components/editor/lights/RectAreaLightController';
+import HemisphereLightController from '../components/editor/lights/HemisphereLightController';
+import AmbientLightController from '../components/editor/lights/AmbientLightController';
+import SpotLightController from '../components/editor/lights/SpotLightController';
 
 interface ComponentToElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -53,6 +59,13 @@ const ComponentNames: ComponentToElement = {
   physical: PhysicalMaterial,
   standard: StandardMaterial,
   toon: ToonMaterial,
+
+  directional: DirectionalLightController,
+  point: PointLightController,
+  rectarea: RectAreaLightController,
+  hemisphere: HemisphereLightController,
+  ambient: AmbientLightController,
+  spotlight: SpotLightController,
 };
 
 export default ComponentNames;
