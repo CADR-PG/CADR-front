@@ -1,6 +1,7 @@
 import FileNavigationItem from './FileNavigationItem';
 import LightNavigationItem from './LightNavigationItem';
 import ObjectNavigationItem from './ObjectNavigationItem';
+import ViewNavigationItem from './ViewNavigationItem';
 
 function Navigation() {
   return (
@@ -8,6 +9,7 @@ function Navigation() {
       <FileNavigationItem />
       <ObjectNavigationItem />
       <LightNavigationItem />
+      <ViewNavigationItem />
     </div>
   );
 }
