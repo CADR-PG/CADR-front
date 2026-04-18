@@ -105,3 +105,96 @@ export const saveScene = async (data: SaveSceneData) => {
 export const loadScene = async (uuid: string) => {
   return await apiClient.get<SaveSceneData>(`/projects/load-scene/${uuid}`);
 };
+
+export type AssetsDirectory = {
+  id: string;
+  name: string;
+  createdAt: string;
+  lastModifiedAt: string | null;
+  directories: AssetsDirectory[] | null;
+  files: AssetsFile[] | null;
+};
+
+export type AssetsFile = {
+  id: string;
+  name: string;
+  sizeInBytes: number;
+  createdAt: string;
+  lastModifiedAt: string | null;
+};
+
+export type AssetsFileUploadReadModel = {
+  id: string;
+  name: string;
+  sizeInBytes: number;
+  createdAt: string;
+  lastModifiedAt: string | null;
+  uploadUrl: string;
+};
+
+export const getProjectAssets = async (projectId: string) => {
+  return await apiClient.get<{ assets: AssetsDirectory }>(
+    `/projects/${projectId}/assets`,
+  );
+};
+
+export const createDirectory = async (
+  projectId: string,
+  name: string,
+  parentDirectoryId: string,
+) => {
+  return await apiClient.post(`/projects/${projectId}/assets/directories`, {
+    name,
+    directoryId: parentDirectoryId,
+  });
+};
+
+export const deleteDirectory = async (
+  projectId: string,
+  directoryId: string,
+) => {
+  return await apiClient.delete(
+    `/projects/${projectId}/assets/directories/${directoryId}`,
+  );
+};
+
+export const registerFile = async (
+  projectId: string,
+  name: string,
+  directoryId: string,
+  sizeInBytes: number,
+) => {
+  return await apiClient.post<AssetsFileUploadReadModel>(
+    `/projects/${projectId}/assets/files`,
+    { name, directoryId, sizeInBytes },
+  );
+};
+
+export const uploadFileStorage = async (uploadUrl: string, file: File) => {
+  const url = import.meta.env.DEV
+    ? uploadUrl.replace('http://cadr.azurite:10000', '/azurite')
+    : uploadUrl;
+
+  return await fetch(url, {
+    method: 'PUT',
+    body: file,
+    headers: {
+      'x-ms-blob-type': 'BlockBlob',
+    },
+  });
+};
+
+export const requestFileDownload = async (
+  projectId: string,
+  fileId: string,
+) => {
+  return await apiClient.post<{ downloadUrl: string }>(
+    `/projects/${projectId}/assets/files/${fileId}/request-download`,
+  );
+};
+
+export const deleteFile = async (projectId: string, fileId: string) => {
+  return await apiClient.delete(
+    `/projects/${projectId}/assets/files/${fileId}`,
+  );
+};
