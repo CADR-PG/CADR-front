@@ -10,7 +10,7 @@ import AddProjectData from '../types/AddProjectData';
 import SaveSceneData from '../types/SaveSceneData';
 
 const localApiUrl = '/api';
-const productionApiUrl = 'https://api.cadr.studio';
+const productionApiUrl = 'https://api.cadr.games';
 export const apiUrl = import.meta.env.DEV ? localApiUrl : productionApiUrl;
 
 export const apiClient = axios.create({
