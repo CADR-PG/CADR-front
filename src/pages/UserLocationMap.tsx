@@ -106,9 +106,6 @@ export default function UserLocationMap() {
 
   useAuth();
 
-  const mapboxAccessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN as
-    | string
-    | undefined;
   const locations = useMemo(() => response?.data?.logs ?? [], [response]);
   const center: [number, number] =
     locations.length > 0
