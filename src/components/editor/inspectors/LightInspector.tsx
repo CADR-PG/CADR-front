@@ -57,7 +57,6 @@ export default function LightInspector<T extends LightData>({
         return (
           lightWrite.data && (
             <ColorPicker
-              entity={entity}
               componentColor={data[key] as number}
               data={lightWrite.data}
               // NOTE(m1k53r): xd
