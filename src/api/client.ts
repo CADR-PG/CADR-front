@@ -66,7 +66,7 @@ export const refreshToken = async () => {
 };
 
 export const fetchLocationLogs = async () => {
-  return await apiClient.post('/users/location-logs');
+  return await apiClient.get('/users/location-logs');
 };
 
 export const changeUserInfo = async (data: ChangeInfoData) =>
