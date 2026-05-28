@@ -138,7 +138,7 @@ export default function UserLocationMap() {
       <div className="map-wrapper">
         <MapContainer key={`${center[0]},${center[1]}`} className="user-map">
             <TileLayer
-              url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3p5bW9ucGciLCJhIjoiY21wYjdvdnkwMDRzdDJ0cjBqYm9xbHFpcyJ9.3U969CZ0SXW0-ips88qfng`}
+              url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3p5bW9ucGciLCJhIjoiY21rcXFleWx4MHMzeTNkczlkYzVqOTB0ayJ9.K45C4kTg1tm_mHqnmpoKng`}
               attribution='&copy; <a href="https://www.mapbox.com/">Mapbox</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               tileSize={512}
               zoomOffset={-1}
