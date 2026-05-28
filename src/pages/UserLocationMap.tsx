@@ -8,6 +8,7 @@ import {
   useMap,
 } from 'react-leaflet';
 import { Fragment, useEffect, useMemo } from 'react';
+import { icon } from 'leaflet';
 import useAuth from '../hooks/useAuth';
 import NavBar from './../components/NavBar';
 import type UserLocationData from '../types/UserLocationData';
@@ -106,6 +107,18 @@ export default function UserLocationMap() {
 
   useAuth();
 
+  const markerIcon = useMemo(
+    () =>
+      icon({
+        iconUrl: '/marker-icon-2x.png',
+        iconRetinaUrl: '/marker-icon-2x.png',
+        iconSize: [50, 82],
+        iconAnchor: [25, 82],
+        popupAnchor: [0, -78],
+      }),
+    [],
+  );
+
   const locations = useMemo(() => response?.data?.logs ?? [], [response]);
   const center: [number, number] =
     locations.length > 0
@@ -148,7 +161,11 @@ export default function UserLocationMap() {
           <HeatmapLayer points={points} />
 
           {locations.map((loc: UserLocationData) => (
-            <Marker key={loc.id} position={[loc.latitude, loc.longitude]}>
+            <Marker
+              key={loc.id}
+              position={[loc.latitude, loc.longitude]}
+              icon={markerIcon}
+            >
               <Popup>
                 <b>
                   {loc.city}, {loc.country}
