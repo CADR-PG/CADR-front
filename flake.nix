@@ -16,6 +16,7 @@
             pnpm
             typescript
             typescript-language-server
+            prettierd
           ];
         };
       }

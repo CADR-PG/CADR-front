@@ -29,10 +29,11 @@ import RectAreaLightController from '../components/editor/lights/RectAreaLightCo
 import HemisphereLightController from '../components/editor/lights/HemisphereLightController';
 import AmbientLightController from '../components/editor/lights/AmbientLightController';
 import SpotLightController from '../components/editor/lights/SpotLightController';
+import CuboidColliderController from '../components/editor/colliders/CuboidColliderController';
 
 interface ComponentToElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [name: string]: (...args: any[]) => JSX.Element | undefined;
+  [name: string]: (...args: any[]) => JSX.Element | undefined | null;
 }
 
 const ComponentNames: ComponentToElement = {
@@ -66,6 +67,8 @@ const ComponentNames: ComponentToElement = {
   hemisphere: HemisphereLightController,
   ambient: AmbientLightController,
   spotlight: SpotLightController,
+
+  cuboid: CuboidColliderController,
 };
 
 export default ComponentNames;
