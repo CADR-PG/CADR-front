@@ -8,6 +8,7 @@ import ChangeEmailData from '../types/ChangeEmailData';
 import ChangePasswordData from '../types/ChangePasswordData';
 import AddProjectData from '../types/AddProjectData';
 import SaveSceneData from '../types/SaveSceneData';
+import type { AssetsDirectory, AssetsFile, AssetsFileUploadReadModel } from '../types/Assets';
 
 const localApiUrl = '/api';
 const productionApiUrl = 'https://api.cadr.games';
@@ -104,32 +105,6 @@ export const saveScene = async (data: SaveSceneData) => {
 
 export const loadScene = async (uuid: string) => {
   return await apiClient.get<SaveSceneData>(`/projects/load-scene/${uuid}`);
-};
-
-export type AssetsDirectory = {
-  id: string;
-  name: string;
-  createdAt: string;
-  lastModifiedAt: string | null;
-  directories: AssetsDirectory[] | null;
-  files: AssetsFile[] | null;
-};
-
-export type AssetsFile = {
-  id: string;
-  name: string;
-  sizeInBytes: number;
-  createdAt: string;
-  lastModifiedAt: string | null;
-};
-
-export type AssetsFileUploadReadModel = {
-  id: string;
-  name: string;
-  sizeInBytes: number;
-  createdAt: string;
-  lastModifiedAt: string | null;
-  uploadUrl: string;
 };
 
 export const getProjectAssets = async (projectId: string) => {

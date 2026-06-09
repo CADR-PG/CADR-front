@@ -1,62 +1,51 @@
-import useAssets from '../../hooks/useAssets';
+import { useState } from 'react';
+import { Button, TextField, IconButton } from '@mui/material';
+import FolderIcon from '@mui/icons-material/Folder';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import DeleteIcon from '@mui/icons-material/Delete';
+import useAssets from '../../stores/useAssets';
 import useCreateDirectory from '../../hooks/useCreateDirectory';
 import useDeleteDirectory from '../../hooks/useDeleteDirectory';
-import { useState } from 'react';
 import useUploadFile from '../../hooks/useUploadFile';
-import { AssetsDirectory, AssetsFile } from '../../api/client';
 import useDeleteFile from '../../hooks/useDeleteFile';
+import type { AssetsDirectory, AssetsFile } from '../../types/Assets';
+import styles from '../../css/2-components/AssetsBrowser.module.scss';
+import { AssetsContext, useAssetsContext } from '../../data/AssetsContext';
 
-function FileItem({
-  file,
-  onDelete,
-}: {
+interface FileItemProps {
   file: AssetsFile;
-  onDelete: (id: string) => void;
-}) {
+}
+
+interface DirectoryItemProps {
+  dir: AssetsDirectory;
+}
+
+interface SelectedDirectory {
+  id: string;
+  name: string;
+}
+
+function FileItem({ file }: FileItemProps) {
+  const { onDeleteFile } = useAssetsContext();
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 4,
-        padding: '2px 0',
-      }}
-    >
-      <span style={{ width: 12, flexShrink: 0 }} />
-      <span style={{ flex: 1 }}>
-        📄{file.name}{' '}
-        <span style={{ color: '#999', fontSize: 11 }}>
+    <div className={styles.row}>
+      <span className={styles.iconSpacer} />
+      <span className={styles.fileName}>
+        <InsertDriveFileIcon fontSize="small" />
+        <span>{file.name}</span>
+        <span className={styles.fileSize}>
           ({(file.sizeInBytes / 1024).toFixed(1)} KB)
         </span>
       </span>
-      <button
-        onClick={() => onDelete(file.id)}
-        style={{
-          fontSize: 10,
-          padding: '1px 4px',
-          cursor: 'pointer',
-          flexShrink: 0,
-        }}
-      >
-        🗑
-      </button>
+      <IconButton size="small" onClick={() => onDeleteFile(file.id)}>
+        <DeleteIcon fontSize="small" />
+      </IconButton>
     </div>
   );
 }
 
-function DirectoryItem({
-  dir,
-  onDelete,
-  onDeleteFile,
-  onSelect,
-  selectedId,
-}: {
-  dir: AssetsDirectory;
-  onDelete: (id: string) => void;
-  onSelect: (id: string, name: string) => void;
-  onDeleteFile: (id: string) => void;
-  selectedId: string;
-}) {
+function DirectoryItem({ dir }: DirectoryItemProps) {
+  const { selectedId, onDelete, onSelect } = useAssetsContext();
   const [open, setOpen] = useState(false);
   const isSelected = dir.id === selectedId;
   const hasChildren =
@@ -64,58 +53,28 @@ function DirectoryItem({
 
   return (
     <div>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 4,
-          padding: '2px 0',
-        }}
-      >
-        <span
-          onClick={() => setOpen(!open)}
-          style={{
-            cursor: 'pointer',
-            width: 12,
-            flexShrink: 0,
-            userSelect: 'none',
-          }}
-        >
+      <div className={styles.row}>
+        <span className={styles.toggleIcon} onClick={() => setOpen(!open)}>
           {hasChildren ? (open ? '▾' : '▸') : ' '}
         </span>
         <span
+          className={`${styles.dirName} ${isSelected ? styles.selected : ''}`}
           onClick={() => onSelect(dir.id, dir.name)}
-          style={{
-            flex: 1,
-            cursor: 'pointer',
-            backgroundColor: isSelected ? '#d0e8ff' : 'transparent',
-            borderRadius: 3,
-            padding: '1px 4px',
-          }}
         >
-          📁 {dir.name}
+          <FolderIcon fontSize="small" />
+          <span>{dir.name}</span>
         </span>
-        <button
-          onClick={() => onDelete(dir.id)}
-          style={{ fontSize: 10, padding: '1px 4px', cursor: 'pointer' }}
-        >
-          🗑
-        </button>
+        <IconButton size="small" onClick={() => onDelete(dir.id)}>
+          <DeleteIcon fontSize="small" />
+        </IconButton>
       </div>
       {open && (
-        <div style={{ paddingLeft: 16 }}>
+        <div className={styles.children}>
           {dir.directories?.map((sub) => (
-            <DirectoryItem
-              key={sub.id}
-              dir={sub}
-              onDelete={onDelete}
-              onDeleteFile={onDeleteFile}
-              onSelect={onSelect}
-              selectedId={selectedId}
-            />
+            <DirectoryItem key={sub.id} dir={sub} />
           ))}
           {dir.files?.map((file) => (
-            <FileItem key={file.id} file={file} onDelete={onDeleteFile} />
+            <FileItem key={file.id} file={file} />
           ))}
         </div>
       )}
@@ -124,148 +83,99 @@ function DirectoryItem({
 }
 
 export default function AssetsBrowser() {
-  const { assets, refetch } = useAssets();
+  const { assets } = useAssets();
   const uploadFile = useUploadFile();
   const createDir = useCreateDirectory();
   const deleteDir = useDeleteDirectory();
   const deleteFile = useDeleteFile();
   const [newDirName, setNewDirName] = useState('');
-  const [selectedDirectoryId, setSelectedDirectoryId] = useState<string>('');
-  const [selectedDirectoryName, setSelectedDirectoryName] =
-    useState<string>('Assets');
+  const [selectedDirectory, setSelectedDirectory] = useState<SelectedDirectory>({
+    id: '',
+    name: 'Assets',
+  });
 
   if (!assets) return null;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    uploadFile.mutate(
-      { file, directoryId: selectedDirectoryId || assets.id },
-      {
-        onSuccess: () => refetch(),
-        onError: (err) => console.log(err),
-      },
-    );
+    uploadFile.mutate({ file, directoryId: selectedDirectory.id || assets.id });
     e.target.value = '';
   };
 
   const handleFileDelete = (fileId: string) => {
-    console.log('usuwam plik:', fileId);
-    deleteFile.mutate(fileId, {
-      onSuccess: () => refetch(),
-      onError: (err) => console.log(err),
-    });
+    deleteFile.mutate(fileId);
   };
 
   const handleCreate = () => {
     if (!newDirName.trim()) return;
     createDir.mutate(
-      { name: newDirName.trim(), parentDirectoryId: assets.id },
-      {
-        onSuccess: () => {
-          setNewDirName('');
-          refetch();
-        },
-        onError: (err) => {
-          console.log(err);
-        },
-      },
+      { name: newDirName.trim(), parentDirectoryId: selectedDirectory.id || assets.id },
+      { onSuccess: () => setNewDirName('') },
     );
   };
 
   const handleDelete = (directoryId: string) => {
-    deleteDir.mutate(
-      { directoryId },
-      {
-        onSuccess: () => {
-          refetch();
-        },
-        onError: (err) => console.log(err),
-      },
-    );
+    deleteDir.mutate( directoryId );
   };
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        overflow: 'hidden',
-        fontSize: 13,
-      }}
-    >
-      <div style={{ flex: 1, overflowY: 'auto', padding: 8 }}>
-        <div
-          onClick={() => {
-            setSelectedDirectoryId(assets.id);
-            setSelectedDirectoryName('Assets');
-          }}
-          style={{
-            cursor: 'pointer',
-            fontWeight: 'bold',
-            backgroundColor:
-              selectedDirectoryId === assets.id ? '#d0e8ff' : 'transparent',
-            borderRadius: 3,
-            padding: '2px 4px',
-            display: 'inline-block',
-          }}
-        >
-          📂 {assets.name}
-        </div>
-        <div style={{ paddingLeft: 8, marginTop: 4 }}>
-          {assets.directories?.map((dir) => (
-            <DirectoryItem
-              key={dir.id}
-              dir={dir}
-              onDelete={handleDelete}
-              onDeleteFile={handleFileDelete}
-              onSelect={(id, name) => {
-                setSelectedDirectoryId(id);
-                setSelectedDirectoryName(name);
-              }}
-              selectedId={selectedDirectoryId}
-            />
-          ))}
-          {assets.files?.map((file) => (
-            <FileItem key={file.id} file={file} onDelete={handleFileDelete} />
-          ))}
-        </div>
-      </div>
 
-      <div
-        style={{
-          borderTop: '1px solid #ddd',
-          padding: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 4,
+  return (
+    <div className={styles.container}>
+      <AssetsContext.Provider
+        value={{
+          selectedId: selectedDirectory.id,
+          onDelete: handleDelete,
+          onDeleteFile: handleFileDelete,
+          onSelect: (id, name) => setSelectedDirectory({ id, name }),
         }}
       >
-        <div style={{ display: 'flex', gap: 4 }}>
-          <input
-            type="text"
-            value={newDirName}
-            onChange={(e) => setNewDirName(e.target.value)}
-            placeholder="Nazwa katalogu"
-          />
-          <button onClick={handleCreate} disabled={createDir.isPending}>
-            + Katalog
-          </button>
+        <div className={styles.scrollArea}>
+          <div
+            className={`${styles.rootDir} ${selectedDirectory.id === assets.id ? styles.selected : ''}`}
+            onClick={() => setSelectedDirectory({ id: assets.id, name: 'Assets' })}
+          >
+            <FolderIcon fontSize="small" />
+            <span>{assets.name}</span>
+          </div>
+          <div className={styles.tree}>
+            {assets.directories?.map((dir: AssetsDirectory) => (
+              <DirectoryItem key={dir.id} dir={dir} />
+            ))}
+            {assets.files?.map((file: AssetsFile) => (
+              <FileItem key={file.id} file={file} />
+            ))}
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-          <span style={{ fontSize: 11, color: '#666' }}>
-            Upload do: 📂 {selectedDirectoryName}
-          </span>
+
+        <div className={styles.toolbar}>
+          <div className={styles.toolbarRow}>
+            <TextField
+              size="small"
+              value={newDirName}
+              onChange={(e) => setNewDirName(e.target.value)}
+              placeholder="Directory name"
+            />
+            <Button size="small" onClick={handleCreate} disabled={createDir.isPending}>
+              + Directory
+            </Button>
+          </div>
+          <div className={styles.toolbarRow}>
+            <span className={styles.uploadLabel}>
+              Upload to: <FolderIcon fontSize="small" /> {selectedDirectory.name}
+            </span>
+          </div>
+          <div className={styles.toolbarRow}>
+            <Button
+              component="label"
+              size="small"
+              disabled={uploadFile.isPending}
+            >
+              {uploadFile.isPending ? 'Uploading...' : 'Upload file'}
+              <input type="file" hidden onChange={handleFileChange} />
+            </Button>
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-          <input
-            type="file"
-            onChange={handleFileChange}
-            disabled={uploadFile.isPending}
-          />
-          {uploadFile.isPending && <span>Wgrywanie...</span>}
-        </div>
-      </div>
+      </AssetsContext.Provider>
     </div>
   );
 }
