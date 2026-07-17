@@ -150,12 +150,12 @@ export default function UserLocationMap() {
       <NavBar />
       <div className="map-wrapper">
         <MapContainer key={`${center[0]},${center[1]}`} className="user-map">
-            <TileLayer
-              url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3p5bW9ucGciLCJhIjoiY21wcXg3NWoyMDM3djJ2cXNzeG52d3VqYyJ9.pyFArGfQdCzJxse23DtL0w`}
-              attribution='&copy; <a href="https://www.mapbox.com/">Mapbox</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              tileSize={512}
-              zoomOffset={-1}
-            />
+          <TileLayer
+            url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3p5bW9ucGciLCJhIjoiY21wcXg3NWoyMDM3djJ2cXNzeG52d3VqYyJ9.pyFArGfQdCzJxse23DtL0w`}
+            attribution='&copy; <a href="https://www.mapbox.com/">Mapbox</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            tileSize={512}
+            zoomOffset={-1}
+          />
 
           <Recenter center={center as [number, number]} zoom={defaultZoom} />
           <HeatmapLayer points={points} />
