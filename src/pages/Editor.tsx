@@ -11,6 +11,7 @@ import useLoadScene from '../hooks/useLoadScene';
 import { useParams } from 'react-router-dom';
 import { ECS } from '../engine/ECS';
 import EditingMode from '../types/EditingMode';
+import AssetsBrowser from '../components/editor/AssetsBrowser';
 
 function Editor() {
   const [focused, focus] = useState<string | null>(null);
@@ -70,7 +71,10 @@ function Editor() {
                 </Allotment>
               </Allotment.Pane>
               <Allotment.Pane minSize={150} preferredSize={screen.height / 4}>
-                <ProjectWindow />
+                <div style={{ height: '100%', overflow: 'auto' }}>
+                  <ProjectWindow />
+                  <AssetsBrowser />
+                </div>
               </Allotment.Pane>
             </Allotment>
           </div>
