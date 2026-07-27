@@ -9,6 +9,9 @@ export const AssetsContext = createContext<AssetsContextValue | null>(null);
 
 export const useAssetsContext = () => {
   const ctx = useContext(AssetsContext);
-  if (!ctx) throw new Error('useAssetsContext must be used within AssetsContext.Provider');
+  if (!ctx)
+    throw new Error(
+      'useAssetsContext must be used within AssetsContext.Provider',
+    );
   return ctx;
 };

@@ -8,7 +8,10 @@ import ChangeEmailData from '../types/ChangeEmailData';
 import ChangePasswordData from '../types/ChangePasswordData';
 import AddProjectData from '../types/AddProjectData';
 import SaveSceneData from '../types/SaveSceneData';
-import type { AssetsDirectory, AssetsFile, AssetsFileUploadReadModel } from '../types/Assets';
+import type {
+  AssetsDirectory,
+  AssetsFileUploadReadModel,
+} from '../types/Assets';
 
 const localApiUrl = '/api';
 const productionApiUrl = 'https://api.cadr.studio';

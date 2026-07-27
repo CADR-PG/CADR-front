@@ -16,7 +16,12 @@ export default function useUploadFile() {
       directoryId: string;
     }) => {
       if (!uuid) return Promise.reject(new Error('Project uuid is required!'));
-      const { data } = await registerFile(uuid, file.name, directoryId, file.size);
+      const { data } = await registerFile(
+        uuid,
+        file.name,
+        directoryId,
+        file.size,
+      );
       await uploadFileStorage(data.uploadUrl, file);
       return { data, directoryId };
     },
