@@ -35,7 +35,9 @@ function FileItem({ file }: FileItemProps) {
       <span className={styles.fileName}>
         <InsertDriveFileIcon fontSize="small" />
         <span>{file.name}</span>
-        <span className={styles.fileSize}>({formatFileSize(file.sizeInBytes)})</span>
+        <span className={styles.fileSize}>
+          ({formatFileSize(file.sizeInBytes)})
+        </span>
       </span>
       <IconButton
         size="small"
@@ -82,9 +84,7 @@ function DirectoryItem({ dir }: DirectoryItemProps) {
           {dir.directories?.map((sub) => (
             <DirectoryItem key={sub.id} dir={sub} />
           ))}
-          {dir.files?.map((file) => (
-            <FileItem key={file.id} file={file} />
-          ))}
+          {dir.files?.map((file) => <FileItem key={file.id} file={file} />)}
         </div>
       )}
     </div>
@@ -96,10 +96,12 @@ export default function AssetsBrowser() {
   const uploadFile = useUploadFile();
   const createDir = useCreateDirectory();
   const [newDirName, setNewDirName] = useState('');
-  const [selectedDirectory, setSelectedDirectory] = useState<SelectedDirectory>({
-    id: '',
-    name: 'Assets',
-  });
+  const [selectedDirectory, setSelectedDirectory] = useState<SelectedDirectory>(
+    {
+      id: '',
+      name: 'Assets',
+    },
+  );
 
   if (!assets) return null;
 
@@ -132,7 +134,9 @@ export default function AssetsBrowser() {
         <div className={styles.scrollArea}>
           <div
             className={`${styles.rootDir} ${selectedDirectory.id === assets.id ? styles.selected : ''}`}
-            onClick={() => setSelectedDirectory({ id: assets.id, name: 'Assets' })}
+            onClick={() =>
+              setSelectedDirectory({ id: assets.id, name: 'Assets' })
+            }
           >
             <FolderIcon fontSize="small" />
             <span>{assets.name}</span>
@@ -155,17 +159,26 @@ export default function AssetsBrowser() {
               onChange={(e) => setNewDirName(e.target.value)}
               placeholder="Directory name"
             />
-            <Button size="small" onClick={handleCreate} disabled={createDir.isPending}>
+            <Button
+              size="small"
+              onClick={handleCreate}
+              disabled={createDir.isPending}
+            >
               + Directory
             </Button>
           </div>
           <div className={styles.toolbarRow}>
             <span className={styles.uploadLabel}>
-              Upload to: <FolderIcon fontSize="small" /> {selectedDirectory.name}
+              Upload to: <FolderIcon fontSize="small" />{' '}
+              {selectedDirectory.name}
             </span>
           </div>
           <div className={styles.toolbarRow}>
-            <Button component="label" size="small" disabled={uploadFile.isPending}>
+            <Button
+              component="label"
+              size="small"
+              disabled={uploadFile.isPending}
+            >
               {uploadFile.isPending ? 'Uploading...' : 'Upload file'}
               <input type="file" hidden onChange={handleFileChange} />
             </Button>
