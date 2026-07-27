@@ -1,16 +1,14 @@
-import {createContext, useContext} from 'react';
+import { createContext, useContext } from 'react';
 
-interface AssetsContextValue{
-    selectedId: string;
-    onDelete: (id: string) => void;
-    onDeleteFile: (id: string) => void;
-    onSelect: (id: string, name: string) => void;
+interface AssetsContextValue {
+  selectedId: string;
+  onSelect: (id: string, name: string) => void;
 }
 
 export const AssetsContext = createContext<AssetsContextValue | null>(null);
 
 export const useAssetsContext = () => {
-    const ctx = useContext(AssetsContext);
-    if (!ctx) throw new Error('useAssetsContext must be used within AssetsContext.Provider');
-    return ctx;
-}
+  const ctx = useContext(AssetsContext);
+  if (!ctx) throw new Error('useAssetsContext must be used within AssetsContext.Provider');
+  return ctx;
+};

@@ -5,14 +5,16 @@ import { useAssetsStore } from '../stores/assetsStore';
 
 export default function useDeleteDirectory() {
   const { uuid } = useParams<{ uuid: string }>();
-  const fetch = useAssetsStore((s) => s.fetch);
+  const removeDirectory = useAssetsStore((s) => s.removeDirectory);
 
   return useMutation({
     mutationFn: (directoryId: string) => {
       if (!uuid) return Promise.reject(new Error('Project uuid is required!'));
       return deleteDirectory(uuid, directoryId);
     },
-    onSuccess: () => {if (uuid) fetch(uuid)},
-    onError: (err) => console.log(err)
+    onSuccess: (_data, directoryId) => {
+      removeDirectory(directoryId);
+    },
+    onError: (err) => console.error(err),
   });
 }

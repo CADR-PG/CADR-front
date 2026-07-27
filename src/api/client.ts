@@ -118,10 +118,10 @@ export const createDirectory = async (
   name: string,
   parentDirectoryId: string,
 ) => {
-  return await apiClient.post(`/projects/${projectId}/assets/directories`, {
-    name,
-    directoryId: parentDirectoryId,
-  });
+  return await apiClient.post<AssetsDirectory>(
+    `/projects/${projectId}/assets/directories`,
+    { name, directoryId: parentDirectoryId },
+  );
 };
 
 export const deleteDirectory = async (
