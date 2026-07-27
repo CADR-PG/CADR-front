@@ -11,6 +11,7 @@ import useDeleteFile from '../../hooks/useDeleteFile';
 import type { AssetsDirectory, AssetsFile } from '../../types/Assets';
 import styles from '../../css/2-components/AssetsBrowser.module.scss';
 import { AssetsContext, useAssetsContext } from '../../data/AssetsContext';
+import { formatFileSize } from '../../utils/formatFileSize';
 
 interface FileItemProps {
   file: AssetsFile;
@@ -26,18 +27,21 @@ interface SelectedDirectory {
 }
 
 function FileItem({ file }: FileItemProps) {
-  const { onDeleteFile } = useAssetsContext();
+  const deleteFile = useDeleteFile();
+
   return (
     <div className={styles.row}>
       <span className={styles.iconSpacer} />
       <span className={styles.fileName}>
         <InsertDriveFileIcon fontSize="small" />
         <span>{file.name}</span>
-        <span className={styles.fileSize}>
-          ({(file.sizeInBytes / 1024).toFixed(1)} KB)
-        </span>
+        <span className={styles.fileSize}>({formatFileSize(file.sizeInBytes)})</span>
       </span>
-      <IconButton size="small" onClick={() => onDeleteFile(file.id)}>
+      <IconButton
+        size="small"
+        onClick={() => deleteFile.mutate(file.id)}
+        disabled={deleteFile.isPending}
+      >
         <DeleteIcon fontSize="small" />
       </IconButton>
     </div>
@@ -45,7 +49,8 @@ function FileItem({ file }: FileItemProps) {
 }
 
 function DirectoryItem({ dir }: DirectoryItemProps) {
-  const { selectedId, onDelete, onSelect } = useAssetsContext();
+  const { selectedId, onSelect } = useAssetsContext();
+  const deleteDirectory = useDeleteDirectory();
   const [open, setOpen] = useState(false);
   const isSelected = dir.id === selectedId;
   const hasChildren =
@@ -64,7 +69,11 @@ function DirectoryItem({ dir }: DirectoryItemProps) {
           <FolderIcon fontSize="small" />
           <span>{dir.name}</span>
         </span>
-        <IconButton size="small" onClick={() => onDelete(dir.id)}>
+        <IconButton
+          size="small"
+          onClick={() => deleteDirectory.mutate(dir.id)}
+          disabled={deleteDirectory.isPending}
+        >
           <DeleteIcon fontSize="small" />
         </IconButton>
       </div>
@@ -86,8 +95,6 @@ export default function AssetsBrowser() {
   const { assets } = useAssets();
   const uploadFile = useUploadFile();
   const createDir = useCreateDirectory();
-  const deleteDir = useDeleteDirectory();
-  const deleteFile = useDeleteFile();
   const [newDirName, setNewDirName] = useState('');
   const [selectedDirectory, setSelectedDirectory] = useState<SelectedDirectory>({
     id: '',
@@ -103,20 +110,15 @@ export default function AssetsBrowser() {
     e.target.value = '';
   };
 
-  const handleFileDelete = (fileId: string) => {
-    deleteFile.mutate(fileId);
-  };
-
   const handleCreate = () => {
     if (!newDirName.trim()) return;
     createDir.mutate(
-      { name: newDirName.trim(), parentDirectoryId: selectedDirectory.id || assets.id },
+      {
+        name: newDirName.trim(),
+        parentDirectoryId: selectedDirectory.id || assets.id,
+      },
       { onSuccess: () => setNewDirName('') },
     );
-  };
-
-  const handleDelete = (directoryId: string) => {
-    deleteDir.mutate( directoryId );
   };
 
   return (
@@ -124,8 +126,6 @@ export default function AssetsBrowser() {
       <AssetsContext.Provider
         value={{
           selectedId: selectedDirectory.id,
-          onDelete: handleDelete,
-          onDeleteFile: handleFileDelete,
           onSelect: (id, name) => setSelectedDirectory({ id, name }),
         }}
       >
@@ -165,11 +165,7 @@ export default function AssetsBrowser() {
             </span>
           </div>
           <div className={styles.toolbarRow}>
-            <Button
-              component="label"
-              size="small"
-              disabled={uploadFile.isPending}
-            >
+            <Button component="label" size="small" disabled={uploadFile.isPending}>
               {uploadFile.isPending ? 'Uploading...' : 'Upload file'}
               <input type="file" hidden onChange={handleFileChange} />
             </Button>

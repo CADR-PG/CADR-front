@@ -5,16 +5,25 @@ import { useAssetsStore } from '../stores/assetsStore';
 
 export default function useUploadFile() {
   const { uuid } = useParams<{ uuid: string }>();
-  const fetch = useAssetsStore((s) => s.fetch);
+  const addFile = useAssetsStore((s) => s.addFile);
 
   return useMutation({
-    mutationFn: async ({file, directoryId} : { file: File; directoryId: string}) => {
+    mutationFn: async ({
+      file,
+      directoryId,
+    }: {
+      file: File;
+      directoryId: string;
+    }) => {
       if (!uuid) return Promise.reject(new Error('Project uuid is required!'));
-      const {data} = await registerFile(uuid!, file.name, directoryId, file.size);
+      const { data } = await registerFile(uuid, file.name, directoryId, file.size);
       await uploadFileStorage(data.uploadUrl, file);
-      return data;
+      return { data, directoryId };
     },
-    onSuccess: () => { if (uuid) fetch(uuid);},
-    onError: (err) => console.log(err),
+    onSuccess: ({ data, directoryId }) => {
+      const { uploadUrl: _uploadUrl, ...fileMeta } = data;
+      addFile(directoryId, fileMeta);
+    },
+    onError: (err) => console.error(err),
   });
 }

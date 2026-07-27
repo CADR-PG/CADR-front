@@ -5,14 +5,16 @@ import { useAssetsStore } from '../stores/assetsStore';
 
 export default function useDeleteFile() {
   const { uuid } = useParams<{ uuid: string }>();
-  const fetch = useAssetsStore((s) => s.fetch);
+  const removeFile = useAssetsStore((s) => s.removeFile);
 
   return useMutation({
     mutationFn: (fileId: string) => {
       if (!uuid) return Promise.reject(new Error('Project uuid is required!'));
       return deleteFile(uuid, fileId);
     },
-    onSuccess: () => {if (uuid) fetch(uuid)},
-    onError: (err) => console.log(err),
+    onSuccess: (_data, fileId) => {
+      removeFile(fileId);
+    },
+    onError: (err) => console.error(err),
   });
 }
