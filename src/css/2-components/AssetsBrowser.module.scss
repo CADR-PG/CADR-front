@@ -1,0 +1,121 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+}
+
+.iconSpacer {
+  width: 12px;
+  flex-shrink: 0;
+}
+
+.toggleIcon {
+  cursor: pointer;
+  width: 12px;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.fileName {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  svg {
+    font-size: 16px;
+  }
+}
+
+.fileSize {
+  color: #999;
+  font-size: 11px;
+}
+
+.deleteButton {
+  font-size: 10px;
+  padding: 1px 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+
+  svg {
+    font-size: 16px;
+  }
+}
+
+.dirName {
+  flex: 1;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 1px 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  svg {
+    font-size: 16px;
+  }
+}
+
+.selected {
+  background-color: #d0e8ff;
+}
+
+.children {
+  padding-left: 16px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  font-size: 13px;
+}
+
+.scrollArea {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.rootDir {
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 3px;
+  padding: 2px 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  svg {
+    font-size: 16px;
+  }
+}
+
+.tree {
+  padding-left: 8px;
+  margin-top: 4px;
+}
+
+.toolbar {
+  border-top: 1px solid #ddd;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.toolbarRow {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.uploadLabel {
+  font-size: 11px;
+  color: #666;
+}
