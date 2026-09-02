@@ -5,6 +5,7 @@ import { Entity } from '../../../engine/Entity';
 import InspectorKey from './InspectorKey';
 import NumberField from '../../NumberField';
 import { ChangeEvent } from 'react';
+import ColliderTypeInspector from './ColliderTypeInspector';
 
 interface ColliderDataInspectorProps<T extends ColliderData> {
   entity: Entity;
@@ -47,6 +48,11 @@ export default function ColliderDataInspector<T extends ColliderData>({
   }
 
   function renderSwitch<K extends keyof T>(key: K) {
+    switch (key) {
+      case 'type':
+        return <ColliderTypeInspector entity={entity} type={data.type} />;
+    }
+
     switch (typeof data[key]) {
       case 'string':
         return (

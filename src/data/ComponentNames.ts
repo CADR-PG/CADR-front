@@ -30,6 +30,13 @@ import HemisphereLightController from '../components/editor/lights/HemisphereLig
 import AmbientLightController from '../components/editor/lights/AmbientLightController';
 import SpotLightController from '../components/editor/lights/SpotLightController';
 import CuboidColliderController from '../components/editor/colliders/CuboidColliderController';
+import BallColliderController from '../components/editor/colliders/BallColliderController';
+import CapsuleColliderController from '../components/editor/colliders/CapsuleColliderController';
+import ConeColliderController from '../components/editor/colliders/ConeColliderController';
+import RoundConeColliderController from '../components/editor/colliders/RoundConeColliderController';
+import CylinderColliderController from '../components/editor/colliders/CylinderColliderController';
+import RoundCuboidColliderController from '../components/editor/colliders/RoundCuboidColliderController';
+import RoundCylinderColliderController from '../components/editor/colliders/RoundCylinderColliderController';
 
 interface ComponentToElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,7 +75,14 @@ const ComponentNames: ComponentToElement = {
   ambient: AmbientLightController,
   spotlight: SpotLightController,
 
-  cuboid: CuboidColliderController,
+  ballCollider: BallColliderController,
+  capsuleCollider: CapsuleColliderController,
+  coneCollider: ConeColliderController,
+  cuboidCollider: CuboidColliderController,
+  cylinderCollider: CylinderColliderController,
+  roundConeCollider: RoundConeColliderController,
+  roundCuboidCollider: RoundCuboidColliderController,
+  roundCylinderCollider: RoundCylinderColliderController,
 };
 
 export default ComponentNames;

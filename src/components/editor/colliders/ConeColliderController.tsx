@@ -1,38 +1,36 @@
-import { CuboidCollider } from '@react-three/rapier';
 import Collider from '../../../engine/components/Collider';
-import Cuboid from '../../../engine/components/colliders/Cuboid';
 import useEntityManager from '../../../hooks/useEntityManager';
 import ControllerProps from '../../../types/ControllerProps';
-import Transform, { addVec3 } from '../../../engine/components/Transform';
+import Transform from '../../../engine/components/Transform';
+import Cone from '../../../engine/components/colliders/Cone';
+import { ConeCollider } from '@react-three/rapier';
 
-export default function CuboidColliderController({ entity }: ControllerProps) {
+export default function ConeColliderController({ entity }: ControllerProps) {
   const em = useEntityManager();
   const colliderData = em.getComponent(Collider, entity);
   const transform = em.getComponent(Transform, entity);
   let params;
 
   if (colliderData) {
-    params = colliderData.data as Cuboid;
+    params = colliderData.data as Cone;
   }
 
   return (
     colliderData &&
     params && (
-      <CuboidCollider
+      <ConeCollider
         // should collider and mesh use the sasme transformation component?
-        position={addVec3(transform?.position, colliderData.position)}
-        rotation={addVec3(transform?.rotation, colliderData.rotation)}
-        scale={addVec3(transform?.scale, colliderData.scale)}
+        position={transform?.position}
+        rotation={transform?.rotation}
+        scale={transform?.scale}
         activeCollisionTypes={colliderData.activeCollisionTypes}
-        // collisionGroups={interactionGroups([], [])}
         contactSkin={colliderData.contactSkin}
-        // density={colliderData.density}
         friction={colliderData.friction}
         frictionCombineRule={colliderData.frictionCombineRule}
         mass={colliderData.mass}
         restitution={colliderData.restitution}
         sensor={colliderData.sensor}
-        args={[params.halfWidth, params.halfHeight, params.halfDepth]}
+        args={[params.halfHeight, params.radius]}
       />
     )
   );

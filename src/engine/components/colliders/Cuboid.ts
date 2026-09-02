@@ -1,7 +1,7 @@
 import { ColliderData } from '../Collider';
 
 export default class Cuboid implements ColliderData {
-  type: string = 'cuboid';
+  type: string = 'cuboidCollider';
   constructor(
     public halfWidth = 1,
     public halfHeight = 1,

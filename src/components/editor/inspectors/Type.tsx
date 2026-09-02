@@ -1,13 +1,8 @@
 import Geometry from '../../../engine/components/Geometry';
 import { ECS } from '../../../engine/ECS';
-import { Entity } from '../../../engine/Entity';
-import Objects from '../../../data/ObjectNames';
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
-
-interface TypeProps {
-  entity: Entity;
-  type: string;
-}
+import TypeProps from '../../../types/TypeProps';
+import Objects from '../../../data/ObjectNames';
 
 export default function Type({ entity, type }: TypeProps) {
   const geometryWrite = ECS.instance.entityManager.getComponent(
