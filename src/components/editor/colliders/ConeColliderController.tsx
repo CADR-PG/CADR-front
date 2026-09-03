@@ -4,6 +4,7 @@ import ControllerProps from '../../../types/ControllerProps';
 import Transform from '../../../engine/components/Transform';
 import Cone from '../../../engine/components/colliders/Cone';
 import { ConeCollider } from '@react-three/rapier';
+import physicsHandlers from '../../../engine/handlers/Physics';
 
 export default function ConeColliderController({ entity }: ControllerProps) {
   const em = useEntityManager();
@@ -19,6 +20,8 @@ export default function ConeColliderController({ entity }: ControllerProps) {
     colliderData &&
     params && (
       <ConeCollider
+        {...physicsHandlers}
+        name={entity}
         // should collider and mesh use the sasme transformation component?
         position={transform?.position}
         rotation={transform?.rotation}

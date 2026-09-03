@@ -1,6 +1,11 @@
-type EventMessageType = 'placeholder';
+export type EventMessageType =
+  | 'collisionEnter'
+  | 'collisionExit'
+  | 'intersectEnter'
+  | 'intersectExit'
+  | 'contactForce';
 
-interface EventMessageData {
+export interface EventMessageData {
   type: EventMessageType;
 }
 
@@ -33,7 +38,7 @@ export class EventBus {
     this.subscribers[event]!.push(callback);
   }
 
-  publish(event: EventMessage<EventMessageData>) {
+  publish<T extends EventMessageData>(event: EventMessage<T>) {
     const callbacks = this.subscribers[event.data.type];
 
     if (!callbacks) return;

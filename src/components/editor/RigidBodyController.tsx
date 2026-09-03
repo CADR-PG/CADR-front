@@ -4,7 +4,7 @@ import useEntityManager from '../../hooks/useEntityManager';
 import ControllerProps from '../../types/ControllerProps';
 import { JSX, useRef } from 'react';
 import { useEditorContext } from '../../hooks/useEditorContext';
-import { EventBus } from '../../engine/EventBus';
+import physicsHandlers from '../../engine/handlers/Physics';
 
 interface RigidBodyControllerProps {
   children: JSX.Element;
@@ -23,7 +23,8 @@ export default function RigidBodyController({
     <RigidBody
       ref={ref}
       sensor={rigidBody?.sensor}
-      // onCollisionEnter={EventBus.instance.publish()}
+      {...physicsHandlers}
+      name={entity}
     >
       {children}
     </RigidBody>

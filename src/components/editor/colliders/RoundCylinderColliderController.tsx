@@ -4,6 +4,7 @@ import useEntityManager from '../../../hooks/useEntityManager';
 import ControllerProps from '../../../types/ControllerProps';
 import Transform, { addVec3 } from '../../../engine/components/Transform';
 import RoundCylinder from '../../../engine/components/colliders/RoundCylinder';
+import physicsHandlers from '../../../engine/handlers/Physics';
 
 export default function RoundCylinderColliderController({
   entity,
@@ -21,6 +22,8 @@ export default function RoundCylinderColliderController({
     colliderData &&
     params && (
       <RoundCylinderCollider
+        {...physicsHandlers}
+        name={entity}
         // should collider and mesh use the sasme transformation component?
         position={addVec3(transform?.position, colliderData.position)}
         rotation={addVec3(transform?.rotation, colliderData.rotation)}

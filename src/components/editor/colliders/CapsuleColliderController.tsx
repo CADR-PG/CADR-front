@@ -4,6 +4,7 @@ import useEntityManager from '../../../hooks/useEntityManager';
 import ControllerProps from '../../../types/ControllerProps';
 import Transform, { addVec3 } from '../../../engine/components/Transform';
 import Capsule from '../../../engine/components/colliders/Capsule';
+import physicsHandlers from '../../../engine/handlers/Physics';
 
 export default function CapsuleColliderController({ entity }: ControllerProps) {
   const em = useEntityManager();
@@ -19,6 +20,8 @@ export default function CapsuleColliderController({ entity }: ControllerProps) {
     colliderData &&
     params && (
       <CapsuleCollider
+        {...physicsHandlers}
+        name={entity}
         // should collider and mesh use the sasme transformation component?
         position={addVec3(transform?.position, colliderData.position)}
         rotation={addVec3(transform?.rotation, colliderData.rotation)}

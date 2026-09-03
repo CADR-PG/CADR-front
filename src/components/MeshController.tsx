@@ -1,7 +1,7 @@
 import ControllerProps from '../types/ControllerProps';
 import { useMesh } from '../hooks/useMesh';
 import HighlightHelper from './HighlightHelper';
-import { useRef } from 'react';
+import { JSX, useRef } from 'react';
 import useEntityManager from '../hooks/useEntityManager';
 import Invisible from '../engine/components/Invisible';
 import ComponentNames from '../data/ComponentNames';
@@ -11,6 +11,7 @@ import Mesh from '../engine/components/Mesh';
 import TransformControlsController from './editor/TransformControlsController';
 import RigidBodyController from './editor/RigidBodyController';
 import Collider from '../engine/components/Collider';
+import ColliderControllerProps from '../types/ColliderControllerProps';
 
 function GenericMesh({ entity, ...props }: ControllerProps) {
   const em = useEntityManager();
@@ -42,6 +43,12 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   }
   if (collider && collider.element) {
     ColliderComponent = ComponentNames[collider.element];
+  } else {
+    ColliderComponent = ({
+      children,
+    }: ControllerProps & ColliderControllerProps) => {
+      return <>{children}</>;
+    };
   }
 
   return (
@@ -49,42 +56,43 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
       <>
         <TransformControlsController entity={entity} meshRef={meshRef}>
           <RigidBodyController entity={entity}>
-            <group>
-              <mesh
-                {...props}
-                onClick={handleClick}
-                onPointerOver={handlePointerOver}
-                onPointerOut={handlePointerOut}
-                ref={meshRef}
-                castShadow={mesh ? mesh.castShadow : false}
-                receiveShadow={mesh ? mesh.receiveShadow : false}
-              >
-                <HighlightHelper
-                  entity={entity}
-                  focused={!running ? focused : ''}
-                  hovered={!running ? hovered : false}
-                />
-                {MaterialComponent && <MaterialComponent entity={entity} />}
-                {GeometryComponent && <GeometryComponent entity={entity} />}
-              </mesh>
-              {componentKeys.map((component, index) => {
-                const element = components[component].element;
-                console.log(element);
-                if (
-                  element &&
-                  element !== geometry?.element &&
-                  element !== material?.element &&
-                  element !== collider?.element
-                ) {
-                  const ComponentElement = ComponentNames[element];
-                  return <ComponentElement key={index} entity={entity} />;
-                }
-                return null;
-              })}
-            </group>
+            <ColliderComponent entity={entity}>
+              <group>
+                <mesh
+                  {...props}
+                  onClick={handleClick}
+                  onPointerOver={handlePointerOver}
+                  onPointerOut={handlePointerOut}
+                  ref={meshRef}
+                  castShadow={mesh ? mesh.castShadow : false}
+                  receiveShadow={mesh ? mesh.receiveShadow : false}
+                >
+                  <HighlightHelper
+                    entity={entity}
+                    focused={!running ? focused : ''}
+                    hovered={!running ? hovered : false}
+                  />
+                  {MaterialComponent && <MaterialComponent entity={entity} />}
+                  {GeometryComponent && <GeometryComponent entity={entity} />}
+                </mesh>
+                {componentKeys.map((component, index) => {
+                  const element = components[component].element;
+                  console.log(element);
+                  if (
+                    element &&
+                    element !== geometry?.element &&
+                    element !== material?.element &&
+                    element !== collider?.element
+                  ) {
+                    const ComponentElement = ComponentNames[element];
+                    return <ComponentElement key={index} entity={entity} />;
+                  }
+                  return null;
+                })}
+              </group>
+            </ColliderComponent>
           </RigidBodyController>
         </TransformControlsController>
-        {ColliderComponent && <ColliderComponent entity={entity} />}
       </>
     )
   );
