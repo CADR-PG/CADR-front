@@ -17,6 +17,7 @@ import LightInspector from './inspectors/LightInspector';
 import Collider from '../../engine/components/Collider';
 import ColliderDataInspector from './inspectors/ColliderDataInspector';
 import ColliderInspector from './inspectors/ColliderInspector';
+import RigidBodyInspector from './inspectors/RigidBodyInspector';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -100,6 +101,8 @@ function InspectorWindow() {
             />
           </>
         );
+      case 'RigidBody':
+        return <RigidBodyInspector entity={focused} />;
       default:
         return <GenericInspector entity={focused} component={snap[key]} />;
     }

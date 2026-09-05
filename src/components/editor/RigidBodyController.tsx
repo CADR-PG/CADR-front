@@ -21,10 +21,25 @@ export default function RigidBodyController({
 
   return rigidBody && running ? (
     <RigidBody
-      ref={ref}
-      sensor={rigidBody?.sensor}
       {...physicsHandlers}
       name={entity}
+      ref={ref}
+      activeCollisionTypes={rigidBody.activeCollisionTypes}
+      additionalSolverIterations={rigidBody.additionalSolverIterations}
+      angularDamping={rigidBody.angularDamping}
+      canSleep={rigidBody.canSleep}
+      ccd={rigidBody.ccd}
+      colliders={rigidBody.colliders}
+      contactSkin={rigidBody.contactSkin}
+      dominanceGroup={rigidBody.dominanceGroup}
+      friction={rigidBody.friction}
+      gravityScale={rigidBody.gravityScale}
+      includeInvisible={rigidBody.includeInvisible}
+      mass={rigidBody.mass}
+      restitution={rigidBody.restitution}
+      sensor={rigidBody.sensor}
+      softCcdPrediction={rigidBody.softCcdPrediction}
+      type={rigidBody.type}
     >
       {children}
     </RigidBody>

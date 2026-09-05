@@ -6,7 +6,6 @@ import NumberField from '../../NumberField';
 import { ECS } from '../../../engine/ECS';
 import { ChangeEvent } from 'react';
 import { Vec3 } from '../../../engine/components/Transform';
-import { transformDirection } from 'three/src/nodes/TSL.js';
 
 interface ColliderInspectorProps {
   entity: Entity;
@@ -55,7 +54,7 @@ export default function ColliderInspector({
   ) {
     if (!colliderWrite || value === null) return;
 
-    colliderWrite[key][position] = value;
+    (colliderWrite as any)[key][position] = value;
   }
 
   function renderSwitch(key: keyof Collider) {

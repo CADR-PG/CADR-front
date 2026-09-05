@@ -12,6 +12,7 @@ import TransformControlsController from './editor/TransformControlsController';
 import RigidBodyController from './editor/RigidBodyController';
 import Collider from '../engine/components/Collider';
 import ColliderControllerProps from '../types/ColliderControllerProps';
+import Transform from '../engine/components/Transform';
 
 function GenericMesh({ entity, ...props }: ControllerProps) {
   const em = useEntityManager();
@@ -21,6 +22,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   const material = em.getComponent(Material, entity);
   const geometry = em.getComponent(Geometry, entity);
   const collider = em.getComponent(Collider, entity);
+  const transform = em.getComponent(Transform, entity);
   const mesh = em.getComponent(Mesh, entity);
   const meshRef = useRef(null!);
   const {
@@ -43,12 +45,6 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   }
   if (collider && collider.element) {
     ColliderComponent = ComponentNames[collider.element];
-  } else {
-    ColliderComponent = ({
-      children,
-    }: ControllerProps & ColliderControllerProps) => {
-      return <>{children}</>;
-    };
   }
 
   return (
@@ -56,41 +52,45 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
       <>
         <TransformControlsController entity={entity} meshRef={meshRef}>
           <RigidBodyController entity={entity}>
-            <ColliderComponent entity={entity}>
-              <group>
-                <mesh
-                  {...props}
-                  onClick={handleClick}
-                  onPointerOver={handlePointerOver}
-                  onPointerOut={handlePointerOut}
-                  ref={meshRef}
-                  castShadow={mesh ? mesh.castShadow : false}
-                  receiveShadow={mesh ? mesh.receiveShadow : false}
-                >
-                  <HighlightHelper
-                    entity={entity}
-                    focused={!running ? focused : ''}
-                    hovered={!running ? hovered : false}
-                  />
-                  {MaterialComponent && <MaterialComponent entity={entity} />}
-                  {GeometryComponent && <GeometryComponent entity={entity} />}
-                </mesh>
-                {componentKeys.map((component, index) => {
-                  const element = components[component].element;
-                  console.log(element);
-                  if (
-                    element &&
-                    element !== geometry?.element &&
-                    element !== material?.element &&
-                    element !== collider?.element
-                  ) {
-                    const ComponentElement = ComponentNames[element];
-                    return <ComponentElement key={index} entity={entity} />;
-                  }
-                  return null;
-                })}
-              </group>
-            </ColliderComponent>
+            <group>
+              <mesh
+                {...props}
+                onClick={handleClick}
+                onPointerOver={handlePointerOver}
+                onPointerOut={handlePointerOut}
+                ref={meshRef}
+                castShadow={mesh ? mesh.castShadow : false}
+                receiveShadow={mesh ? mesh.receiveShadow : false}
+              >
+                <HighlightHelper
+                  entity={entity}
+                  focused={!running ? focused : ''}
+                  hovered={!running ? hovered : false}
+                />
+                {MaterialComponent && <MaterialComponent entity={entity} />}
+                {GeometryComponent && <GeometryComponent entity={entity} />}
+              </mesh>
+              {ColliderComponent && (
+                <ColliderComponent
+                  entity={entity}
+                  key={`${transform?.position} ${transform?.rotation}`}
+                />
+              )}
+              {componentKeys.map((component, index) => {
+                const element = components[component].element;
+                console.log(element);
+                if (
+                  element &&
+                  element !== geometry?.element &&
+                  element !== material?.element &&
+                  element !== collider?.element
+                ) {
+                  const ComponentElement = ComponentNames[element];
+                  return <ComponentElement key={index} entity={entity} />;
+                }
+                return null;
+              })}
+            </group>
           </RigidBodyController>
         </TransformControlsController>
       </>
