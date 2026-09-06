@@ -1,3 +1,5 @@
+@use "../0-site/variables";
+
 .map-wrapper {
   width: 100%;
   flex: 1; 
@@ -9,4 +11,24 @@
 .user-map {
   width: 100vw;
   height: calc(100vh - 66px);
+}
+
+.heatmap-ring--outer {
+  fill: variables.$c-heat-yellow !important;
+  stroke: none !important;
+}
+
+.heatmap-ring--mid-outer {
+  fill: variables.$c-heat-orange !important;
+  stroke: none !important;
+}
+
+.heatmap-ring--mid-inner {
+  fill: variables.$c-heat-deep-orange !important;
+  stroke: none !important;
+}
+
+.heatmap-ring--core {
+  fill: variables.$c-heat-red !important;
+  stroke: none !important;
 }
