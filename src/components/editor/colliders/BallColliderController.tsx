@@ -25,6 +25,7 @@ export default function BallColliderController({ entity }: ControllerProps) {
         rotation={colliderData.rotation}
         scale={colliderData.scale}
         activeCollisionTypes={colliderData.activeCollisionTypes}
+        collisionGroups={colliderData.collisionGroups}
         contactSkin={colliderData.contactSkin}
         friction={colliderData.friction}
         frictionCombineRule={colliderData.frictionCombineRule}

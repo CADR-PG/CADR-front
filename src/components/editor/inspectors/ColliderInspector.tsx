@@ -6,6 +6,8 @@ import NumberField from '../../NumberField';
 import { ECS } from '../../../engine/ECS';
 import { ChangeEvent } from 'react';
 import { Vec3 } from '../../../engine/components/Transform';
+import CollisionGroups from './CollisionGroups';
+import ActiveCollisionTypesInspector from './ActiveCollisionTypesInspector';
 
 interface ColliderInspectorProps {
   entity: Entity;
@@ -32,11 +34,13 @@ export default function ColliderInspector({
     const type = e.currentTarget.type;
     switch (type) {
       case 'text':
-        (colliderWrite as any)[key as string] = e.currentTarget.value;
+        (colliderWrite as Record<keyof Collider, unknown>)[key] =
+          e.currentTarget.value;
         break;
       case 'checkbox':
         if (e.currentTarget instanceof HTMLTextAreaElement) return;
-        (colliderWrite as any)[key] = e.currentTarget.checked;
+        (colliderWrite as Record<keyof Collider, unknown>)[key] =
+          e.currentTarget.checked;
         break;
     }
   }
@@ -44,7 +48,7 @@ export default function ColliderInspector({
   function handleNumber(value: number | null, key: keyof Collider) {
     if (!colliderWrite || value === null) return;
 
-    (colliderWrite as any)[key] = value;
+    (colliderWrite as Record<keyof Collider, unknown>)[key] = value;
   }
 
   function handleTransformChange(
@@ -54,10 +58,12 @@ export default function ColliderInspector({
   ) {
     if (!colliderWrite || value === null) return;
 
-    (colliderWrite as any)[key][position] = value;
+    (colliderWrite[key] as Vec3)[position] = value;
   }
 
   function renderSwitch(key: keyof Collider) {
+    if (!colliderWrite) return;
+
     switch (key) {
       case 'name':
         return;
@@ -94,6 +100,20 @@ export default function ColliderInspector({
               />
             </div>
           </>
+        );
+      case 'collisionGroups':
+        return (
+          <CollisionGroups
+            groups={colliderWrite.collisionGroups}
+            componentWrite={colliderWrite}
+          />
+        );
+      case 'activeCollisionTypes':
+        return (
+          <ActiveCollisionTypesInspector
+            collisionType={colliderWrite.activeCollisionTypes}
+            componentWrite={colliderWrite}
+          />
         );
       default:
         break;

@@ -7,9 +7,9 @@ import NumberField from '../../NumberField';
 import useEntityManager from '../../../hooks/useEntityManager';
 import InspectorKey from './InspectorKey';
 import Colliders from './Colliders';
-import { ActiveCollisionTypes } from '../../../engine/components/Collider';
 import ActiveCollisionTypesInspector from './ActiveCollisionTypesInspector';
 import RigidBodyType from './RigidBodyType';
+import CollisionGroups from './CollisionGroups';
 
 interface RigidBodyInspectorProps {
   entity: Entity;
@@ -59,15 +59,22 @@ export default function RigidBodyInspector({
       case 'activeCollisionTypes':
         return (
           <ActiveCollisionTypesInspector
-            entity={entity}
             collisionType={rigidBody.activeCollisionTypes}
+            componentWrite={rigidBodyWrite}
           />
         );
       case 'type':
         return <RigidBodyType entity={entity} type={rigidBody.type} />;
+      case 'collisionGroups':
+        return (
+          <CollisionGroups
+            groups={rigidBody.collisionGroups}
+            componentWrite={rigidBodyWrite}
+          />
+        );
     }
 
-    switch (typeof rigidBody[key]) {
+    switch (typeof rigidBodyWrite[key]) {
       case 'string':
         return (
           <TextField

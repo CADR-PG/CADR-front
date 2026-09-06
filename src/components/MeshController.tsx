@@ -1,7 +1,7 @@
 import ControllerProps from '../types/ControllerProps';
 import { useMesh } from '../hooks/useMesh';
 import HighlightHelper from './HighlightHelper';
-import { JSX, useRef } from 'react';
+import { useRef } from 'react';
 import useEntityManager from '../hooks/useEntityManager';
 import Invisible from '../engine/components/Invisible';
 import ComponentNames from '../data/ComponentNames';
@@ -11,7 +11,6 @@ import Mesh from '../engine/components/Mesh';
 import TransformControlsController from './editor/TransformControlsController';
 import RigidBodyController from './editor/RigidBodyController';
 import Collider from '../engine/components/Collider';
-import ColliderControllerProps from '../types/ColliderControllerProps';
 import Transform from '../engine/components/Transform';
 
 function GenericMesh({ entity, ...props }: ControllerProps) {

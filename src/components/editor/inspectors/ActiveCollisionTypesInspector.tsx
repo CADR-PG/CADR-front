@@ -1,25 +1,20 @@
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
-import { Entity } from '../../../engine/Entity';
-import { ECS } from '../../../engine/ECS';
-import RBody from '../../../engine/components/RigidBody';
 import { ActiveCollisionTypes } from '../../../engine/components/Collider';
 
-interface CollidersProps {
-  entity: Entity;
-  collisionType: ActiveCollisionTypes;
+interface ActiveCollisionTypesComponent {
+  activeCollisionTypes: number;
 }
 
-export default function ActiveCollisionTypesInspector({
-  entity,
-  collisionType,
-}: CollidersProps) {
-  const rigidBodyWrite = ECS.instance.entityManager.getComponent(RBody, entity);
+interface CollidersProps<T extends ActiveCollisionTypesComponent> {
+  collisionType: ActiveCollisionTypes;
+  componentWrite: T;
+}
 
-  if (!rigidBodyWrite) return;
-
+export default function ActiveCollisionTypesInspector<
+  T extends ActiveCollisionTypesComponent,
+>({ collisionType, componentWrite }: CollidersProps<T>) {
   const handleSelect = (e: SelectChangeEvent) => {
-    rigidBodyWrite.activeCollisionTypes = Number(e.target.value);
-    console.log(rigidBodyWrite.activeCollisionTypes);
+    componentWrite.activeCollisionTypes = Number(e.target.value);
   };
 
   return (

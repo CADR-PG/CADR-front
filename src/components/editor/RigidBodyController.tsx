@@ -30,6 +30,7 @@ export default function RigidBodyController({
       canSleep={rigidBody.canSleep}
       ccd={rigidBody.ccd}
       colliders={rigidBody.colliders}
+      collisionGroups={rigidBody.collisionGroups}
       contactSkin={rigidBody.contactSkin}
       dominanceGroup={rigidBody.dominanceGroup}
       friction={rigidBody.friction}

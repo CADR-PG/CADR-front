@@ -14,6 +14,7 @@ export default class RBody implements Component {
     public canSleep = true,
     public ccd = false,
     public colliders: RigidBodyAutoCollider | undefined = false,
+    public collisionGroups = 0,
     public contactSkin = 0,
     public dominanceGroup = 0,
     public friction = 0,

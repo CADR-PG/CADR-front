@@ -48,6 +48,8 @@ export default function ColliderDataInspector<T extends ColliderData>({
   }
 
   function renderSwitch<K extends keyof T>(key: K) {
+    if (!colliderWrite) return;
+
     switch (key) {
       case 'type':
         return <ColliderTypeInspector entity={entity} type={data.type} />;

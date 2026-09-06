@@ -28,9 +28,8 @@ export default function CuboidColliderController({
         rotation={colliderData.rotation}
         scale={colliderData.scale}
         activeCollisionTypes={colliderData.activeCollisionTypes}
-        // collisionGroups={interactionGroups([], [])}
+        collisionGroups={colliderData.collisionGroups}
         contactSkin={colliderData.contactSkin}
-        // density={colliderData.density}
         friction={colliderData.friction}
         frictionCombineRule={colliderData.frictionCombineRule}
         mass={colliderData.mass}

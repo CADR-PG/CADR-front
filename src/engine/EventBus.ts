@@ -43,7 +43,7 @@ export class EventBus {
 
     if (!callbacks) return;
 
-    for (let callback of callbacks) {
+    for (const callback of callbacks) {
       callback(event.data);
     }
   }
