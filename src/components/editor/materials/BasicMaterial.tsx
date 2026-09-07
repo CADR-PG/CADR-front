@@ -1,5 +1,7 @@
+import { useTexture } from '@react-three/drei';
 import Material from '../../../engine/components/Material';
 import BasicMaterialData from '../../../engine/components/materials/BasicMaterialData';
+import useDownloadFile from '../../../hooks/useDownloadFile';
 import useEntityManager from '../../../hooks/useEntityManager';
 import ControllerProps from '../../../types/ControllerProps';
 
@@ -11,6 +13,19 @@ export default function BasicMaterial({ entity }: ControllerProps) {
   if (materialData) {
     params = materialData.data as BasicMaterialData;
   }
+
+  const EMPTY =
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+  const { data } = useDownloadFile(params.map);
+  if (data)
+    console.log(
+      data.data.downloadUrl.replace('http://cadr.azurite:10000/', '/azurite'),
+    );
+  const texture = useTexture(
+    data
+      ? data.data.downloadUrl.replace('http://cadr.azurite:10000/', '/azurite')
+      : EMPTY,
+  );
 
   return (
     params && (
@@ -25,7 +40,7 @@ export default function BasicMaterial({ entity }: ControllerProps) {
         fog={params.fog}
         // lightMap={params.lightMap}
         lightMapIntensity={params.lightMapIntensity}
-        // map={params.map}
+        map={texture}
         reflectivity={params.reflectivity}
         refractionRatio={params.refractionRatio}
         // specularMap={params.specularMap}
