@@ -102,10 +102,10 @@
 }
 
 .toolbar {
-  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
   padding: 8px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 4px;
 }
 

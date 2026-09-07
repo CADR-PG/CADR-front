@@ -10,6 +10,7 @@ export default class BasicMaterialData implements MaterialData {
     public envMapRotation = [0, 0, 0],
     public fog = true,
     public lightMapIntensity = 1,
+    public map: string = '',
     public reflectivity = 1,
     public refractionRatio = 0.98,
     public wireframe = false,

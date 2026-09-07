@@ -73,7 +73,6 @@ function Editor() {
               <Allotment.Pane minSize={150} preferredSize={screen.height / 4}>
                 <div style={{ height: '100%', overflow: 'auto' }}>
                   <ProjectWindow />
-                  <AssetsBrowser />
                 </div>
               </Allotment.Pane>
             </Allotment>
