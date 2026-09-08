@@ -4,15 +4,20 @@ import { MaterialData } from '../Material';
 export default class BasicMaterialData implements MaterialData {
   type: string = 'basic';
   constructor(
+    public alphaMap: string = '',
+    public aoMap: string = '',
     public aoMapIntensity = 1,
     public color = 0xffffff,
     public combine = MultiplyOperation,
+    public envMap: string = '',
     public envMapRotation = [0, 0, 0],
     public fog = true,
+    public lightMap: string = '',
     public lightMapIntensity = 1,
     public map: string = '',
     public reflectivity = 1,
     public refractionRatio = 0.98,
+    public specularMap: string = '',
     public wireframe = false,
     public wireframeLinecap = 'round',
     public wireframeLinejoin = 'round',
