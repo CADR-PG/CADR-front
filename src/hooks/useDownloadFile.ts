@@ -16,6 +16,6 @@ export default function useDownloadFile(fileId: string | undefined) {
     },
     retry: false,
     refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000,
+    enabled: Boolean(uuid && fileId),
   });
 }

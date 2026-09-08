@@ -1,9 +1,10 @@
 import { useTexture } from '@react-three/drei';
 import Material from '../../../engine/components/Material';
 import BasicMaterialData from '../../../engine/components/materials/BasicMaterialData';
-import useDownloadFile from '../../../hooks/useDownloadFile';
 import useEntityManager from '../../../hooks/useEntityManager';
 import ControllerProps from '../../../types/ControllerProps';
+import { normalizeUrl } from '../../../engine/components/helpers/material';
+import useDownloadTextures from '../../../hooks/useDownloadTextures';
 
 export default function BasicMaterial({ entity }: ControllerProps) {
   const em = useEntityManager();
@@ -14,40 +15,41 @@ export default function BasicMaterial({ entity }: ControllerProps) {
     params = materialData.data as BasicMaterialData;
   }
 
-  const EMPTY =
-    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
-  const { data } = useDownloadFile(params.map);
-  if (data)
-    console.log(
-      data.data.downloadUrl.replace('http://cadr.azurite:10000/', '/azurite'),
-    );
-  const texture = useTexture(
-    data
-      ? data.data.downloadUrl.replace('http://cadr.azurite:10000/', '/azurite')
-      : EMPTY,
-  );
+  const { alphaMap, aoMap, envMap, lightMap, specularMap, map } =
+    useDownloadTextures(params);
+
+  const [tAlphaMap, tAoMap, tEnvMap, tLightMap, tSpecularMap, tMap] =
+    useTexture([
+      normalizeUrl(alphaMap),
+      normalizeUrl(aoMap),
+      normalizeUrl(envMap),
+      normalizeUrl(lightMap),
+      normalizeUrl(specularMap),
+      normalizeUrl(map),
+    ]);
 
   return (
     params && (
       <meshBasicMaterial
-        // alphaMap={params.alphaMap}
-        // aoMap={params.aoMap}
+        alphaMap={alphaMap ? tAlphaMap : null}
+        aoMap={aoMap ? tAoMap : null}
         aoMapIntensity={params.aoMapIntensity}
         color={params.color}
         combine={params.combine}
-        // envMap={params.envMap}
+        envMap={envMap ? tEnvMap : null}
         // envMapRotation={params.envMapRotation}
         fog={params.fog}
-        // lightMap={params.lightMap}
+        lightMap={lightMap ? tLightMap : null}
         lightMapIntensity={params.lightMapIntensity}
-        map={texture}
+        map={tMap}
         reflectivity={params.reflectivity}
         refractionRatio={params.refractionRatio}
-        // specularMap={params.specularMap}
+        specularMap={specularMap ? tSpecularMap : null}
         wireframe={params.wireframe}
         wireframeLinecap={params.wireframeLinecap}
         wireframeLinejoin={params.wireframeLinejoin}
         wireframeLinewidth={params.wireframeLinewidth}
+        key={params.map}
       />
     )
   );
