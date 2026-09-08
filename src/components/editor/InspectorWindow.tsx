@@ -14,6 +14,10 @@ import MaterialInspector from './inspectors/MaterialInspector';
 import Material from '../../engine/components/Material';
 import Light from '../../engine/components/Light';
 import LightInspector from './inspectors/LightInspector';
+import Collider from '../../engine/components/Collider';
+import ColliderDataInspector from './inspectors/ColliderDataInspector';
+import ColliderInspector from './inspectors/ColliderInspector';
+import RigidBodyInspector from './inspectors/RigidBodyInspector';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -87,6 +91,18 @@ function InspectorWindow() {
         return (
           <LightInspector entity={focused} data={(snap[key] as Light).data} />
         );
+      case 'Collider':
+        return (
+          <>
+            <ColliderInspector entity={focused} data={snap[key] as Collider} />
+            <ColliderDataInspector
+              entity={focused}
+              data={(snap[key] as Collider).data}
+            />
+          </>
+        );
+      case 'RigidBody':
+        return <RigidBodyInspector entity={focused} />;
       default:
         return <GenericInspector entity={focused} component={snap[key]} />;
     }

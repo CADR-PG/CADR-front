@@ -29,10 +29,18 @@ import RectAreaLightController from '../components/editor/lights/RectAreaLightCo
 import HemisphereLightController from '../components/editor/lights/HemisphereLightController';
 import AmbientLightController from '../components/editor/lights/AmbientLightController';
 import SpotLightController from '../components/editor/lights/SpotLightController';
+import CuboidColliderController from '../components/editor/colliders/CuboidColliderController';
+import BallColliderController from '../components/editor/colliders/BallColliderController';
+import CapsuleColliderController from '../components/editor/colliders/CapsuleColliderController';
+import ConeColliderController from '../components/editor/colliders/ConeColliderController';
+import RoundConeColliderController from '../components/editor/colliders/RoundConeColliderController';
+import CylinderColliderController from '../components/editor/colliders/CylinderColliderController';
+import RoundCuboidColliderController from '../components/editor/colliders/RoundCuboidColliderController';
+import RoundCylinderColliderController from '../components/editor/colliders/RoundCylinderColliderController';
 
 interface ComponentToElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [name: string]: (...args: any[]) => JSX.Element | undefined;
+  [name: string]: (...args: any[]) => JSX.Element | undefined | null;
 }
 
 const ComponentNames: ComponentToElement = {
@@ -66,6 +74,15 @@ const ComponentNames: ComponentToElement = {
   hemisphere: HemisphereLightController,
   ambient: AmbientLightController,
   spotlight: SpotLightController,
+
+  ballCollider: BallColliderController,
+  capsuleCollider: CapsuleColliderController,
+  coneCollider: ConeColliderController,
+  cuboidCollider: CuboidColliderController,
+  cylinderCollider: CylinderColliderController,
+  roundConeCollider: RoundConeColliderController,
+  roundCuboidCollider: RoundCuboidColliderController,
+  roundCylinderCollider: RoundCylinderColliderController,
 };
 
 export default ComponentNames;
