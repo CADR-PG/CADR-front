@@ -11,7 +11,8 @@ import useLoadScene from '../hooks/useLoadScene';
 import { useParams } from 'react-router-dom';
 import { ECS } from '../engine/ECS';
 import EditingMode from '../types/EditingMode';
-import AssetsBrowser from '../components/editor/AssetsBrowser';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 function Editor() {
   const [focused, focus] = useState<string | null>(null);
@@ -42,43 +43,45 @@ function Editor() {
 
   return (
     <EditorContext.Provider value={contextValue}>
-      <div className="editor-hld">
-        <Navigation />
-        <KeyboardController>
-          <div className="editor-section">
-            <Allotment vertical snap={true}>
-              <Allotment.Pane minSize={300} preferredSize={1000}>
-                <Allotment vertical={false} separator={true} snap={true}>
-                  <Allotment.Pane
-                    minSize={screen.width / 6}
-                    preferredSize={screen.width / 5}
-                  >
-                    <HierarchyWindow />
-                  </Allotment.Pane>
-                  <Allotment.Pane
-                    minSize={screen.width / 3}
-                    preferredSize={screen.width / 3}
-                    snap={false}
-                  >
-                    <CanvasController />
-                  </Allotment.Pane>
-                  <Allotment.Pane
-                    minSize={screen.width / 6}
-                    preferredSize={screen.width / 5}
-                  >
-                    <InspectorWindow />
-                  </Allotment.Pane>
-                </Allotment>
-              </Allotment.Pane>
-              <Allotment.Pane minSize={150} preferredSize={screen.height / 4}>
-                <div style={{ height: '100%', overflow: 'auto' }}>
-                  <ProjectWindow />
-                </div>
-              </Allotment.Pane>
-            </Allotment>
-          </div>
-        </KeyboardController>
-      </div>
+      <DndProvider backend={HTML5Backend}>
+        <div className="editor-hld">
+          <Navigation />
+          <KeyboardController>
+            <div className="editor-section">
+              <Allotment vertical snap={true}>
+                <Allotment.Pane minSize={300} preferredSize={1000}>
+                  <Allotment vertical={false} separator={true} snap={true}>
+                    <Allotment.Pane
+                      minSize={screen.width / 6}
+                      preferredSize={screen.width / 5}
+                    >
+                      <HierarchyWindow />
+                    </Allotment.Pane>
+                    <Allotment.Pane
+                      minSize={screen.width / 3}
+                      preferredSize={screen.width / 3}
+                      snap={false}
+                    >
+                      <CanvasController />
+                    </Allotment.Pane>
+                    <Allotment.Pane
+                      minSize={screen.width / 6}
+                      preferredSize={screen.width / 5}
+                    >
+                      <InspectorWindow />
+                    </Allotment.Pane>
+                  </Allotment>
+                </Allotment.Pane>
+                <Allotment.Pane minSize={150} preferredSize={screen.height / 4}>
+                  <div style={{ height: '100%', overflow: 'auto' }}>
+                    <ProjectWindow />
+                  </div>
+                </Allotment.Pane>
+              </Allotment>
+            </div>
+          </KeyboardController>
+        </div>
+      </DndProvider>
     </EditorContext.Provider>
   );
 }
