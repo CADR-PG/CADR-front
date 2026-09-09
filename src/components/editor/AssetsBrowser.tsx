@@ -12,6 +12,9 @@ import type { AssetsDirectory, AssetsFile } from '../../types/Assets';
 import styles from '../../css/2-components/AssetsBrowser.module.scss';
 import { AssetsContext, useAssetsContext } from '../../data/AssetsContext';
 import { formatFileSize } from '../../utils/formatFileSize';
+import { useDrag } from 'react-dnd';
+import { DndTypes } from '../../types/DndTypes';
+import useDownloadFile from '../../hooks/useDownloadFile';
 
 interface FileItemProps {
   file: AssetsFile;
@@ -27,10 +30,19 @@ interface SelectedDirectory {
 }
 
 function FileItem({ file }: FileItemProps) {
+  const [, drag] = useDrag(() => ({
+    type: DndTypes.FILE,
+    item: file,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
   const deleteFile = useDeleteFile();
+  const { data } = useDownloadFile(file.id);
+  console.log(data);
 
   return (
-    <div className={styles.row}>
+    <div ref={drag} className={styles.row}>
       <span className={styles.iconSpacer} />
       <span className={styles.fileName}>
         <InsertDriveFileIcon fontSize="small" />
@@ -39,6 +51,13 @@ function FileItem({ file }: FileItemProps) {
         <span className={styles.fileSize}>
           ({formatFileSize(file.sizeInBytes)})
         </span>
+        <button
+          onClick={() => {
+            data ? console.log(data.data.downloadUrl) : null;
+          }}
+        >
+          test
+        </button>
       </span>
       <IconButton
         size="small"

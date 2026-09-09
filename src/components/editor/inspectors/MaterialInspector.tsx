@@ -12,6 +12,7 @@ import MaterialType from './MaterialType';
 import WireframeType from '../../../types/WireframeType';
 import Combine from './Combine';
 import { Combine as CombineType } from 'three';
+import MapDropArea from './MapDropArea';
 
 interface MaterialInspectorProps<T extends MaterialData> {
   entity: Entity;
@@ -54,6 +55,8 @@ export default function MaterialInspector<T extends MaterialData>({
   }
 
   function renderSwitch<K extends keyof T>(key: K) {
+    if (!materialWrite) return;
+
     switch (key) {
       case 'type':
         return <MaterialType entity={entity} type={data.type} />;
@@ -87,6 +90,36 @@ export default function MaterialInspector<T extends MaterialData>({
             entity={entity}
             wireframe={data[key] as WireframeType}
             wireframeKey={key}
+          />
+        );
+      case 'alphaMap':
+      case 'aoMap':
+      case 'envMap':
+      case 'lightMap':
+      case 'specularMap':
+      case 'map':
+      case 'displacementMap':
+      case 'bumpMap':
+      case 'metalnessMap':
+      case 'normalMap':
+      case 'emissiveMap':
+      case 'roughnessMap':
+      case 'gradientMap':
+      case 'anisotropyMap':
+      case 'clearcoatMap':
+      case 'clearcoatRoughnessMap':
+      case 'iridescenceMap':
+      case 'iridescenceThicknessMap':
+      case 'sheenColorMap':
+      case 'sheenRoughnessMap':
+      case 'specularColorMap':
+      case 'thicknessMap':
+      case 'transmissionMap':
+        return (
+          <MapDropArea
+            entity={entity}
+            componentWrite={materialWrite.data}
+            mapType={key}
           />
         );
     }
