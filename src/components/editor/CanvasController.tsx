@@ -12,6 +12,7 @@ import StartStopBtnToolbar from './StartStopBtnToolbar';
 import { RenderSystem } from '../../engine/systems/RenderSystem';
 import { RectAreaLightTexturesLib } from 'three/addons/lights/RectAreaLightTexturesLib.js';
 import { Physics } from '@react-three/rapier';
+import { AudioListenerProvider } from '../../hooks/useAudioListener';
 
 function CanvasController() {
   const { running, focus } = useEditorContext();
@@ -29,17 +30,19 @@ function CanvasController() {
         shadows
       >
         <Physics colliders="hull" debug>
+          <AudioListenerProvider>
           <OrbitControls makeDefault enableDamping={false} enabled={!running} />
-          {!running && <Grid sectionSize={2} infiniteGrid />}
-          {!running && (
-            <GizmoHelper alignment="top-right" margin={[80, 80]}>
-              <GizmoViewport
-                axisColors={['red', 'green', 'blue']}
-                labelColor="black"
-              />
-            </GizmoHelper>
-          )}
-          <RenderSystem />
+            {!running && <Grid sectionSize={2} infiniteGrid />}
+            {!running && (
+              <GizmoHelper alignment="top-right" margin={[80, 80]}>
+                <GizmoViewport
+                  axisColors={['red', 'green', 'blue']}
+                  labelColor="black"
+                />
+              </GizmoHelper>
+            )}
+            <RenderSystem />
+          </AudioListenerProvider>
         </Physics>
       </Canvas>
     </div>
