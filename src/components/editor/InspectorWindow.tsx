@@ -14,15 +14,13 @@ import MaterialInspector from './inspectors/MaterialInspector';
 import Material from '../../engine/components/Material';
 import Light from '../../engine/components/Light';
 import LightInspector from './inspectors/LightInspector';
-<<<<<<< HEAD
 import Collider from '../../engine/components/Collider';
 import ColliderDataInspector from './inspectors/ColliderDataInspector';
 import ColliderInspector from './inspectors/ColliderInspector';
 import RigidBodyInspector from './inspectors/RigidBodyInspector';
-||||||| parent of d03a843 (add audio component)
-=======
 import AudioInspector from './inspectors/AudioInspector';
->>>>>>> d03a843 (add audio component)
+import cAudio from '../../engine/components/Audio';
+import { cPositionalAudio } from '../../engine/components/PositionalAudio';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -96,7 +94,6 @@ function InspectorWindow() {
         return (
           <LightInspector entity={focused} data={(snap[key] as Light).data} />
         );
-<<<<<<< HEAD
       case 'Collider':
         return (
           <>
@@ -109,11 +106,12 @@ function InspectorWindow() {
         );
       case 'RigidBody':
         return <RigidBodyInspector entity={focused} />;
-||||||| parent of d03a843 (add audio component)
-=======
       case 'Audio':
-        return <AudioInspector entity={focused} />;
->>>>>>> d03a843 (add audio component)
+        return <AudioInspector entity={focused} componentType={cAudio} />;
+      case 'PositionalAudio':
+        return (
+          <AudioInspector entity={focused} componentType={cPositionalAudio} />
+        );
       default:
         return <GenericInspector entity={focused} component={snap[key]} />;
     }
