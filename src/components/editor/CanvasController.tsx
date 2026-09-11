@@ -11,6 +11,7 @@ import useEditorKeys from '../../hooks/useEditorKeys';
 import StartStopBtnToolbar from './StartStopBtnToolbar';
 import { RenderSystem } from '../../engine/systems/RenderSystem';
 import { RectAreaLightTexturesLib } from 'three/addons/lights/RectAreaLightTexturesLib.js';
+import { AudioListenerProvider } from '../../hooks/useAudioListener';
 
 function CanvasController() {
   const { running, focus } = useEditorContext();
@@ -27,17 +28,19 @@ function CanvasController() {
         camera={{ position: [3, 2, -3] }}
         shadows
       >
-        <OrbitControls makeDefault enableDamping={false} enabled={!running} />
-        {!running && <Grid sectionSize={2} infiniteGrid />}
-        {!running && (
-          <GizmoHelper alignment="top-right" margin={[80, 80]}>
-            <GizmoViewport
-              axisColors={['red', 'green', 'blue']}
-              labelColor="black"
-            />
-          </GizmoHelper>
-        )}
-        <RenderSystem />
+        <AudioListenerProvider>
+          <OrbitControls makeDefault enableDamping={false} enabled={!running} />
+          {!running && <Grid sectionSize={2} infiniteGrid />}
+          {!running && (
+            <GizmoHelper alignment="top-right" margin={[80, 80]}>
+              <GizmoViewport
+                axisColors={['red', 'green', 'blue']}
+                labelColor="black"
+              />
+            </GizmoHelper>
+          )}
+          <RenderSystem />
+        </AudioListenerProvider>
       </Canvas>
     </div>
   );

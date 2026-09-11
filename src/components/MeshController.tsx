@@ -103,7 +103,6 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
           </mesh>
           {componentKeys.map((component, index) => {
             const element = components[component].element;
-            console.log(element);
             if (
               element &&
               element !== geometry?.element &&

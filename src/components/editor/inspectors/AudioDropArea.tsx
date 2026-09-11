@@ -8,48 +8,44 @@ import useEntityManager from '../../../hooks/useEntityManager';
 import { Entity } from '../../../engine/Entity';
 import { normalizeUrl } from '../../../engine/components/helpers/material';
 import { IconButton } from '@mui/material';
+import cAudio from '../../../engine/components/Audio';
 
-interface MapDropAreaProps<T extends MaterialData> {
-  entity: Entity;
-  componentWrite: T;
-  mapType: keyof T;
+interface AudioSource {
+  source: string | undefined;
 }
 
-export default function MapDropArea<T extends MaterialData>({
+interface AudioDropAreaProps<T extends AudioSource> {
+  entity: Entity;
+  componentWrite: T;
+}
+
+export default function AudioDropArea<T extends AudioSource>({
   entity,
   componentWrite,
-  mapType,
-}: MapDropAreaProps<T>) {
+}: AudioDropAreaProps<T>) {
   const [{ canDrop }, drop] = useDrop(
     () => ({
       accept: DndTypes.FILE,
       drop: (item: AssetsFile, _monitor) => {
         console.log(item.id);
-        componentWrite[mapType] = item.id;
+        componentWrite.source = item.id;
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
         canDrop: !!monitor.canDrop(),
       }),
     }),
-    [componentWrite, mapType],
+    [componentWrite],
   );
 
   const em = useEntityManager();
-  const material = em.getComponent(Material, entity);
-  const { data } = useDownloadFile(material?.data[mapType]);
-  if (!material) return null;
-  console.log(data ? data.data.downloadUrl : '');
+  const audio = em.getComponent(cAudio, entity);
+
+  if (!audio) return null;
 
   return (
     <div ref={drop} className={`drop-area ${canDrop ? 'drop-area--drag' : ''}`}>
-      <img
-        src={data ? normalizeUrl(data) : '/public/blank-texture.png'}
-        alt=""
-        width={64}
-        height={64}
-        style={{ objectFit: 'cover' }}
-      />
+      {audio.source}
       <IconButton
         onClick={() => {
           componentWrite[mapType] = '';

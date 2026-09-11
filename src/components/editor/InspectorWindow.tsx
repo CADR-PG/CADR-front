@@ -14,6 +14,7 @@ import MaterialInspector from './inspectors/MaterialInspector';
 import Material from '../../engine/components/Material';
 import Light from '../../engine/components/Light';
 import LightInspector from './inspectors/LightInspector';
+import AudioInspector from './inspectors/AudioInspector';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -87,6 +88,8 @@ function InspectorWindow() {
         return (
           <LightInspector entity={focused} data={(snap[key] as Light).data} />
         );
+      case 'Audio':
+        return <AudioInspector entity={focused} />;
       default:
         return <GenericInspector entity={focused} component={snap[key]} />;
     }
