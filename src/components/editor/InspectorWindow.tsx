@@ -15,6 +15,8 @@ import Material from '../../engine/components/Material';
 import Light from '../../engine/components/Light';
 import LightInspector from './inspectors/LightInspector';
 import AudioInspector from './inspectors/AudioInspector';
+import cAudio from '../../engine/components/Audio';
+import { cPositionalAudio } from '../../engine/components/PositionalAudio';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -89,7 +91,11 @@ function InspectorWindow() {
           <LightInspector entity={focused} data={(snap[key] as Light).data} />
         );
       case 'Audio':
-        return <AudioInspector entity={focused} />;
+        return <AudioInspector entity={focused} componentType={cAudio} />;
+      case 'PositionalAudio':
+        return (
+          <AudioInspector entity={focused} componentType={cPositionalAudio} />
+        );
       default:
         return <GenericInspector entity={focused} component={snap[key]} />;
     }

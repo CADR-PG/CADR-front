@@ -13,6 +13,7 @@ import ComponentNames from '../data/ComponentNames';
 import Material from '../engine/components/Material';
 import Geometry from '../engine/components/Geometry';
 import Mesh from '../engine/components/Mesh';
+import { cPositionalAudio } from '../engine/components/PositionalAudio';
 
 function GenericMesh({ entity, ...props }: ControllerProps) {
   const em = useEntityManager();
@@ -23,6 +24,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   const invisible = em.getComponent(Invisible, entity);
   const material = em.getComponent(Material, entity);
   const geometry = em.getComponent(Geometry, entity);
+  const paudio = em.getComponent(cPositionalAudio, entity);
   const mesh = em.getComponent(Mesh, entity);
   const meshRef = useRef(null!);
   const {
@@ -38,11 +40,15 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
 
   let MaterialComponent = null;
   let GeometryComponent = null;
+  let PositionalAudioComponent = null;
   if (material && material.element) {
     MaterialComponent = ComponentNames[material.element];
   }
   if (geometry && geometry.element) {
     GeometryComponent = ComponentNames[geometry.element];
+  }
+  if (paudio && paudio.element) {
+    PositionalAudioComponent = ComponentNames[paudio.element];
   }
 
   // tbh I'm not a fan of this function. I think it could be simpler idk
@@ -101,12 +107,19 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
             {MaterialComponent && <MaterialComponent entity={entity} />}
             {GeometryComponent && <GeometryComponent entity={entity} />}
           </mesh>
+          {meshRef.current && PositionalAudioComponent && (
+            <PositionalAudioComponent
+              entity={entity}
+              parent={meshRef.current}
+            />
+          )}
           {componentKeys.map((component, index) => {
             const element = components[component].element;
             if (
               element &&
               element !== geometry?.element &&
-              element !== material?.element
+              element !== material?.element &&
+              element !== paudio?.element
             ) {
               const ComponentElement = ComponentNames[element];
               return <ComponentElement key={index} entity={entity} />;

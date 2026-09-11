@@ -7,15 +7,23 @@ import InspectorKey from './InspectorKey';
 import cAudio from '../../../engine/components/Audio';
 import useEntityManager from '../../../hooks/useEntityManager';
 import AudioDropArea from './AudioDropArea';
+import { ComponentType } from '../../../engine/Component';
 
-interface AudioInspectorProps {
+interface AudioInspectorProps<T extends cAudio> {
   entity: Entity;
+  componentType: ComponentType<T>;
 }
 
-export default function AudioInspector({ entity }: AudioInspectorProps) {
+export default function AudioInspector<T extends cAudio>({
+  entity,
+  componentType,
+}: AudioInspectorProps<T>) {
   const em = useEntityManager();
-  const audio = em.getComponent(cAudio, entity);
-  const audioWrite = ECS.instance.entityManager.getComponent(cAudio, entity);
+  const audio = em.getComponent(componentType, entity);
+  const audioWrite = ECS.instance.entityManager.getComponent(
+    componentType,
+    entity,
+  );
 
   if (!audioWrite || !audio) return null;
 
@@ -53,7 +61,7 @@ export default function AudioInspector({ entity }: AudioInspectorProps) {
       case 'element':
         return null;
       case 'source':
-        return <AudioDropArea entity={entity} componentWrite={audioWrite} />;
+        return <AudioDropArea entity={entity} componentType={componentType} />;
       default:
         break;
     }

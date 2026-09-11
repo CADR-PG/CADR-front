@@ -30,6 +30,7 @@ import HemisphereLightController from '../components/editor/lights/HemisphereLig
 import AmbientLightController from '../components/editor/lights/AmbientLightController';
 import SpotLightController from '../components/editor/lights/SpotLightController';
 import AudioController from '../components/editor/audio/AudioController';
+import PositionalAudioController from '../components/editor/audio/PositionalAudioController';
 
 interface ComponentToElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,6 +70,7 @@ const ComponentNames: ComponentToElement = {
   spotlight: SpotLightController,
 
   audio: AudioController,
+  paudio: PositionalAudioController,
 };
 
 export default ComponentNames;
