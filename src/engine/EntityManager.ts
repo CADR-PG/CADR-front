@@ -1,6 +1,8 @@
 import { proxy } from 'valtio';
 import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
+import { Object3D } from 'three';
+import { RefObject } from 'react';
 
 interface NameToClass {
   [name: string]: ComponentType;
@@ -11,6 +13,10 @@ interface NameToClass {
 // It won't be the most performant, but I wanted to keep it simple.
 export interface EntityToComponent {
   [euid: Entity]: { [name: string]: Component };
+}
+
+interface EntityRefs {
+  [entity: Entity]: RefObject<Object3D>;
 }
 
 export class EntityManager {
@@ -124,4 +130,5 @@ export class EntityManager {
 
   mapNameToClass: NameToClass = {};
   entities: EntityToComponent = {};
+  refs: EntityRefs = {};
 }

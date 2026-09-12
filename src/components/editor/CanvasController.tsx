@@ -13,9 +13,15 @@ import { RenderSystem } from '../../engine/systems/RenderSystem';
 import { RectAreaLightTexturesLib } from 'three/addons/lights/RectAreaLightTexturesLib.js';
 import { Physics } from '@react-three/rapier';
 import { AudioListenerProvider } from '../../hooks/useAudioListener';
+import {
+  Selection,
+  EffectComposer,
+  Outline,
+} from '@react-three/postprocessing';
+import { ECS } from '../../engine/ECS';
 
 function CanvasController() {
-  const { running, focus } = useEditorContext();
+  const { running, focus, hovered } = useEditorContext();
   useEditorKeys();
   RectAreaLightTexturesLib.init();
 
@@ -29,9 +35,27 @@ function CanvasController() {
         camera={{ position: [3, 2, -3] }}
         shadows
       >
+        {/* <Selection> */}
+        {/* <EffectComposer autoClear={false} multisampling={8}> */}
+        {/*   <Outline */}
+        {/*     selection={ */}
+        {/*       hovered */}
+        {/*         ? ECS.instance.entityManager.refs[hovered].current */}
+        {/*         : undefined */}
+        {/*     } */}
+        {/*     blur */}
+        {/*     edgeStrength={10} */}
+        {/*     visibleEdgeColor={0xffffff} */}
+        {/*     width={1000} */}
+        {/*   /> */}
+        {/* </EffectComposer> */}
         <Physics colliders="hull" debug>
           <AudioListenerProvider>
-          <OrbitControls makeDefault enableDamping={false} enabled={!running} />
+            <OrbitControls
+              makeDefault
+              enableDamping={false}
+              enabled={!running}
+            />
             {!running && <Grid sectionSize={2} infiniteGrid />}
             {!running && (
               <GizmoHelper alignment="top-right" margin={[80, 80]}>
@@ -44,6 +68,7 @@ function CanvasController() {
             <RenderSystem />
           </AudioListenerProvider>
         </Physics>
+        {/* </Selection> */}
       </Canvas>
     </div>
   );

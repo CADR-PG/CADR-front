@@ -36,12 +36,6 @@ export default function AudioInspector<T extends cAudio>({
               <AudioDropArea entity={entity} componentType={componentType} />
             );
           case 'distanceModel':
-            console.log(
-              audio?.constructor?.name,
-              audio instanceof cAudio,
-              cPositionalAudio.prototype.isPrototypeOf(audio),
-              Object.getPrototypeOf(audio) === cPositionalAudio.prototype,
-            );
             if (!isPositional(audio)) return null;
             return (
               <GenericSelect

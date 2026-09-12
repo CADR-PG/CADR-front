@@ -16,6 +16,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 function Editor() {
   const [focused, focus] = useState<string | null>(null);
+  const [hovered, hover] = useState<string | null>(null);
   const { uuid } = useParams();
   const { data, isError } = useLoadScene(uuid!);
   const [running, setRunning] = useState(false);
@@ -39,6 +40,8 @@ function Editor() {
     setRunning,
     editingMode,
     selectMode,
+    hovered,
+    hover,
   };
 
   return (

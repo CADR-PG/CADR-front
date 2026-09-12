@@ -13,6 +13,7 @@ import RigidBodyController from './editor/RigidBodyController';
 import Collider from '../engine/components/Collider';
 import Transform from '../engine/components/Transform';
 import { cPositionalAudio } from '../engine/components/PositionalAudio';
+import useEntityRef from '../hooks/useEntityRef';
 
 function GenericMesh({ entity, ...props }: ControllerProps) {
   const em = useEntityManager();
@@ -54,58 +55,56 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
 
   return (
     !invisible && (
-      <>
-        <TransformControlsController entity={entity} meshRef={meshRef}>
-          <RigidBodyController entity={entity}>
-            <group>
-              <mesh
-                {...props}
-                onClick={handleClick}
-                onPointerOver={handlePointerOver}
-                onPointerOut={handlePointerOut}
-                ref={meshRef}
-                castShadow={mesh ? mesh.castShadow : false}
-                receiveShadow={mesh ? mesh.receiveShadow : false}
-              >
-                <HighlightHelper
-                  entity={entity}
-                  focused={!running ? focused : ''}
-                  hovered={!running ? hovered : false}
-                />
-                {MaterialComponent && <MaterialComponent entity={entity} />}
-                {GeometryComponent && <GeometryComponent entity={entity} />}
-              </mesh>
-              {ColliderComponent && (
-                <ColliderComponent
-                  entity={entity}
-                  key={`${transform?.position} ${transform?.rotation}`}
-                />
-              )}
-              {PositionalAudioComponent && (
+      <TransformControlsController entity={entity} meshRef={meshRef}>
+        <RigidBodyController entity={entity}>
+          <group>
+            <mesh
+              {...props}
+              onClick={handleClick}
+              onPointerOver={handlePointerOver}
+              onPointerOut={handlePointerOut}
+              ref={meshRef}
+              castShadow={mesh ? mesh.castShadow : false}
+              receiveShadow={mesh ? mesh.receiveShadow : false}
+            >
+              {/* <HighlightHelper */}
+              {/*   entity={entity} */}
+              {/*   focused={!running ? focused : ''} */}
+              {/*   hovered={!running && hovered ? true : false} */}
+              {/* /> */}
+              {MaterialComponent && <MaterialComponent entity={entity} />}
+              {GeometryComponent && <GeometryComponent entity={entity} />}
+            </mesh>
+            {ColliderComponent && (
+              <ColliderComponent
+                entity={entity}
+                key={`${transform?.position} ${transform?.rotation}`}
+              />
+            )}
+            {PositionalAudioComponent && (
               <PositionalAudioComponent
                 entity={entity}
                 parent={meshRef.current}
               />
             )}
             {componentKeys.map((component, index) => {
-                const element = components[component].element;
-                console.log(element);
-                if (
-                  element &&
-                  element !== geometry?.element &&
-                  element !== material?.element &&
-                  element !== collider?.element &&
-                  element !== paudio?.element
-                ) {
-                  const ComponentElement = ComponentNames[element];
-                  return <ComponentElement key={index} entity={entity} />;
-                }
-                return null;
-              })}
-            </group>
-          </RigidBodyController>
-        </TransformControlsController>
-      </>
+              const element = components[component].element;
+              console.log(element);
+              if (
+                element &&
+                element !== geometry?.element &&
+                element !== material?.element &&
+                element !== collider?.element &&
+                element !== paudio?.element
+              ) {
+                const ComponentElement = ComponentNames[element];
+                return <ComponentElement key={index} entity={entity} />;
+              }
+              return null;
+            })}
+          </group>
+        </RigidBodyController>
+      </TransformControlsController>
     )
   );
 }

@@ -21,6 +21,7 @@ import AudioInspector from './inspectors/AudioInspector';
 import cAudio from '../../engine/components/Audio';
 import { cPositionalAudio } from '../../engine/components/PositionalAudio';
 import InspectorTemplate from './inspectors/InspectorTemplate';
+import GLTFInspector from './inspectors/GLTFInspector';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -112,6 +113,8 @@ function InspectorWindow() {
         return (
           <AudioInspector entity={focused} componentType={cPositionalAudio} />
         );
+      case 'GLTF':
+        return <GLTFInspector entity={focused} />;
       default:
         return (
           <InspectorTemplate

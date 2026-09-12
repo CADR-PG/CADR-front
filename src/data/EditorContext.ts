@@ -8,6 +8,8 @@ export interface EditorContextValues {
   setRunning: Dispatch<SetStateAction<boolean>>;
   editingMode: EditingMode;
   selectMode: Dispatch<SetStateAction<EditingMode>>;
+  hovered: string | null;
+  hover: Dispatch<SetStateAction<string | null>>;
 }
 
 export const EditorContext = createContext<EditorContextValues | undefined>(

@@ -4,6 +4,8 @@ import cAudio from '../engine/components/Audio';
 import { AudioLoader } from 'three';
 import { useEditorContext } from './useEditorContext';
 import { Object3D } from 'three';
+import * as THREE from 'three';
+import { useFrame } from '@react-three/fiber';
 
 const audioLoader = new AudioLoader();
 
@@ -26,6 +28,7 @@ export default function useAudio<T extends Audio<AudioNode>>({
 }: useAudioProps<T>) {
   const { running } = useEditorContext();
   const soundRef = useRef<Audio<AudioNode> | null>(null);
+
   useEffect(() => {
     if (!url || !enabled) return;
 
