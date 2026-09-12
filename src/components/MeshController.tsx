@@ -81,7 +81,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
                   key={`${transform?.position} ${transform?.rotation}`}
                 />
               )}
-              {meshRef.current && PositionalAudioComponent && (
+              {PositionalAudioComponent && (
               <PositionalAudioComponent
                 entity={entity}
                 parent={meshRef.current}
