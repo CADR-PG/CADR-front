@@ -107,7 +107,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
             {MaterialComponent && <MaterialComponent entity={entity} />}
             {GeometryComponent && <GeometryComponent entity={entity} />}
           </mesh>
-          {meshRef.current && PositionalAudioComponent && (
+          {PositionalAudioComponent && (
             <PositionalAudioComponent
               entity={entity}
               parent={meshRef.current}

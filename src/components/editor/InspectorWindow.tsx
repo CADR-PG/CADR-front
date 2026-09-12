@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEntityManager from '../../hooks/useEntityManager';
-import GenericInspector from './inspectors/GenericInspector';
 import AddIcon from '@mui/icons-material/Add';
 import { Button, IconButton, Menu, MenuItem } from '@mui/material';
 import { ECS } from '../../engine/ECS';
@@ -17,6 +16,7 @@ import LightInspector from './inspectors/LightInspector';
 import AudioInspector from './inspectors/AudioInspector';
 import cAudio from '../../engine/components/Audio';
 import { cPositionalAudio } from '../../engine/components/PositionalAudio';
+import InspectorTemplate from './inspectors/InspectorTemplate';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -97,7 +97,14 @@ function InspectorWindow() {
           <AudioInspector entity={focused} componentType={cPositionalAudio} />
         );
       default:
-        return <GenericInspector entity={focused} component={snap[key]} />;
+        return (
+          <InspectorTemplate
+            entity={focused}
+            componentType={
+              ECS.instance.entityManager.mapNameToClass[snap[key].name]
+            }
+          />
+        );
     }
   };
 
