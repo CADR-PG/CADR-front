@@ -10,7 +10,7 @@ import { JSX } from 'react';
 
 interface TransformControlsControllerProps {
   children: JSX.Element;
-  meshRef: React.RefObject<THREE.Mesh>;
+  meshRef: THREE.Object3D | null;
 }
 
 export default function TransformControlsController({
@@ -27,7 +27,7 @@ export default function TransformControlsController({
 
   // tbh I'm not a fan of this function. I think it could be simpler idk
   const handleChange = () => {
-    const mesh = meshRef.current as THREE.Mesh;
+    const mesh = meshRef as THREE.Mesh;
     if (transform) {
       const position = new THREE.Vector3();
       const scale = new THREE.Vector3();

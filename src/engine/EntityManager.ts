@@ -16,7 +16,7 @@ export interface EntityToComponent {
 }
 
 interface EntityRefs {
-  [entity: Entity]: RefObject<Object3D>;
+  [entity: Entity]: Object3D | null;
 }
 
 export class EntityManager {

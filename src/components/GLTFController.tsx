@@ -31,7 +31,7 @@ export default function GLTFController({ entity }: ControllerProps) {
     gltf?.useDraco,
     gltf?.useMeshOpt,
   );
-  const modelRef = useEntityRef(entity);
+  const [setRef, object] = useEntityRef(entity);
 
   let ColliderComponent = null;
   if (collider && collider.element) {
@@ -40,7 +40,7 @@ export default function GLTFController({ entity }: ControllerProps) {
 
   return (
     !invisible && (
-      <TransformControlsController entity={entity} meshRef={modelRef}>
+      <TransformControlsController entity={entity} meshRef={object}>
         <RigidBodyController entity={entity}>
           <group>
             <Select enabled={hovered === entity}>
@@ -49,12 +49,11 @@ export default function GLTFController({ entity }: ControllerProps) {
                 onClick={handleClick}
                 onPointerOver={handlePointerOver}
                 onPointerOut={handlePointerOut}
-                ref={modelRef}
+                ref={setRef}
               >
                 <HighlightHelper
                   entity={entity}
                   focused={!running ? focused : ''}
-                  hovered={false}
                 />
               </Clone>
             </Select>

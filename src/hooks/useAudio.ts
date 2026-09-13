@@ -18,6 +18,8 @@ interface useAudioProps<T extends Audio<AudioNode>> {
   enabled: boolean;
 }
 
+const v = new THREE.Vector3();
+
 export default function useAudio<T extends Audio<AudioNode>>({
   create,
   url,
@@ -36,6 +38,12 @@ export default function useAudio<T extends Audio<AudioNode>>({
     const sound = create();
     soundRef.current = sound;
     parent?.add(sound);
+    console.log('Audio debug:', parent, soundRef.current.position);
+    const v = new THREE.Vector3();
+    sound.getWorldPosition(v);
+    console.log('mesh world', v.toArray());
+    parent?.getWorldPosition(v);
+    console.log('group world', v.toArray());
 
     audioLoader.load(
       url,

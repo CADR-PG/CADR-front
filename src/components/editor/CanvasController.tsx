@@ -18,16 +18,11 @@ import {
   EffectComposer,
   Outline,
 } from '@react-three/postprocessing';
-import { ECS } from '../../engine/ECS';
 
 function CanvasController() {
-  const { running, focus, hovered } = useEditorContext();
+  const { running, focus } = useEditorContext();
   useEditorKeys();
   RectAreaLightTexturesLib.init();
-  console.log(
-    hovered,
-    hovered ? ECS.instance.entityManager.refs[hovered].current : null,
-  );
 
   return (
     <div className="canvas-container">
@@ -38,7 +33,7 @@ function CanvasController() {
         onPointerMissed={() => focus(null)}
         camera={{ position: [3, 2, -3] }}
         shadows
-        frameloop="demand"
+        frameloop={running ? 'always' : 'demand'}
       >
         <Physics colliders="hull" debug>
           <AudioListenerProvider>

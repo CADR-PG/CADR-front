@@ -13,12 +13,7 @@ import Collider from '../engine/components/Collider';
 import Transform from '../engine/components/Transform';
 import { cPositionalAudio } from '../engine/components/PositionalAudio';
 import useEntityRef from '../hooks/useEntityRef';
-import {
-  Selection,
-  EffectComposer,
-  Outline,
-  Select,
-} from '@react-three/postprocessing';
+import { Select } from '@react-three/postprocessing';
 
 function GenericMesh({ entity, ...props }: ControllerProps) {
   const em = useEntityManager();
@@ -31,7 +26,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   const transform = em.getComponent(Transform, entity);
   const paudio = em.getComponent(cPositionalAudio, entity);
   const mesh = em.getComponent(Mesh, entity);
-  const meshRef = useEntityRef(entity);
+  const [setRef, object] = useEntityRef(entity);
   const {
     focused,
     hovered,
@@ -60,7 +55,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
 
   return (
     !invisible && (
-      <TransformControlsController entity={entity} meshRef={meshRef}>
+      <TransformControlsController entity={entity} meshRef={object}>
         <RigidBodyController entity={entity}>
           <group>
             <Select enabled={hovered === entity}>
@@ -69,14 +64,13 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
                 onClick={handleClick}
                 onPointerOver={handlePointerOver}
                 onPointerOut={handlePointerOut}
-                ref={meshRef}
+                ref={setRef}
                 castShadow={mesh ? mesh.castShadow : false}
                 receiveShadow={mesh ? mesh.receiveShadow : false}
               >
                 <HighlightHelper
                   entity={entity}
                   focused={!running ? focused : ''}
-                  hovered={false}
                 />
                 {MaterialComponent && <MaterialComponent entity={entity} />}
                 {GeometryComponent && <GeometryComponent entity={entity} />}
@@ -89,10 +83,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
               />
             )}
             {PositionalAudioComponent && (
-              <PositionalAudioComponent
-                entity={entity}
-                parent={meshRef.current}
-              />
+              <PositionalAudioComponent entity={entity} parent={object} />
             )}
             {componentKeys.map((component, index) => {
               const element = components[component].element;

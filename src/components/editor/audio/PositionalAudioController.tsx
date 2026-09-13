@@ -28,7 +28,7 @@ export default function PositionalAudioController({
     create: () => new PositionalAudio(listener),
     url: audioFile ? normalizeUrl(audioFile) : null,
     params: paudio!,
-    enabled: running && !!paudio,
+    enabled: running && !!paudio && !!parent,
     applyExtra: (s) => {
       if (!paudio) return;
       s.setDirectionalCone(
@@ -44,7 +44,7 @@ export default function PositionalAudioController({
     parent: parent,
   });
 
-  return !running ? (
+  return true ? (
     <sprite scale={0.5} onClick={() => focus(entity)}>
       <spriteMaterial depthWrite={false} map={texture} transparent />
     </sprite>
