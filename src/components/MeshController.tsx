@@ -1,7 +1,6 @@
 import ControllerProps from '../types/ControllerProps';
 import { useMesh } from '../hooks/useMesh';
 import HighlightHelper from './HighlightHelper';
-import { useRef } from 'react';
 import useEntityManager from '../hooks/useEntityManager';
 import Invisible from '../engine/components/Invisible';
 import ComponentNames from '../data/ComponentNames';
@@ -14,6 +13,12 @@ import Collider from '../engine/components/Collider';
 import Transform from '../engine/components/Transform';
 import { cPositionalAudio } from '../engine/components/PositionalAudio';
 import useEntityRef from '../hooks/useEntityRef';
+import {
+  Selection,
+  EffectComposer,
+  Outline,
+  Select,
+} from '@react-three/postprocessing';
 
 function GenericMesh({ entity, ...props }: ControllerProps) {
   const em = useEntityManager();
@@ -26,7 +31,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   const transform = em.getComponent(Transform, entity);
   const paudio = em.getComponent(cPositionalAudio, entity);
   const mesh = em.getComponent(Mesh, entity);
-  const meshRef = useRef(null!);
+  const meshRef = useEntityRef(entity);
   const {
     focused,
     hovered,
@@ -58,23 +63,25 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
       <TransformControlsController entity={entity} meshRef={meshRef}>
         <RigidBodyController entity={entity}>
           <group>
-            <mesh
-              {...props}
-              onClick={handleClick}
-              onPointerOver={handlePointerOver}
-              onPointerOut={handlePointerOut}
-              ref={meshRef}
-              castShadow={mesh ? mesh.castShadow : false}
-              receiveShadow={mesh ? mesh.receiveShadow : false}
-            >
-              {/* <HighlightHelper */}
-              {/*   entity={entity} */}
-              {/*   focused={!running ? focused : ''} */}
-              {/*   hovered={!running && hovered ? true : false} */}
-              {/* /> */}
-              {MaterialComponent && <MaterialComponent entity={entity} />}
-              {GeometryComponent && <GeometryComponent entity={entity} />}
-            </mesh>
+            <Select enabled={hovered === entity}>
+              <mesh
+                {...props}
+                onClick={handleClick}
+                onPointerOver={handlePointerOver}
+                onPointerOut={handlePointerOut}
+                ref={meshRef}
+                castShadow={mesh ? mesh.castShadow : false}
+                receiveShadow={mesh ? mesh.receiveShadow : false}
+              >
+                <HighlightHelper
+                  entity={entity}
+                  focused={!running ? focused : ''}
+                  hovered={false}
+                />
+                {MaterialComponent && <MaterialComponent entity={entity} />}
+                {GeometryComponent && <GeometryComponent entity={entity} />}
+              </mesh>
+            </Select>
             {ColliderComponent && (
               <ColliderComponent
                 entity={entity}

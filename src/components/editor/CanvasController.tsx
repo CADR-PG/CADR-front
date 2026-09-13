@@ -24,6 +24,10 @@ function CanvasController() {
   const { running, focus, hovered } = useEditorContext();
   useEditorKeys();
   RectAreaLightTexturesLib.init();
+  console.log(
+    hovered,
+    hovered ? ECS.instance.entityManager.refs[hovered].current : null,
+  );
 
   return (
     <div className="canvas-container">
@@ -34,21 +38,8 @@ function CanvasController() {
         onPointerMissed={() => focus(null)}
         camera={{ position: [3, 2, -3] }}
         shadows
+        frameloop="demand"
       >
-        {/* <Selection> */}
-        {/* <EffectComposer autoClear={false} multisampling={8}> */}
-        {/*   <Outline */}
-        {/*     selection={ */}
-        {/*       hovered */}
-        {/*         ? ECS.instance.entityManager.refs[hovered].current */}
-        {/*         : undefined */}
-        {/*     } */}
-        {/*     blur */}
-        {/*     edgeStrength={10} */}
-        {/*     visibleEdgeColor={0xffffff} */}
-        {/*     width={1000} */}
-        {/*   /> */}
-        {/* </EffectComposer> */}
         <Physics colliders="hull" debug>
           <AudioListenerProvider>
             <OrbitControls
@@ -58,17 +49,35 @@ function CanvasController() {
             />
             {!running && <Grid sectionSize={2} infiniteGrid />}
             {!running && (
-              <GizmoHelper alignment="top-right" margin={[80, 80]}>
+              <GizmoHelper
+                alignment="top-right"
+                margin={[80, 80]}
+                renderPriority={2}
+              >
                 <GizmoViewport
                   axisColors={['red', 'green', 'blue']}
                   labelColor="black"
                 />
               </GizmoHelper>
             )}
-            <RenderSystem />
+
+            <Selection>
+              <EffectComposer
+                autoClear={false}
+                multisampling={0}
+                renderPriority={1}
+              >
+                <Outline
+                  edgeStrength={1}
+                  visibleEdgeColor={0xffffff}
+                  resolutionX={480}
+                  resolutionY={480}
+                />
+              </EffectComposer>
+              <RenderSystem />
+            </Selection>
           </AudioListenerProvider>
         </Physics>
-        {/* </Selection> */}
       </Canvas>
     </div>
   );
