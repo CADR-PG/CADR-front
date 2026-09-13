@@ -56,7 +56,7 @@ function GenericMesh({ entity, ...props }: ControllerProps) {
   return (
     !invisible && (
       <TransformControlsController entity={entity} meshRef={object}>
-        <RigidBodyController entity={entity}>
+        <RigidBodyController entity={entity} mesh={object}>
           <group>
             <Select enabled={hovered === entity}>
               <mesh

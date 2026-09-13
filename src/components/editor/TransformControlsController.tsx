@@ -49,9 +49,9 @@ export default function TransformControlsController({
     <TransformControls
       size={!running && entity === focused ? 1 : 0}
       enabled={!running && entity === focused}
-      position={transformRead?.position}
-      rotation={transformRead?.rotation}
-      scale={transformRead?.scale}
+      position={!running ? transformRead?.position : undefined}
+      rotation={!running ? transformRead?.rotation : undefined}
+      scale={!running ? transformRead?.scale : undefined}
       onMouseUp={handleChange}
       mode={editingMode}
     >

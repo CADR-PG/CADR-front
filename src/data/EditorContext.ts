@@ -5,7 +5,7 @@ export interface EditorContextValues {
   focused: string | null;
   focus: Dispatch<SetStateAction<string | null>>;
   running: boolean;
-  setRunning: Dispatch<SetStateAction<boolean>>;
+  setRunning: (newState: boolean) => void;
   editingMode: EditingMode;
   selectMode: Dispatch<SetStateAction<EditingMode>>;
   hovered: string | null;

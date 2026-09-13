@@ -4,8 +4,6 @@ import cAudio from '../engine/components/Audio';
 import { AudioLoader } from 'three';
 import { useEditorContext } from './useEditorContext';
 import { Object3D } from 'three';
-import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
 
 const audioLoader = new AudioLoader();
 
@@ -17,8 +15,6 @@ interface useAudioProps<T extends Audio<AudioNode>> {
   parent?: Object3D | null;
   enabled: boolean;
 }
-
-const v = new THREE.Vector3();
 
 export default function useAudio<T extends Audio<AudioNode>>({
   create,
@@ -38,12 +34,6 @@ export default function useAudio<T extends Audio<AudioNode>>({
     const sound = create();
     soundRef.current = sound;
     parent?.add(sound);
-    console.log('Audio debug:', parent, soundRef.current.position);
-    const v = new THREE.Vector3();
-    sound.getWorldPosition(v);
-    console.log('mesh world', v.toArray());
-    parent?.getWorldPosition(v);
-    console.log('group world', v.toArray());
 
     audioLoader.load(
       url,

@@ -1,4 +1,4 @@
-import { proxy } from 'valtio';
+import { proxy, snapshot } from 'valtio';
 import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
 import { Object3D } from 'three';
@@ -128,7 +128,18 @@ export class EntityManager {
     return true;
   }
 
+  copyScene() {
+    const copy = structuredClone(snapshot(this.entities));
+    this.entitiesCopy = proxy(copy);
+  }
+
+  restoreScene() {
+    this.entities = this.entitiesCopy;
+    this.entitiesCopy = {};
+  }
+
   mapNameToClass: NameToClass = {};
   entities: EntityToComponent = {};
+  entitiesCopy: EntityToComponent = {};
   refs: EntityRefs = {};
 }
