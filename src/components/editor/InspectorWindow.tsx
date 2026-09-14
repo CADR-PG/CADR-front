@@ -135,15 +135,22 @@ function InspectorWindow() {
           {Object.keys(snap).map((key) => {
             return (
               <div key={key}>
-                <div className="component-header">
+                <div
+                  className="component-header"
+                  style={
+                    key === 'Transform' ? { paddingBottom: '18px' } : undefined
+                  }
+                >
                   <b>{key}</b>
-                  <IconButton
-                    size="small"
-                    className="component-header-close-btn"
-                    onClick={() => handleDelete(key)}
-                  >
-                    <DeleteIcon></DeleteIcon>
-                  </IconButton>
+                  {key !== 'Transform' && (
+                    <IconButton
+                      size="small"
+                      className="component-header-close-btn"
+                      onClick={() => handleDelete(key)}
+                    >
+                      <DeleteIcon></DeleteIcon>
+                    </IconButton>
+                  )}
                 </div>
                 <div className="inspector-panel">{renderSwitch(key)}</div>
                 <hr />

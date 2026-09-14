@@ -1,13 +1,9 @@
 import GLTF from '../../../engine/components/GLTF';
-import { Entity } from '../../../engine/Entity';
+import InspectorProps from '../../../types/InspectorProps';
 import InspectorTemplate from './InspectorTemplate';
 import ModelDropArea from './ModelDropArea';
 
-interface GLTFInspectorProps {
-  entity: Entity;
-}
-
-export default function GLTFInspector({ entity }: GLTFInspectorProps) {
+export default function GLTFInspector({ entity }: InspectorProps) {
   return (
     <InspectorTemplate
       entity={entity}

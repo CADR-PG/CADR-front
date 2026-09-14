@@ -1,18 +1,15 @@
-import { ChangeEvent } from 'react';
 import Material, { MaterialData } from '../../../engine/components/Material';
 import { Entity } from '../../../engine/Entity';
 import { ECS } from '../../../engine/ECS';
 import ColorPicker from './ColorPicker';
 import EnvMapRotation from './EnvMapRotation';
 import Wireframe from './Wireframe';
-import { Checkbox, TextField } from '@mui/material';
-import NumberField from '../../NumberField';
-import InspectorKey from './InspectorKey';
 import MaterialType from './MaterialType';
 import WireframeType from '../../../types/WireframeType';
 import Combine from './Combine';
 import { Combine as CombineType } from 'three';
 import MapDropArea from './MapDropArea';
+import InspectorTemplate from './InspectorTemplate';
 
 interface MaterialInspectorProps<T extends MaterialData> {
   entity: Entity;
@@ -29,136 +26,81 @@ export default function MaterialInspector<T extends MaterialData>({
   );
 
   if (!materialWrite) return;
-
-  function handleChange<K extends keyof T>(
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    key: K,
-  ) {
-    if (!materialWrite) return;
-
-    const type = e.currentTarget.type;
-    switch (type) {
-      case 'text':
-        (materialWrite.data as T)[key] = e.currentTarget.value as T[K];
-        break;
-      case 'checkbox':
-        if (e.currentTarget instanceof HTMLTextAreaElement) return;
-        (materialWrite.data as T)[key] = e.currentTarget.checked as T[K];
-        break;
-    }
-  }
-
-  function handleNumber<K extends keyof T>(value: number | null, key: K) {
-    if (!materialWrite || value === null) return;
-
-    (materialWrite.data as T)[key] = value as T[K];
-  }
-
-  function renderSwitch<K extends keyof T>(key: K) {
-    if (!materialWrite) return;
-
-    switch (key) {
-      case 'type':
-        return <MaterialType entity={entity} type={data.type} />;
-      case 'combine':
-        return <Combine entity={entity} value={data[key] as CombineType} />;
-      case 'color':
-        return (
-          materialWrite && (
-            <ColorPicker
-              componentColor={'color' in data ? (data.color as number) : 0}
-              data={materialWrite.data}
-              field={key as keyof typeof materialWrite.data}
-            />
-          )
-        );
-      case 'envMapRotation':
-        return (
-          <EnvMapRotation
-            entity={entity}
-            envMapRotation={
-              'envMapRotation' in data
-                ? (data.envMapRotation as [number, number, number])
-                : [0, 0, 0]
-            }
-          />
-        );
-      case 'wireframeLinecap':
-      case 'wireframeLinejoin':
-        return (
-          <Wireframe
-            entity={entity}
-            wireframe={data[key] as WireframeType}
-            wireframeKey={key}
-          />
-        );
-      case 'alphaMap':
-      case 'aoMap':
-      case 'envMap':
-      case 'lightMap':
-      case 'specularMap':
-      case 'map':
-      case 'displacementMap':
-      case 'bumpMap':
-      case 'metalnessMap':
-      case 'normalMap':
-      case 'emissiveMap':
-      case 'roughnessMap':
-      case 'gradientMap':
-      case 'anisotropyMap':
-      case 'clearcoatMap':
-      case 'clearcoatRoughnessMap':
-      case 'iridescenceMap':
-      case 'iridescenceThicknessMap':
-      case 'sheenColorMap':
-      case 'sheenRoughnessMap':
-      case 'specularColorMap':
-      case 'thicknessMap':
-      case 'transmissionMap':
-        return (
-          <MapDropArea
-            entity={entity}
-            componentWrite={materialWrite.data}
-            mapType={key}
-          />
-        );
-    }
-    switch (typeof data[key]) {
-      case 'string':
-        return (
-          <TextField
-            size="small"
-            value={data[key]}
-            onChange={(e) => handleChange(e, key)}
-          />
-        );
-      case 'number':
-        return (
-          <NumberField
-            value={data[key]}
-            onValueChange={(value: number | null) => handleNumber(value, key)}
-            size="small"
-          />
-        );
-      case 'boolean':
-        return (
-          <div className="inspector-input-checkbox">
-            <Checkbox
-              checked={data[key]}
-              onChange={(e) => handleChange(e, key)}
-              size="small"
-            />
-          </div>
-        );
-    }
-  }
-
-  return Object.keys(data).map((key) => {
-    return (
-      <>
-        <InspectorKey keyName={key} />
-        {renderSwitch(key as keyof T)}
-      </>
-    );
-  });
+  return (
+    <InspectorTemplate
+      entity={entity}
+      componentType={Material}
+      select={(c) => c.data as T}
+      specialRender={(key) => {
+        switch (key) {
+          case 'type':
+            return <MaterialType entity={entity} type={data.type} />;
+          case 'combine':
+            return <Combine entity={entity} value={data[key] as CombineType} />;
+          case 'color':
+            return (
+              materialWrite && (
+                <ColorPicker
+                  componentColor={'color' in data ? (data.color as number) : 0}
+                  data={materialWrite.data}
+                  field={key as keyof typeof materialWrite.data}
+                />
+              )
+            );
+          case 'envMapRotation':
+            return (
+              <EnvMapRotation
+                entity={entity}
+                envMapRotation={
+                  'envMapRotation' in data
+                    ? (data.envMapRotation as [number, number, number])
+                    : [0, 0, 0]
+                }
+              />
+            );
+          case 'wireframeLinecap':
+          case 'wireframeLinejoin':
+            return (
+              <Wireframe
+                entity={entity}
+                wireframe={data[key] as WireframeType}
+                wireframeKey={key}
+              />
+            );
+          case 'alphaMap':
+          case 'aoMap':
+          case 'envMap':
+          case 'lightMap':
+          case 'specularMap':
+          case 'map':
+          case 'displacementMap':
+          case 'bumpMap':
+          case 'metalnessMap':
+          case 'normalMap':
+          case 'emissiveMap':
+          case 'roughnessMap':
+          case 'gradientMap':
+          case 'anisotropyMap':
+          case 'clearcoatMap':
+          case 'clearcoatRoughnessMap':
+          case 'iridescenceMap':
+          case 'iridescenceThicknessMap':
+          case 'sheenColorMap':
+          case 'sheenRoughnessMap':
+          case 'specularColorMap':
+          case 'thicknessMap':
+          case 'transmissionMap':
+            return (
+              <MapDropArea
+                entity={entity}
+                componentWrite={materialWrite.data}
+                mapType={key}
+              />
+            );
+          default:
+            return undefined;
+        }
+      }}
+    />
+  );
 }

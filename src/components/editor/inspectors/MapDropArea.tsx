@@ -24,8 +24,7 @@ export default function MapDropArea<T extends MaterialData>({
     () => ({
       accept: DndTypes.FILE,
       drop: (item: AssetsFile, _monitor) => {
-        console.log(item.id);
-        componentWrite[mapType] = item.id;
+        (componentWrite as Record<keyof T, unknown>)[mapType] = item.id;
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
@@ -37,7 +36,9 @@ export default function MapDropArea<T extends MaterialData>({
 
   const em = useEntityManager();
   const material = em.getComponent(Material, entity);
-  const { data } = useDownloadFile(material?.data[mapType]);
+  const { data } = useDownloadFile(
+    material?.data[mapType as keyof MaterialData],
+  );
   if (!material) return null;
   console.log(data ? data.data.downloadUrl : '');
 

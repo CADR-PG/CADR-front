@@ -1,5 +1,5 @@
 import GLTFController from '../../components/GLTFController';
-import GenericMesh from '../../components/MeshController';
+import MeshController from '../../components/MeshController';
 import useEntities from '../../hooks/useEntities';
 import useEntityManager from '../../hooks/useEntityManager';
 import GLTF from '../components/GLTF';
@@ -15,7 +15,7 @@ export function RenderSystem() {
     if (gltf) {
       return <GLTFController key={entity} entity={entity} />;
     }
-    return <GenericMesh key={entity} entity={entity} />;
+    return <MeshController key={entity} entity={entity} />;
   };
 
   return <group position={[0, 0, 0]}>{entities.map(pickComponent)}</group>;
