@@ -37,7 +37,10 @@ function Editor() {
       if (!hasCamera) {
         const entity = ECS.instance.entityManager.createEntity();
         ECS.instance.entityManager.addComponent(new Camera(), entity);
-        ECS.instance.entityManager.addComponent(new Transform(), entity);
+        ECS.instance.entityManager.addComponent(
+          new Transform([0, 1.6, 5]),
+          entity,
+        );
         ECS.instance.entityManager.addComponent(new Name('camera'), entity);
       }
     }
