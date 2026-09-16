@@ -14,6 +14,7 @@ export default function RoundConeColliderController({
         {...physicsHandlers}
         {...params}
         args={[args.halfHeight, args.radius, args.borderRadius]}
+        key={`${args.halfHeight} ${args.radius} ${args.borderRadius}`}
       />
     )
   );

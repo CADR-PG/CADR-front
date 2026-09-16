@@ -19,36 +19,41 @@ export default function TransformControlsController({
   const em = useEntityManager();
   const t = em.getComponent(Transform, entity);
   const transform = ECS.instance.entityManager.getComponent(Transform, entity);
-  const { editingMode, focused } = useEditorContext();
+  const { editingMode, focused, drag, dragged } = useEditorContext();
   const ref = useRef<THREE.Object3D>(null!);
-  const acc = useRef(0);
 
   useEffect(() => {
     if (!t) return;
     ref.current.position.fromArray(t.position);
     ref.current.rotation.fromArray(t.rotation);
     ref.current.scale.fromArray(t.scale);
-  }, [focused]);
+  }, []);
 
-  useFrame((_, delta) => {
-    if (!transform) return;
-
-    acc.current += delta;
-    if (acc.current < 1 / 8) return;
+  useFrame((_) => {
+    if (!dragged || !transform) return;
 
     ref.current.matrixWorld.decompose(p, r, s);
     e.setFromQuaternion(r);
     transform.position = [p.x, p.y, p.z];
     transform.rotation = [e.x, e.y, e.z];
     transform.scale = [s.x, s.y, s.z];
-    acc.current = 0;
   });
 
   return (
     <>
-      <object3D ref={ref} />
+      <object3D
+        position={!dragged ? t!.position : undefined}
+        rotation={!dragged ? t!.rotation : undefined}
+        scale={!dragged ? t!.scale : undefined}
+        ref={ref}
+      />
       {focused === entity && (
-        <TransformControls object={ref} mode={editingMode} />
+        <TransformControls
+          object={ref}
+          mode={editingMode}
+          onMouseDown={() => drag(true)}
+          onMouseUp={() => drag(false)}
+        />
       )}
     </>
   );

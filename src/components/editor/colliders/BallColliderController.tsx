@@ -8,7 +8,12 @@ export default function BallColliderController({ entity }: ControllerProps) {
   const { params, args } = usePhysics<Ball>(entity);
   return (
     params && (
-      <BallCollider {...physicsHandlers} {...params} args={[args.radius]} />
+      <BallCollider
+        {...physicsHandlers}
+        {...params}
+        args={[args.radius]}
+        key={`${args.radius}`}
+      />
     )
   );
 }

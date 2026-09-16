@@ -12,6 +12,7 @@ export default function CapsuleColliderController({ entity }: ControllerProps) {
         {...physicsHandlers}
         {...params}
         args={[args.halfHeight, args.radius]}
+        key={`${args.halfHeight} ${args.radius}`}
       />
     )
   );

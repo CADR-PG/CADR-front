@@ -35,7 +35,7 @@ function CanvasController() {
         shadows
         frameloop={running ? 'always' : 'demand'}
       >
-        <Physics colliders="hull" debug>
+        <Physics colliders="hull" paused={!running} debug={!running}>
           <AudioListenerProvider>
             <OrbitControls
               makeDefault

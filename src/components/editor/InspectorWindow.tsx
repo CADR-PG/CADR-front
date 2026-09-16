@@ -29,7 +29,7 @@ function InspectorWindow() {
     mouseY: number;
   } | null>(null);
   const open = Boolean(anchorEl);
-  const { focused } = useEditorContext();
+  const { focused, dragged } = useEditorContext();
   const em = useEntityManager();
   const snap = em.getComponents(focused);
   const nameMap = em.mapNameToClass;
@@ -130,7 +130,7 @@ function InspectorWindow() {
   return (
     <div className="inspector-window">
       <h3>Inspector</h3>
-      {focused && (
+      {focused && !dragged && (
         <>
           {Object.keys(snap).map((key) => {
             return (

@@ -14,6 +14,7 @@ export default function CylinderColliderController({
         {...physicsHandlers}
         {...params}
         args={[args.halfHeight, args.radius]}
+        key={`${args.halfHeight} ${args.radius}`}
       />
     )
   );

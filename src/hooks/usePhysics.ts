@@ -5,26 +5,26 @@ import useEntityManager from './useEntityManager';
 
 export default function usePhysics<T extends ColliderData>(entity: Entity) {
   const em = useEntityManager();
-  const colliderData = em.getComponent(Collider, entity);
+  const c = em.getComponent(Collider, entity);
   const t = em.getComponent(Transform, entity);
 
-  if (!t || !colliderData) return {};
+  if (!t || !c) return {};
 
   return {
     params: {
       name: entity,
-      position: addVec3(t.position, colliderData.position),
-      rotation: addVec3(t.rotation, colliderData.rotation),
-      scale: addVec3(t.scale, colliderData.scale),
-      activeCollisionTypes: colliderData.activeCollisionTypes,
-      collisionGroups: colliderData.collisionGroups,
-      contactSkin: colliderData.contactSkin,
-      friction: colliderData.friction,
-      frictionCombineRule: colliderData.frictionCombineRule,
-      mass: colliderData.mass,
-      restitution: colliderData.restitution,
-      sensor: colliderData.sensor,
+      position: addVec3(t.position, c.position),
+      rotation: addVec3(t.rotation, c.rotation),
+      scale: addVec3(t.scale, c.scale),
+      activeCollisionTypes: c.activeCollisionTypes,
+      collisionGroups: c.collisionGroups,
+      contactSkin: c.contactSkin,
+      friction: c.friction,
+      frictionCombineRule: c.frictionCombineRule,
+      mass: c.mass,
+      restitution: c.restitution,
+      sensor: c.sensor,
     },
-    args: colliderData.data as T,
+    args: c.data as T,
   };
 }
