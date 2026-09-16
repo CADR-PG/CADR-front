@@ -49,7 +49,6 @@ export default function BasicMaterial({ entity }: ControllerProps) {
         wireframeLinecap={params.wireframeLinecap}
         wireframeLinejoin={params.wireframeLinejoin}
         wireframeLinewidth={params.wireframeLinewidth}
-        key={params.map}
       />
     )
   );

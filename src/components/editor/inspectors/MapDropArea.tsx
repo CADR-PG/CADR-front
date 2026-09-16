@@ -40,7 +40,6 @@ export default function MapDropArea<T extends MaterialData>({
     material?.data[mapType as keyof MaterialData],
   );
   if (!material) return null;
-  console.log(data ? data.data.downloadUrl : '');
 
   return (
     <div ref={drop} className={`drop-area ${canDrop ? 'drop-area--drag' : ''}`}>

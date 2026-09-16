@@ -16,8 +16,6 @@ export default function useComponents(entity: Entity) {
   const components = em.getComponents(entity);
   const componentKeys = Object.keys(components);
   const invisible = em.getComponent(Invisible, entity);
-  const material = em.getComponent(Material, entity);
-  const geometry = em.getComponent(Geometry, entity);
   const collider = em.getComponent(Collider, entity);
   const transform = em.getComponent(Transform, entity);
   const paudio = em.getComponent(cPositionalAudio, entity);
@@ -30,10 +28,7 @@ export default function useComponents(entity: Entity) {
       const element = components[component].element;
       if (
         element &&
-        element !== geometry?.element &&
-        element !== material?.element &&
         element !== collider?.element &&
-        element !== paudio?.element &&
         element !== gltf?.element
       ) {
         const ComponentElement = ComponentNames[element];
@@ -43,16 +38,8 @@ export default function useComponents(entity: Entity) {
     });
   };
 
-  let MaterialComponent = null;
-  let GeometryComponent = null;
   let ColliderComponent = null;
   let PositionalAudioComponent = null;
-  if (material && material.element) {
-    MaterialComponent = ComponentNames[material.element];
-  }
-  if (geometry && geometry.element) {
-    GeometryComponent = ComponentNames[geometry.element];
-  }
   if (paudio && paudio.element) {
     PositionalAudioComponent = ComponentNames[paudio.element];
   }
@@ -70,8 +57,6 @@ export default function useComponents(entity: Entity) {
     gltf,
     setRef,
     object,
-    MaterialComponent: MaterialComponent ? MaterialComponent : nullFunc,
-    GeometryComponent: GeometryComponent ? GeometryComponent : nullFunc,
     PositionalAudioComponent: PositionalAudioComponent
       ? PositionalAudioComponent
       : nullFunc,

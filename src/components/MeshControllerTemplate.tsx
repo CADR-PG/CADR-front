@@ -14,33 +14,18 @@ export default function MeshControllerTemplate({
   entity,
   children,
 }: ControllerProps & MeshControllerTemplateProps) {
-  const {
-    renderComponents,
-    invisible,
-    transform,
-    object,
-    PositionalAudioComponent,
-    ColliderComponent,
-  } = useComponents(entity);
+  const { invisible, object, ColliderComponent } = useComponents(entity);
   const { hovered } = useMesh(entity);
 
   return (
     !invisible && (
-      <TransformControlsController entity={entity} meshRef={object}>
+      <>
+        <TransformControlsController entity={entity} />
         <RigidBodyController entity={entity} mesh={object}>
-          <group>
-            <Select enabled={hovered === entity}>{children}</Select>
-
-            <ColliderComponent
-              entity={entity}
-              key={`${transform?.position} ${transform?.rotation} ${transform?.scale}`}
-            />
-            <PositionalAudioComponent entity={entity} parent={object} />
-
-            {renderComponents()}
-          </group>
+          <Select enabled={hovered === entity}>{children}</Select>
+          <ColliderComponent entity={entity} />
         </RigidBodyController>
-      </TransformControlsController>
+      </>
     )
   );
 }

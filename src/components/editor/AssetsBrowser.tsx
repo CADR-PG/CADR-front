@@ -39,7 +39,6 @@ function FileItem({ file }: FileItemProps) {
   }));
   const deleteFile = useDeleteFile();
   const { data } = useDownloadFile(file.id);
-  console.log(data);
 
   return (
     <div ref={drag} className={styles.row}>

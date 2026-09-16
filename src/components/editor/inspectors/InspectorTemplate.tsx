@@ -36,9 +36,6 @@ export default function InspectorTemplate<T extends Component, S = T>({
   const read = pick(component);
   const write = pick(componentWrite);
 
-  console.log('pizda', component, componentWrite);
-  console.log('dupa', read, write);
-
   const setField = (key: keyof S, value: string | number | boolean) => {
     (write as Record<keyof S, unknown>)[key] = value;
   };

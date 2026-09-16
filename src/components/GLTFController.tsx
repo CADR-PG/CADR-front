@@ -8,7 +8,14 @@ import useComponents from '../hooks/useComponents';
 import MeshControllerTemplate from './MeshControllerTemplate';
 
 export default function GLTFController({ entity }: ControllerProps) {
-  const { gltf, setRef } = useComponents(entity);
+  const {
+    renderComponents,
+    transform,
+    object,
+    gltf,
+    setRef,
+    PositionalAudioComponent,
+  } = useComponents(entity);
   const { focused, running, handleClick, handlePointerOver, handlePointerOut } =
     useMesh(entity);
 
@@ -26,9 +33,14 @@ export default function GLTFController({ entity }: ControllerProps) {
         onClick={handleClick}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
+        position={transform?.position}
+        rotation={transform?.rotation}
+        scale={transform?.scale}
         ref={setRef}
       >
         <HighlightHelper entity={entity} focused={!running ? focused : ''} />
+        <PositionalAudioComponent entity={entity} parent={object} />
+        {renderComponents()}
       </Clone>
     </MeshControllerTemplate>
   );

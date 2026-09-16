@@ -42,7 +42,6 @@ export default function ColorPicker<T, K extends keyof T>({
     // NOTE(m1k53r): `color` starts with '#' character,
     // so we have to start from the second character to parse it correctly.
     const c = Number.parseInt(color.slice(1), 16);
-    console.log(field);
     data[field] = c as T[K];
   };
 

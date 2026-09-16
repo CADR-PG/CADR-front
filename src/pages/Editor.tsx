@@ -34,7 +34,6 @@ function Editor() {
   }, [data, isError]);
 
   const startstop = (newState: boolean) => {
-    console.log(`running: ${running}, newState: ${newState}`);
     if (!running && newState) {
       ECS.instance.entityManager.copyScene();
     }
