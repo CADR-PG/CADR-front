@@ -6,6 +6,7 @@ import {
 } from '@react-three/drei';
 import * as THREE from 'three';
 import { Camera } from '../../engine/components/Camera';
+import MainCamera from '../../engine/components/MainCamera';
 import Transform from '../../engine/components/Transform';
 import { ECS } from '../../engine/ECS';
 import useEntityManager from '../../hooks/useEntityManager';
@@ -17,12 +18,14 @@ import usePlayerMovement from '../../hooks/usePlayerMovement';
 export default function CameraController({ entity }: ControllerProps) {
   const em = useEntityManager();
   const camera = em.getComponent(Camera, entity);
+  const isMain = em.has(MainCamera, entity);
   const { running, focused, editingMode } = useEditorContext();
   const cameraRef = useRef<THREE.PerspectiveCamera>(null!);
   const seeded = useRef(false);
   const wasRunning = useRef(running);
+  const active = running && isMain;
   useHelper(!running && cameraRef, THREE.CameraHelper);
-  usePlayerMovement(cameraRef, running);
+  usePlayerMovement(cameraRef, active);
 
   // The camera object stays mounted continuously (no more wrapping
   // TransformControls group) - so its transform must be seeded from the
@@ -78,7 +81,7 @@ export default function CameraController({ entity }: ControllerProps) {
     camera && (
       <>
         <PerspectiveCamera
-          makeDefault={running}
+          makeDefault={active}
           ref={cameraRef}
           args={[camera.fov, camera.aspect, camera.near, camera.far]}
         />
@@ -91,7 +94,7 @@ export default function CameraController({ entity }: ControllerProps) {
             onObjectChange={persistTransform}
           />
         )}
-        {running && <PointerLockControls selector=".canvas" />}
+        {active && <PointerLockControls selector=".canvas" />}
       </>
     )
   );

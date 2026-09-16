@@ -12,6 +12,7 @@ import { useParams } from 'react-router-dom';
 import { ECS } from '../engine/ECS';
 import EditingMode from '../types/EditingMode';
 import { Camera } from '../engine/components/Camera';
+import MainCamera from '../engine/components/MainCamera';
 import Transform from '../engine/components/Transform';
 import Name from '../engine/components/Name';
 
@@ -28,13 +29,13 @@ function Editor() {
       const json = data.data.data;
       ECS.instance.entityManager.setScene(json);
 
-      const hasCamera = ECS.instance.entityManager
+      const cameraEntities = ECS.instance.entityManager
         .getEntities()
-        .some((entity) =>
+        .filter((entity) =>
           ECS.instance.entityManager.getComponent(Camera, entity),
         );
 
-      if (!hasCamera) {
+      if (cameraEntities.length === 0) {
         const entity = ECS.instance.entityManager.createEntity();
         ECS.instance.entityManager.addComponent(new Camera(), entity);
         ECS.instance.entityManager.addComponent(
@@ -42,6 +43,18 @@ function Editor() {
           entity,
         );
         ECS.instance.entityManager.addComponent(new Name('camera'), entity);
+        ECS.instance.entityManager.addComponent(new MainCamera(), entity);
+      } else if (
+        !cameraEntities.some((entity) =>
+          ECS.instance.entityManager.getComponent(MainCamera, entity),
+        )
+      ) {
+        // Scenes saved before multi-camera support don't have a main
+        // camera marked yet - promote the first one so Play still works.
+        ECS.instance.entityManager.addComponent(
+          new MainCamera(),
+          cameraEntities[0],
+        );
       }
     }
     if (isError) {
