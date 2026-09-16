@@ -18,14 +18,14 @@ export default function MeshControllerTemplate({
   const { hovered } = useMesh(entity);
 
   return (
-    !invisible && (
-      <>
-        <TransformControlsController entity={entity} />
+    <>
+      <TransformControlsController entity={entity} />
+      {!invisible && (
         <RigidBodyController entity={entity} mesh={object}>
           <Select enabled={hovered === entity}>{children}</Select>
           <ColliderComponent entity={entity} />
         </RigidBodyController>
-      </>
-    )
+      )}
+    </>
   );
 }
