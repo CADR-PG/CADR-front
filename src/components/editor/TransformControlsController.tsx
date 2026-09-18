@@ -4,58 +4,58 @@ import { useEditorContext } from '../../hooks/useEditorContext';
 import useEntityManager from '../../hooks/useEntityManager';
 import Transform from '../../engine/components/Transform';
 import { ECS } from '../../engine/ECS';
-import { useMesh } from '../../hooks/useMesh';
 import * as THREE from 'three';
-import { JSX } from 'react';
+import { useEffect, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
 
-interface TransformControlsControllerProps {
-  children: JSX.Element;
-  meshRef: React.RefObject<THREE.Mesh>;
-}
+const p = new THREE.Vector3();
+const r = new THREE.Quaternion();
+const s = new THREE.Vector3();
+const e = new THREE.Euler();
 
 export default function TransformControlsController({
   entity,
-  children,
-  meshRef,
-}: ControllerProps & TransformControlsControllerProps) {
+}: ControllerProps) {
   const em = useEntityManager();
-  const { running } = useEditorContext();
-  const transformRead = em.getComponent(Transform, entity);
+  const t = em.getComponent(Transform, entity);
   const transform = ECS.instance.entityManager.getComponent(Transform, entity);
-  const { editingMode } = useEditorContext();
-  const { focused } = useMesh(entity);
+  const { editingMode, focused, drag, dragged } = useEditorContext();
+  const ref = useRef<THREE.Object3D>(null!);
 
-  // tbh I'm not a fan of this function. I think it could be simpler idk
-  const handleChange = () => {
-    const mesh = meshRef.current as THREE.Mesh;
-    if (transform) {
-      const position = new THREE.Vector3();
-      const scale = new THREE.Vector3();
-      const rotation = new THREE.Quaternion();
+  useEffect(() => {
+    if (!t) return;
+    ref.current.position.fromArray(t.position);
+    ref.current.rotation.fromArray(t.rotation);
+    ref.current.scale.fromArray(t.scale);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-      mesh.getWorldPosition(position);
-      mesh.getWorldScale(scale);
-      mesh.getWorldQuaternion(rotation);
+  useFrame((_) => {
+    if (!dragged || !transform) return;
 
-      const euler = new THREE.Euler().setFromQuaternion(rotation);
-
-      transform.position = [position.x, position.y, position.z];
-      transform.rotation = [euler.x, euler.y, euler.z];
-      transform.scale = [scale.x, scale.y, scale.z];
-    }
-  };
+    ref.current.matrixWorld.decompose(p, r, s);
+    e.setFromQuaternion(r);
+    transform.position = [p.x, p.y, p.z];
+    transform.rotation = [e.x, e.y, e.z];
+    transform.scale = [s.x, s.y, s.z];
+  });
 
   return (
-    <TransformControls
-      size={!running && entity === focused ? 1 : 0}
-      enabled={!running && entity === focused}
-      position={transformRead?.position}
-      rotation={transformRead?.rotation}
-      scale={transformRead?.scale}
-      onMouseUp={handleChange}
-      mode={editingMode}
-    >
-      {children}
-    </TransformControls>
+    <>
+      <object3D
+        position={!dragged ? t!.position : undefined}
+        rotation={!dragged ? t!.rotation : undefined}
+        scale={!dragged ? t!.scale : undefined}
+        ref={ref}
+      />
+      {focused === entity && (
+        <TransformControls
+          object={ref}
+          mode={editingMode}
+          onMouseDown={() => drag(true)}
+          onMouseUp={() => drag(false)}
+        />
+      )}
+    </>
   );
 }

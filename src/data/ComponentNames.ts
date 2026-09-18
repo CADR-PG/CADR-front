@@ -37,6 +37,8 @@ import RoundConeColliderController from '../components/editor/colliders/RoundCon
 import CylinderColliderController from '../components/editor/colliders/CylinderColliderController';
 import RoundCuboidColliderController from '../components/editor/colliders/RoundCuboidColliderController';
 import RoundCylinderColliderController from '../components/editor/colliders/RoundCylinderColliderController';
+import AudioController from '../components/editor/audio/AudioController';
+import PositionalAudioController from '../components/editor/audio/PositionalAudioController';
 
 interface ComponentToElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,6 +85,9 @@ const ComponentNames: ComponentToElement = {
   roundConeCollider: RoundConeColliderController,
   roundCuboidCollider: RoundCuboidColliderController,
   roundCylinderCollider: RoundCylinderColliderController,
+
+  audio: AudioController,
+  paudio: PositionalAudioController,
 };
 
 export default ComponentNames;
