@@ -13,7 +13,7 @@ export default class RBody implements Component {
     public angularDamping = 0,
     public canSleep = true,
     public ccd = false,
-    public colliders: RigidBodyAutoCollider | undefined = false,
+    public colliders: RigidBodyAutoCollider | '' = false,
     public collisionGroups = 0,
     public contactSkin = 0,
     public dominanceGroup = 0,

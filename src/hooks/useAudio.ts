@@ -81,6 +81,10 @@ export default function useAudio<T extends Audio<AudioNode>>({
     params?.loop,
     params?.playbackRate,
     params?.volume,
+    applyExtra,
+    url,
+    create,
+    enabled,
   ]);
 
   return soundRef;

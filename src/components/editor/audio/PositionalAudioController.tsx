@@ -44,7 +44,7 @@ export default function PositionalAudioController({
     parent: parent,
   });
 
-  return true ? (
+  return !running ? (
     <sprite scale={0.5} onClick={() => focus(entity)}>
       <spriteMaterial depthWrite={false} map={texture} transparent />
     </sprite>

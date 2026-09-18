@@ -1,24 +1,25 @@
-import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import Select from '@mui/material/Select';
 import { Component, ComponentType } from '../../../engine/Component';
 import { ECS } from '../../../engine/ECS';
 import { Entity } from '../../../engine/Entity';
 import useEntityManager from '../../../hooks/useEntityManager';
+import TypedMenuItem from '../../TypedMenuItem';
 
-interface GenericSelectProps<T extends Component> {
+interface GenericSelectProps<T extends Component, S = T> {
   entity: Entity;
   componentType: ComponentType<T>;
-  componentKey: keyof T;
-  value: string;
-  options: { [name: string]: string };
+  componentKey: keyof S;
+  select?: (component: T) => S;
+  options: { [name: string]: string | number | undefined | boolean };
 }
 
-export default function GenericSelect<T extends Component>({
+export default function GenericSelect<T extends Component, S = T>({
   entity,
   componentType,
   componentKey,
-  value,
+  select,
   options,
-}: GenericSelectProps<T>) {
+}: GenericSelectProps<T, S>) {
   const em = useEntityManager();
   const c = em.getComponent(componentType, entity);
   const componentWrite = ECS.instance.entityManager.getComponent(
@@ -26,27 +27,32 @@ export default function GenericSelect<T extends Component>({
     entity,
   );
 
-  if (!c) return;
+  if (!c || !componentWrite) return;
 
-  const type = typeof c[componentKey];
+  const pick = select ?? ((c: T) => c as unknown as S);
 
-  if (!c[componentKey] || (type !== 'string' && type !== 'number')) return;
-
-  const handleSelect = (e: SelectChangeEvent) => {
-    if (!componentWrite) return null;
-
-    const v = e.target.value;
-
-    componentWrite[componentKey] = v;
-  };
+  const read = pick(c);
+  const write = pick(componentWrite);
 
   return (
-    <Select onChange={handleSelect} value={c[componentKey]} size="small">
+    <Select<string | number | boolean>
+      displayEmpty
+      onChange={(e) => {
+        if (!componentWrite) return null;
+        (write as Record<keyof S, unknown>)[componentKey] = e.target.value;
+        console.log(componentKey, '=', write[componentKey]);
+      }}
+      value={read[componentKey] as string | number | undefined | boolean}
+      size="small"
+    >
       {Object.keys(options).map((option) => {
         return (
-          <MenuItem key={option} value={option}>
-            {options[option]}
-          </MenuItem>
+          <TypedMenuItem
+            key={option}
+            value={options[option] === undefined ? '' : options[option]}
+          >
+            {option.replace('_', ' ')}
+          </TypedMenuItem>
         );
       })}
     </Select>

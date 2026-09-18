@@ -42,7 +42,12 @@ export default function AudioDropArea<T extends cAudio>({
   if (!audio) return null;
 
   return (
-    <div ref={drop} className={`drop-area ${canDrop ? 'drop-area--drag' : ''}`}>
+    <div
+      ref={(node) => {
+        drop(node);
+      }}
+      className={`drop-area ${canDrop ? 'drop-area--drag' : ''}`}
+    >
       {audio.source}
       <IconButton
         onClick={() => {

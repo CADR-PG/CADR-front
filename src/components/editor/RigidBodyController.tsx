@@ -50,7 +50,7 @@ export default function RigidBodyController({
       angularDamping={rigidBody.angularDamping}
       canSleep={rigidBody.canSleep}
       ccd={rigidBody.ccd}
-      colliders={rigidBody.colliders}
+      colliders={rigidBody.colliders === '' ? undefined : rigidBody.colliders}
       collisionGroups={rigidBody.collisionGroups}
       contactSkin={rigidBody.contactSkin}
       dominanceGroup={rigidBody.dominanceGroup}

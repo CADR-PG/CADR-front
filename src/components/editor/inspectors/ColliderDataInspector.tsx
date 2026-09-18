@@ -1,17 +1,10 @@
-import Collider, { ColliderData } from '../../../engine/components/Collider';
-import { Entity } from '../../../engine/Entity';
-import ColliderTypeInspector from './ColliderTypeInspector';
+import Colliders from '../../../data/ColliderNames';
+import Collider from '../../../engine/components/Collider';
+import InspectorProps from '../../../types/InspectorProps';
+import GenericFactory from './GenericFactory';
 import InspectorTemplate from './InspectorTemplate';
 
-interface ColliderDataInspectorProps<T extends ColliderData> {
-  entity: Entity;
-  data: T;
-}
-
-export default function ColliderDataInspector<T extends ColliderData>({
-  entity,
-  data,
-}: ColliderDataInspectorProps<T>) {
+export default function ColliderDataInspector({ entity }: InspectorProps) {
   return (
     <InspectorTemplate
       entity={entity}
@@ -21,7 +14,13 @@ export default function ColliderDataInspector<T extends ColliderData>({
       specialRender={(key) => {
         switch (key) {
           case 'type':
-            return <ColliderTypeInspector entity={entity} type={data.type} />;
+            return (
+              <GenericFactory
+                entity={entity}
+                component={Collider}
+                data={Colliders}
+              />
+            );
           default:
             break;
         }

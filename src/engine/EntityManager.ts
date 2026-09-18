@@ -2,7 +2,6 @@ import { proxy, snapshot } from 'valtio';
 import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
 import { Object3D } from 'three';
-import { RefObject } from 'react';
 
 interface NameToClass {
   [name: string]: ComponentType;

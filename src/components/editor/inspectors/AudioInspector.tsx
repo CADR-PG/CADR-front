@@ -44,7 +44,6 @@ export default function AudioInspector<T extends cAudio>({
                   componentType as ComponentType<T & cPositionalAudio>
                 }
                 componentKey={key}
-                value={audio.distanceModel}
                 options={{
                   linear: 'linear',
                   inverse: 'inverse',

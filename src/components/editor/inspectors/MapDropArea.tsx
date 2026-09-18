@@ -42,7 +42,12 @@ export default function MapDropArea<T extends MaterialData>({
   if (!material) return null;
 
   return (
-    <div ref={drop} className={`drop-area ${canDrop ? 'drop-area--drag' : ''}`}>
+    <div
+      ref={(node) => {
+        drop(node);
+      }}
+      className={`drop-area ${canDrop ? 'drop-area--drag' : ''}`}
+    >
       <img
         src={data ? normalizeUrl(data) : '/public/blank-texture.png'}
         alt=""
@@ -52,7 +57,7 @@ export default function MapDropArea<T extends MaterialData>({
       />
       <IconButton
         onClick={() => {
-          componentWrite[mapType] = '';
+          (componentWrite as Record<keyof T, unknown>)[mapType] = '';
         }}
       >
         <DeleteIcon />

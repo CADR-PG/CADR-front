@@ -1,9 +1,7 @@
 import ComponentNames from '../data/ComponentNames';
 import Collider from '../engine/components/Collider';
-import Geometry from '../engine/components/Geometry';
 import GLTF from '../engine/components/GLTF';
 import Invisible from '../engine/components/Invisible';
-import Material from '../engine/components/Material';
 import Mesh from '../engine/components/Mesh';
 import { cPositionalAudio } from '../engine/components/PositionalAudio';
 import Transform from '../engine/components/Transform';
@@ -21,7 +19,7 @@ export default function useComponents(entity: Entity) {
   const paudio = em.getComponent(cPositionalAudio, entity);
   const mesh = em.getComponent(Mesh, entity);
   const gltf = em.getComponent(GLTF, entity);
-  const [setRef, object] = useEntityRef(entity);
+  const [setRef, object] = useEntityRef();
 
   const renderComponents = () => {
     return componentKeys.map((component, index) => {

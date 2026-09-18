@@ -7,13 +7,8 @@ import { ECS } from '../../engine/ECS';
 import DeleteIcon from '@mui/icons-material/Delete';
 import GeometryInspector from './inspectors/GeometryInspector';
 import Geometry from '../../engine/components/Geometry';
-import TransformInspector from './inspectors/TransformInspector';
-import Transform from '../../engine/components/Transform';
 import MaterialInspector from './inspectors/MaterialInspector';
-import Material from '../../engine/components/Material';
-import Light from '../../engine/components/Light';
 import LightInspector from './inspectors/LightInspector';
-import Collider from '../../engine/components/Collider';
 import ColliderDataInspector from './inspectors/ColliderDataInspector';
 import ColliderInspector from './inspectors/ColliderInspector';
 import RigidBodyInspector from './inspectors/RigidBodyInspector';
@@ -78,24 +73,14 @@ function InspectorWindow() {
           />
         );
       case 'Material':
-        return (
-          <MaterialInspector
-            entity={focused}
-            data={(snap[key] as Material).data}
-          />
-        );
+        return <MaterialInspector entity={focused} />;
       case 'Light':
-        return (
-          <LightInspector entity={focused} data={(snap[key] as Light).data} />
-        );
+        return <LightInspector entity={focused} />;
       case 'Collider':
         return (
           <>
             <ColliderInspector entity={focused} />
-            <ColliderDataInspector
-              entity={focused}
-              data={(snap[key] as Collider).data}
-            />
+            <ColliderDataInspector entity={focused} />
           </>
         );
       case 'RigidBody':

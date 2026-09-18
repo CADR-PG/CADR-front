@@ -8,10 +8,10 @@ import * as THREE from 'three';
 import { useEffect, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 
-let p = new THREE.Vector3();
-let r = new THREE.Quaternion();
-let s = new THREE.Vector3();
-let e = new THREE.Euler();
+const p = new THREE.Vector3();
+const r = new THREE.Quaternion();
+const s = new THREE.Vector3();
+const e = new THREE.Euler();
 
 export default function TransformControlsController({
   entity,
@@ -27,6 +27,7 @@ export default function TransformControlsController({
     ref.current.position.fromArray(t.position);
     ref.current.rotation.fromArray(t.rotation);
     ref.current.scale.fromArray(t.scale);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useFrame((_) => {

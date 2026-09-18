@@ -1,5 +1,4 @@
 import Collider from '../../../engine/components/Collider';
-import { ECS } from '../../../engine/ECS';
 import CollisionGroups from './CollisionGroups';
 import ActiveCollisionTypesInspector from './ActiveCollisionTypesInspector';
 import InspectorTemplate from './InspectorTemplate';
@@ -7,13 +6,6 @@ import InspectorProps from '../../../types/InspectorProps';
 import GenericSelect from './GenericSelect';
 
 export default function ColliderInspector({ entity }: InspectorProps) {
-  const colliderWrite = ECS.instance.entityManager.getComponent(
-    Collider,
-    entity,
-  );
-
-  if (!colliderWrite) return;
-
   return (
     <InspectorTemplate
       entity={entity}
@@ -27,17 +19,12 @@ export default function ColliderInspector({ entity }: InspectorProps) {
           case 'data':
             return;
           case 'collisionGroups':
-            return (
-              <CollisionGroups
-                groups={colliderWrite.collisionGroups}
-                componentWrite={colliderWrite}
-              />
-            );
+            return <CollisionGroups entity={entity} component={Collider} />;
           case 'activeCollisionTypes':
             return (
               <ActiveCollisionTypesInspector
-                collisionType={colliderWrite.activeCollisionTypes}
-                componentWrite={colliderWrite}
+                entity={entity}
+                componentType={Collider}
               />
             );
           case 'frictionCombineRule':
@@ -46,7 +33,7 @@ export default function ColliderInspector({ entity }: InspectorProps) {
                 entity={entity}
                 componentType={Collider}
                 componentKey={key}
-                value={}
+                options={{ Average: 0, Min: 1, Multiply: 2, Max: 3 }}
               />
             );
           default:

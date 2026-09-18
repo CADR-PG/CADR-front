@@ -1,20 +1,15 @@
 import { useThree } from '@react-three/fiber';
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-} from 'react';
+import { ReactNode, useEffect, useMemo } from 'react';
 import { AudioListener } from 'three';
+import { AudioListenerContext } from '../../hooks/useAudioListener';
 
 interface AudioListenerProps {
   children: ReactNode;
 }
 
-const AudioListenerContext = createContext<AudioListener | null>(null);
-
-export function AudioListenerProvider({ children }: AudioListenerProps) {
+export default function AudioListenerProvider({
+  children,
+}: AudioListenerProps) {
   const { camera } = useThree();
   const listener = useMemo(() => new AudioListener(), []);
 
@@ -30,13 +25,4 @@ export function AudioListenerProvider({ children }: AudioListenerProps) {
       {children}
     </AudioListenerContext.Provider>
   );
-}
-
-export function useAudioListener(): AudioListener {
-  const listener = useContext(AudioListenerContext);
-  if (!listener)
-    throw new Error(
-      'useAudioListener has to be inside of AudioListenerProvider',
-    );
-  return listener;
 }

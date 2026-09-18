@@ -1,25 +1,16 @@
 import Material, { MaterialData } from '../../../engine/components/Material';
-import { Entity } from '../../../engine/Entity';
 import { ECS } from '../../../engine/ECS';
 import ColorPicker from './ColorPicker';
-import EnvMapRotation from './EnvMapRotation';
-import Wireframe from './Wireframe';
-import MaterialType from './MaterialType';
-import WireframeType from '../../../types/WireframeType';
-import Combine from './Combine';
-import { Combine as CombineType } from 'three';
 import MapDropArea from './MapDropArea';
 import InspectorTemplate from './InspectorTemplate';
-
-interface MaterialInspectorProps<T extends MaterialData> {
-  entity: Entity;
-  data: T;
-}
+import GenericSelect from './GenericSelect';
+import GenericFactory from './GenericFactory';
+import Materials from '../../../data/MaterialNames';
+import InspectorProps from '../../../types/InspectorProps';
 
 export default function MaterialInspector<T extends MaterialData>({
   entity,
-  data,
-}: MaterialInspectorProps<T>) {
+}: InspectorProps) {
   const materialWrite = ECS.instance.entityManager.getComponent(
     Material,
     entity,
@@ -34,37 +25,44 @@ export default function MaterialInspector<T extends MaterialData>({
       specialRender={(key) => {
         switch (key) {
           case 'type':
-            return <MaterialType entity={entity} type={data.type} />;
+            return (
+              <GenericFactory
+                entity={entity}
+                component={Material}
+                data={Materials}
+              />
+            );
           case 'combine':
-            return <Combine entity={entity} value={data[key] as CombineType} />;
+            return (
+              <GenericSelect
+                entity={entity}
+                componentType={Material}
+                componentKey={key}
+                select={(c) => c.data as T}
+                options={{
+                  Multiply_operation: 0,
+                  Mix_operation: 1,
+                  Add_operation: 2,
+                }}
+              />
+            );
           case 'color':
             return (
-              materialWrite && (
-                <ColorPicker
-                  componentColor={'color' in data ? (data.color as number) : 0}
-                  data={materialWrite.data}
-                  field={key as keyof typeof materialWrite.data}
-                />
-              )
-            );
-          case 'envMapRotation':
-            return (
-              <EnvMapRotation
+              <ColorPicker
                 entity={entity}
-                envMapRotation={
-                  'envMapRotation' in data
-                    ? (data.envMapRotation as [number, number, number])
-                    : [0, 0, 0]
-                }
+                component={Material}
+                field={key as keyof MaterialData}
               />
             );
           case 'wireframeLinecap':
           case 'wireframeLinejoin':
             return (
-              <Wireframe
+              <GenericSelect
                 entity={entity}
-                wireframe={data[key] as WireframeType}
-                wireframeKey={key}
+                componentType={Material}
+                componentKey={key}
+                select={(c) => c.data as T}
+                options={{ Round: 'round', Bevel: 'bevel', Miter: 'miter' }}
               />
             );
           case 'alphaMap':
@@ -93,7 +91,7 @@ export default function MaterialInspector<T extends MaterialData>({
             return (
               <MapDropArea
                 entity={entity}
-                componentWrite={materialWrite.data}
+                componentWrite={materialWrite.data as T}
                 mapType={key}
               />
             );

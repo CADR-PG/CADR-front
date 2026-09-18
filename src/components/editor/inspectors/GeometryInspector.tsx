@@ -4,8 +4,9 @@ import Geometry, {
 } from '../../../engine/components/Geometry';
 import { Entity } from '../../../engine/Entity';
 import Points from './Points';
-import Type from './Type';
 import InspectorTemplate from './InspectorTemplate';
+import Objects from '../../../data/ObjectNames';
+import GenericFactory from './GenericFactory';
 
 interface GeometryInspectorProps<T extends GeometryData> {
   entity: Entity;
@@ -25,7 +26,13 @@ export default function GeometryInspector<T extends GeometryData>({
       specialRender={(key) => {
         switch (key) {
           case 'type':
-            return <Type entity={entity} type={data.type} />;
+            return (
+              <GenericFactory
+                entity={entity}
+                component={Geometry}
+                data={Objects}
+              />
+            );
           case 'points':
             return (
               <Points

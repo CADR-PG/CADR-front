@@ -1,6 +1,6 @@
 import useDownloadFile from './useDownloadFile';
 
-export default function useDownloadTextures(params: any | undefined) {
+export default function useDownloadTextures(params: unknown | undefined) {
   const { data: alphaMap } = useDownloadFile(params?.alphaMap);
   const { data: aoMap } = useDownloadFile(params?.aoMap);
   const { data: envMap } = useDownloadFile(params?.envMap);

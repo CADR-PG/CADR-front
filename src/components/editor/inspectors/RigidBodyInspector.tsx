@@ -1,20 +1,11 @@
-import { ECS } from '../../../engine/ECS';
 import RBody from '../../../engine/components/RigidBody';
-import useEntityManager from '../../../hooks/useEntityManager';
-import Colliders from './Colliders';
 import ActiveCollisionTypesInspector from './ActiveCollisionTypesInspector';
-import RigidBodyType from './RigidBodyType';
 import CollisionGroups from './CollisionGroups';
 import InspectorTemplate from './InspectorTemplate';
 import InspectorProps from '../../../types/InspectorProps';
+import GenericSelect from './GenericSelect';
 
 export default function RigidBodyInspector({ entity }: InspectorProps) {
-  const em = useEntityManager();
-  const rigidBody = em.getComponent(RBody, entity);
-  const rigidBodyWrite = ECS.instance.entityManager.getComponent(RBody, entity);
-
-  if (!rigidBodyWrite || !rigidBody) return;
-
   return (
     <InspectorTemplate
       entity={entity}
@@ -24,23 +15,44 @@ export default function RigidBodyInspector({ entity }: InspectorProps) {
           case 'name':
             return;
           case 'colliders':
-            return <Colliders entity={entity} type={rigidBody.colliders} />;
+            return (
+              <GenericSelect
+                entity={entity}
+                componentType={RBody}
+                componentKey={key}
+                options={{
+                  Disabled: false,
+                  Automatic: undefined,
+                  Ball: 'ball',
+                  Cuboid: 'cuboid',
+                  Hull: 'hull',
+                  Trimesh: 'trimesh',
+                }}
+              />
+            );
           case 'activeCollisionTypes':
             return (
               <ActiveCollisionTypesInspector
-                collisionType={rigidBody.activeCollisionTypes}
-                componentWrite={rigidBodyWrite}
+                entity={entity}
+                componentType={RBody}
               />
             );
           case 'type':
-            return <RigidBodyType entity={entity} type={rigidBody.type} />;
-          case 'collisionGroups':
             return (
-              <CollisionGroups
-                groups={rigidBody.collisionGroups}
-                componentWrite={rigidBodyWrite}
+              <GenericSelect
+                entity={entity}
+                componentType={RBody}
+                componentKey={key}
+                options={{
+                  Fixed: 'fixed',
+                  Dynamic: 'dynamic',
+                  Kinematic_position: 'kinematicPosition',
+                  Kinematic_velocity: 'kinematicVelocity',
+                }}
               />
             );
+          case 'collisionGroups':
+            return <CollisionGroups entity={entity} component={RBody} />;
           default:
             break;
         }

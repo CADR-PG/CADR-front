@@ -12,12 +12,12 @@ import StartStopBtnToolbar from './StartStopBtnToolbar';
 import { RenderSystem } from '../../engine/systems/RenderSystem';
 import { RectAreaLightTexturesLib } from 'three/addons/lights/RectAreaLightTexturesLib.js';
 import { Physics } from '@react-three/rapier';
-import { AudioListenerProvider } from '../../hooks/useAudioListener';
 import {
   Selection,
   EffectComposer,
   Outline,
 } from '@react-three/postprocessing';
+import AudioListenerProvider from './AudioListenerProvider';
 
 function CanvasController() {
   const { running, focus } = useEditorContext();

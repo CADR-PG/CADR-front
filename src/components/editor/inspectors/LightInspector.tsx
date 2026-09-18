@@ -1,23 +1,13 @@
 import Light, { LightData } from '../../../engine/components/Light';
-import { ECS } from '../../../engine/ECS';
-import { Entity } from '../../../engine/Entity';
 import ColorPicker from './ColorPicker';
-import LightType from './LightType';
 import InspectorTemplate from './InspectorTemplate';
-
-interface LightInspectorProps<T extends LightData> {
-  entity: Entity;
-  data: T;
-}
+import GenericFactory from './GenericFactory';
+import Lights from '../../../data/LightNames';
+import InspectorProps from '../../../types/InspectorProps';
 
 export default function LightInspector<T extends LightData>({
   entity,
-  data,
-}: LightInspectorProps<T>) {
-  const lightWrite = ECS.instance.entityManager.getComponent(Light, entity);
-
-  if (!lightWrite) return null;
-
+}: InspectorProps) {
   return (
     <InspectorTemplate
       entity={entity}
@@ -27,19 +17,18 @@ export default function LightInspector<T extends LightData>({
       specialRender={(key) => {
         switch (key) {
           case 'type':
-            return <LightType entity={entity} type={data.type} />;
+            return (
+              <GenericFactory entity={entity} component={Light} data={Lights} />
+            );
           case 'color':
           case 'groundColor':
           case 'skyColor':
             return (
-              lightWrite.data && (
-                <ColorPicker
-                  componentColor={data[key] as number}
-                  data={lightWrite.data}
-                  // NOTE(m1k53r): xd
-                  field={key as keyof typeof lightWrite.data}
-                />
-              )
+              <ColorPicker
+                entity={entity}
+                component={Light}
+                field={key as keyof LightData}
+              />
             );
         }
       }}

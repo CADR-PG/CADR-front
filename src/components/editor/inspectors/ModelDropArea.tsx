@@ -34,7 +34,12 @@ export default function ModelDropArea({ entity }: ModelDropAreaProps) {
   if (!gltf) return null;
 
   return (
-    <div ref={drop} className={`drop-area ${canDrop ? 'drop-area--drag' : ''}`}>
+    <div
+      ref={(node) => {
+        drop(node);
+      }}
+      className={`drop-area ${canDrop ? 'drop-area--drag' : ''}`}
+    >
       {gltf.source}
       <IconButton
         onClick={() => {
