@@ -6,6 +6,7 @@ import { ECS } from '../../../engine/ECS';
 import NumberField from '../../NumberField';
 import { Checkbox, TextField } from '@mui/material';
 import InspectorKey from './InspectorKey';
+import { Vec3 } from '../../../engine/components/Transform';
 
 interface InspectorTemplateProps<T extends Component, S = T> {
   entity: Entity;
@@ -40,11 +41,55 @@ export default function InspectorTemplate<T extends Component, S = T>({
     (write as Record<keyof S, unknown>)[key] = value;
   };
 
+  const setVecField = (key: keyof S, value: number, index: 0 | 1 | 2) => {
+    (write as Record<keyof S, Vec3>)[key][index] = value;
+  };
+
+  const isVec3 = (key: unknown): key is Vec3 => {
+    return (
+      Array.isArray(key) &&
+      key.length === 3 &&
+      typeof key[0] === 'number' &&
+      typeof key[1] === 'number' &&
+      typeof key[2] === 'number'
+    );
+  };
+
   const renderSwitch = (key: keyof S) => {
     const special = specialRender?.(key);
     if (special !== undefined) return special;
 
     const value = read[key];
+
+    if (isVec3(value)) {
+      return (
+        <>
+          <div className="inspector-input-columns">
+            <NumberField
+              className="inspector-input-columns-column"
+              value={value[0]}
+              onValueChange={(value) => setVecField(key, value!, 0)}
+              size="small"
+              label="x"
+            />
+            <NumberField
+              className="inspector-input-columns-column"
+              value={value[1]}
+              onValueChange={(value) => setVecField(key, value!, 1)}
+              size="small"
+              label="y"
+            />
+            <NumberField
+              className="inspector-input-columns-column"
+              value={value[2]}
+              onValueChange={(value) => setVecField(key, value!, 2)}
+              size="small"
+              label="z"
+            />
+          </div>
+        </>
+      );
+    }
 
     if (typeof value === 'number') {
       return (

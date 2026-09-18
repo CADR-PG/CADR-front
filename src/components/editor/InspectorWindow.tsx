@@ -77,13 +77,6 @@ function InspectorWindow() {
             data={(snap[key] as Geometry).data}
           />
         );
-      case 'Transform':
-        return (
-          <TransformInspector
-            entity={focused}
-            component={snap[key] as Transform}
-          />
-        );
       case 'Material':
         return (
           <MaterialInspector
@@ -98,7 +91,7 @@ function InspectorWindow() {
       case 'Collider':
         return (
           <>
-            <ColliderInspector entity={focused} data={snap[key] as Collider} />
+            <ColliderInspector entity={focused} />
             <ColliderDataInspector
               entity={focused}
               data={(snap[key] as Collider).data}
