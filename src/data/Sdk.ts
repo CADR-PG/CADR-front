@@ -1,3 +1,4 @@
+import { Component } from '@/engine/Component';
 import cAudio from '@/engine/components/Audio';
 import Collider from '@/engine/components/Collider';
 import GLTF from '@/engine/components/GLTF';
@@ -9,6 +10,7 @@ import Name from '@/engine/components/Name';
 import { cPositionalAudio } from '@/engine/components/PositionalAudio';
 import RBody from '@/engine/components/RigidBody';
 import Transform from '@/engine/components/Transform';
+import UserComponent from '@/engine/components/UserComponent';
 import { ECS } from '@/engine/ECS';
 import { EntityManager } from '@/engine/EntityManager';
 import { EventBus } from '@/engine/EventBus';
@@ -30,4 +32,6 @@ export const sdk = {
   Light,
   Material,
   RBody,
+  Component,
+  UserComponent,
 };

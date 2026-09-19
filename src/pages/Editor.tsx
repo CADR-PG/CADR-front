@@ -13,6 +13,7 @@ import { ECS } from '../engine/ECS';
 import EditingMode from '../types/EditingMode';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { sdk } from '@/data/Sdk';
 
 function Editor() {
   const [focused, focus] = useState<string | null>(null);
@@ -24,14 +25,18 @@ function Editor() {
   const [editingMode, selectMode] = useState<EditingMode>('translate');
 
   useEffect(() => {
-    if (data) {
-      // TODO: xdd
-      const json = data.data.data;
-      ECS.instance.entityManager.setScene(json);
+    async function load() {
+      if (data) {
+        // TODO: xdd
+        const json = data.data.data;
+        await ECS.instance.entityManager.loadComponents(json, uuid!, sdk);
+        ECS.instance.entityManager.setScene(json);
+      }
+      if (isError) {
+        ECS.instance.entityManager.setScene({});
+      }
     }
-    if (isError) {
-      ECS.instance.entityManager.setScene({});
-    }
+    load();
   }, [data, isError]);
 
   const startstop = (newState: boolean) => {
