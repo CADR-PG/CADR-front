@@ -18,6 +18,7 @@ import {
   Outline,
 } from '@react-three/postprocessing';
 import AudioListenerProvider from './AudioListenerProvider';
+import ScriptSystem from '../../engine/systems/ScriptSystem';
 
 function CanvasController() {
   const { running, focus } = useEditorContext();
@@ -35,7 +36,7 @@ function CanvasController() {
         shadows
         frameloop={running ? 'always' : 'demand'}
       >
-        <Physics colliders="hull" paused={!running} debug={!running}>
+        <Physics colliders="hull" paused={!running} debug>
           <AudioListenerProvider>
             <OrbitControls
               makeDefault
@@ -55,6 +56,7 @@ function CanvasController() {
                 />
               </GizmoHelper>
             )}
+            {running && <ScriptSystem />}
 
             <Selection>
               <EffectComposer
