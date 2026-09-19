@@ -3,6 +3,7 @@ import { Entity } from './Entity';
 import { System } from './System';
 import { EntityManager } from './EntityManager';
 import { proxy, snapshot } from 'valtio';
+import { RootState } from '@react-three/fiber';
 
 // Glue class that contains the whole logic of ECS.
 // TODO: Maybe add unit tests for this?
@@ -34,8 +35,12 @@ export class ECS {
     this.systems.push(system);
   }
 
+  clearSystems() {
+    this.systems = [];
+  }
+
   // API
-  update() {
+  update(state: RootState, delta: number) {
     // TODO: Most likely a performance hit. Another way of doing this
     // is to specify an array of entities for each system beforehand
     // and updating it once entities change their components.
@@ -45,7 +50,7 @@ export class ECS {
     // from the beginning but go biased by tutorials lol.
     for (const system of this.systems) {
       // When we find all relevant entities, run the system.
-      system.update(this.query(system.components));
+      system.update(this.query(system.components), state, delta);
     }
   }
 
