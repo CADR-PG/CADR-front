@@ -8,9 +8,9 @@ import { sdk } from '@/data/Sdk';
 
 export default function ScriptSystem() {
   const { assets } = useAssets();
-  const { data } = useDownloadFile(assets!.directories![0].files![0].id);
+  const dirs = assets!.directories!.filter((dir) => dir.name === 'systems');
+  const { data } = useDownloadFile(dirs[0].files![0].id);
   console.log(assets!.directories![0].files);
-  // console.log(data!.data.downloadUrl);
   useEffect(() => {
     async function load() {
       ECS.instance.clearSystems();

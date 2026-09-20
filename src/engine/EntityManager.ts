@@ -143,19 +143,23 @@ export class EntityManager {
     return instance.name in this.entities[entity];
   }
 
-  hasAll(components: Component[], entity: Entity): boolean {
-    // TODO: I think this gets too complicated idk
-    const c = components.map(
-      (component) => this.mapNameToClass[component.name],
-    );
-
-    for (const component of c) {
-      if (!this.has(component, entity)) {
+  // PERF: cache components for all systems
+  hasAll(components: (Component | string)[], entity: Entity): boolean {
+    for (const component of components) {
+      if (typeof component === 'string') {
+        if (!this.is(component, entity)) {
+          return false;
+        }
+      } else if (!this.has(this.mapNameToClass[component.name], entity)) {
         return false;
       }
     }
 
     return true;
+  }
+
+  is(component: string, entity: Entity) {
+    return component in this.entities[entity];
   }
 
   copyScene() {

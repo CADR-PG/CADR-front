@@ -54,7 +54,11 @@ export class ECS {
     }
   }
 
-  query(components: Component[]) {
+  // Components can be either of type Component or string. String, because user
+  // defined components can't be referenced as Component inside user scripts.
+  // Current SDK doesn't allow for exporting those components.
+  // TODO: Maybe export this.systems and convert it into a map?
+  query(components: (Component | string)[]) {
     const matchingEntities: Entity[] = [];
 
     // When an entity satisfies a component condition for particular system,

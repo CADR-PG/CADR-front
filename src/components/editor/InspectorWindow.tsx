@@ -60,12 +60,13 @@ function InspectorWindow() {
         const instance = new constructor();
         instance.fileId = file;
         ECS.instance.entityManager.addComponent(instance, focused!);
+        setFile('');
       } catch (e) {
         console.error(e);
       }
     }
     load();
-  }, [data]);
+  }, [data, file]);
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(
