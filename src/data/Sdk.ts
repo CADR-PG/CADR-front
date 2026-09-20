@@ -15,6 +15,8 @@ import { ECS } from '@/engine/ECS';
 import { EntityManager } from '@/engine/EntityManager';
 import { EventBus } from '@/engine/EventBus';
 import { System } from '@/engine/System';
+import useEntityManager from '@/hooks/useEntityManager';
+import React from 'react';
 
 export const sdk = {
   ECS,
@@ -34,4 +36,6 @@ export const sdk = {
   RBody,
   Component,
   UserComponent,
+  React,
+  useEntityManager,
 };
