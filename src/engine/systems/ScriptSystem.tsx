@@ -1,6 +1,6 @@
 import { useFrame } from '@react-three/fiber';
 import { ECS } from '../ECS';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useAssets from '@/stores/useAssets';
 import { normalizeUrl } from '../components/helpers/material';
 import { sdk } from '@/data/Sdk';
@@ -10,6 +10,8 @@ import { requestFileDownload } from '@/api/client';
 export default function ScriptSystem() {
   const { assets } = useAssets();
   const { uuid } = useParams<{ uuid: string }>();
+  const [initialized, initialize] = useState(false);
+  const [started, start] = useState(false);
 
   useEffect(() => {
     if (!uuid) return;
@@ -41,6 +43,8 @@ export default function ScriptSystem() {
           console.error(e);
         }
       }
+
+      initialize(true);
     }
 
     load();
@@ -49,6 +53,13 @@ export default function ScriptSystem() {
   }, [uuid, assets]);
 
   useFrame((state, delta) => {
+    if (!initialized) return;
+
+    if (!started) {
+      ECS.instance.start();
+      start(true);
+    }
+
     ECS.instance.update(state, delta);
   });
 
