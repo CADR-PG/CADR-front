@@ -29,6 +29,7 @@ function Editor() {
       if (data) {
         // TODO: xdd
         const json = data.data.data;
+        ECS.instance.systems = [];
         await ECS.instance.entityManager.loadComponents(json, uuid!, sdk);
         ECS.instance.entityManager.setScene(json);
       }
