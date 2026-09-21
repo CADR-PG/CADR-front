@@ -73,7 +73,7 @@ export class EntityManager {
             );
             init(sdk);
           } catch (e) {
-            console.error('File is no longer valid');
+            console.error('File is no longer valid', e);
             delete entities[entity][component];
           }
         }

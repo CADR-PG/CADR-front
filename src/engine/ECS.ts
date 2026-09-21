@@ -54,6 +54,12 @@ export class ECS {
     }
   }
 
+  start() {
+    for (const system of this.systems) {
+      system.start();
+    }
+  }
+
   // Components can be either of type Component or string. String, because user
   // defined components can't be referenced as Component inside user scripts.
   // Current SDK doesn't allow for exporting those components.
