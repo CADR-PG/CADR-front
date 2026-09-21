@@ -1,13 +1,12 @@
-import { useFrame } from '@react-three/fiber';
-import { ECS } from '../ECS';
-import { useEffect } from 'react';
 import useAssets from '@/stores/useAssets';
+import { ComponentType, useEffect, useState } from 'react';
 import { normalizeUrl } from '../components/helpers/material';
 import { sdk } from '@/data/Sdk';
-import { useParams } from 'react-router-dom';
 import { requestFileDownload } from '@/api/client';
+import { useParams } from 'react-router-dom';
 
-export default function ScriptSystem() {
+export default function UISystem() {
+  const [uis, setUis] = useState<ComponentType[]>([]);
   const { assets } = useAssets();
   const { uuid } = useParams<{ uuid: string }>();
 
@@ -15,32 +14,34 @@ export default function ScriptSystem() {
     if (!uuid) return;
 
     const files = assets?.directories?.find(
-      (dir) => dir.name.toLowerCase() === 'systems',
+      (dir) => dir.name.toLowerCase() === 'templates',
     )?.files;
+
     if (!files?.length) return;
 
     const controller = new AbortController();
     const { signal } = controller;
 
     async function load() {
-      ECS.instance.clearSystems();
-
+      const loaded: ComponentType[] = [];
       for (const file of files!) {
         try {
-          const data = await requestFileDownload(uuid!, file.id, { signal });
+          const data = await requestFileDownload(uuid!, file.id);
           if (signal.aborted) return;
 
-          const { default: init } = await import(
+          const { default: ui } = await import(
             /* @vite-ignore */ normalizeUrl(data)
           );
           if (signal.aborted) return;
 
-          init(sdk);
+          loaded.push(ui(sdk));
         } catch (e) {
           if (signal.aborted) return;
           console.error(e);
         }
       }
+
+      setUis(loaded);
     }
 
     load();
@@ -48,9 +49,5 @@ export default function ScriptSystem() {
     return () => controller.abort();
   }, [uuid, assets]);
 
-  useFrame((state, delta) => {
-    ECS.instance.update(state, delta);
-  });
-
-  return null;
+  return uis ? uis.map((Ui, i) => <Ui key={i} />) : null;
 }

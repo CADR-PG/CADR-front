@@ -16,6 +16,8 @@ import { EntityManager } from '@/engine/EntityManager';
 import { EventBus } from '@/engine/EventBus';
 import { System } from '@/engine/System';
 import useEntityManager from '@/hooks/useEntityManager';
+import Controls from '@/types/Controls';
+import { useKeyboardControls } from '@react-three/drei';
 import React from 'react';
 
 export const sdk = {
@@ -38,4 +40,6 @@ export const sdk = {
   UserComponent,
   React,
   useEntityManager,
+  useKeyboardControls,
+  Controls,
 };

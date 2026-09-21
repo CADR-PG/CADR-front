@@ -19,47 +19,18 @@ import {
 } from '@react-three/postprocessing';
 import AudioListenerProvider from './AudioListenerProvider';
 import ScriptSystem from '../../engine/systems/ScriptSystem';
-import useAssets from '@/stores/useAssets';
-import useDownloadFile from '@/hooks/useDownloadFile';
-import { ReactNode, useEffect, useState } from 'react';
-import { normalizeUrl } from '@/engine/components/helpers/material';
-import { sdk } from '@/data/Sdk';
+import UISystem from '@/engine/systems/UISystem';
 
 function CanvasController() {
   const { running, focus } = useEditorContext();
-  const [Ui, setUi] = useState<() => ReactNode>(null!);
   useEditorKeys();
   RectAreaLightTexturesLib.init();
-  const { assets } = useAssets();
-  const dirs = assets
-    ? assets!.directories!.filter((dir) => dir.name === 'templates')
-    : null;
-  const { data } = useDownloadFile(
-    dirs && dirs[0].files[0] ? dirs[0].files[0].id : '',
-  );
-  useEffect(() => {
-    async function load() {
-      if (!data) return;
-
-      try {
-        const { default: ui } = await import(
-          /* @vite-ignore */ normalizeUrl(data)
-        );
-        const Component = ui(sdk);
-        setUi(() => Component);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    load();
-  }, [data]);
 
   return (
     <div className="canvas-container">
+      {running && <UISystem />}
       {!running && <ToolbarComponent />}
       <StartStopBtnToolbar />
-      {running && Ui && <Ui />}
       <Canvas
         className="canvas"
         onPointerMissed={() => focus(null)}
