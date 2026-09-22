@@ -202,9 +202,9 @@ function InspectorWindow() {
             ref={(node) => {
               drop(node);
             }}
-            className={`drop-area ${canDrop ? 'drop-area--drag' : ''}`}
+            className={`component-area drop-area ${canDrop ? 'drop-area--drag' : ''}`}
           >
-            Drop your script here
+            ...or drop your script here
           </div>
         </>
       )}
