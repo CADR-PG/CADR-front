@@ -1,50 +1,29 @@
-import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
-import { ActiveCollisionTypes } from '../../../engine/components/Collider';
+import GenericSelect from './GenericSelect';
+import { Component, ComponentType } from '../../../engine/Component';
+import InspectorProps from '../../../types/InspectorProps';
 
-interface ActiveCollisionTypesComponent {
-  activeCollisionTypes: number;
+interface ActiveCollisionTypesInspectorProps<T extends Component> {
+  componentType: ComponentType<T>;
 }
-
-interface CollidersProps<T extends ActiveCollisionTypesComponent> {
-  collisionType: ActiveCollisionTypes;
-  componentWrite: T;
-}
-
-export default function ActiveCollisionTypesInspector<
-  T extends ActiveCollisionTypesComponent,
->({ collisionType, componentWrite }: CollidersProps<T>) {
-  const handleSelect = (e: SelectChangeEvent) => {
-    componentWrite.activeCollisionTypes = Number(e.target.value);
-  };
-
+export default function ActiveCollisionTypesInspector<T extends Component>({
+  entity,
+  componentType,
+}: InspectorProps & ActiveCollisionTypesInspectorProps<T>) {
   return (
-    <Select
-      onChange={handleSelect}
-      value={collisionType.toString()}
-      size="small"
-    >
-      <MenuItem value={ActiveCollisionTypes.ALL.toString()}>All</MenuItem>
-      <MenuItem value={ActiveCollisionTypes.DEFAULT.toString()}>
-        Default
-      </MenuItem>
-      <MenuItem value={ActiveCollisionTypes.DYNAMIC_DYNAMIC.toString()}>
-        Dynamic-Dynamic
-      </MenuItem>
-      <MenuItem value={ActiveCollisionTypes.DYNAMIC_FIXED.toString()}>
-        Dynamic-Fixed
-      </MenuItem>
-      <MenuItem value={ActiveCollisionTypes.DYNAMIC_KINEMATIC.toString()}>
-        Dynamic-Kinematic
-      </MenuItem>
-      <MenuItem value={ActiveCollisionTypes.FIXED_FIXED.toString()}>
-        Fixed-Fixed
-      </MenuItem>
-      <MenuItem value={ActiveCollisionTypes.KINEMATIC_FIXED.toString()}>
-        Kinematic-Fixed
-      </MenuItem>
-      <MenuItem value={ActiveCollisionTypes.KINEMATIC_KINEMATIC.toString()}>
-        Kinematic-Kinematic
-      </MenuItem>
-    </Select>
+    <GenericSelect
+      entity={entity}
+      componentType={componentType}
+      componentKey={'activeCollisionTypes' as keyof T}
+      options={{
+        All: 60943,
+        Default: 15,
+        'Dynamic-dynamic': 1,
+        'Dynamic-fixed': 2,
+        'Dynamic-kinematic': 12,
+        'Fixed-fixed': 32,
+        'Kinematic-fixed': 8704,
+        'Kinematic-kinematic': 52224,
+      }}
+    />
   );
 }

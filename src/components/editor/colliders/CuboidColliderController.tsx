@@ -1,41 +1,20 @@
 import { CuboidCollider } from '@react-three/rapier';
-import Collider from '../../../engine/components/Collider';
 import Cuboid from '../../../engine/components/colliders/Cuboid';
-import useEntityManager from '../../../hooks/useEntityManager';
 import ControllerProps from '../../../types/ControllerProps';
 import physicsHandlers from '../../../engine/handlers/Physics';
-import ColliderControllerProps from '../../../types/ColliderControllerProps';
+import usePhysics from '../../../hooks/usePhysics';
 
-export default function CuboidColliderController({
-  entity,
-}: ControllerProps & ColliderControllerProps) {
-  const em = useEntityManager();
-  const colliderData = em.getComponent(Collider, entity);
-  let params;
-
-  if (colliderData) {
-    params = colliderData.data as Cuboid;
-  }
-
+export default function CuboidColliderController({ entity }: ControllerProps) {
+  const { params, args } = usePhysics<Cuboid>(entity);
   return (
-    colliderData &&
     params && (
       <CuboidCollider
         {...physicsHandlers}
-        name={entity}
-        // should collider and mesh use the sasme transformation component?
-        position={colliderData.position}
-        rotation={colliderData.rotation}
-        scale={colliderData.scale}
-        activeCollisionTypes={colliderData.activeCollisionTypes}
-        collisionGroups={colliderData.collisionGroups}
-        contactSkin={colliderData.contactSkin}
-        friction={colliderData.friction}
-        frictionCombineRule={colliderData.frictionCombineRule}
-        mass={colliderData.mass}
-        restitution={colliderData.restitution}
-        sensor={colliderData.sensor}
-        args={[params.halfWidth, params.halfHeight, params.halfDepth]}
+        {...params}
+        args={[args.halfWidth, args.halfHeight, args.halfDepth]}
+        // W/A because it seems that rapier doesn't request a new frame
+        // on prop changes. Might change that later idk
+        key={`${args.halfWidth} ${args.halfHeight} ${args.halfDepth}`}
       />
     )
   );

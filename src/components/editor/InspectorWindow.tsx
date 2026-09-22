@@ -1,23 +1,22 @@
 import { useState } from 'react';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEntityManager from '../../hooks/useEntityManager';
-import GenericInspector from './inspectors/GenericInspector';
 import AddIcon from '@mui/icons-material/Add';
 import { Button, IconButton, Menu, MenuItem } from '@mui/material';
 import { ECS } from '../../engine/ECS';
 import DeleteIcon from '@mui/icons-material/Delete';
 import GeometryInspector from './inspectors/GeometryInspector';
 import Geometry from '../../engine/components/Geometry';
-import TransformInspector from './inspectors/TransformInspector';
-import Transform from '../../engine/components/Transform';
 import MaterialInspector from './inspectors/MaterialInspector';
-import Material from '../../engine/components/Material';
-import Light from '../../engine/components/Light';
 import LightInspector from './inspectors/LightInspector';
-import Collider from '../../engine/components/Collider';
 import ColliderDataInspector from './inspectors/ColliderDataInspector';
 import ColliderInspector from './inspectors/ColliderInspector';
 import RigidBodyInspector from './inspectors/RigidBodyInspector';
+import AudioInspector from './inspectors/AudioInspector';
+import cAudio from '../../engine/components/Audio';
+import { cPositionalAudio } from '../../engine/components/PositionalAudio';
+import InspectorTemplate from './inspectors/InspectorTemplate';
+import GLTFInspector from './inspectors/GLTFInspector';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -25,7 +24,7 @@ function InspectorWindow() {
     mouseY: number;
   } | null>(null);
   const open = Boolean(anchorEl);
-  const { focused } = useEditorContext();
+  const { focused, dragged } = useEditorContext();
   const em = useEntityManager();
   const snap = em.getComponents(focused);
   const nameMap = em.mapNameToClass;
@@ -73,58 +72,63 @@ function InspectorWindow() {
             data={(snap[key] as Geometry).data}
           />
         );
-      case 'Transform':
-        return (
-          <TransformInspector
-            entity={focused}
-            component={snap[key] as Transform}
-          />
-        );
       case 'Material':
-        return (
-          <MaterialInspector
-            entity={focused}
-            data={(snap[key] as Material).data}
-          />
-        );
+        return <MaterialInspector entity={focused} />;
       case 'Light':
-        return (
-          <LightInspector entity={focused} data={(snap[key] as Light).data} />
-        );
+        return <LightInspector entity={focused} />;
       case 'Collider':
         return (
           <>
-            <ColliderInspector entity={focused} data={snap[key] as Collider} />
-            <ColliderDataInspector
-              entity={focused}
-              data={(snap[key] as Collider).data}
-            />
+            <ColliderInspector entity={focused} />
+            <ColliderDataInspector entity={focused} />
           </>
         );
       case 'RigidBody':
         return <RigidBodyInspector entity={focused} />;
+      case 'Audio':
+        return <AudioInspector entity={focused} componentType={cAudio} />;
+      case 'PositionalAudio':
+        return (
+          <AudioInspector entity={focused} componentType={cPositionalAudio} />
+        );
+      case 'GLTF':
+        return <GLTFInspector entity={focused} />;
       default:
-        return <GenericInspector entity={focused} component={snap[key]} />;
+        return (
+          <InspectorTemplate
+            entity={focused}
+            componentType={
+              ECS.instance.entityManager.mapNameToClass[snap[key].name]
+            }
+          />
+        );
     }
   };
 
   return (
     <div className="inspector-window">
       <h3>Inspector</h3>
-      {focused && (
+      {focused && !dragged && (
         <>
           {Object.keys(snap).map((key) => {
             return (
               <div key={key}>
-                <div className="component-header">
+                <div
+                  className="component-header"
+                  style={
+                    key === 'Transform' ? { paddingBottom: '18px' } : undefined
+                  }
+                >
                   <b>{key}</b>
-                  <IconButton
-                    size="small"
-                    className="component-header-close-btn"
-                    onClick={() => handleDelete(key)}
-                  >
-                    <DeleteIcon></DeleteIcon>
-                  </IconButton>
+                  {key !== 'Transform' && (
+                    <IconButton
+                      size="small"
+                      className="component-header-close-btn"
+                      onClick={() => handleDelete(key)}
+                    >
+                      <DeleteIcon></DeleteIcon>
+                    </IconButton>
+                  )}
                 </div>
                 <div className="inspector-panel">{renderSwitch(key)}</div>
                 <hr />

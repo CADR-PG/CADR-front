@@ -12,6 +12,8 @@ import type { AssetsDirectory, AssetsFile } from '../../types/Assets';
 import styles from '../../css/2-components/AssetsBrowser.module.scss';
 import { AssetsContext, useAssetsContext } from '../../data/AssetsContext';
 import { formatFileSize } from '../../utils/formatFileSize';
+import { useDrag } from 'react-dnd';
+import { DndTypes } from '../../types/DndTypes';
 
 interface FileItemProps {
   file: AssetsFile;
@@ -27,10 +29,17 @@ interface SelectedDirectory {
 }
 
 function FileItem({ file }: FileItemProps) {
+  const [, drag] = useDrag(() => ({
+    type: DndTypes.FILE,
+    item: file,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
   const deleteFile = useDeleteFile();
 
   return (
-    <div className={styles.row}>
+    <div ref={drag} className={styles.row}>
       <span className={styles.iconSpacer} />
       <span className={styles.fileName}>
         <InsertDriveFileIcon fontSize="small" />
@@ -131,6 +140,40 @@ export default function AssetsBrowser() {
           onSelect: (id, name) => setSelectedDirectory({ id, name }),
         }}
       >
+        <div className={styles.toolbar}>
+          <div className={styles.toolbarRow}>
+            <TextField
+              size="small"
+              value={newDirName}
+              onChange={(e) => setNewDirName(e.target.value)}
+              placeholder="Directory name"
+            />
+            <Button
+              size="small"
+              onClick={handleCreate}
+              disabled={createDir.isPending}
+            >
+              + Directory
+            </Button>
+          </div>
+
+          {/* <div className={styles.toolbarRow}> */}
+          {/*   <span className={styles.uploadLabel}> */}
+          {/*     Upload to: <FolderIcon fontSize="small" />{' '} */}
+          {/*     {selectedDirectory.name} */}
+          {/*   </span> */}
+          {/* </div> */}
+          <div className={styles.toolbarRow}>
+            <Button
+              component="label"
+              size="small"
+              disabled={uploadFile.isPending}
+            >
+              {uploadFile.isPending ? 'Uploading...' : 'Upload file'}
+              <input type="file" hidden onChange={handleFileChange} />
+            </Button>
+          </div>
+        </div>
         <div className={styles.scrollArea}>
           <div
             className={`${styles.rootDir} ${selectedDirectory.id === assets.id ? styles.selected : ''}`}
@@ -148,40 +191,6 @@ export default function AssetsBrowser() {
             {assets.files?.map((file: AssetsFile) => (
               <FileItem key={file.id} file={file} />
             ))}
-          </div>
-        </div>
-
-        <div className={styles.toolbar}>
-          <div className={styles.toolbarRow}>
-            <TextField
-              size="small"
-              value={newDirName}
-              onChange={(e) => setNewDirName(e.target.value)}
-              placeholder="Directory name"
-            />
-            <Button
-              size="small"
-              onClick={handleCreate}
-              disabled={createDir.isPending}
-            >
-              + Directory
-            </Button>
-          </div>
-          <div className={styles.toolbarRow}>
-            <span className={styles.uploadLabel}>
-              Upload to: <FolderIcon fontSize="small" />{' '}
-              {selectedDirectory.name}
-            </span>
-          </div>
-          <div className={styles.toolbarRow}>
-            <Button
-              component="label"
-              size="small"
-              disabled={uploadFile.isPending}
-            >
-              {uploadFile.isPending ? 'Uploading...' : 'Upload file'}
-              <input type="file" hidden onChange={handleFileChange} />
-            </Button>
           </div>
         </div>
       </AssetsContext.Provider>

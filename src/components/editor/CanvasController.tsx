@@ -12,6 +12,12 @@ import StartStopBtnToolbar from './StartStopBtnToolbar';
 import { RenderSystem } from '../../engine/systems/RenderSystem';
 import { RectAreaLightTexturesLib } from 'three/addons/lights/RectAreaLightTexturesLib.js';
 import { Physics } from '@react-three/rapier';
+import {
+  Selection,
+  EffectComposer,
+  Outline,
+} from '@react-three/postprocessing';
+import AudioListenerProvider from './AudioListenerProvider';
 
 function CanvasController() {
   const { running, focus } = useEditorContext();
@@ -27,19 +33,45 @@ function CanvasController() {
         onPointerMissed={() => focus(null)}
         camera={{ position: [3, 2, -3] }}
         shadows
+        frameloop={running ? 'always' : 'demand'}
       >
-        <Physics colliders="hull" debug>
-          <OrbitControls makeDefault enableDamping={false} enabled={!running} />
-          {!running && <Grid sectionSize={2} infiniteGrid />}
-          {!running && (
-            <GizmoHelper alignment="top-right" margin={[80, 80]}>
-              <GizmoViewport
-                axisColors={['red', 'green', 'blue']}
-                labelColor="black"
-              />
-            </GizmoHelper>
-          )}
-          <RenderSystem />
+        <Physics colliders="hull" paused={!running} debug={!running}>
+          <AudioListenerProvider>
+            <OrbitControls
+              makeDefault
+              enableDamping={false}
+              enabled={!running}
+            />
+            {!running && <Grid sectionSize={2} infiniteGrid />}
+            {!running && (
+              <GizmoHelper
+                alignment="top-right"
+                margin={[80, 80]}
+                renderPriority={2}
+              >
+                <GizmoViewport
+                  axisColors={['red', 'green', 'blue']}
+                  labelColor="black"
+                />
+              </GizmoHelper>
+            )}
+
+            <Selection>
+              <EffectComposer
+                autoClear={false}
+                multisampling={0}
+                renderPriority={1}
+              >
+                <Outline
+                  edgeStrength={1}
+                  visibleEdgeColor={0xffffff}
+                  resolutionX={480}
+                  resolutionY={480}
+                />
+              </EffectComposer>
+              <RenderSystem />
+            </Selection>
+          </AudioListenerProvider>
         </Physics>
       </Canvas>
     </div>
