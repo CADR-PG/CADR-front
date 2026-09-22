@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEntityManager from '../../hooks/useEntityManager';
 import AddIcon from '@mui/icons-material/Add';
@@ -17,6 +17,12 @@ import cAudio from '../../engine/components/Audio';
 import { cPositionalAudio } from '../../engine/components/PositionalAudio';
 import InspectorTemplate from './inspectors/InspectorTemplate';
 import GLTFInspector from './inspectors/GLTFInspector';
+import { useDrop } from 'react-dnd';
+import { DndTypes } from '@/types/DndTypes';
+import { AssetsFile } from '@/types/Assets';
+import useDownloadFile from '@/hooks/useDownloadFile';
+import { normalizeUrl } from '@/engine/components/helpers/material';
+import { sdk } from '@/data/Sdk';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -28,6 +34,39 @@ function InspectorWindow() {
   const em = useEntityManager();
   const snap = em.getComponents(focused);
   const nameMap = em.mapNameToClass;
+  const [file, setFile] = useState('');
+  const [{ canDrop }, drop] = useDrop(() => ({
+    accept: DndTypes.FILE,
+    drop: (item: AssetsFile, _monitor) => {
+      setFile(item.id);
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+      canDrop: !!monitor.canDrop(),
+    }),
+  }));
+  const { data } = useDownloadFile(file);
+
+  useEffect(() => {
+    async function load() {
+      if (!data) return;
+
+      console.log(data);
+      try {
+        const { default: init } = await import(
+          /* @vite-ignore */ normalizeUrl(data)
+        );
+        const constructor = init(sdk);
+        const instance = new constructor();
+        instance.fileId = file;
+        ECS.instance.entityManager.addComponent(instance, focused!);
+        setFile('');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    load();
+  }, [data, file]);
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(
@@ -158,6 +197,15 @@ function InspectorWindow() {
               );
             })}
           </Menu>
+
+          <div
+            ref={(node) => {
+              drop(node);
+            }}
+            className={`component-area drop-area ${canDrop ? 'drop-area--drag' : ''}`}
+          >
+            ...or drop your script here
+          </div>
         </>
       )}
     </div>
