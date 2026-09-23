@@ -33,10 +33,12 @@ export default function ColorPicker<S, T extends Component & HasData<S>>({
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [color, setColor] = useState<string>('');
 
-  const componentColor = c!.data as Record<keyof S, number>;
+  const componentColor = c ? (c.data as Record<keyof S, number>) : null;
   const data = cw!.data as Record<keyof S, number>;
   const open = Boolean(anchorEl);
-  const stringColor = `${componentColor[field].toString(16).padStart(6, '0')}`;
+  const stringColor = componentColor
+    ? `${componentColor[field].toString(16).padStart(6, '0')}`
+    : '';
 
   // NOTE(m1k53r): this is used only for the input below the picker,
   // so that both input forms are synchronized with each other.

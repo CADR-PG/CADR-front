@@ -12,6 +12,8 @@ export interface EditorContextValues {
   hover: Dispatch<SetStateAction<string | null>>;
   dragged: boolean;
   drag: Dispatch<SetStateAction<boolean>>;
+  gDragged: boolean;
+  gDrag: Dispatch<SetStateAction<boolean>>;
 }
 
 export const EditorContext = createContext<EditorContextValues | undefined>(

@@ -5,6 +5,9 @@ import RigidBodyController from './editor/RigidBodyController';
 import { Select } from '@react-three/postprocessing';
 import useComponents from '../hooks/useComponents';
 import { ReactNode } from 'react';
+import Parent from '@/engine/components/Parent';
+import Transform from '@/engine/components/Transform';
+import useEntityManager from '@/hooks/useEntityManager';
 
 interface MeshControllerTemplateProps {
   children: ReactNode;
@@ -16,6 +19,10 @@ export default function MeshControllerTemplate({
 }: ControllerProps & MeshControllerTemplateProps) {
   const { invisible, object, ColliderComponent } = useComponents(entity);
   const { hovered } = useMesh(entity);
+  const em = useEntityManager();
+  const parent = em.getComponent(Parent, entity);
+  const pPos =
+    parent && parent.entity ? em.getComponent(Transform, parent.entity) : null;
 
   return (
     <>

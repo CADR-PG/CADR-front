@@ -4,6 +4,9 @@ import { Entity } from './Entity';
 import { Object3D } from 'three';
 import { requestFileDownload } from '@/api/client';
 import { normalizeUrlRaw } from './components/helpers/material';
+import Parent from './components/Parent';
+import Children from './components/Children';
+import Transform, { subVec3 } from './components/Transform';
 
 interface NameToClass {
   [name: string]: ComponentType;

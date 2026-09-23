@@ -1,3 +1,4 @@
+import Parent from '@/engine/components/Parent';
 import ComponentNames from '../data/ComponentNames';
 import Collider from '../engine/components/Collider';
 import GLTF from '../engine/components/GLTF';
@@ -19,6 +20,9 @@ export default function useComponents(entity: Entity) {
   const paudio = em.getComponent(cPositionalAudio, entity);
   const mesh = em.getComponent(Mesh, entity);
   const gltf = em.getComponent(GLTF, entity);
+  const parent = em.getComponent(Parent, entity)?.entity;
+  const tParent = parent ? em.getComponent(Transform, parent) : null;
+  const pPos = tParent ? tParent : new Transform();
   const [setRef, object] = useEntityRef();
 
   const renderComponents = () => {
@@ -27,7 +31,8 @@ export default function useComponents(entity: Entity) {
       if (
         element &&
         element !== collider?.element &&
-        element !== gltf?.element
+        element !== gltf?.element &&
+        component !== 'Children'
       ) {
         const ComponentElement = ComponentNames[element];
         return <ComponentElement key={index} entity={entity} />;
@@ -55,6 +60,7 @@ export default function useComponents(entity: Entity) {
     gltf,
     setRef,
     object,
+    pPos,
     PositionalAudioComponent: PositionalAudioComponent
       ? PositionalAudioComponent
       : nullFunc,
