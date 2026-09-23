@@ -10,8 +10,9 @@ export default class Parent implements Component {
     child: Entity,
   ) {
     const parent = entity;
-    if (!parent) return;
-    // TODO: modify children of the parents
+    if (!parent || parent === child) return;
+
+    // add new child to the parent
     if (ECS.instance.entityManager.has(Children, parent)) {
       console.log('Adding new child');
       ECS.instance.entityManager
@@ -21,7 +22,22 @@ export default class Parent implements Component {
       console.log('First new child');
       ECS.instance.entityManager.addComponent(new Children([child]), parent);
     }
-    // TODO: modify childs local position
+
+    // remove child from original parent
+    const ogParent = ECS.instance.entityManager.getComponent(
+      Parent,
+      child,
+    )?.entity;
+    const children = ogParent
+      ? ECS.instance.entityManager.getComponent(Children, ogParent)
+      : null;
+
+    if (children) {
+      children.children = children.children.filter((c) => c !== child);
+    }
+    ECS.instance.entityManager.removeComponent(Parent, child);
+
+    // modify child's local position
     const snap = ECS.instance.entityManager.getComponent(Transform, child);
     const pPos = ECS.instance.entityManager.getComponent(Transform, parent);
     if (!snap || !pPos) return;
@@ -34,6 +50,43 @@ export default class Parent implements Component {
       child,
     );
   }
+
+  static onEntityDestroyed?: ((entity: Entity) => void) | undefined = (
+    entity: Entity,
+  ) => {
+    // remove child instance from parent
+    const parent = ECS.instance.entityManager.getComponent(
+      Parent,
+      entity,
+    )?.entity;
+    const parentChildren = parent
+      ? ECS.instance.entityManager.getComponent(Children, parent)
+      : null;
+
+    if (parentChildren) {
+      parentChildren.children = parentChildren.children.filter(
+        (c) => c !== entity,
+      );
+    }
+
+    // remove children
+    console.log('Calling a destructor');
+    const children = ECS.instance.entityManager.getComponent(
+      Children,
+      entity,
+    )?.children;
+
+    if (!children) {
+      console.log('No children :(');
+      return;
+    }
+
+    console.log('Iterating');
+
+    for (const child of children) {
+      ECS.instance.entityManager.destroyEntity(child);
+    }
+  };
   name = 'Parent';
 }
 

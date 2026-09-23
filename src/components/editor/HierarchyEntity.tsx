@@ -13,20 +13,25 @@ import Parent from '@/engine/components/Parent';
 
 interface HierarchyEntityProps {
   entity: Entity;
+  level?: number;
 }
 
 interface EntityDragObject {
   child: Entity;
+  level: number;
 }
 
-export default function HierarchyEntity({ entity }: HierarchyEntityProps) {
+export default function HierarchyEntity({
+  entity,
+  level = 0,
+}: HierarchyEntityProps) {
   const em = useEntityManager();
   const { focused, focus } = useEditorContext();
 
   const [, drag] = useDrag(
     () => ({
       type: DndTypes.ENTITY,
-      item: { child: entity } as EntityDragObject,
+      item: { child: entity, level } as EntityDragObject,
       collect: (monitor) => ({
         isDragging: !!monitor.isDragging(),
       }),
@@ -40,28 +45,10 @@ export default function HierarchyEntity({ entity }: HierarchyEntityProps) {
       drop: (item: EntityDragObject, _monitor) => {
         if (item.child === entity) return;
 
-        // ECS.instance.entityManager
-        //   .getComponent(Children, item.child)
-        //   ?.children?.forEach((child) => {
-        //     const parent = ECS.instance.entityManager.getComponent(
-        //       Parent,
-        //       child,
-        //     );
-        //     if (!parent || !parent.entity) return;
-        //
-        //     parent.entity = ECS.instance.entityManager.getComponent(
-        //       Parent,
-        //       item.child,
-        //     )?.entity;
-        //   });
-
-        ECS.instance.entityManager.removeComponent(Parent, item.child);
         ECS.instance.entityManager.addComponent(
           new Parent(entity, item.child),
           item.child,
         );
-        console.log(ECS.instance.entityManager.getComponents(entity));
-        console.log(ECS.instance.entityManager.getComponents(item.child));
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
@@ -128,14 +115,13 @@ export default function HierarchyEntity({ entity }: HierarchyEntityProps) {
             )}
           </button>
         </div>
-
-        <div style={{ paddingLeft: '32px' }}>
-          {em.getComponent(Children, entity)?.children.map((child) => (
-            <div>
-              <HierarchyEntity entity={child} />
-            </div>
-          ))}
-        </div>
+      </div>
+      <div style={{ paddingLeft: '32px' }}>
+        {em.getComponent(Children, entity)?.children.map((child) => (
+          <div>
+            <HierarchyEntity entity={child} level={level + 1} />
+          </div>
+        ))}
       </div>
     </>
   );

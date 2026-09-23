@@ -31,6 +31,8 @@ export function toWorld(
   );
   if (!parentPos) return position;
 
+  // console.log(entity, addVec3(position, parentPos.position));
+
   return toWorld(addVec3(position, parentPos.position), parent.entity);
 }
 
