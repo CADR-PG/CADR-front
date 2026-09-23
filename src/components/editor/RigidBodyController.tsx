@@ -11,7 +11,7 @@ import { ECS } from '../../engine/ECS';
 import Transform from '../../engine/components/Transform';
 
 interface RigidBodyControllerProps {
-  children: JSX.Element[];
+  children: JSX.Element | JSX.Element[];
   mesh: THREE.Object3D | null;
 }
 

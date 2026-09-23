@@ -5,6 +5,7 @@ import useComponents from '../hooks/useComponents';
 import MeshControllerTemplate from './MeshControllerTemplate';
 import useEntityManager from '../hooks/useEntityManager';
 import Mesh from '../engine/components/Mesh';
+import { toWorld } from '@/engine/components/Transform';
 
 export default function MeshController({ entity, ...props }: ControllerProps) {
   const {
@@ -26,7 +27,7 @@ export default function MeshController({ entity, ...props }: ControllerProps) {
         onClick={handleClick}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
-        position={transform?.position}
+        position={toWorld(transform?.position, entity)}
         rotation={transform?.rotation}
         scale={transform?.scale}
         ref={setRef}

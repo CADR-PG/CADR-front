@@ -1,12 +1,14 @@
 import GLTFController from '../../components/GLTFController';
 import MeshController from '../../components/MeshController';
-import useEntities from '../../hooks/useEntities';
 import useEntityManager from '../../hooks/useEntityManager';
 import GLTF from '../components/GLTF';
 import { Entity } from '../Entity';
 
-export function RenderSystem() {
-  const entities = useEntities();
+interface RenderSystemProps {
+  entity: Entity;
+}
+
+export function RenderSystem({ entity }: RenderSystemProps) {
   const em = useEntityManager();
 
   const pickComponent = (entity: Entity) => {
@@ -18,5 +20,5 @@ export function RenderSystem() {
     return <MeshController key={entity} entity={entity} />;
   };
 
-  return <group position={[0, 0, 0]}>{entities.map(pickComponent)}</group>;
+  return <group position={[0, 0, 0]}>{pickComponent(entity)}</group>;
 }
