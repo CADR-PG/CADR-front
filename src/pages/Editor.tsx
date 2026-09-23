@@ -13,6 +13,33 @@ import { ECS } from '../engine/ECS';
 import EditingMode from '../types/EditingMode';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { Camera } from '../engine/components/Camera';
+import MainCamera from '../engine/components/MainCamera';
+import Transform from '../engine/components/Transform';
+import Name from '../engine/components/Name';
+
+// Play is driven by the entity marked as MainCamera, so every loaded scene
+// needs one.
+function ensureMainCamera() {
+  const em = ECS.instance.entityManager;
+  const cameraEntities = em
+    .getEntities()
+    .filter((entity) => em.getComponent(Camera, entity));
+
+  if (cameraEntities.length === 0) {
+    const entity = em.createEntity();
+    em.addComponent(new Camera(), entity);
+    em.addComponent(new Transform([0, 1.6, 5]), entity);
+    em.addComponent(new Name('camera'), entity);
+    em.addComponent(new MainCamera(), entity);
+  } else if (
+    !cameraEntities.some((entity) => em.getComponent(MainCamera, entity))
+  ) {
+    // Scenes saved before multi-camera support don't have a main
+    // camera marked yet - promote the first one so Play still works.
+    em.addComponent(new MainCamera(), cameraEntities[0]);
+  }
+}
 
 function Editor() {
   const [focused, focus] = useState<string | null>(null);
@@ -28,9 +55,11 @@ function Editor() {
       // TODO: xdd
       const json = data.data.data;
       ECS.instance.entityManager.setScene(json);
+      ensureMainCamera();
     }
     if (isError) {
       ECS.instance.entityManager.setScene({});
+      ensureMainCamera();
     }
   }, [data, isError]);
 

@@ -4,7 +4,10 @@ import {
   GizmoViewport,
   Grid,
   OrbitControls,
+  PerspectiveCamera,
 } from '@react-three/drei';
+import * as THREE from 'three';
+import { useRef } from 'react';
 import ToolbarComponent from './Toolbar';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEditorKeys from '../../hooks/useEditorKeys';
@@ -21,6 +24,7 @@ import AudioListenerProvider from './AudioListenerProvider';
 
 function CanvasController() {
   const { running, focus } = useEditorContext();
+  const editCameraRef = useRef<THREE.PerspectiveCamera>(null!);
   useEditorKeys();
   RectAreaLightTexturesLib.init();
 
@@ -31,17 +35,27 @@ function CanvasController() {
       <Canvas
         className="canvas"
         onPointerMissed={() => focus(null)}
-        camera={{ position: [3, 2, -3] }}
         shadows
         frameloop={running ? 'always' : 'demand'}
       >
+        {/* Explicit, always-mounted edit-viewport camera - given directly
+            to OrbitControls below so it can never end up bound to
+            whichever camera happens to be the scene's active default
+            (e.g. the player camera while Play is running). */}
+        <PerspectiveCamera
+          ref={editCameraRef}
+          makeDefault={!running}
+          position={[3, 2, -3]}
+        />
         <Physics colliders="hull" paused={!running} debug={!running}>
           <AudioListenerProvider>
-            <OrbitControls
-              makeDefault
-              enableDamping={false}
-              enabled={!running}
-            />
+            {!running && (
+              <OrbitControls
+                camera={editCameraRef.current ?? undefined}
+                makeDefault
+                enableDamping={false}
+              />
+            )}
             {!running && <Grid sectionSize={2} infiniteGrid />}
             {!running && (
               <GizmoHelper

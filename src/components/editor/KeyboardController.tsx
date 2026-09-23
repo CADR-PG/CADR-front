@@ -13,6 +13,12 @@ function KeyboardController({ children }: KeyboardControllerProps) {
       { name: Controls.ctrl, keys: ['ControlLeft', 'ControlRight'] },
       { name: Controls.copy, keys: ['c', 'C'] },
       { name: Controls.paste, keys: ['v', 'V'] },
+      { name: Controls.forward, keys: ['KeyW', 'ArrowUp'] },
+      { name: Controls.back, keys: ['KeyS', 'ArrowDown'] },
+      { name: Controls.left, keys: ['KeyA', 'ArrowLeft'] },
+      { name: Controls.right, keys: ['KeyD', 'ArrowRight'] },
+      { name: Controls.up, keys: ['Space'] },
+      { name: Controls.down, keys: ['ShiftLeft', 'ShiftRight'] },
     ],
     [],
   );

@@ -66,7 +66,11 @@ export class ECS {
     const newEntity = this.entityManager.createEntity();
     const components = structuredClone(
       snapshot(this.entityManager.getComponents(entity)),
-    );
+    ) as { [name: string]: Component };
+    // A copy should never silently usurp the original's "main camera"
+    // status - that would leave two entities racing to become the active
+    // camera in Play.
+    delete components['MainCamera'];
     this.entityManager.entities[newEntity] = proxy(components);
     return newEntity;
   }
