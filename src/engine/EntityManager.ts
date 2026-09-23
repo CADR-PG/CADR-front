@@ -4,9 +4,6 @@ import { Entity } from './Entity';
 import { Object3D } from 'three';
 import { requestFileDownload } from '@/api/client';
 import { normalizeUrlRaw } from './components/helpers/material';
-import Parent from './components/Parent';
-import Children from './components/Children';
-import Transform, { subVec3 } from './components/Transform';
 
 interface NameToClass {
   [name: string]: ComponentType;
@@ -110,7 +107,16 @@ export class EntityManager {
   }
 
   destroyEntity(entity: Entity) {
+    const components = this.entities[entity];
+    // TODO: return early?
+    if (!components) return;
+
+    for (const name of Object.keys(components)) {
+      this.mapNameToClass[name]?.onEntityDestroyed?.(entity);
+    }
+
     delete this.entities[entity];
+    delete this.refs[entity];
   }
 
   getComponents(entity: Entity | null): { [name: string]: Component } {
