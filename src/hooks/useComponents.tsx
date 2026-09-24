@@ -9,6 +9,7 @@ import Transform from '../engine/components/Transform';
 import { Entity } from '../engine/Entity';
 import useEntityManager from './useEntityManager';
 import useEntityRef from './useEntityRef';
+import useWorldTransform from './useWorldTransform';
 
 export default function useComponents(entity: Entity) {
   const em = useEntityManager();
@@ -16,7 +17,8 @@ export default function useComponents(entity: Entity) {
   const componentKeys = Object.keys(components);
   const invisible = em.getComponent(Invisible, entity);
   const collider = em.getComponent(Collider, entity);
-  const transform = em.getComponent(Transform, entity);
+  // const transform = em.getComponent(Transform, entity);
+  const transform = useWorldTransform(entity);
   const paudio = em.getComponent(cPositionalAudio, entity);
   const mesh = em.getComponent(Mesh, entity);
   const gltf = em.getComponent(GLTF, entity);
