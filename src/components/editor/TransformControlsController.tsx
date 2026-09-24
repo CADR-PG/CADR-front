@@ -2,18 +2,14 @@ import { TransformControls } from '@react-three/drei';
 import ControllerProps from '../../types/ControllerProps';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEntityManager from '../../hooks/useEntityManager';
-import Transform, {
-  addVec3,
-  subVec3,
-  toLocal,
-  toWorld,
-} from '../../engine/components/Transform';
+import Transform from '../../engine/components/Transform';
 import { ECS } from '../../engine/ECS';
 import * as THREE from 'three';
 import { useEffect, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
-import useComponents from '@/hooks/useComponents';
 import Parent from '@/engine/components/Parent';
+import useWorldTransform from '@/hooks/useWorldTransform';
+import { applyMatrix, getWorldMatrix, toMatrix } from '@/engine/Hierarchy';
 
 const p = new THREE.Vector3();
 const r = new THREE.Quaternion();
@@ -25,19 +21,19 @@ export default function TransformControlsController({
 }: ControllerProps) {
   const [lDragged, lDrag] = useState(false);
   const em = useEntityManager();
-  const t = em.getComponent(Transform, entity);
+  const t = useWorldTransform(entity);
   const transform = ECS.instance.entityManager.getComponent(Transform, entity);
   const { editingMode, focused, drag, dragged } = useEditorContext();
   const ref = useRef<THREE.Object3D>(null!);
-  // const parent = em.getComponent(Parent, entity);
+  const parent = em.getComponent(Parent, entity)?.entity;
   // const pPos =
   //   parent && parent.entity ? em.getComponent(Transform, parent.entity) : null;
 
   useEffect(() => {
     if (!t) return;
-    ref.current.position.fromArray(toWorld(t.position, entity));
-    ref.current.rotation.fromArray(toWorld(t.rotation, entity));
-    // ref.current.scale.fromArray(toWorld(t.scale, entity));
+    ref.current.position.fromArray(t.position);
+    ref.current.rotation.fromArray(t.rotation);
+    ref.current.scale.fromArray(t.scale);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -46,17 +42,22 @@ export default function TransformControlsController({
 
     ref.current.matrixWorld.decompose(p, r, s);
     e.setFromQuaternion(r);
-    // transform.position = [p.x, p.y, p.z];
-    const newPos = toLocal([p.x, p.y, p.z], entity);
-    transform.position = newPos;
-    transform.rotation = [e.x, e.y, e.z];
-    transform.scale = [s.x, s.y, s.z];
+    const newT = new Transform(
+      [p.x, p.y, p.z],
+      [r.x, r.y, r.z],
+      [s.x, s.y, s.z],
+    );
+    const world = toMatrix(newT);
+    const local = parent
+      ? getWorldMatrix(parent).invert().multiply(world)
+      : world;
+    applyMatrix(transform, local);
   });
 
   return (
     <>
       <object3D
-        position={!dragged ? toWorld(t!.position, entity) : undefined}
+        position={!dragged ? t!.position : undefined}
         rotation={!dragged ? t!.rotation : undefined}
         scale={!dragged ? t!.scale : undefined}
         ref={ref}

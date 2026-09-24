@@ -9,29 +9,38 @@ import { useDrag, useDrop } from 'react-dnd';
 import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import Children from '@/engine/components/Children';
-import Parent from '@/engine/components/Parent';
+import { setParent } from '@/engine/Hierarchy';
+import { Collapse, IconButton } from '@mui/material';
+import { useState } from 'react';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 
 interface HierarchyEntityProps {
   entity: Entity;
-  level?: number;
+  decoration?: string;
+  index?: number;
+  siblings?: number;
 }
 
 interface EntityDragObject {
   child: Entity;
-  level: number;
 }
 
 export default function HierarchyEntity({
   entity,
-  level = 0,
+  decoration = '',
+  index = 0,
+  siblings = 0,
 }: HierarchyEntityProps) {
   const em = useEntityManager();
+  const children = em.getComponent(Children, entity);
   const { focused, focus } = useEditorContext();
+  const [open, setOpen] = useState(true);
 
   const [, drag] = useDrag(
     () => ({
       type: DndTypes.ENTITY,
-      item: { child: entity, level } as EntityDragObject,
+      item: { child: entity } as EntityDragObject,
       collect: (monitor) => ({
         isDragging: !!monitor.isDragging(),
       }),
@@ -43,12 +52,7 @@ export default function HierarchyEntity({
     () => ({
       accept: DndTypes.ENTITY,
       drop: (item: EntityDragObject, _monitor) => {
-        if (item.child === entity) return;
-
-        ECS.instance.entityManager.addComponent(
-          new Parent(entity, item.child),
-          item.child,
-        );
+        setParent(entity, item.child);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
@@ -89,40 +93,76 @@ export default function HierarchyEntity({
           drop(node);
         }}
         className="hierarchy-window__item"
-        onClick={() => focus(entity)}
+        onClick={() => {
+          console.log(`${index} / ${siblings}`);
+          focus(entity);
+        }}
         style={{
           background: focused == entity ? '#555' : '',
-          display: 'flex',
-          flexDirection: 'column',
+          marginTop: '-7px',
         }}
       >
-        <div
-          ref={(node) => {
-            drag(node);
-          }}
-        >
-          {em.getComponent(Name, entity)?.displayName || entity}
-        </div>
-        <div className="buttonContainer">
-          <button
-            className="visibilityButton"
-            onClick={() => handleClick(entity)}
-          >
-            {!em.has(Invisible, entity) ? (
-              <VisibilityOutlined />
-            ) : (
-              <VisibilityOffOutlinedIcon />
-            )}
-          </button>
-        </div>
-      </div>
-      <div style={{ paddingLeft: '32px' }}>
-        {em.getComponent(Children, entity)?.children.map((child) => (
-          <div>
-            <HierarchyEntity entity={child} level={level + 1} />
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {decoration}
+          {siblings > 1 && index !== siblings - 1 ? '├' : '└'}
+          {false && children && children.children.length ? (
+            <IconButton
+              onClick={() => {
+                setOpen((prev) => !prev);
+              }}
+            >
+              {open ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
+          ) : null}
+          <div style={{ display: 'flex' }}>
+            <div
+              ref={(node) => {
+                drag(node);
+              }}
+            >
+              {em.getComponent(Name, entity)?.displayName || entity}
+            </div>
           </div>
-        ))}
+          <div className="buttonContainer">
+            {false && (
+              <IconButton
+                className="visibilityButton"
+                onClick={() => handleClick(entity)}
+              >
+                {!em.has(Invisible, entity) ? (
+                  <VisibilityOutlined />
+                ) : (
+                  <VisibilityOffOutlinedIcon />
+                )}
+              </IconButton>
+            )}
+          </div>
+        </div>
       </div>
+      <Collapse in={open}>
+        <div
+          style={
+            {
+              // paddingLeft: '32px',
+            }
+          }
+        >
+          {em.getComponent(Children, entity)?.children.map((child, i) => (
+            <div>
+              <HierarchyEntity
+                entity={child}
+                index={i}
+                siblings={children!.children.length}
+                decoration={
+                  siblings > 1 && index !== siblings - 1
+                    ? decoration + '│ '
+                    : decoration + '..'
+                }
+              />
+            </div>
+          ))}
+        </div>
+      </Collapse>
     </>
   );
 }

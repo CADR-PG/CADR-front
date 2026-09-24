@@ -109,9 +109,13 @@ export class EntityManager {
   destroyEntity(entity: Entity) {
     const components = this.entities[entity];
     // TODO: return early?
-    if (!components) return;
+    if (!components) {
+      console.log('No components??');
+      return;
+    }
 
     for (const name of Object.keys(components)) {
+      console.log('Trying to call destrcutor for', name);
       this.mapNameToClass[name]?.onEntityDestroyed?.(entity);
     }
 
