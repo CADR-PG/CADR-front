@@ -5,7 +5,7 @@ import { Entity } from './Entity';
 import Transform from './components/Transform';
 import Children from './components/Children';
 
-export function setParent(parent: Entity, child: Entity) {
+export function setParent(parent: Entity | null, child: Entity) {
   if (parent === child) return;
   if (parent && isDescendant(parent, child)) return;
 

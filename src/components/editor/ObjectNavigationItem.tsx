@@ -9,9 +9,10 @@ import Geometry from '../../engine/components/Geometry';
 import Name from '../../engine/components/Name';
 import BasicMaterialData from '../../engine/components/materials/BasicMaterialData';
 import Mesh from '../../engine/components/Mesh';
+import { setParent } from '@/engine/Hierarchy';
 
 function ObjectNavigationItem() {
-  const { focus } = useEditorContext();
+  const { focus, focused } = useEditorContext();
 
   const handleAdd = (object: string) => {
     const entity = ECS.instance.entityManager.createEntity();
@@ -26,6 +27,7 @@ function ObjectNavigationItem() {
       entity,
     );
     ECS.instance.entityManager.addComponent(new Name(object), entity);
+    setParent(focused, entity);
 
     focus(entity);
   };

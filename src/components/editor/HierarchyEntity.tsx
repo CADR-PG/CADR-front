@@ -11,30 +11,23 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import Children from '@/engine/components/Children';
 import { setParent } from '@/engine/Hierarchy';
 import { Collapse, IconButton } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import EntityDragObject from '@/types/EntityDragObject';
 
 interface HierarchyEntityProps {
   entity: Entity;
-  decoration?: string;
-  index?: number;
-  siblings?: number;
-}
-
-interface EntityDragObject {
-  child: Entity;
+  parent: HTMLDivElement | null;
 }
 
 export default function HierarchyEntity({
   entity,
-  decoration = '',
-  index = 0,
-  siblings = 0,
+  parent,
 }: HierarchyEntityProps) {
   const em = useEntityManager();
   const children = em.getComponent(Children, entity);
-  const { focused, focus } = useEditorContext();
+  const { focused, focus, dnd, setDnd } = useEditorContext();
   const [open, setOpen] = useState(true);
 
   const [, drag] = useDrag(
@@ -44,22 +37,31 @@ export default function HierarchyEntity({
       collect: (monitor) => ({
         isDragging: !!monitor.isDragging(),
       }),
+      end(draggedItem, _monitor) {
+        setDnd(null);
+        focus(draggedItem.child);
+      },
     }),
     [entity],
   );
 
-  const [{ canDrop }, drop] = useDrop(
+  const [_, drop] = useDrop(
     () => ({
       accept: DndTypes.ENTITY,
       drop: (item: EntityDragObject, _monitor) => {
         setParent(entity, item.child);
+      },
+      hover(_item, monitor) {
+        if (monitor.isOver() && monitor.canDrop()) {
+          setDnd(entity);
+        }
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
         canDrop: !!monitor.canDrop(),
       }),
     }),
-    [entity],
+    [entity, dnd],
   );
 
   const handleClick = (entity: Entity) => {
@@ -72,41 +74,49 @@ export default function HierarchyEntity({
 
   // TODO: make it more generic and extract it to a hook
   // TODO2: fuck does it do???
-  // useEffect(() => {
-  //   const handleClick = (event: MouseEvent) => {
-  //     const isInsideParent = parent?.contains(event.target as Node);
-  //     // TODO: this is kinda stupid, but `eventListener` gets called before `onClick`
-  //     // so on a valid object click it will override null
-  //     if (isInsideParent) focus(null);
-  //   };
-  //
-  //   document.addEventListener('mousedown', handleClick);
-  //   return () => {
-  //     document.removeEventListener('mousedown', handleClick);
-  //   };
-  // }, [focus]);
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      const isInsideParent = parent?.contains(event.target as Node);
+      // TODO: this is kinda stupid, but `eventListener` gets called before `onClick`
+      // so on a valid object click it will override null
+      if (isInsideParent) focus(null);
+    };
+
+    document.addEventListener('mousedown', handleClick);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+    };
+  }, [focus]);
 
   return (
-    <>
+    <li>
       <div
         ref={(node) => {
           drop(node);
         }}
-        className="hierarchy-window__item"
         onClick={() => {
-          console.log(`${index} / ${siblings}`);
           focus(entity);
         }}
         style={{
-          background: focused == entity ? '#555' : '',
-          marginTop: '-7px',
+          background: focused == entity ? '#bbb' : '',
+          display: 'flex',
+          alignItems: 'center',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          {decoration}
-          {siblings > 1 && index !== siblings - 1 ? '├' : '└'}
-          {false && children && children.children.length ? (
+        <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          <div
+            ref={(node) => {
+              drag(node);
+            }}
+            className={dnd === entity ? 'underline-hover' : ''}
+            style={{ width: '100%' }}
+          >
+            {em.getComponent(Name, entity)?.displayName || entity}
+          </div>
+
+          {children && children.children.length ? (
             <IconButton
+              className="visibilityButton"
               onClick={() => {
                 setOpen((prev) => !prev);
               }}
@@ -114,55 +124,29 @@ export default function HierarchyEntity({
               {open ? <ExpandLess /> : <ExpandMore />}
             </IconButton>
           ) : null}
-          <div style={{ display: 'flex' }}>
-            <div
-              ref={(node) => {
-                drag(node);
-              }}
-            >
-              {em.getComponent(Name, entity)?.displayName || entity}
-            </div>
-          </div>
-          <div className="buttonContainer">
-            {false && (
-              <IconButton
-                className="visibilityButton"
-                onClick={() => handleClick(entity)}
-              >
-                {!em.has(Invisible, entity) ? (
-                  <VisibilityOutlined />
-                ) : (
-                  <VisibilityOffOutlinedIcon />
-                )}
-              </IconButton>
-            )}
-          </div>
         </div>
-      </div>
-      <Collapse in={open}>
-        <div
-          style={
-            {
-              // paddingLeft: '32px',
-            }
-          }
+
+        <IconButton
+          className="visibilityButton"
+          onClick={() => handleClick(entity)}
         >
-          {em.getComponent(Children, entity)?.children.map((child, i) => (
-            <div>
-              <HierarchyEntity
-                entity={child}
-                index={i}
-                siblings={children!.children.length}
-                decoration={
-                  siblings > 1 && index !== siblings - 1
-                    ? decoration + '│ '
-                    : decoration + '..'
-                }
-              />
-            </div>
-          ))}
-        </div>
+          {!em.has(Invisible, entity) ? (
+            <VisibilityOutlined />
+          ) : (
+            <VisibilityOffOutlinedIcon />
+          )}
+        </IconButton>
+      </div>
+
+      <Collapse in={open}>
+        <ul className="tree">
+          {em
+            .getComponent(Children, entity)
+            ?.children.map((child, i) => (
+              <HierarchyEntity parent={parent} key={i} entity={child} />
+            ))}
+        </ul>
       </Collapse>
-    </>
+    </li>
   );
 }
