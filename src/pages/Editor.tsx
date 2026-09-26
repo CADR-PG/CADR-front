@@ -24,6 +24,7 @@ function Editor() {
   const { data, isError } = useLoadScene(uuid!);
   const [running, setRunning] = useState(false);
   const [editingMode, selectMode] = useState<EditingMode>('translate');
+  const [dnd, setDnd] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -65,6 +66,8 @@ function Editor() {
     dragged,
     gDrag,
     gDragged,
+    dnd,
+    setDnd,
   };
 
   return (
