@@ -14,9 +14,17 @@ import { useFrame } from '@react-three/fiber';
 import { ECS } from '../../engine/ECS';
 import Transform from '../../engine/components/Transform';
 import { useMeshContext } from '@/hooks/useMeshContext';
-import { applyMatrix, getWorldMatrix, toMatrix } from '@/engine/Hierarchy';
+import {
+  applyMatrix,
+  getWorldMatrix,
+  isInRigidBody,
+  toMatrix,
+} from '@/engine/Hierarchy';
 import Parent from '@/engine/components/Parent';
 import useWorldTransform from '@/hooks/useWorldTransform';
+import Children from '@/engine/components/Children';
+import Collider from '@/engine/components/Collider';
+import ComponentNames from '@/data/ComponentNames';
 
 interface RigidBodyControllerProps {
   children: JSX.Element | JSX.Element[];
@@ -45,9 +53,17 @@ export default function RigidBodyController({
   const parent = em.getComponent(Parent, entity)?.entity;
   const { object: mesh } = useMeshContext();
   const [initial] = useState(() => t);
+  const colliders = em.getComponent(Children, entity)?.children;
 
   useAfterPhysicsStep(() => {
-    if (!ref.current || !running || !transformWrite || !mesh || !initial)
+    if (
+      !rigidBody ||
+      !ref.current ||
+      !running ||
+      !transformWrite ||
+      !mesh ||
+      !initial
+    )
       return;
 
     const tr = ref.current.translation();
@@ -70,7 +86,7 @@ export default function RigidBodyController({
     world.decompose(mesh.position, mesh.quaternion, mesh.scale);
   });
 
-  return rigidBody ? (
+  return rigidBody && running ? (
     <RigidBody
       {...physicsHandlers}
       name={entity}
@@ -96,8 +112,29 @@ export default function RigidBodyController({
       rotation={initial.rotation}
       scale={initial.scale}
     >
-      <mesh geometry={mesh.geometry} scale={mesh.scale} visible={false}></mesh>
+      <mesh geometry={mesh.geometry} scale={mesh.scale} visible={false} />
       {children}
+      {colliders?.map((collider) => {
+        const c = ECS.instance.entityManager.getComponent(Collider, collider);
+        if (!c || !c.element) return null;
+
+        console.log(collider, c.element);
+        const ColliderComponent = ComponentNames[c.element];
+        return (
+          <group position={[10, 0, 0]}>
+            <ColliderComponent entity={collider} />;
+          </group>
+        );
+      })}
     </RigidBody>
+  ) : !isInRigidBody(entity) ? (
+    <object3D
+      position={t.position}
+      rotation={t.rotation}
+      scale={t.scale}
+      visible={false}
+    >
+      {children}
+    </object3D>
   ) : null;
 }

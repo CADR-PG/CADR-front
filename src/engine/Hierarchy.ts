@@ -4,6 +4,7 @@ import { ECS } from './ECS';
 import { Entity } from './Entity';
 import Transform from './components/Transform';
 import Children from './components/Children';
+import RBody from './components/RigidBody';
 
 export function setParent(parent: Entity | null, child: Entity) {
   if (parent === child) return;
@@ -90,4 +91,17 @@ export function applyMatrix(t: Transform, m: Matrix4) {
   t.position = [p.x, p.y, p.z];
   t.rotation = [r.x, r.y, r.z];
   t.scale = [s.x, s.y, s.z];
+}
+
+export function isInRigidBody(entity: Entity) {
+  const parent = ECS.instance.entityManager.getComponent(
+    Parent,
+    entity,
+  )?.entity;
+
+  if (!parent) return false;
+  const rb = ECS.instance.entityManager.getComponent(RBody, parent);
+  if (rb) return true;
+
+  return isInRigidBody(parent);
 }
