@@ -1,5 +1,5 @@
 import GLTFController from '../../components/GLTFController';
-import MeshControllerWrapper from '../../components/MeshController';
+import MeshControllerWrapper from '../../components/MeshControllerWrapper';
 import useEntityManager from '../../hooks/useEntityManager';
 import GLTF from '../components/GLTF';
 import { Entity } from '../Entity';
