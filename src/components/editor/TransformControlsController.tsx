@@ -23,11 +23,9 @@ export default function TransformControlsController({
   const em = useEntityManager();
   const t = useWorldTransform(entity);
   const transform = ECS.instance.entityManager.getComponent(Transform, entity);
-  const { editingMode, focused, drag, dragged } = useEditorContext();
+  const { running, editingMode, focused, drag, dragged } = useEditorContext();
   const ref = useRef<THREE.Object3D>(null!);
   const parent = em.getComponent(Parent, entity)?.entity;
-  // const pPos =
-  //   parent && parent.entity ? em.getComponent(Transform, parent.entity) : null;
 
   useEffect(() => {
     if (!t) return;
@@ -63,7 +61,7 @@ export default function TransformControlsController({
         ref={ref}
       />
 
-      {focused === entity && (
+      {!running && focused === entity && (
         <TransformControls
           object={ref}
           mode={editingMode}

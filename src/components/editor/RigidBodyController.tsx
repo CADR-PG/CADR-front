@@ -9,18 +9,24 @@ import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { ECS } from '../../engine/ECS';
 import Transform from '../../engine/components/Transform';
+import { useMeshContext } from '@/hooks/useMeshContext';
+import { applyMatrix, getWorldMatrix, toMatrix } from '@/engine/Hierarchy';
+import Parent from '@/engine/components/Parent';
 
 interface RigidBodyControllerProps {
   children: JSX.Element | JSX.Element[];
-  mesh: THREE.Object3D | null;
 }
 
 const v = new THREE.Vector3();
 
+const p = new THREE.Vector3();
+const r = new THREE.Quaternion();
+const s = new THREE.Vector3();
+const e = new THREE.Euler();
+
 export default function RigidBodyController({
   entity,
   children,
-  mesh,
 }: ControllerProps & RigidBodyControllerProps) {
   const em = useEntityManager();
   const rigidBody = em.getComponent(RBody, entity);
@@ -30,14 +36,29 @@ export default function RigidBodyController({
     Transform,
     entity,
   );
+  const parent = em.getComponent(Parent, entity)?.entity;
   const prev = useRef(new THREE.Vector3());
+  const { object: mesh } = useMeshContext();
 
   useFrame(() => {
     if (!running || !transformWrite || !mesh) return;
-    v.setFromMatrixPosition(mesh.matrixWorld);
-    if (v.distanceToSquared(prev.current) < 1e-6) return;
+
+    mesh.matrixWorld.decompose(p, r, s);
+    e.setFromQuaternion(r);
+
+    if (p.distanceToSquared(prev.current) < 1e-6) return;
     prev.current.copy(v);
-    transformWrite.position = [v.x, v.y, v.z];
+
+    const newT = new Transform(
+      [p.x, p.y, p.z],
+      [r.x, r.y, r.z],
+      [s.x, s.y, s.z],
+    );
+    const world = toMatrix(newT);
+    const local = parent
+      ? getWorldMatrix(parent).invert().multiply(world)
+      : world;
+    applyMatrix(transformWrite, local);
   });
 
   return rigidBody && running ? (
