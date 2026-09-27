@@ -42,7 +42,7 @@ export default function TransformControlsController({
     e.setFromQuaternion(r);
     const newT = new Transform(
       [p.x, p.y, p.z],
-      [r.x, r.y, r.z],
+      [e.x, e.y, e.z],
       [s.x, s.y, s.z],
     );
     const world = toMatrix(newT);

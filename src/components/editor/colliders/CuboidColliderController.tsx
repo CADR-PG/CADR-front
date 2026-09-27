@@ -3,9 +3,11 @@ import Cuboid from '../../../engine/components/colliders/Cuboid';
 import ControllerProps from '../../../types/ControllerProps';
 import physicsHandlers from '../../../engine/handlers/Physics';
 import usePhysics from '../../../hooks/usePhysics';
+import useWorldTransform from '@/hooks/useWorldTransform';
 
 export default function CuboidColliderController({ entity }: ControllerProps) {
   const { params, args } = usePhysics<Cuboid>(entity);
+  const t = useWorldTransform(entity);
   return (
     params && (
       <CuboidCollider
@@ -14,7 +16,7 @@ export default function CuboidColliderController({ entity }: ControllerProps) {
         args={[args.halfWidth, args.halfHeight, args.halfDepth]}
         // W/A because it seems that rapier doesn't request a new frame
         // on prop changes. Might change that later idk
-        key={`${args.halfWidth} ${args.halfHeight} ${args.halfDepth}`}
+        key={`${args.halfWidth} ${args.halfHeight} ${args.halfDepth} ${t?.position} ${t?.rotation} ${t?.scale}`}
       />
     )
   );

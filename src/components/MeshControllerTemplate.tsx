@@ -7,6 +7,7 @@ import useComponents from '../hooks/useComponents';
 import { ReactNode } from 'react';
 import { MeshContext } from '@/data/MeshContext';
 import { useEditorContext } from '@/hooks/useEditorContext';
+import useWorldTransform from '@/hooks/useWorldTransform';
 
 interface MeshControllerTemplateProps {
   children: ReactNode;
@@ -20,6 +21,7 @@ export default function MeshControllerTemplate({
     useComponents(entity);
   const { hovered } = useMesh(entity);
   const { running } = useEditorContext();
+  const t = useWorldTransform(entity);
 
   return (
     <MeshContext.Provider value={{ object, setRef }}>
@@ -31,7 +33,18 @@ export default function MeshControllerTemplate({
             <RigidBodyController entity={entity}>
               <ColliderComponent entity={entity} />
             </RigidBodyController>
-          ) : null}
+          ) : (
+            /* Show colliders in editor view. If game is running,
+             * RigidBodyController should take that responsibility */
+            <object3D
+              position={t.position}
+              rotation={t.rotation}
+              scale={t.scale}
+              visible={false}
+            >
+              <ColliderComponent entity={entity} />
+            </object3D>
+          )}
         </>
       )}
     </MeshContext.Provider>
