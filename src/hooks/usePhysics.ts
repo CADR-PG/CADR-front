@@ -13,9 +13,9 @@ export default function usePhysics<T extends ColliderData>(entity: Entity) {
   return {
     params: {
       name: entity,
-      position: addVec3(t.position, c.position),
-      rotation: addVec3(t.rotation, c.rotation),
-      scale: addVec3(t.scale, c.scale),
+      // position: addVec3(t.position, c.position),
+      // rotation: addVec3(t.rotation, c.rotation),
+      // scale: addVec3(t.scale, c.scale),
       activeCollisionTypes: c.activeCollisionTypes,
       collisionGroups: c.collisionGroups,
       contactSkin: c.contactSkin,

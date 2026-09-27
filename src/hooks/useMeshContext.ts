@@ -1,5 +1,5 @@
+import { MeshContext } from '@/data/MeshContext';
 import { useContext } from 'react';
-import { MeshContext } from '@/components/MeshControllerTemplate';
 
 export function useMeshContext() {
   const context = useContext(MeshContext);
