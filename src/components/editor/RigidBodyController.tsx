@@ -6,17 +6,18 @@ import {
 import RBody from '../../engine/components/RigidBody';
 import useEntityManager from '../../hooks/useEntityManager';
 import ControllerProps from '../../types/ControllerProps';
-import { JSX, useEffect, useRef, useState } from 'react';
+import { JSX, useRef, useState } from 'react';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import physicsHandlers from '../../engine/handlers/Physics';
 import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
 import { ECS } from '../../engine/ECS';
 import Transform from '../../engine/components/Transform';
 import { useMeshContext } from '@/hooks/useMeshContext';
 import {
   applyMatrix,
+  flattenHierarchy,
   getWorldMatrix,
+  getWorldTransformOmitRoot,
   isInRigidBody,
   toMatrix,
 } from '@/engine/Hierarchy';
@@ -30,13 +31,12 @@ interface RigidBodyControllerProps {
   children: JSX.Element | JSX.Element[];
 }
 
-const v = new THREE.Vector3();
-
 const p = new THREE.Vector3();
 const r = new THREE.Quaternion();
 const s = new THREE.Vector3();
 const e = new THREE.Euler();
 
+// NOTE: this component is a smoking pile of garbage. proceed with caution.
 export default function RigidBodyController({
   entity,
   children,
@@ -52,9 +52,11 @@ export default function RigidBodyController({
   );
   const parent = em.getComponent(Parent, entity)?.entity;
   const { object: mesh } = useMeshContext();
+  // component mounts on running, initial position will be overwritten
+  // when starting the game again
   const [initial] = useState(() => t);
-  const colliders = em.getComponent(Children, entity)?.children;
 
+  // sync Transform component with real transformation based on physics
   useAfterPhysicsStep(() => {
     if (
       !rigidBody ||
@@ -112,16 +114,17 @@ export default function RigidBodyController({
       rotation={initial.rotation}
       scale={initial.scale}
     >
-      <mesh geometry={mesh.geometry} scale={mesh.scale} visible={false} />
+      <mesh geometry={mesh.geometry} scale={[1, 1, 1]} visible={false} />
       {children}
-      {colliders?.map((collider) => {
+      {flattenHierarchy(entity).map((collider) => {
         const c = ECS.instance.entityManager.getComponent(Collider, collider);
+        const tr = getWorldTransformOmitRoot(collider);
         if (!c || !c.element) return null;
 
-        console.log(collider, c.element);
         const ColliderComponent = ComponentNames[c.element];
         return (
-          <group position={[10, 0, 0]}>
+          // making a new group is dumb I think but whatever
+          <group position={tr.position} rotation={tr.rotation} scale={tr.scale}>
             <ColliderComponent entity={collider} />;
           </group>
         );
