@@ -5,8 +5,6 @@ import useComponents from '../hooks/useComponents';
 import useEntityManager from '../hooks/useEntityManager';
 import Mesh from '../engine/components/Mesh';
 import { useMeshContext } from '@/hooks/useMeshContext';
-import { useEffect } from 'react';
-import RBody from '@/engine/components/RigidBody';
 
 export default function MeshController({ entity }: ControllerProps) {
   const { renderComponents, transform, PositionalAudioComponent } =
@@ -16,15 +14,6 @@ export default function MeshController({ entity }: ControllerProps) {
   const em = useEntityManager();
   const mesh = em.getComponent(Mesh, entity);
   const { object, setRef } = useMeshContext();
-  // const rbody = em.getComponent(RBody, entity);
-  //
-  // useEffect(() => {
-  //   if (!object || !transform) return;
-  //
-  //   object.position.fromArray(transform.position);
-  //   object.rotation.fromArray(transform.rotation);
-  //   object.scale.fromArray(transform.scale);
-  // }, [object, running]);
 
   return (
     <mesh

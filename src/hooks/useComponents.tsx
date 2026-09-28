@@ -17,7 +17,6 @@ export default function useComponents(entity: Entity) {
   const componentKeys = Object.keys(components);
   const invisible = em.getComponent(Invisible, entity);
   const collider = em.getComponent(Collider, entity);
-  // const transform = em.getComponent(Transform, entity);
   const transform = useWorldTransform(entity);
   const paudio = em.getComponent(cPositionalAudio, entity);
   const mesh = em.getComponent(Mesh, entity);
