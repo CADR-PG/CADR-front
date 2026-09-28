@@ -8,6 +8,7 @@ import { ReactNode } from 'react';
 import { MeshContext } from '@/data/MeshContext';
 import { useEditorContext } from '@/hooks/useEditorContext';
 import useWorldTransform from '@/hooks/useWorldTransform';
+import { isInvisible } from '@/engine/Hierarchy';
 
 interface MeshControllerTemplateProps {
   children: ReactNode;
@@ -17,8 +18,7 @@ export default function MeshControllerTemplate({
   entity,
   children,
 }: ControllerProps & MeshControllerTemplateProps) {
-  const { invisible, ColliderComponent, object, setRef } =
-    useComponents(entity);
+  const { ColliderComponent, object, setRef } = useComponents(entity);
   const { hovered } = useMesh(entity);
   const { running } = useEditorContext();
   const t = useWorldTransform(entity);
@@ -26,7 +26,7 @@ export default function MeshControllerTemplate({
   return (
     <MeshContext.Provider value={{ object, setRef }}>
       <TransformControlsController entity={entity} />
-      {!invisible && (
+      {!isInvisible(entity) && (
         <>
           <Select enabled={hovered === entity}>{children}</Select>
           {running ? (

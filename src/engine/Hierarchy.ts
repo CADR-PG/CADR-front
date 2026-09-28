@@ -5,6 +5,7 @@ import { Entity } from './Entity';
 import Transform from './components/Transform';
 import Children from './components/Children';
 import RBody from './components/RigidBody';
+import Invisible from './components/Invisible';
 
 export function setParent(parent: Entity | null, child: Entity) {
   if (parent === child) return;
@@ -139,4 +140,17 @@ export function getWorldTransformOmitRoot(entity: Entity): Transform {
   applyMatrix(newT, world);
 
   return newT;
+}
+
+export function isInvisible(entity: Entity) {
+  const invisible = ECS.instance.entityManager.getComponent(Invisible, entity);
+  if (invisible) return true;
+
+  const parent = ECS.instance.entityManager.getComponent(
+    Parent,
+    entity,
+  )?.entity;
+  if (!parent) return false;
+
+  return isInvisible(parent);
 }
