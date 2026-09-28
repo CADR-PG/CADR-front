@@ -105,3 +105,38 @@ export function isInRigidBody(entity: Entity) {
 
   return isInRigidBody(parent);
 }
+
+export function flattenHierarchy(entity: Entity) {
+  const array: string[] = [];
+  const children = ECS.instance.entityManager.getComponent(
+    Children,
+    entity,
+  )?.children;
+
+  if (!children) return array;
+
+  for (const child of children) {
+    array.push(child, ...flattenHierarchy(child));
+  }
+
+  return array;
+}
+
+// TODO: xd
+// used only for RigidBodyController because I can't code
+export function getWorldTransformOmitRoot(entity: Entity): Transform {
+  const em = ECS.instance.entityManager;
+
+  function calculateWorld(entity: Entity): Matrix4 {
+    const t = em.getComponent(Transform, entity);
+    const local = t ? toMatrix(t) : new Matrix4();
+    const parent = em.getComponent(Parent, entity)?.entity;
+    return parent ? calculateWorld(parent).multiply(local) : new Matrix4();
+  }
+
+  const world = calculateWorld(entity);
+  const newT = new Transform();
+  applyMatrix(newT, world);
+
+  return newT;
+}
