@@ -1,4 +1,4 @@
-import GLTFController from '../../components/GLTFController';
+import GLTFControllerWrapper from '../../components/GLTFControllerWrapper';
 import MeshControllerWrapper from '../../components/MeshControllerWrapper';
 import useEntityManager from '../../hooks/useEntityManager';
 import GLTF from '../components/GLTF';
@@ -15,7 +15,7 @@ export function RenderSystem({ entity }: RenderSystemProps) {
     const gltf = em.getComponent(GLTF, entity);
 
     if (gltf) {
-      return <GLTFController key={entity} entity={entity} />;
+      return <GLTFControllerWrapper key={entity} entity={entity} />;
     }
     return <MeshControllerWrapper key={entity} entity={entity} />;
   };

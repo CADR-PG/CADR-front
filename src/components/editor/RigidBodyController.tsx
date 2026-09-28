@@ -23,9 +23,12 @@ import {
 } from '@/engine/Hierarchy';
 import Parent from '@/engine/components/Parent';
 import useWorldTransform from '@/hooks/useWorldTransform';
-import Children from '@/engine/components/Children';
 import Collider from '@/engine/components/Collider';
 import ComponentNames from '@/data/ComponentNames';
+import { Clone, useGLTF } from '@react-three/drei';
+import GLTF from '@/engine/components/GLTF';
+import useDownloadFile from '@/hooks/useDownloadFile';
+import { normalizeUrl } from '@/engine/components/helpers/material';
 
 interface RigidBodyControllerProps {
   children: JSX.Element | JSX.Element[];
@@ -55,6 +58,15 @@ export default function RigidBodyController({
   // component mounts on running, initial position will be overwritten
   // when starting the game again
   const [initial] = useState(() => t);
+
+  // TODO: bad idea.....
+  const gltf = em.getComponent(GLTF, entity);
+  const { data: modelUrl } = useDownloadFile(gltf?.source);
+  const model = useGLTF(
+    modelUrl ? normalizeUrl(modelUrl) : '/error.glb',
+    gltf?.useDraco,
+    gltf?.useMeshOpt,
+  );
 
   // sync Transform component with real transformation based on physics
   useAfterPhysicsStep(() => {
@@ -88,6 +100,11 @@ export default function RigidBodyController({
     world.decompose(mesh.position, mesh.quaternion, mesh.scale);
   });
 
+  const pickAutoObject = () => {
+    if (gltf) return <Clone object={model.scene ?? null} visible={false} />;
+    else <mesh geometry={mesh?.geometry} scale={[1, 1, 1]} visible={false} />;
+  };
+
   return rigidBody && running ? (
     <RigidBody
       {...physicsHandlers}
@@ -114,7 +131,11 @@ export default function RigidBodyController({
       rotation={initial.rotation}
       scale={initial.scale}
     >
-      <mesh geometry={mesh.geometry} scale={[1, 1, 1]} visible={false} />
+      {gltf ? (
+        <Clone object={model.scene ?? null} visible={false} />
+      ) : (
+        <mesh geometry={mesh?.geometry} scale={[1, 1, 1]} visible={false} />
+      )}
       {children}
       {flattenHierarchy(entity).map((collider) => {
         const c = ECS.instance.entityManager.getComponent(Collider, collider);
