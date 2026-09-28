@@ -100,11 +100,6 @@ export default function RigidBodyController({
     world.decompose(mesh.position, mesh.quaternion, mesh.scale);
   });
 
-  const pickAutoObject = () => {
-    if (gltf) return <Clone object={model.scene ?? null} visible={false} />;
-    else <mesh geometry={mesh?.geometry} scale={[1, 1, 1]} visible={false} />;
-  };
-
   return rigidBody && running ? (
     <RigidBody
       {...physicsHandlers}

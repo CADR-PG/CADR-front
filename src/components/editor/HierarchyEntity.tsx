@@ -86,7 +86,7 @@ export default function HierarchyEntity({
     return () => {
       document.removeEventListener('mousedown', handleClick);
     };
-  }, [focus]);
+  }, [focus, parent]);
 
   return (
     <li>
