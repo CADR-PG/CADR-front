@@ -1,9 +1,15 @@
 import { proxy, snapshot } from 'valtio';
 import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
-import { Object3D } from 'three';
+import { AnimationAction, Object3D } from 'three';
 import { requestFileDownload } from '@/api/client';
 import { normalizeUrlRaw } from './components/helpers/material';
+
+export interface EntityAnimations {
+  [entity: Entity]: {
+    [animation: string]: AnimationAction | null;
+  };
+}
 
 interface NameToClass {
   [name: string]: ComponentType;
@@ -189,4 +195,5 @@ export class EntityManager {
   entities: EntityToComponent = {};
   entitiesCopy: EntityToComponent = {};
   refs: EntityRefs = {};
+  animations: EntityAnimations = {};
 }
