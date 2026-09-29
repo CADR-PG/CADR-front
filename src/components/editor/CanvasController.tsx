@@ -36,7 +36,7 @@ function CanvasController() {
         onPointerMissed={() => focus(null)}
         camera={{ position: [3, 2, -3] }}
         shadows
-        frameloop={running ? 'always' : 'demand'}
+        frameloop={'always'}
       >
         <Physics colliders="hull" paused={!running} debug>
           <AudioListenerProvider>
