@@ -1,3 +1,4 @@
+import { playAnimation, stopAnimation } from '@/engine/Animation';
 import { Component } from '@/engine/Component';
 import cAudio from '@/engine/components/Audio';
 import Collider from '@/engine/components/Collider';
@@ -42,4 +43,6 @@ export const sdk = {
   useEntityManager,
   useKeyboardControls,
   Controls,
+  playAnimation,
+  stopAnimation,
 };

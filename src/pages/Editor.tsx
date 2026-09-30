@@ -14,6 +14,7 @@ import EditingMode from '../types/EditingMode';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { sdk } from '@/data/Sdk';
+import { stopAllAnimations } from '@/engine/Animation';
 
 function Editor() {
   const [focused, focus] = useState<string | null>(null);
@@ -45,6 +46,9 @@ function Editor() {
   const startstop = (newState: boolean) => {
     if (!running && newState) {
       ECS.instance.entityManager.copyScene();
+      // TODO: we should probably create some sort of callback/event
+      // for when scene transforms from editor to game mode
+      stopAllAnimations();
     }
     if (running && !newState) {
       ECS.instance.entityManager.restoreScene();
@@ -78,34 +82,44 @@ function Editor() {
           <KeyboardController>
             <div className="editor-section">
               <Allotment vertical snap={true}>
-                <Allotment.Pane minSize={300} preferredSize={1000}>
-                  <Allotment vertical={false} separator={true} snap={true}>
-                    <Allotment.Pane
-                      minSize={screen.width / 6}
-                      preferredSize={screen.width / 5}
+                <Allotment vertical={false} separator={true} snap={true}>
+                  <Allotment.Pane preferredSize={500}>
+                    <Allotment
+                      vertical={true}
+                      separator={true}
+                      minSize={300}
+                      snap
                     >
-                      <HierarchyWindow />
-                    </Allotment.Pane>
-                    <Allotment.Pane
-                      minSize={screen.width / 3}
-                      preferredSize={screen.width / 3}
-                      snap={false}
-                    >
-                      <CanvasController />
-                    </Allotment.Pane>
-                    <Allotment.Pane
-                      minSize={screen.width / 6}
-                      preferredSize={screen.width / 5}
-                    >
-                      <InspectorWindow />
-                    </Allotment.Pane>
-                  </Allotment>
-                </Allotment.Pane>
-                <Allotment.Pane minSize={150} preferredSize={screen.height / 4}>
-                  <div style={{ height: '100%', overflow: 'auto' }}>
-                    <ProjectWindow />
-                  </div>
-                </Allotment.Pane>
+                      <Allotment.Pane
+                        minSize={screen.width / 6}
+                        preferredSize={300}
+                      >
+                        <HierarchyWindow />
+                      </Allotment.Pane>
+                      <Allotment.Pane
+                        minSize={screen.width / 6}
+                        preferredSize={300}
+                      >
+                        <div style={{ height: '100%', overflow: 'auto' }}>
+                          <ProjectWindow />
+                        </div>
+                      </Allotment.Pane>
+                    </Allotment>
+                  </Allotment.Pane>
+                  <Allotment.Pane
+                    minSize={screen.width / 3}
+                    preferredSize={screen.width / 3}
+                    snap={false}
+                  >
+                    <CanvasController />
+                  </Allotment.Pane>
+                  <Allotment.Pane
+                    minSize={screen.width / 6}
+                    preferredSize={screen.width / 5}
+                  >
+                    <InspectorWindow />
+                  </Allotment.Pane>
+                </Allotment>
               </Allotment>
             </div>
           </KeyboardController>
