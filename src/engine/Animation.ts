@@ -1,20 +1,12 @@
 import { useAnimationStore } from '@/stores/animationStore';
 import { ECS } from './ECS';
 import { Entity } from './Entity';
-import { AnimationAction, LoopOnce } from 'three';
+import { LoopOnce } from 'three';
 
 export function playAnimation(name: string, entity: Entity) {
   const anims = ECS.instance.entityManager.animations[entity];
   Object.values(anims).forEach((a) => a?.stop());
-
-  const callback = (action: { action: AnimationAction }) => {
-    action.action.stop();
-    useAnimationStore.getState().setPlaying(null, entity);
-    anims[name]?.getMixer().removeEventListener('finished', callback);
-  };
-
   anims[name]?.setLoop(LoopOnce, 1);
-  anims[name]?.getMixer().addEventListener('finished', callback);
   anims[name]?.reset().play();
   useAnimationStore.getState().setPlaying(name, entity);
 }
