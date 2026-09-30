@@ -147,6 +147,10 @@ function InspectorWindow() {
     }
   };
 
+  const isInvalidKey = (key: string) => {
+    return key === 'Parent' || key === 'Children';
+  };
+
   return (
     <div className="inspector-window">
       <h3>Inspector</h3>
@@ -154,27 +158,31 @@ function InspectorWindow() {
         <>
           {Object.keys(snap).map((key) => {
             return (
-              <div key={key}>
-                <div
-                  className="component-header"
-                  style={
-                    key === 'Transform' ? { paddingBottom: '18px' } : undefined
-                  }
-                >
-                  <b>{key}</b>
-                  {key !== 'Transform' && (
-                    <IconButton
-                      size="small"
-                      className="component-header-close-btn"
-                      onClick={() => handleDelete(key)}
-                    >
-                      <DeleteIcon></DeleteIcon>
-                    </IconButton>
-                  )}
+              !isInvalidKey(key) && (
+                <div key={key}>
+                  <div
+                    className="component-header"
+                    style={
+                      key === 'Transform'
+                        ? { paddingBottom: '18px' }
+                        : undefined
+                    }
+                  >
+                    <b>{key}</b>
+                    {key !== 'Transform' && (
+                      <IconButton
+                        size="small"
+                        className="component-header-close-btn"
+                        onClick={() => handleDelete(key)}
+                      >
+                        <DeleteIcon></DeleteIcon>
+                      </IconButton>
+                    )}
+                  </div>
+                  <div className="inspector-panel">{renderSwitch(key)}</div>
+                  <hr />
                 </div>
-                <div className="inspector-panel">{renderSwitch(key)}</div>
-                <hr />
-              </div>
+              )
             );
           })}
           <div className="add-component">
