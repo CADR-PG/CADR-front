@@ -15,6 +15,8 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { sdk } from '@/data/Sdk';
 import { stopAllAnimations } from '@/engine/Animation';
+import { requestFileDownload } from '@/api/client';
+import { normalizeUrl } from '@/engine/components/helpers/material';
 
 function Editor() {
   const [focused, focus] = useState<string | null>(null);
@@ -26,15 +28,23 @@ function Editor() {
   const [running, setRunning] = useState(false);
   const [editingMode, selectMode] = useState<EditingMode>('translate');
   const [dnd, setDnd] = useState<string | null>(null);
+  const [scene, setScene] = useState<string | null>(null);
+  const [scenes, setScenes] = useState<string[]>([]);
 
   useEffect(() => {
     async function load() {
       if (data) {
         // TODO: xdd
         const json = data.data.data;
+        console.log('id', json.currentScene);
+        const scene = await requestFileDownload(uuid!, json.currentScene);
+        console.log(scene.data.downloadUrl);
+        const text = await fetch(normalizeUrl(scene));
+        const body = await text.json();
+        console.log('text', body);
         ECS.instance.systems = [];
-        await ECS.instance.entityManager.loadComponents(json, uuid!, sdk);
-        ECS.instance.entityManager.setScene(json);
+        await ECS.instance.entityManager.loadComponents(body, uuid!, sdk);
+        ECS.instance.entityManager.setScene(body);
       }
       if (isError) {
         ECS.instance.entityManager.setScene({});
@@ -72,6 +82,10 @@ function Editor() {
     gDragged,
     dnd,
     setDnd,
+    scene,
+    setScene,
+    scenes,
+    setScenes,
   };
 
   return (
