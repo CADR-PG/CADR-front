@@ -4,7 +4,7 @@ interface SceneData {
   id: string;
   data: {
     currentScene: Asset | null;
-    scenes: Asset[];
+    scenes: (Asset | null)[];
   };
 }
 

@@ -61,19 +61,14 @@ export class EntityManager {
   }
 
   getScene() {
-    const id = useEditorSettingsStore.getState().scene?.id;
-    console.log('scene:', id);
-    const index = useEditorSettingsStore
-      .getState()
-      .scenes.findIndex((e) => e?.id === id);
-    console.log('index:', index);
-    return this.scenes[index];
+    const id = useEditorSettingsStore.getState().scene;
+    return this.scenes[id];
   }
 
   createScene() {
     const initialScene: Asset = { id: null, name: null, directory: null };
     useEditorSettingsStore.setState({
-      scene: initialScene,
+      scene: this.scenes.length,
       scenes: [initialScene],
     });
     this.scenes.push({ entities: {}, entitiesCopy: {}, dirty: false });

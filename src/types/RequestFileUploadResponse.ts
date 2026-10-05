@@ -4,5 +4,5 @@ export default interface RequestFileUploadResponse {
   sizeInBytes: number;
   createdAt: Date;
   lastModifiedAt: Date;
-  uploadUrl: string;
+  downloadUrl: string;
 }
