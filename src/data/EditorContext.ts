@@ -16,10 +16,6 @@ export interface EditorContextValues {
   gDrag: Dispatch<SetStateAction<boolean>>;
   dnd: string | null;
   setDnd: Dispatch<SetStateAction<string | null>>;
-  scene: string | null;
-  setScene: Dispatch<SetStateAction<string | null>>;
-  scenes: string[];
-  setScenes: Dispatch<SetStateAction<string[]>>;
 }
 
 export const EditorContext = createContext<EditorContextValues | undefined>(

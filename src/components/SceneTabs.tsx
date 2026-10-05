@@ -1,0 +1,47 @@
+import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
+import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
+import { IconButton } from '@mui/material';
+import { ECS } from '@/engine/ECS';
+
+export default function SceneTabs() {
+  const { scenes, pushScene, removeScene, setScene, scene } =
+    useEditorSettingsStore();
+
+  const handleAdd = () => {
+    pushScene({ id: null, name: null, directory: null });
+    ECS.instance.entityManager.scenes.push({
+      entities: {},
+      entitiesCopy: {},
+      dirty: false,
+    });
+  };
+
+  const handleClose = (index: number) => {
+    removeScene(index);
+    ECS.instance.entityManager.scenes.splice(index, 1);
+  };
+
+  const handleClick = (index: number) => {
+    if (!scene) return;
+    setScene(scenes[index]);
+  };
+
+  return (
+    <div style={{ display: 'flex' }}>
+      {scenes.map((s, i) => (
+        <div>
+          <span onClick={() => handleClick(i)}>
+            {scene === scenes[i] ? '>' : ''} {s?.name ?? `New scene`}
+          </span>
+          <IconButton onClick={() => handleClose(i)}>
+            <CloseIcon />
+          </IconButton>
+        </div>
+      ))}
+      <IconButton onClick={handleAdd}>
+        <AddIcon />
+      </IconButton>
+    </div>
+  );
+}
