@@ -4,6 +4,13 @@ import { Entity } from './Entity';
 import { AnimationAction, Object3D } from 'three';
 import { requestFileDownload } from '@/api/client';
 import { normalizeUrlRaw } from './components/helpers/material';
+import { Asset, useEditorSettingsStore } from '@/stores/editorSettingsStore';
+
+interface SceneData {
+  entities: EntityToComponent;
+  entitiesCopy: EntityToComponent;
+  dirty: boolean;
+}
 
 export interface EntityAnimations {
   [entity: Entity]: {
@@ -27,18 +34,21 @@ interface EntityRefs {
 }
 
 export class EntityManager {
+  constructor() {
+    this.createScene();
+  }
   createEntity(): Entity {
     const entity = crypto.randomUUID();
 
-    if (!(entity in this.entities)) {
-      this.entities[entity] = {};
+    if (!(entity in this.getScene().entities)) {
+      this.getScene().entities[entity] = {};
     }
 
     return entity;
   }
 
   getEntities(): Entity[] {
-    return Object.keys(this.entities);
+    return Object.keys(this.getScene().entities);
   }
 
   // We are creating a map of component's name to its class. I hope that this will be used
@@ -51,11 +61,27 @@ export class EntityManager {
   }
 
   getScene() {
-    return this.entities;
+    const id = useEditorSettingsStore.getState().scene?.id;
+    console.log('scene:', id);
+    const index = useEditorSettingsStore
+      .getState()
+      .scenes.findIndex((e) => e?.id === id);
+    console.log('index:', index);
+    return this.scenes[index];
   }
 
-  setScene(entities: EntityToComponent) {
-    this.entities = proxy(entities);
+  createScene() {
+    const initialScene: Asset = { id: null, name: null, directory: null };
+    useEditorSettingsStore.setState({
+      scene: initialScene,
+      scenes: [initialScene],
+    });
+    this.scenes.push({ entities: {}, entitiesCopy: {}, dirty: false });
+    return this.scenes.length - 1;
+  }
+
+  setScene(entities: EntityToComponent, index: number) {
+    this.scenes[index].entities = proxy(entities);
   }
 
   // Components imported through scripts should get registered on scene load.
@@ -91,15 +117,15 @@ export class EntityManager {
   // Components shouldn't be created in any other way. Maybe we should somehow restrict it?
   // TODO2: maybe proper error handling instead of void?
   addComponent(component: Component, entity: Entity): void {
-    if (!(entity in this.entities)) return;
+    if (!(entity in this.getScene().entities)) return;
 
-    if (component.name in this.entities[entity]) {
+    if (component.name in this.getScene().entities[entity]) {
       return;
     }
     // how THE FUCK does this shit work??????
     // why this { ...component } shit doesn't cause a type error????
     // this works greatly in my favor, but still wtf?
-    this.entities[entity][component.name] = { ...component };
+    this.getScene().entities[entity][component.name] = { ...component };
   }
 
   // Removing is easy. Just delete the key with the component's name.
@@ -109,11 +135,11 @@ export class EntityManager {
   ): void {
     const instance: T = new component();
 
-    delete this.entities[entity][instance.name];
+    delete this.getScene().entities[entity][instance.name];
   }
 
   destroyEntity(entity: Entity) {
-    const components = this.entities[entity];
+    const components = this.getScene().entities[entity];
     // TODO: return early?
     if (!components) {
       console.log('No components??');
@@ -125,14 +151,14 @@ export class EntityManager {
       this.mapNameToClass[name]?.onEntityDestroyed?.(entity);
     }
 
-    delete this.entities[entity];
+    delete this.getScene().entities[entity];
     delete this.refs[entity];
   }
 
   getComponents(entity: Entity | null): { [name: string]: Component } {
-    if (!entity || !(entity in this.entities)) return proxy({});
+    if (!entity || !(entity in this.getScene().entities)) return proxy({});
 
-    return this.entities[entity];
+    return this.getScene().entities[entity];
   }
 
   getComponent<T extends Component>(
@@ -142,7 +168,7 @@ export class EntityManager {
     const instance: T = new component();
 
     if (this.has(component, entity)) {
-      return this.entities[entity][instance.name] as T;
+      return this.getScene().entities[entity][instance.name] as T;
     } else {
       return null;
     }
@@ -155,11 +181,11 @@ export class EntityManager {
     component: ComponentType<T>,
     entity: Entity,
   ): boolean {
-    if (!this.entities[entity]) return false;
+    if (!this.getScene().entities[entity]) return false;
 
     const instance = new component();
 
-    return instance.name in this.entities[entity];
+    return instance.name in this.getScene().entities[entity];
   }
 
   // PERF: cache components for all systems
@@ -178,17 +204,17 @@ export class EntityManager {
   }
 
   is(component: string, entity: Entity) {
-    return component in this.entities[entity];
+    return component in this.getScene().entities[entity];
   }
 
   copyScene() {
-    const copy = structuredClone(snapshot(this.entities));
-    this.entitiesCopy = proxy(copy);
+    const copy = structuredClone(snapshot(this.getScene().entities));
+    this.getScene().entitiesCopy = proxy(copy);
   }
 
   restoreScene() {
-    this.entities = this.entitiesCopy;
-    this.entitiesCopy = {};
+    this.getScene().entities = this.getScene().entitiesCopy;
+    this.getScene().entitiesCopy = {};
   }
 
   mapNameToClass: NameToClass = {};
@@ -196,4 +222,5 @@ export class EntityManager {
   entitiesCopy: EntityToComponent = {};
   refs: EntityRefs = {};
   animations: EntityAnimations = {};
+  scenes: SceneData[] = [];
 }

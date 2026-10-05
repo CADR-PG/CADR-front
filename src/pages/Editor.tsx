@@ -17,6 +17,8 @@ import { sdk } from '@/data/Sdk';
 import { stopAllAnimations } from '@/engine/Animation';
 import { requestFileDownload } from '@/api/client';
 import { normalizeUrl } from '@/engine/components/helpers/material';
+import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
+import SceneTabs from '@/components/SceneTabs';
 
 function Editor() {
   const [focused, focus] = useState<string | null>(null);
@@ -28,26 +30,27 @@ function Editor() {
   const [running, setRunning] = useState(false);
   const [editingMode, selectMode] = useState<EditingMode>('translate');
   const [dnd, setDnd] = useState<string | null>(null);
-  const [scene, setScene] = useState<string | null>(null);
-  const [scenes, setScenes] = useState<string[]>([]);
+  const { setScene } = useEditorSettingsStore();
 
   useEffect(() => {
     async function load() {
-      if (data) {
+      if (false) {
+        const index = ECS.instance.entityManager.createScene();
         // TODO: xdd
         const json = data.data.data;
-        console.log('id', json.currentScene);
-        const scene = await requestFileDownload(uuid!, json.currentScene);
-        console.log(scene.data.downloadUrl);
+        if (!json.currentScene) return;
+
+        const scene = await requestFileDownload(uuid!, json.currentScene.id);
         const text = await fetch(normalizeUrl(scene));
         const body = await text.json();
-        console.log('text', body);
+
         ECS.instance.systems = [];
         await ECS.instance.entityManager.loadComponents(body, uuid!, sdk);
-        ECS.instance.entityManager.setScene(body);
+        ECS.instance.entityManager.setScene(body, index);
+        setScene(json.currentScene);
       }
       if (isError) {
-        ECS.instance.entityManager.setScene({});
+        ECS.instance.entityManager.createScene();
       }
     }
     load();
@@ -82,10 +85,6 @@ function Editor() {
     gDragged,
     dnd,
     setDnd,
-    scene,
-    setScene,
-    scenes,
-    setScenes,
   };
 
   return (
@@ -125,6 +124,7 @@ function Editor() {
                     preferredSize={screen.width / 3}
                     snap={false}
                   >
+                    <SceneTabs />
                     <CanvasController />
                   </Allotment.Pane>
                   <Allotment.Pane

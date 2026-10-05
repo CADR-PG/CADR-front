@@ -12,6 +12,7 @@ import type {
   AssetsDirectory,
   AssetsFileUploadReadModel,
 } from '../types/Assets';
+import RequestFileUploadResponse from '@/types/RequestFileUploadResponse';
 
 const localApiUrl = '/api';
 const productionApiUrl = 'https://api.cadr.games';
@@ -176,5 +177,11 @@ export const requestFileDownload = async (
 export const deleteFile = async (projectId: string, fileId: string) => {
   return await apiClient.delete(
     `/projects/${projectId}/assets/files/${fileId}`,
+  );
+};
+
+export const requestFileUpload = async (projectId: string, fileId: string) => {
+  return await apiClient.post<RequestFileUploadResponse>(
+    `/projects/${projectId}/assets/files/${fileId}/move`,
   );
 };

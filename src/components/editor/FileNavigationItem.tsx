@@ -22,12 +22,17 @@ import useEntityManager from '../../hooks/useEntityManager';
 import { useSnackbarStore } from '../../stores/snackbarStore';
 import useUploadFile from '@/hooks/useUploadFile';
 import { useAssetsStore } from '@/stores/assetsStore';
+import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
+import useReplaceFile from '@/hooks/useReplaceFile';
 
 function FileNavigationItem() {
   const em = useEntityManager();
-  const { focus, scene, setScene, scenes, setScenes } = useEditorContext();
+  const { focus } = useEditorContext();
+  const { scene, setScene, scenes, setScenes, updateScene } =
+    useEditorSettingsStore();
   const { mutate } = useSaveScene();
   const { data, mutate: upload } = useUploadFile();
+  const { mutate: replace } = useReplaceFile();
   const { uuid } = useParams();
   const filePickerRef = useRef<(HTMLInputElement | null)[]>([]);
   const { openSnackbar } = useSnackbarStore();
@@ -39,17 +44,20 @@ function FileNavigationItem() {
 
   useEffect(() => {
     if (!data) return;
-    setScene(() => {
-      mutate({
-        id: uuid ? uuid : '',
-        data: {
-          currentScene: data.data.id,
-          scenes: scenes,
-        },
-      });
-      return data.data.id;
+    const cs = {
+      id: data.data.id,
+      name: data.data.name,
+      directory: data.directoryId,
+    };
+    // setScene(cs);
+    updateScene(cs);
+    mutate({
+      id: uuid ? uuid : '',
+      data: {
+        currentScene: cs,
+        scenes: scenes,
+      },
     });
-    // setScenes((prev) => [...prev, data.data.id]);
   }, [data]);
 
   const handleClose = () => {
@@ -60,11 +68,22 @@ function FileNavigationItem() {
     if (!assets) return;
 
     const entities = em.getScene();
-    const file = new File([JSON.stringify(entities)], name + '.scene');
-    const text = await file.text();
+    const file = new File(
+      [JSON.stringify(entities)],
+      name.replace('.scene', '') + '.scene',
+    );
 
     upload({ file, directoryId: dir });
     setOpen(false);
+  };
+
+  const handleReplace = async () => {
+    if (!assets || !scene) return;
+
+    const entities = em.getScene();
+    const file = new File([JSON.stringify(entities)], scene.name + '.scene');
+
+    replace({ file });
   };
 
   const handleSelect = (event: SelectChangeEvent) => {
@@ -97,8 +116,13 @@ function FileNavigationItem() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
-        setOpen(true);
-        // saveScene();
+
+        // if new scene, open dialog. save otherwise
+        if (!scene.name) {
+          setOpen(true);
+        } else {
+          handleReplace();
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);

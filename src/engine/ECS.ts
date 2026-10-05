@@ -82,7 +82,7 @@ export class ECS {
     const components = structuredClone(
       snapshot(this.entityManager.getComponents(entity)),
     );
-    this.entityManager.entities[newEntity] = proxy(components);
+    this.entityManager.getScene().entities[newEntity] = proxy(components);
     return newEntity;
   }
 }
