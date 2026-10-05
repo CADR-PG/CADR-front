@@ -28,8 +28,7 @@ import useReplaceFile from '@/hooks/useReplaceFile';
 function FileNavigationItem() {
   const em = useEntityManager();
   const { focus } = useEditorContext();
-  const { scene, setScene, scenes, setScenes, updateScene } =
-    useEditorSettingsStore();
+  const { scene, scenes, updateScene } = useEditorSettingsStore();
   const { mutate } = useSaveScene();
   const { data, mutate: upload } = useUploadFile();
   const { mutate: replace } = useReplaceFile();
@@ -49,8 +48,7 @@ function FileNavigationItem() {
       name: data.data.name,
       directory: data.directoryId,
     };
-    // setScene(cs);
-    updateScene(cs);
+    updateScene(cs, scene);
     mutate({
       id: uuid ? uuid : '',
       data: {
@@ -67,7 +65,7 @@ function FileNavigationItem() {
   const handleSave = async () => {
     if (!assets) return;
 
-    const entities = em.getScene();
+    const entities = em.getScene().entities;
     const file = new File(
       [JSON.stringify(entities)],
       name.replace('.scene', '') + '.scene',
@@ -78,12 +76,16 @@ function FileNavigationItem() {
   };
 
   const handleReplace = async () => {
-    if (!assets || !scene) return;
+    if (!assets) return;
 
-    const entities = em.getScene();
-    const file = new File([JSON.stringify(entities)], scene.name + '.scene');
+    const entities = em.getScene().entities;
+    const file = new File(
+      [JSON.stringify(entities)],
+      scenes[scene].name?.replace('.scene', '') + '.scene',
+    );
 
-    replace({ file });
+    const id = scenes[scene].id;
+    replace({ file, id });
   };
 
   const handleSelect = (event: SelectChangeEvent) => {
@@ -118,9 +120,10 @@ function FileNavigationItem() {
         e.preventDefault();
 
         // if new scene, open dialog. save otherwise
-        if (!scene.name) {
+        if (!scenes[scene].name) {
           setOpen(true);
         } else {
+          console.log('replace');
           handleReplace();
         }
       }

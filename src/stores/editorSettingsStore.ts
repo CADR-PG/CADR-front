@@ -7,26 +7,26 @@ export interface Asset {
 }
 
 interface State {
-  scene: Asset | null;
+  scene: number;
   scenes: (Asset | null)[];
 }
 
 interface Action {
-  setScene: (scene: Asset | null) => void;
+  setScene: (scene: number) => void;
   setScenes: (scenes: Asset[]) => void;
   pushScene: (scene: Asset | null) => void;
   removeScene: (index: number) => void;
-  updateScene: (scene: Asset | null) => void;
+  updateScene: (scene: Asset | null, index: number) => void;
 }
 
 const initialState: State = {
-  scene: null,
+  scene: -1,
   scenes: [],
 };
 
 export const useEditorSettingsStore = create<State & Action>((set) => ({
   ...initialState,
-  setScene: (scene: Asset | null) => {
+  setScene: (scene: number) => {
     set({ scene });
   },
   setScenes: (scenes: Asset[]) => {
@@ -36,14 +36,20 @@ export const useEditorSettingsStore = create<State & Action>((set) => ({
     set((state) => ({ scenes: [...state.scenes, scene] }));
   },
   removeScene: (index: number) => {
-    set((state) => ({ scenes: state.scenes.filter((_, i) => i !== index) }));
-  },
-  updateScene: (scene: Asset | null) => {
     set((state) => {
-      if (!scene) return { scene: { id: null, name: null, directory: null } };
       return {
-        scene: { id: scene.id, name: scene.name, directory: scene.directory },
+        scene: index < state.scene ? state.scene - 1 : state.scene,
+        scenes: state.scenes.filter((_, i) => i !== index),
       };
     });
+  },
+  updateScene: (scene, index) => {
+    set((state) => ({
+      scenes: state.scenes.map((s, i) => {
+        if (i !== index) return s;
+        if (!scene) return { id: null, name: null, directory: null };
+        return { id: scene.id, name: scene.name, directory: scene.directory };
+      }),
+    }));
   },
 }));
