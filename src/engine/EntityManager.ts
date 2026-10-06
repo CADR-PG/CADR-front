@@ -3,13 +3,16 @@ import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
 import { AnimationAction, Object3D } from 'three';
 import { requestFileDownload } from '@/api/client';
-import { normalizeUrlRaw } from './components/helpers/material';
+import { normalizeUrl, normalizeUrlRaw } from './components/helpers/material';
 import { Asset, useEditorSettingsStore } from '@/stores/editorSettingsStore';
+import { Vec3 } from './components/Transform';
 
 interface SceneData {
+  id: number;
   entities: EntityToComponent;
   entitiesCopy: EntityToComponent;
   dirty: boolean;
+  lastCameraPosition?: Vec3;
 }
 
 export interface EntityAnimations {
@@ -61,22 +64,35 @@ export class EntityManager {
   }
 
   getScene() {
-    const id = useEditorSettingsStore.getState().scene;
-    return this.scenes[id];
+    return this.scenes[this.currentScene];
   }
 
   createScene() {
-    const initialScene: Asset = { id: null, name: null, directory: null };
-    useEditorSettingsStore.setState({
-      scene: this.scenes.length,
-      scenes: [initialScene],
+    const id = this.sceneId;
+    this.scenes.push({
+      id,
+      entities: {},
+      entitiesCopy: {},
+      dirty: false,
+      lastCameraPosition: [3, 2, 3],
     });
-    this.scenes.push({ entities: {}, entitiesCopy: {}, dirty: false });
-    return this.scenes.length - 1;
+
+    const newScene: Asset = {
+      id: null,
+      name: null,
+      directory: null,
+    };
+    useEditorSettingsStore.getState().pushScene(newScene);
+
+    this.sceneId = this.sceneId + 1;
+
+    return id;
   }
 
   setScene(entities: EntityToComponent, index: number) {
     this.scenes[index].entities = proxy(entities);
+    this.scenes[index].id = this.sceneId;
+    this.sceneId = this.sceneId + 1;
   }
 
   // Components imported through scripts should get registered on scene load.
@@ -218,4 +234,6 @@ export class EntityManager {
   refs: EntityRefs = {};
   animations: EntityAnimations = {};
   scenes: SceneData[] = [];
+  currentScene: number = 0;
+  sceneId: number = 0;
 }

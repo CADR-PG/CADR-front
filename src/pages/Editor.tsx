@@ -17,10 +17,12 @@ import { sdk } from '@/data/Sdk';
 import { stopAllAnimations } from '@/engine/Animation';
 import { requestFileDownload } from '@/api/client';
 import { normalizeUrl } from '@/engine/components/helpers/material';
-import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
 import SceneTabs from '@/components/SceneTabs';
+import useEntityManager from '@/hooks/useEntityManager';
+import { Camera } from 'three';
 
 function Editor() {
+  const em = useEntityManager();
   const [focused, focus] = useState<string | null>(null);
   const [hovered, hover] = useState<string | null>(null);
   const [dragged, drag] = useState<boolean>(false);
@@ -30,7 +32,8 @@ function Editor() {
   const [running, setRunning] = useState(false);
   const [editingMode, selectMode] = useState<EditingMode>('translate');
   const [dnd, setDnd] = useState<string | null>(null);
-  const { setScene } = useEditorSettingsStore();
+  const [camera, setCamera] = useState<Camera>(null!);
+  // const { setScene } = useEditorSettingsStore();
 
   useEffect(() => {
     async function load() {
@@ -85,6 +88,8 @@ function Editor() {
     gDragged,
     dnd,
     setDnd,
+    camera,
+    setCamera,
   };
 
   return (
@@ -125,7 +130,9 @@ function Editor() {
                     snap={false}
                   >
                     <SceneTabs />
-                    <CanvasController />
+                    <CanvasController
+                      key={`${em.currentScene} ${em.getScene().id}`}
+                    />
                   </Allotment.Pane>
                   <Allotment.Pane
                     minSize={screen.width / 6}
