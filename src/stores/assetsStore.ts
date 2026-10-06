@@ -55,6 +55,14 @@ function insertFile(
   };
 }
 
+// function updateFile(tree: AssetsDirectory, fileId: string, newFile: AssetsFile) {
+//   for (const file of tree.files) {
+//     if (file.id === fileId) {
+//       return { ...tree, files: [...(tree.files.map)]}
+//     }
+//   }
+// }
+
 function removeFileById(
   tree: AssetsDirectory,
   fileId: string,

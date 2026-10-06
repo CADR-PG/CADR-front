@@ -1,5 +1,6 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
 import EditingMode from '../types/EditingMode';
+import { Camera } from 'three';
 
 export interface EditorContextValues {
   focused: string | null;
@@ -16,6 +17,8 @@ export interface EditorContextValues {
   gDrag: Dispatch<SetStateAction<boolean>>;
   dnd: string | null;
   setDnd: Dispatch<SetStateAction<string | null>>;
+  camera: Camera;
+  setCamera: Dispatch<SetStateAction<Camera>>;
 }
 
 export const EditorContext = createContext<EditorContextValues | undefined>(

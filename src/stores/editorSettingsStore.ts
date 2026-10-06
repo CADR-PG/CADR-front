@@ -3,16 +3,14 @@ import { create } from 'zustand';
 export interface Asset {
   id: string | null;
   name: string | null;
-  directory: string | null;
+  directoryId: string | null;
 }
 
 interface State {
-  scene: number;
   scenes: (Asset | null)[];
 }
 
 interface Action {
-  setScene: (scene: number) => void;
   setScenes: (scenes: Asset[]) => void;
   pushScene: (scene: Asset | null) => void;
   removeScene: (index: number) => void;
@@ -20,15 +18,11 @@ interface Action {
 }
 
 const initialState: State = {
-  scene: -1,
   scenes: [],
 };
 
 export const useEditorSettingsStore = create<State & Action>((set) => ({
   ...initialState,
-  setScene: (scene: number) => {
-    set({ scene });
-  },
   setScenes: (scenes: Asset[]) => {
     set({ scenes });
   },
@@ -38,7 +32,6 @@ export const useEditorSettingsStore = create<State & Action>((set) => ({
   removeScene: (index: number) => {
     set((state) => {
       return {
-        scene: index < state.scene ? state.scene - 1 : state.scene,
         scenes: state.scenes.filter((_, i) => i !== index),
       };
     });
@@ -47,8 +40,12 @@ export const useEditorSettingsStore = create<State & Action>((set) => ({
     set((state) => ({
       scenes: state.scenes.map((s, i) => {
         if (i !== index) return s;
-        if (!scene) return { id: null, name: null, directory: null };
-        return { id: scene.id, name: scene.name, directory: scene.directory };
+        if (!scene) return { id: null, name: null, directoryId: null };
+        return {
+          id: scene.id,
+          name: scene.name,
+          directoryId: scene.directoryId,
+        };
       }),
     }));
   },

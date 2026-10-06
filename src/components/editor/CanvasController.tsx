@@ -20,9 +20,30 @@ import AudioListenerProvider from './AudioListenerProvider';
 import ScriptSystem from '../../engine/systems/ScriptSystem';
 import UISystem from '@/engine/systems/UISystem';
 import RenderSystemWrapper from '@/engine/systems/RenderSystemWrapper';
+import useEntityManager from '@/hooks/useEntityManager';
+import { useDrop } from 'react-dnd';
+import { DndTypes } from '@/types/DndTypes';
+import { AssetsFile } from '@/types/Assets';
+import { loadScene } from '@/engine/Scene';
+import { useParams } from 'react-router-dom';
 
 function CanvasController() {
-  const { running, focus } = useEditorContext();
+  const { running, focus, setCamera } = useEditorContext();
+  const em = useEntityManager();
+  const { uuid } = useParams();
+  const [_, drop] = useDrop(
+    () => ({
+      accept: DndTypes.FILE,
+      drop: (item: AssetsFile, _monitor) => {
+        loadScene(uuid!, item);
+      },
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver(),
+        canDrop: !!monitor.canDrop(),
+      }),
+    }),
+    [],
+  );
   useEditorKeys();
   RectAreaLightTexturesLib.init();
 
@@ -34,9 +55,13 @@ function CanvasController() {
       <Canvas
         className="canvas"
         onPointerMissed={() => focus(null)}
-        camera={{ position: [3, 2, -3] }}
+        camera={{ position: em.getScene().lastCameraPosition }}
         shadows
         frameloop={'always'}
+        onCreated={({ camera }) => setCamera(camera)}
+        ref={(node) => {
+          drop(node);
+        }}
       >
         <Physics colliders="hull" paused={!running} debug>
           <AudioListenerProvider>

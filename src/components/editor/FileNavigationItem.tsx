@@ -4,7 +4,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Input,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -28,7 +27,7 @@ import useReplaceFile from '@/hooks/useReplaceFile';
 function FileNavigationItem() {
   const em = useEntityManager();
   const { focus } = useEditorContext();
-  const { scene, scenes, updateScene } = useEditorSettingsStore();
+  const { scenes, updateScene } = useEditorSettingsStore();
   const { mutate } = useSaveScene();
   const { data, mutate: upload } = useUploadFile();
   const { mutate: replace } = useReplaceFile();
@@ -46,9 +45,9 @@ function FileNavigationItem() {
     const cs = {
       id: data.data.id,
       name: data.data.name,
-      directory: data.directoryId,
+      directoryId: data.directoryId,
     };
-    updateScene(cs, scene);
+    updateScene(cs, em.currentScene);
     mutate({
       id: uuid ? uuid : '',
       data: {
@@ -81,11 +80,11 @@ function FileNavigationItem() {
     const entities = em.getScene().entities;
     const file = new File(
       [JSON.stringify(entities)],
-      scenes[scene].name?.replace('.scene', '') + '.scene',
+      scenes[em.currentScene]?.name?.replace('.scene', '') + '.scene',
     );
-
-    const id = scenes[scene].id;
-    replace({ file, id });
+    const id = scenes[em.currentScene]?.id;
+    const directoryId = scenes[em.currentScene]?.directoryId;
+    replace({ file, id, directoryId });
   };
 
   const handleSelect = (event: SelectChangeEvent) => {
@@ -120,7 +119,7 @@ function FileNavigationItem() {
         e.preventDefault();
 
         // if new scene, open dialog. save otherwise
-        if (!scenes[scene].name) {
+        if (!scenes[em.currentScene].name) {
           setOpen(true);
         } else {
           console.log('replace');

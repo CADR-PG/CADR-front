@@ -4,51 +4,56 @@ import AddIcon from '@mui/icons-material/Add';
 import { IconButton } from '@mui/material';
 import { ECS } from '@/engine/ECS';
 import { useEditorContext } from '@/hooks/useEditorContext';
+import useEntityManager from '@/hooks/useEntityManager';
 
 export default function SceneTabs() {
-  const { scenes, pushScene, removeScene, setScene, scene } =
-    useEditorSettingsStore();
-  const { focus } = useEditorContext();
+  const { scenes, removeScene } = useEditorSettingsStore();
+  const { focus, camera } = useEditorContext();
+  const em = useEntityManager();
 
   const handleAdd = () => {
-    pushScene({ id: null, name: null, directory: null });
-    ECS.instance.entityManager.scenes.push({
-      entities: {},
-      entitiesCopy: {},
-      dirty: false,
-    });
+    ECS.instance.entityManager.createScene();
     console.log('scenes:', ECS.instance.entityManager.scenes);
   };
 
   const handleClose = (index: number) => {
+    const em = ECS.instance.entityManager;
+    em.scenes.splice(index, 1);
     removeScene(index);
-    ECS.instance.entityManager.scenes.splice(index, 1);
 
-    if (scene === index) {
-      setScene(scene - 1);
-      if (scene === -1) {
-        pushScene({ id: null, name: null, directory: null });
-        ECS.instance.entityManager.scenes.push({
-          entities: {},
-          entitiesCopy: {},
-          dirty: false,
-        });
-      }
+    if (em.scenes.length === 0) {
+      em.createScene();
     }
+
+    let next = em.currentScene;
+    if (
+      index < em.currentScene ||
+      (index === em.currentScene && em.currentScene > 0)
+    ) {
+      next = em.currentScene - 1;
+    }
+    next = Math.min(next, em.scenes.length - 1);
+    console.log('Scenes:', em.scenes, 'index:', next);
+    em.currentScene = next;
+    focus(null);
   };
 
   const handleClick = (index: number) => {
-    console.log('uhh');
-    setScene(index);
+    ECS.instance.entityManager.getScene().lastCameraPosition = [
+      camera.position.x,
+      camera.position.y,
+      camera.position.z,
+    ];
+    ECS.instance.entityManager.currentScene = index;
     focus(null);
   };
 
   return (
     <div style={{ display: 'flex' }}>
       {scenes.map((s, i) => (
-        <div>
+        <div key={i}>
           <span onClick={() => handleClick(i)}>
-            {scene === i ? '>' : ''} {s?.name ?? `New scene`}
+            {em.currentScene === i ? '>' : ''} {s?.name ?? `New scene`}
           </span>
           <IconButton onClick={() => handleClose(i)}>
             <CloseIcon />
