@@ -1,14 +1,23 @@
 import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
-import { IconButton } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+} from '@mui/material';
 import { ECS } from '@/engine/ECS';
 import { useEditorContext } from '@/hooks/useEditorContext';
 import useEntityManager from '@/hooks/useEntityManager';
 import useSaveScene from '@/hooks/useSaveScene';
 import { useParams } from 'react-router-dom';
+import { useState } from 'react';
 
 export default function SceneTabs() {
+  const [closingTab, setClosingTab] = useState<number | null>(null!);
   const { scenes, removeScene } = useEditorSettingsStore();
   const { focus, camera } = useEditorContext();
   const { mutate: saveScene } = useSaveScene();
@@ -76,21 +85,50 @@ export default function SceneTabs() {
   };
 
   return (
-    <div style={{ display: 'flex' }}>
-      {scenes.map((s, i) => (
-        <div key={i}>
-          <span onClick={() => handleClick(i)}>
-            {em.currentScene === i ? '>' : ''} {s?.name ?? `New scene`}{' '}
-            {em.scenes[i] && em.scenes[i].dirty ? '[!]' : ''}
-          </span>
-          <IconButton onClick={() => handleClose(i)}>
-            <CloseIcon />
-          </IconButton>
-        </div>
-      ))}
-      <IconButton onClick={handleAdd}>
-        <AddIcon />
-      </IconButton>
-    </div>
+    <>
+      <div style={{ display: 'flex' }}>
+        {scenes.map((s, i) => (
+          <div key={i}>
+            <span onClick={() => handleClick(i)}>
+              {em.currentScene === i ? '>' : ''} {s?.name ?? `New scene`}{' '}
+              {em.scenes[i] && em.scenes[i].dirty ? '[!]' : ''}
+            </span>
+            <IconButton
+              onClick={() =>
+                em.scenes[i] && em.scenes[i].dirty
+                  ? setClosingTab(i)
+                  : handleClose(i)
+              }
+            >
+              <CloseIcon />
+            </IconButton>
+          </div>
+        ))}
+        <IconButton onClick={handleAdd}>
+          <AddIcon />
+        </IconButton>
+      </div>
+      <Dialog
+        open={closingTab !== null}
+        onClose={() => setClosingTab(null)}
+        role="dialog"
+      >
+        <DialogTitle>Unsaved changes</DialogTitle>
+        <DialogContent>
+          You have unsaved changes. Are you sure you want to close the scene?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setClosingTab(null)}>Cancel</Button>
+          <Button
+            onClick={() => {
+              handleClose(closingTab!);
+              setClosingTab(null);
+            }}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
