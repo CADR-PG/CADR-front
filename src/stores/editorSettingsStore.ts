@@ -40,7 +40,6 @@ export const useEditorSettingsStore = create<State & Action>((set) => ({
     set((state) => ({
       scenes: state.scenes.map((s, i) => {
         if (i !== index) return s;
-        if (!scene) return { id: null, name: null, directoryId: null };
         return {
           id: scene.id,
           name: scene.name,

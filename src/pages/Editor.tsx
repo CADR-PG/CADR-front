@@ -20,6 +20,7 @@ import { normalizeUrl } from '@/engine/components/helpers/material';
 import SceneTabs from '@/components/SceneTabs';
 import useEntityManager from '@/hooks/useEntityManager';
 import { Camera } from 'three';
+import { loadScene } from '@/engine/Scene';
 
 function Editor() {
   const em = useEntityManager();
@@ -37,23 +38,22 @@ function Editor() {
 
   useEffect(() => {
     async function load() {
-      if (false) {
-        const index = ECS.instance.entityManager.createScene();
+      if (data) {
+        const em = ECS.instance.entityManager;
         // TODO: xdd
         const json = data.data.data;
-        if (!json.currentScene) return;
-
-        const scene = await requestFileDownload(uuid!, json.currentScene.id);
-        const text = await fetch(normalizeUrl(scene));
-        const body = await text.json();
-
-        ECS.instance.systems = [];
-        await ECS.instance.entityManager.loadComponents(body, uuid!, sdk);
-        ECS.instance.entityManager.setScene(body, index);
-        setScene(json.currentScene);
+        json.scenes.forEach((scene, i) => {
+          if (i > em.scenes.length - 1) {
+            em.createScene();
+          }
+          if (scene && scene.id) {
+            loadScene(uuid!, scene, i);
+          }
+        });
+        em.currentScene = json.currentScene;
       }
       if (isError) {
-        ECS.instance.entityManager.createScene();
+        console.error('Something went wrong with scene initialization');
       }
     }
     load();
