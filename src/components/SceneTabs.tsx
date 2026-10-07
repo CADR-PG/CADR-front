@@ -80,7 +80,8 @@ export default function SceneTabs() {
       {scenes.map((s, i) => (
         <div key={i}>
           <span onClick={() => handleClick(i)}>
-            {em.currentScene === i ? '>' : ''} {s?.name ?? `New scene`}
+            {em.currentScene === i ? '>' : ''} {s?.name ?? `New scene`}{' '}
+            {em.scenes[i] && em.scenes[i].dirty ? '[!]' : ''}
           </span>
           <IconButton onClick={() => handleClose(i)}>
             <CloseIcon />

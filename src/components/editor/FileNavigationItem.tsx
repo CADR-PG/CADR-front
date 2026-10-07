@@ -44,6 +44,22 @@ function FileNavigationItem() {
   const { getDirs, assets } = useAssetsStore();
   const [dir, setDir] = useState<string>(null!);
 
+  // display confirmation popup if user really wants to leave the page
+  // when scene is not saved
+  useEffect(() => {
+    const exitConfirmationCallback = (event: BeforeUnloadEvent) => {
+      const em = ECS.instance.entityManager;
+      if (em.scenes.some((s) => s.dirty)) {
+        event.preventDefault();
+        return '';
+      }
+    };
+    window.addEventListener('beforeunload', exitConfirmationCallback);
+    return () => {
+      window.removeEventListener('beforeunload', exitConfirmationCallback);
+    };
+  }, []);
+
   useEffect(() => {
     if (!data) return;
 

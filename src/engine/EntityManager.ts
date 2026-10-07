@@ -1,4 +1,4 @@
-import { proxy, snapshot } from 'valtio';
+import { proxy, snapshot, subscribe } from 'valtio';
 import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
 import { AnimationAction, Object3D } from 'three';
@@ -41,7 +41,9 @@ interface EntityRefs {
 
 export class EntityManager {
   constructor() {
-    this.createScene();
+    if (this.scenes.length === 0) {
+      this.createScene();
+    }
   }
   createEntity(): Entity {
     const entity = crypto.randomUUID();
@@ -76,7 +78,7 @@ export class EntityManager {
       id,
       entities: {},
       entitiesCopy: {},
-      dirty: false,
+      dirty: true,
       lastCameraPosition: INITIAL_CAMERA_POSITION,
     });
 
@@ -97,6 +99,7 @@ export class EntityManager {
     this.scenes[index].entities = proxy(scene.entities);
     this.scenes[index].lastCameraPosition = scene.camera;
     this.scenes[index].id = this.sceneId;
+    this.scenes[index].dirty = false;
     this.sceneId = this.sceneId + 1;
   }
 

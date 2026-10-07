@@ -13,10 +13,7 @@ import { ECS } from '../engine/ECS';
 import EditingMode from '../types/EditingMode';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { sdk } from '@/data/Sdk';
 import { stopAllAnimations } from '@/engine/Animation';
-import { requestFileDownload } from '@/api/client';
-import { normalizeUrl } from '@/engine/components/helpers/material';
 import SceneTabs from '@/components/SceneTabs';
 import useEntityManager from '@/hooks/useEntityManager';
 import { Camera } from 'three';
@@ -34,7 +31,6 @@ function Editor() {
   const [editingMode, selectMode] = useState<EditingMode>('translate');
   const [dnd, setDnd] = useState<string | null>(null);
   const [camera, setCamera] = useState<Camera>(null!);
-  // const { setScene } = useEditorSettingsStore();
 
   useEffect(() => {
     async function load() {
@@ -65,8 +61,10 @@ function Editor() {
       // TODO: we should probably create some sort of callback/event
       // for when scene transforms from editor to game mode
       stopAllAnimations();
+      ECS.instance.isRunning = true;
     }
     if (running && !newState) {
+      ECS.instance.isRunning = false;
       ECS.instance.entityManager.restoreScene();
     }
 

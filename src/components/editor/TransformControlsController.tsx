@@ -72,6 +72,7 @@ export default function TransformControlsController({
           onMouseUp={() => {
             drag(false);
             lDrag(false);
+            ECS.instance.entityManager.getScene().dirty = true;
           }}
         />
       )}
