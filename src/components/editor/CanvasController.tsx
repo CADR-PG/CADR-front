@@ -26,16 +26,37 @@ import { DndTypes } from '@/types/DndTypes';
 import { AssetsFile } from '@/types/Assets';
 import { loadScene } from '@/engine/Scene';
 import { useParams } from 'react-router-dom';
+import useSaveScene from '@/hooks/useSaveScene';
+import { ECS } from '@/engine/ECS';
+import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
 
 function CanvasController() {
   const { running, focus, setCamera } = useEditorContext();
   const em = useEntityManager();
   const { uuid } = useParams();
+  const { mutate: saveScene } = useSaveScene();
+  const { scenes } = useEditorSettingsStore();
   const [_, drop] = useDrop(
     () => ({
       accept: DndTypes.FILE,
       drop: (item: AssetsFile, _monitor) => {
+        const em = ECS.instance.entityManager;
+        const localScenes = [...scenes];
+        localScenes[em.currentScene] = {
+          id: item.id,
+          name: item.name,
+          directoryId: item.directoryId,
+        };
+
         loadScene(uuid!, item);
+
+        saveScene({
+          id: uuid ? uuid : '',
+          data: {
+            currentScene: em.currentScene,
+            scenes: localScenes,
+          },
+        });
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
