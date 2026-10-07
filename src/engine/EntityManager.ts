@@ -3,9 +3,12 @@ import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
 import { AnimationAction, Object3D } from 'three';
 import { requestFileDownload } from '@/api/client';
-import { normalizeUrl, normalizeUrlRaw } from './components/helpers/material';
+import { normalizeUrlRaw } from './components/helpers/material';
 import { Asset, useEditorSettingsStore } from '@/stores/editorSettingsStore';
 import { Vec3 } from './components/Transform';
+import SceneJSON from '@/types/SceneJSON';
+
+const INITIAL_CAMERA_POSITION: Vec3 = [3, 2, 3];
 
 interface SceneData {
   id: number;
@@ -74,23 +77,25 @@ export class EntityManager {
       entities: {},
       entitiesCopy: {},
       dirty: false,
-      lastCameraPosition: [3, 2, 3],
+      lastCameraPosition: INITIAL_CAMERA_POSITION,
     });
 
     const newScene: Asset = {
       id: null,
       name: null,
-      directory: null,
+      directoryId: null,
     };
     useEditorSettingsStore.getState().pushScene(newScene);
 
     this.sceneId = this.sceneId + 1;
+    this.currentScene = this.scenes.length - 1;
 
     return id;
   }
 
-  setScene(entities: EntityToComponent, index: number) {
-    this.scenes[index].entities = proxy(entities);
+  setScene(scene: SceneJSON, index: number) {
+    this.scenes[index].entities = proxy(scene.entities);
+    this.scenes[index].lastCameraPosition = scene.camera;
     this.scenes[index].id = this.sceneId;
     this.sceneId = this.sceneId + 1;
   }

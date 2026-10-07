@@ -14,6 +14,8 @@ import { AssetsContext, useAssetsContext } from '../../data/AssetsContext';
 import { formatFileSize } from '../../utils/formatFileSize';
 import { useDrag } from 'react-dnd';
 import { DndTypes } from '../../types/DndTypes';
+import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
+import { useSnackbarStore } from '@/stores/snackbarStore';
 
 interface FileItemProps {
   file: AssetsFile;
@@ -37,6 +39,17 @@ function FileItem({ file }: FileItemProps) {
     }),
   }));
   const deleteFile = useDeleteFile();
+  const { scenes } = useEditorSettingsStore();
+  const { openSnackbar } = useSnackbarStore();
+  const handleDelete = () => {
+    for (const scene of scenes) {
+      if (scene?.id === file.id) {
+        openSnackbar("You can't delete opened scene", 'error');
+        return;
+      }
+    }
+    deleteFile.mutate(file.id);
+  };
 
   return (
     <div
@@ -55,7 +68,7 @@ function FileItem({ file }: FileItemProps) {
       </span>
       <IconButton
         size="small"
-        onClick={() => deleteFile.mutate(file.id)}
+        onClick={() => handleDelete()}
         disabled={deleteFile.isPending}
       >
         <DeleteIcon fontSize="small" />

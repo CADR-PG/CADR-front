@@ -23,14 +23,18 @@ import useUploadFile from '@/hooks/useUploadFile';
 import { useAssetsStore } from '@/stores/assetsStore';
 import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
 import useReplaceFile from '@/hooks/useReplaceFile';
+import SceneJSON from '@/types/SceneJSON';
+import { ECS } from '@/engine/ECS';
+import RequestFileUploadResponse from '@/types/RequestFileUploadResponse';
+import { AssetsFileUploadReadModel } from '@/types/Assets';
 
 function FileNavigationItem() {
   const em = useEntityManager();
-  const { focus } = useEditorContext();
+  const { focus, camera } = useEditorContext();
   const { scenes, updateScene } = useEditorSettingsStore();
   const { mutate } = useSaveScene();
   const { data, mutate: upload } = useUploadFile();
-  const { mutate: replace } = useReplaceFile();
+  const { data: replaceData, mutate: replace } = useReplaceFile();
   const { uuid } = useParams();
   const filePickerRef = useRef<(HTMLInputElement | null)[]>([]);
   const { openSnackbar } = useSnackbarStore();
@@ -42,20 +46,41 @@ function FileNavigationItem() {
 
   useEffect(() => {
     if (!data) return;
+
+    saveSettings(data);
+  }, [data]);
+
+  useEffect(() => {
+    if (!replaceData) return;
+
+    saveSettings(replaceData);
+  }, [replaceData]);
+
+  const saveSettings = (data: {
+    data: RequestFileUploadResponse | AssetsFileUploadReadModel;
+    directoryId: string;
+  }) => {
+    const em = ECS.instance.entityManager;
     const cs = {
       id: data.data.id,
       name: data.data.name,
       directoryId: data.directoryId,
     };
-    updateScene(cs, em.currentScene);
+    const localScenes = scenes;
+
+    // NOTE: this is a bit dumb, but I don't know man
+    localScenes[em.currentScene] = cs;
     mutate({
       id: uuid ? uuid : '',
       data: {
-        currentScene: cs,
-        scenes: scenes,
+        currentScene: em.currentScene,
+        scenes: localScenes,
       },
     });
-  }, [data]);
+
+    updateScene(cs, em.currentScene);
+    em.getScene().dirty = false;
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -65,8 +90,12 @@ function FileNavigationItem() {
     if (!assets) return;
 
     const entities = em.getScene().entities;
+    const sceneData: SceneJSON = {
+      camera: [camera.position.x, camera.position.y, camera.position.z],
+      entities,
+    };
     const file = new File(
-      [JSON.stringify(entities)],
+      [JSON.stringify(sceneData)],
       name.replace('.scene', '') + '.scene',
     );
 
@@ -78,8 +107,12 @@ function FileNavigationItem() {
     if (!assets) return;
 
     const entities = em.getScene().entities;
+    const sceneData: SceneJSON = {
+      camera: [camera.position.x, camera.position.y, camera.position.z],
+      entities,
+    };
     const file = new File(
-      [JSON.stringify(entities)],
+      [JSON.stringify(sceneData)],
       scenes[em.currentScene]?.name?.replace('.scene', '') + '.scene',
     );
     const id = scenes[em.currentScene]?.id;
@@ -122,7 +155,6 @@ function FileNavigationItem() {
         if (!scenes[em.currentScene].name) {
           setOpen(true);
         } else {
-          console.log('replace');
           handleReplace();
         }
       }

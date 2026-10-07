@@ -3,7 +3,7 @@ import { Asset } from '@/stores/editorSettingsStore';
 interface SceneData {
   id: string;
   data: {
-    currentScene: Asset | null;
+    currentScene: number;
     scenes: (Asset | null)[];
   };
 }
