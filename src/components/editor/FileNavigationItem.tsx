@@ -27,6 +27,12 @@ import SceneJSON from '@/types/SceneJSON';
 import { ECS } from '@/engine/ECS';
 import RequestFileUploadResponse from '@/types/RequestFileUploadResponse';
 import { AssetsFileUploadReadModel } from '@/types/Assets';
+import External from '@/engine/components/External';
+import { setParent } from '@/engine/Hierarchy';
+import Parent from '@/engine/components/Parent';
+import Children from '@/engine/components/Children';
+import { snapshot } from 'valtio';
+import { EntityToComponent } from '@/engine/EntityManager';
 
 function FileNavigationItem() {
   const em = useEntityManager();
@@ -102,38 +108,29 @@ function FileNavigationItem() {
     setOpen(false);
   };
 
-  const handleSave = async () => {
+  const handleSave = async (callback: (sceneData: SceneJSON) => void) => {
     if (!assets) return;
 
-    const entities = em.getScene().entities;
+    const em = ECS.instance.entityManager;
+    const entities = structuredClone(
+      snapshot(em.getScene().entities),
+    ) as EntityToComponent;
+
+    for (const entity of Object.keys(entities)) {
+      if (em.has(External, entity)) {
+        const parent = em.getComponent(Parent, entity)?.entity;
+
+        if (!parent) return;
+
+        delete entities[parent]?.['Children'];
+        delete entities[entity];
+      }
+    }
     const sceneData: SceneJSON = {
       camera: [camera.position.x, camera.position.y, camera.position.z],
       entities,
     };
-    const file = new File(
-      [JSON.stringify(sceneData)],
-      name.replace('.scene', '') + '.scene',
-    );
-
-    upload({ file, directoryId: dir });
-    setOpen(false);
-  };
-
-  const handleReplace = async () => {
-    if (!assets) return;
-
-    const entities = em.getScene().entities;
-    const sceneData: SceneJSON = {
-      camera: [camera.position.x, camera.position.y, camera.position.z],
-      entities,
-    };
-    const file = new File(
-      [JSON.stringify(sceneData)],
-      scenes[em.currentScene]?.name?.replace('.scene', '') + '.scene',
-    );
-    const id = scenes[em.currentScene]?.id;
-    const directoryId = scenes[em.currentScene]?.directoryId;
-    replace({ file, id, directoryId });
+    callback(sceneData);
   };
 
   const handleSelect = (event: SelectChangeEvent) => {
@@ -168,10 +165,19 @@ function FileNavigationItem() {
         e.preventDefault();
 
         // if new scene, open dialog. save otherwise
-        if (!scenes[em.currentScene].name) {
+        if (!scenes[em.currentScene]?.name) {
           setOpen(true);
         } else {
-          handleReplace();
+          handleSave((sceneData) => {
+            const em = ECS.instance.entityManager;
+            const file = new File(
+              [JSON.stringify(sceneData)],
+              scenes[em.currentScene]?.name?.replace('.scene', '') + '.scene',
+            );
+            const id = scenes[em.currentScene]?.id;
+            const directoryId = scenes[em.currentScene]?.directoryId;
+            replace({ file, id, directoryId });
+          });
         }
       }
     };
@@ -229,7 +235,20 @@ function FileNavigationItem() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSave}>Save</Button>
+          <Button
+            onClick={() => {
+              handleSave((sceneData) => {
+                const file = new File(
+                  [JSON.stringify(sceneData)],
+                  name.replace('.scene', '') + '.scene',
+                );
+                upload({ file, directoryId: dir });
+                setOpen(false);
+              });
+            }}
+          >
+            Save
+          </Button>
         </DialogActions>
       </Dialog>
     </>

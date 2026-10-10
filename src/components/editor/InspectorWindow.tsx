@@ -134,6 +134,7 @@ function InspectorWindow() {
         return <GLTFInspector entity={focused} />;
       case 'Parent':
       case 'Children':
+      case 'External':
         return null;
       default:
         return (
@@ -148,7 +149,7 @@ function InspectorWindow() {
   };
 
   const isInvalidKey = (key: string) => {
-    return key === 'Parent' || key === 'Children';
+    return key === 'Parent' || key === 'Children' || key === 'External';
   };
 
   return (

@@ -6,14 +6,29 @@ import { useDrop } from 'react-dnd';
 import EntityDragObject from '@/types/EntityDragObject';
 import { DndTypes } from '@/types/DndTypes';
 import { setParent } from '@/engine/Hierarchy';
+import { AssetsFile } from '@/types/Assets';
+import { loadExternalScene } from '@/engine/Scene';
+import { useParams } from 'react-router-dom';
+
+function isEntity(
+  item: EntityDragObject | AssetsFile,
+): item is EntityDragObject {
+  if ('child' in item) return true;
+  return false;
+}
 
 function HierarchyWindow() {
   const em = useEntityManager();
+  const { uuid } = useParams();
   const parentRef = useRef<HTMLDivElement>(null);
   const [_, drop] = useDrop(() => ({
-    accept: DndTypes.ENTITY,
-    drop: (item: EntityDragObject, _monitor) => {
-      setParent(null, item.child);
+    accept: [DndTypes.ENTITY, DndTypes.FILE],
+    drop: (item: EntityDragObject | AssetsFile, _monitor) => {
+      if (isEntity(item)) {
+        setParent(null, item.child);
+      } else {
+        loadExternalScene(uuid!, item);
+      }
     },
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
