@@ -1,4 +1,4 @@
-import { proxy, snapshot, subscribe } from 'valtio';
+import { proxy, snapshot } from 'valtio';
 import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
 import { AnimationAction, Object3D } from 'three';
@@ -29,7 +29,7 @@ interface NameToClass {
 }
 
 // The structure for keeping components is like this:
-// { myEntity1: [Material: data, RigidBody: data], myEntity2: [Geometry: data]}
+// { myEntity1: { Material: data, RigidBody: data }, myEntity2: { Geometry: data }}
 // It won't be the most performant, but I wanted to keep it simple.
 export interface EntityToComponent {
   [euid: Entity]: { [name: string]: Component };
@@ -53,6 +53,17 @@ export class EntityManager {
     }
 
     return entity;
+  }
+
+  pushEntity(
+    entity: Entity,
+    components: { [name: string]: Component },
+    index?: number,
+  ): void {
+    const idx = index ? index : this.currentScene;
+    if (!(entity in this.getScene().entities)) {
+      this.scenes[idx].entities[entity] = components;
+    }
   }
 
   getEntities(): Entity[] {
@@ -112,7 +123,10 @@ export class EntityManager {
   ) {
     for (const entity of Object.keys(entities)) {
       for (const component of Object.keys(entities[entity])) {
-        if ('fileId' in entities[entity][component]) {
+        if (
+          component !== 'NestedScene' &&
+          'fileId' in entities[entity][component]
+        ) {
           try {
             const { data } = await requestFileDownload(
               uuid,
@@ -237,8 +251,6 @@ export class EntityManager {
   }
 
   mapNameToClass: NameToClass = {};
-  entities: EntityToComponent = {};
-  entitiesCopy: EntityToComponent = {};
   refs: EntityRefs = {};
   animations: EntityAnimations = {};
   scenes: SceneData[] = [];
