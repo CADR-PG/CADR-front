@@ -16,6 +16,7 @@ interface SceneData {
   entitiesCopy: EntityToComponent;
   dirty: boolean;
   lastCameraPosition?: Vec3;
+  root: Entity | null;
 }
 
 export interface EntityAnimations {
@@ -50,6 +51,9 @@ export class EntityManager {
 
     if (!(entity in this.getScene().entities)) {
       this.getScene().entities[entity] = {};
+    }
+
+    if (this.getScene().root) {
     }
 
     return entity;
@@ -91,6 +95,7 @@ export class EntityManager {
       entitiesCopy: {},
       dirty: true,
       lastCameraPosition: INITIAL_CAMERA_POSITION,
+      root: null,
     });
 
     const newScene: Asset = {
@@ -111,6 +116,7 @@ export class EntityManager {
     this.scenes[index].lastCameraPosition = scene.camera;
     this.scenes[index].id = this.sceneId;
     this.scenes[index].dirty = false;
+    this.scenes[index].root = scene.root;
     this.sceneId = this.sceneId + 1;
   }
 
@@ -182,6 +188,10 @@ export class EntityManager {
     for (const name of Object.keys(components)) {
       console.log('Trying to call destrcutor for', name);
       this.mapNameToClass[name]?.onEntityDestroyed?.(entity);
+    }
+
+    if (entity === this.getScene().root) {
+      this.getScene().root = null;
     }
 
     delete this.getScene().entities[entity];

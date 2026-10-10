@@ -10,7 +10,7 @@ import External from './components/External';
 import Parent from './components/Parent';
 import Name from './components/Name';
 import NestedScene from './components/NestedScene';
-import { Entity } from './Entity';
+import { createEntity, Entity } from './Entity';
 import Transform from './components/Transform';
 
 export async function loadScene(
@@ -69,6 +69,7 @@ export async function loadExternalScene(
   parent?: Entity,
   index?: number,
 ) {
+  // TODO: don't instantiate current scene inside current scene
   const em = ECS.instance.entityManager;
   const scene = await requestFileDownload(uuid, file.id!);
   const text = await fetch(normalizeUrl(scene));
@@ -77,7 +78,7 @@ export async function loadExternalScene(
   await em.loadComponents(body.entities, uuid!, sdk);
 
   if (!parent) {
-    parent = em.createEntity();
+    parent = createEntity();
     em.addComponent(new Name(file.name), parent);
     em.addComponent(new NestedScene(file.id), parent);
     em.addComponent(new Transform(), parent);
@@ -108,6 +109,11 @@ export async function loadExternalScene(
       console.log('loading nested');
       loadExternalScene(uuid, { id, name }, entity);
     }
+  }
+
+  if (body.root) {
+    em.removeComponent(Transform, body.root);
+    em.addComponent(new Transform(), body.root);
   }
 
   // Adding entities to an already existing scene flips the dirty flag

@@ -15,10 +15,20 @@ import { useEffect, useState } from 'react';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import EntityDragObject from '@/types/EntityDragObject';
+import { AssetsFile } from '@/types/Assets';
+import { loadExternalScene } from '@/engine/Scene';
+import { useParams } from 'react-router-dom';
 
 interface HierarchyEntityProps {
   entity: Entity;
   parent: HTMLDivElement | null;
+}
+
+function isEntity(
+  item: EntityDragObject | AssetsFile,
+): item is EntityDragObject {
+  if ('child' in item) return true;
+  return false;
 }
 
 export default function HierarchyEntity({
@@ -28,6 +38,7 @@ export default function HierarchyEntity({
   const em = useEntityManager();
   const children = em.getComponent(Children, entity);
   const { focused, focus, dnd, setDnd } = useEditorContext();
+  const { uuid } = useParams();
   const [open, setOpen] = useState(true);
 
   const [, drag] = useDrag(
@@ -47,9 +58,13 @@ export default function HierarchyEntity({
 
   const [_, drop] = useDrop(
     () => ({
-      accept: DndTypes.ENTITY,
-      drop: (item: EntityDragObject, _monitor) => {
-        setParent(entity, item.child);
+      accept: [DndTypes.ENTITY, DndTypes.FILE],
+      drop: (item: EntityDragObject | AssetsFile, _monitor) => {
+        if (isEntity(item)) {
+          setParent(entity, item.child);
+        } else {
+          loadExternalScene(uuid!, item);
+        }
       },
       hover(_item, monitor) {
         if (monitor.isOver() && monitor.canDrop()) {

@@ -129,6 +129,7 @@ function FileNavigationItem() {
     const sceneData: SceneJSON = {
       camera: [camera.position.x, camera.position.y, camera.position.z],
       entities,
+      root: em.getScene().root,
     };
     callback(sceneData);
   };
