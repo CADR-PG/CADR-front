@@ -28,9 +28,11 @@ function Editor() {
       // TODO: xdd
       const json = data.data.data;
       ECS.instance.entityManager.setScene(json);
+      ECS.instance.ensureCamera();
     }
     if (isError) {
       ECS.instance.entityManager.setScene({});
+      ECS.instance.ensureCamera();
     }
   }, [data, isError]);
 
