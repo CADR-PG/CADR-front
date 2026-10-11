@@ -3,19 +3,20 @@ import { setParent } from './Hierarchy';
 
 export type Entity = string;
 
-export function createEntity() {
+export function createEntity(idx?: number) {
   const em = ECS.instance.entityManager;
   const entity = crypto.randomUUID();
+  const scene = idx !== undefined ? em.scenes[idx] : em.getScene();
 
-  if (!(entity in em.getScene().entities)) {
-    em.getScene().entities[entity] = {};
+  if (!(entity in scene.entities)) {
+    scene.entities[entity] = {};
   }
 
   console.log('uhhh');
-  if (em.getScene().root) {
-    setParent(em.getScene().root, entity);
+  if (scene.root) {
+    setParent(scene.root, entity);
   } else {
-    em.getScene().root = entity;
+    scene.root = entity;
   }
 
   return entity;

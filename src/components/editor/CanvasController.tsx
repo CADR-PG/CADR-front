@@ -39,7 +39,7 @@ function CanvasController() {
   const [_, drop] = useDrop(
     () => ({
       accept: DndTypes.FILE,
-      drop: (item: AssetsFile, _monitor) => {
+      drop: async (item: AssetsFile, _monitor) => {
         const em = ECS.instance.entityManager;
         const localScenes = [...scenes];
         localScenes[em.currentScene] = {
@@ -48,7 +48,7 @@ function CanvasController() {
           directoryId: item.directoryId,
         };
 
-        loadScene(uuid!, item);
+        await loadScene(uuid!, item);
 
         saveScene({
           id: uuid ? uuid : '',

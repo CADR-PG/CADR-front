@@ -46,6 +46,7 @@ export class EntityManager {
       this.createScene();
     }
   }
+
   createEntity(): Entity {
     const entity = crypto.randomUUID();
 
@@ -59,15 +60,17 @@ export class EntityManager {
     return entity;
   }
 
-  pushEntity(
-    entity: Entity,
-    components: { [name: string]: Component },
-    index?: number,
-  ): void {
-    const idx = index ? index : this.currentScene;
-    if (!(entity in this.getScene().entities)) {
-      this.scenes[idx].entities[entity] = components;
+  pushEntity(components: { [name: string]: Component }, idx?: number): Entity {
+    const scene = idx !== undefined ? this.scenes[idx] : this.getScene();
+    const entity = crypto.randomUUID();
+    console.log(`pushing ${entity} to ${idx}`, scene.entities);
+
+    if (!(entity in scene.entities)) {
+      console.log(`Pushing entity ${entity} for scene ${idx}`);
+      scene.entities[entity] = components;
     }
+
+    return entity;
   }
 
   getEntities(): Entity[] {
@@ -156,15 +159,16 @@ export class EntityManager {
   // Components shouldn't be created in any other way. Maybe we should somehow restrict it?
   // TODO2: maybe proper error handling instead of void?
   addComponent(component: Component, entity: Entity): void {
-    if (!(entity in this.getScene().entities)) return;
+    const scene = this.find(entity);
+    if (!scene) return;
 
-    if (component.name in this.getScene().entities[entity]) {
+    if (component.name in scene.entities[entity]) {
       return;
     }
     // how THE FUCK does this shit work??????
     // why this { ...component } shit doesn't cause a type error????
     // this works greatly in my favor, but still wtf?
-    this.getScene().entities[entity][component.name] = { ...component };
+    scene.entities[entity][component.name] = { ...component };
   }
 
   // Removing is easy. Just delete the key with the component's name.
@@ -172,13 +176,19 @@ export class EntityManager {
     component: ComponentType<T>,
     entity: Entity,
   ): void {
+    const scene = this.find(entity);
+    if (!scene) return;
+
     const instance: T = new component();
 
-    delete this.getScene().entities[entity][instance.name];
+    delete scene.entities[entity][instance.name];
   }
 
   destroyEntity(entity: Entity) {
-    const components = this.getScene().entities[entity];
+    const scene = this.find(entity);
+    if (!scene) return;
+
+    const components = scene.entities[entity];
     // TODO: return early?
     if (!components) {
       console.log('No components??');
@@ -191,17 +201,20 @@ export class EntityManager {
     }
 
     if (entity === this.getScene().root) {
-      this.getScene().root = null;
+      scene.root = null;
     }
 
-    delete this.getScene().entities[entity];
+    delete scene.entities[entity];
     delete this.refs[entity];
   }
 
   getComponents(entity: Entity | null): { [name: string]: Component } {
-    if (!entity || !(entity in this.getScene().entities)) return proxy({});
+    if (!entity) return proxy({});
 
-    return this.getScene().entities[entity];
+    const scene = this.find(entity);
+    if (!scene) return proxy({});
+
+    return scene.entities[entity];
   }
 
   getComponent<T extends Component>(
@@ -211,7 +224,14 @@ export class EntityManager {
     const instance: T = new component();
 
     if (this.has(component, entity)) {
-      return this.getScene().entities[entity][instance.name] as T;
+      const scene = this.find(entity);
+      if (!scene) {
+        console.error(
+          'Catastrophic failure: component exists, but entity doesnt',
+        );
+        return null;
+      }
+      return scene.entities[entity][instance.name] as T;
     } else {
       return null;
     }
@@ -224,11 +244,12 @@ export class EntityManager {
     component: ComponentType<T>,
     entity: Entity,
   ): boolean {
-    if (!this.getScene().entities[entity]) return false;
+    const scene = this.find(entity);
+    if (!scene) return false;
 
     const instance = new component();
 
-    return instance.name in this.getScene().entities[entity];
+    return instance.name in scene.entities[entity];
   }
 
   // PERF: cache components for all systems
@@ -247,7 +268,10 @@ export class EntityManager {
   }
 
   is(component: string, entity: Entity) {
-    return component in this.getScene().entities[entity];
+    const scene = this.find(entity);
+    if (!scene) return;
+
+    return component in scene.entities[entity];
   }
 
   copyScene() {
@@ -258,6 +282,32 @@ export class EntityManager {
   restoreScene() {
     this.getScene().entities = this.getScene().entitiesCopy;
     this.getScene().entitiesCopy = {};
+  }
+
+  // Find the scene in which the entity exists.
+  // First work through current scene, and the interate over all of them.
+  // Feature used only for loading nested scene in a scene that is not current.
+  find(entity: Entity): SceneData | null {
+    // Find in current scene
+    let scene = this.getScene();
+    if (entity in scene.entities) {
+      return scene;
+    }
+
+    // Missed, look in all scenes, probably loading external scene
+    for (scene of this.scenes) {
+      // Skip current scene since it was already checked
+      if (scene === this.getScene()) continue;
+
+      if (entity in scene.entities) {
+        return scene;
+      }
+    }
+
+    // Catastrophic fail, entity doesn't exist, should never happen
+    console.error(`Entity ${entity} doesn't exist`);
+    console.trace();
+    return null;
   }
 
   mapNameToClass: NameToClass = {};

@@ -38,12 +38,12 @@ function Editor() {
         const em = ECS.instance.entityManager;
         // TODO: xdd
         const json = data.data.data;
-        json.scenes.forEach((scene, i) => {
+        json.scenes.forEach(async (scene, i) => {
           if (i > em.scenes.length - 1) {
             em.createScene();
           }
           if (scene && scene.id) {
-            loadScene(uuid!, scene, i);
+            await loadScene(uuid!, scene, i);
           }
         });
         em.currentScene = json.currentScene;
