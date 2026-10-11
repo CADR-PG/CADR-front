@@ -17,6 +17,7 @@ import cAudio from '../../engine/components/Audio';
 import { cPositionalAudio } from '../../engine/components/PositionalAudio';
 import InspectorTemplate from './inspectors/InspectorTemplate';
 import GLTFInspector from './inspectors/GLTFInspector';
+import CameraInspector from './inspectors/CameraInspector';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -93,6 +94,8 @@ function InspectorWindow() {
         );
       case 'GLTF':
         return <GLTFInspector entity={focused} />;
+      case 'camera':
+        return <CameraInspector entity={focused} />;
       default:
         return (
           <InspectorTemplate

@@ -3,8 +3,6 @@ import Controls from '../types/Controls';
 import { useEditorContext } from './useEditorContext';
 import { useEffect, useState } from 'react';
 import { ECS } from '../engine/ECS';
-import { Camera } from '../engine/components/Camera';
-import MainCamera from '../engine/components/MainCamera';
 
 function useEditorKeys() {
   const { focused, focus } = useEditorContext();
@@ -20,22 +18,8 @@ function useEditorKeys() {
     if (!focused) return;
 
     if (del) {
-      const wasMainCamera = ECS.instance.entityManager.has(MainCamera, focused);
       ECS.instance.entityManager.destroyEntity(focused);
       focus(null);
-
-      if (wasMainCamera) {
-        // Play needs a main camera to control - if one still exists,
-        // promote it instead of leaving the scene without one.
-        const nextCamera = ECS.instance.entityManager
-          .getEntities()
-          .find((entity) =>
-            ECS.instance.entityManager.getComponent(Camera, entity),
-          );
-        if (nextCamera) {
-          ECS.instance.entityManager.addComponent(new MainCamera(), nextCamera);
-        }
-      }
     }
 
     if (ctrl) {

@@ -1,37 +1,27 @@
 import {
   PerspectiveCamera,
-  PointerLockControls,
   TransformControls,
   useHelper,
 } from '@react-three/drei';
 import * as THREE from 'three';
 import { Camera } from '../../engine/components/Camera';
-import MainCamera from '../../engine/components/MainCamera';
 import Transform from '../../engine/components/Transform';
 import { ECS } from '../../engine/ECS';
 import useEntityManager from '../../hooks/useEntityManager';
 import ControllerProps from '../../types/ControllerProps';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import { useLayoutEffect, useRef } from 'react';
-import usePlayerMovement from '../../hooks/usePlayerMovement';
 
 export default function CameraController({ entity }: ControllerProps) {
   const em = useEntityManager();
   const camera = em.getComponent(Camera, entity);
-  const isMain = em.has(MainCamera, entity);
   const transform = em.getComponent(Transform, entity);
   const { running, focused, editingMode, drag } = useEditorContext();
   const cameraRef = useRef<THREE.PerspectiveCamera>(null!);
-  const active = running && isMain;
   useHelper(!running && cameraRef, THREE.CameraHelper);
-  usePlayerMovement(cameraRef, active);
 
-  // Play-mode movement (WASD + mouse-look) mutates the camera object
-  // directly and never touches the ECS, so the object can't take its
-  // transform from props. Instead, whenever we're in edit mode, apply the
-  // ECS transform imperatively: this picks up Inspector edits, and after
-  // Stop (the scene is restored from the pre-Play copy) it puts the camera
-  // back where it was, just like every other entity.
+  // Play-mode camera control is left entirely to the game; this just keeps
+  // the camera synced to the ECS transform while editing.
   const [px, py, pz] = transform?.position ?? [0, 0, 0];
   const [rx, ry, rz] = transform?.rotation ?? [0, 0, 0];
   useLayoutEffect(() => {
@@ -53,19 +43,11 @@ export default function CameraController({ entity }: ControllerProps) {
     }
   };
 
-  useLayoutEffect(() => {
-    // Pressing Escape (browser default) or stopping play mode should release
-    // the mouse, otherwise the cursor stays locked/hidden in edit mode.
-    if (!running && document.pointerLockElement) {
-      document.exitPointerLock();
-    }
-  }, [running]);
-
   return (
     camera && (
       <>
         <PerspectiveCamera
-          makeDefault={active}
+          makeDefault={running}
           ref={cameraRef}
           // aspect is kept in sync with the canvas size by drei itself
           fov={camera.fov}
@@ -81,7 +63,6 @@ export default function CameraController({ entity }: ControllerProps) {
             onObjectChange={persistTransform}
           />
         )}
-        {active && <PointerLockControls selector=".canvas" />}
       </>
     )
   );

@@ -7,7 +7,7 @@ import {
   PerspectiveCamera,
 } from '@react-three/drei';
 import * as THREE from 'three';
-import { useRef } from 'react';
+import { RefObject, useRef } from 'react';
 import ToolbarComponent from './Toolbar';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEditorKeys from '../../hooks/useEditorKeys';
@@ -21,6 +21,21 @@ import {
   Outline,
 } from '@react-three/postprocessing';
 import AudioListenerProvider from './AudioListenerProvider';
+import useEditorCameraMovement from '../../hooks/useEditorCameraMovement';
+
+// useEditorCameraMovement uses r3f hooks (useThree/useFrame), which only
+// work inside the <Canvas> tree - CanvasController itself renders the
+// Canvas, so this tiny child does the actual hook call instead.
+function EditorFlyControls({
+  cameraRef,
+  active,
+}: {
+  cameraRef: RefObject<THREE.PerspectiveCamera>;
+  active: boolean;
+}) {
+  useEditorCameraMovement(cameraRef, active);
+  return null;
+}
 
 function CanvasController() {
   const { running, focus } = useEditorContext();
@@ -47,6 +62,7 @@ function CanvasController() {
           makeDefault={!running}
           position={[3, 2, -3]}
         />
+        <EditorFlyControls cameraRef={editCameraRef} active={!running} />
         <Physics colliders="hull" paused={!running} debug={!running}>
           <AudioListenerProvider>
             {!running && (

@@ -2,13 +2,9 @@ import { useEffect, useRef } from 'react';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import Videocam from '@mui/icons-material/Videocam';
-import VideocamOutlined from '@mui/icons-material/VideocamOutlined';
 import Name from '../../engine/components/Name';
 import useEntityManager from '../../hooks/useEntityManager';
 import Invisible from '../../engine/components/Invisible';
-import { Camera } from '../../engine/components/Camera';
-import MainCamera from '../../engine/components/MainCamera';
 import { Entity } from '../../engine/Entity';
 import { ECS } from '../../engine/ECS';
 
@@ -23,16 +19,6 @@ function HierarchyWindow() {
     } else {
       ECS.instance.entityManager.removeComponent(Invisible, entity);
     }
-  };
-
-  const handleSetMainCamera = (entity: Entity) => {
-    if (em.has(MainCamera, entity)) return;
-    em.getEntities().forEach((other) => {
-      if (ECS.instance.entityManager.has(MainCamera, other)) {
-        ECS.instance.entityManager.removeComponent(MainCamera, other);
-      }
-    });
-    ECS.instance.entityManager.addComponent(new MainCamera(), entity);
   };
 
   // TODO: make it more generic and extract it to a hook
@@ -62,23 +48,6 @@ function HierarchyWindow() {
         >
           {em.getComponent(Name, entity)?.displayName || entity}
           <div className="buttonContainer">
-            {em.has(Camera, entity) && (
-              <button
-                className="mainCameraButton"
-                title={
-                  em.has(MainCamera, entity)
-                    ? 'Main camera'
-                    : 'Set as main camera'
-                }
-                onClick={() => handleSetMainCamera(entity)}
-              >
-                {em.has(MainCamera, entity) ? (
-                  <Videocam />
-                ) : (
-                  <VideocamOutlined />
-                )}
-              </button>
-            )}
             <button
               className="visibilityButton"
               onClick={() => handleClick(entity)}

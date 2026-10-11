@@ -67,11 +67,30 @@ export class ECS {
     const components = structuredClone(
       snapshot(this.entityManager.getComponents(entity)),
     ) as { [name: string]: Component };
-    // A copy should never silently usurp the original's "main camera"
-    // status - that would leave two entities racing to become the active
-    // camera in Play.
-    delete components['MainCamera'];
     this.entityManager.entities[newEntity] = proxy(components);
     return newEntity;
+  }
+
+  // Looked up by name instead of importing the component classes directly,
+  // since those files import `ECS` themselves to self-register - importing
+  // them back here would be a circular import.
+  ensureCamera() {
+    const em = this.entityManager;
+    const CameraType = em.mapNameToClass['camera'];
+    const TransformType = em.mapNameToClass['Transform'];
+    const NameType = em.mapNameToClass['Name'];
+
+    if (!CameraType || !TransformType || !NameType) return;
+
+    const hasCamera = em
+      .getEntities()
+      .some((entity) => em.has(CameraType, entity));
+
+    if (hasCamera) return;
+
+    const entity = em.createEntity();
+    em.addComponent(new CameraType(), entity);
+    em.addComponent(new TransformType([0, 1.6, 5]), entity);
+    em.addComponent(new NameType('camera'), entity);
   }
 }
