@@ -3,6 +3,7 @@ import { Allotment } from 'allotment';
 import CanvasController from '../components/editor/CanvasController';
 import HierarchyWindow from '../components/editor/HierarchyWindow';
 import ProjectWindow from '../components/editor/ProjectWindow';
+import ConsoleWindow from '../components/editor/ConsoleWindow';
 import InspectorWindow from '../components/editor/InspectorWindow';
 import Navigation from '../components/editor/Navigation';
 import { EditorContextValues, EditorContext } from '../data/EditorContext';
@@ -66,13 +67,22 @@ function Editor() {
           <KeyboardController>
             <div className="editor-section">
               <Allotment vertical snap={true}>
-                <Allotment.Pane minSize={300} preferredSize={1000}>
+                <Allotment.Pane minSize={200} preferredSize={1000}>
                   <Allotment vertical={false} separator={true} snap={true}>
                     <Allotment.Pane
                       minSize={screen.width / 6}
                       preferredSize={screen.width / 5}
                     >
-                      <HierarchyWindow />
+                      <Allotment vertical snap={true}>
+                        <Allotment.Pane minSize={100}>
+                          <HierarchyWindow />
+                        </Allotment.Pane>
+                        <Allotment.Pane minSize={100}>
+                          <div style={{ height: '100%', overflow: 'auto' }}>
+                            <ProjectWindow />
+                          </div>
+                        </Allotment.Pane>
+                      </Allotment>
                     </Allotment.Pane>
                     <Allotment.Pane
                       minSize={screen.width / 3}
@@ -89,10 +99,8 @@ function Editor() {
                     </Allotment.Pane>
                   </Allotment>
                 </Allotment.Pane>
-                <Allotment.Pane minSize={150} preferredSize={screen.height / 4}>
-                  <div style={{ height: '100%', overflow: 'auto' }}>
-                    <ProjectWindow />
-                  </div>
+                <Allotment.Pane minSize={100} preferredSize={screen.height / 4}>
+                  <ConsoleWindow />
                 </Allotment.Pane>
               </Allotment>
             </div>
