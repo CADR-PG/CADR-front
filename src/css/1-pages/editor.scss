@@ -2,7 +2,13 @@
 
 .tool-bar {
   background-color: variables.$c-white;
+  border-bottom: 1px solid variables.$c-border;
   display: flex;
+
+  .dark & {
+    background-color: variables.$c-bg-header-dark;
+    border-bottom: 1px solid variables.$c-border-dark;
+  }
 }
 
 .editor {
