@@ -15,6 +15,7 @@ import useEntityManager from '@/hooks/useEntityManager';
 import useSaveScene from '@/hooks/useSaveScene';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 export default function SceneTabs() {
   const [closingTab, setClosingTab] = useState<number | null>(null!);
@@ -86,22 +87,50 @@ export default function SceneTabs() {
 
   return (
     <>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex', background: 'white' }}>
         {scenes.map((s, i) => (
-          <div key={i}>
-            <span onClick={() => handleClick(i)}>
-              {em.currentScene === i ? '>' : ''} {s?.name ?? `New scene`}{' '}
-              {em.scenes[i] && em.scenes[i].dirty ? '[!]' : ''}
-            </span>
-            <IconButton
-              onClick={() =>
-                em.scenes[i] && em.scenes[i].dirty
-                  ? setClosingTab(i)
-                  : handleClose(i)
-              }
+          <div
+            style={{
+              background: em.currentScene === i ? '#333' : undefined,
+              padding: '0 8px 0 8px',
+              borderTopRightRadius: '8px',
+              borderTopLeftRadius: '8px',
+            }}
+            key={i}
+          >
+            <span
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onClick={() => handleClick(i)}
             >
-              <CloseIcon />
-            </IconButton>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                {s?.name ?? `New scene`}
+                {em.scenes[i] && em.scenes[i].dirty ? (
+                  <FiberManualRecordIcon style={{ fontSize: '12px' }} />
+                ) : null}
+              </div>
+              <IconButton
+                onClick={() =>
+                  em.scenes[i] && em.scenes[i].dirty
+                    ? setClosingTab(i)
+                    : handleClose(i)
+                }
+              >
+                <CloseIcon />
+              </IconButton>
+            </span>
           </div>
         ))}
         <IconButton onClick={handleAdd}>

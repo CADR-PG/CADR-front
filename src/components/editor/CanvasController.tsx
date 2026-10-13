@@ -70,9 +70,8 @@ function CanvasController() {
 
   return (
     <div className="canvas-container">
+      <ToolbarComponent />
       {running && <UISystem />}
-      {!running && <ToolbarComponent />}
-      <StartStopBtnToolbar />
       <Canvas
         className="canvas"
         onPointerMissed={() => focus(null)}

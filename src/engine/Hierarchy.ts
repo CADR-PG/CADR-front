@@ -6,6 +6,7 @@ import Transform from './components/Transform';
 import Children from './components/Children';
 import RBody from './components/RigidBody';
 import Invisible from './components/Invisible';
+import NestedScene from './components/NestedScene';
 
 export function setParent(parent: Entity | null, child: Entity) {
   if (parent === child) return;
@@ -148,4 +149,20 @@ export function isInvisible(entity: Entity) {
   if (!parent) return false;
 
   return isInvisible(parent);
+}
+
+export function isNestedScene(entity: Entity) {
+  const nestedScene = ECS.instance.entityManager.getComponent(
+    NestedScene,
+    entity,
+  );
+  if (nestedScene) return true;
+
+  const parent = ECS.instance.entityManager.getComponent(
+    Parent,
+    entity,
+  )?.entity;
+  if (!parent) return false;
+
+  return isNestedScene(parent);
 }

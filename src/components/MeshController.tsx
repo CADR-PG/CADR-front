@@ -5,6 +5,7 @@ import useComponents from '../hooks/useComponents';
 import useEntityManager from '../hooks/useEntityManager';
 import Mesh from '../engine/components/Mesh';
 import { useMeshContext } from '@/hooks/useMeshContext';
+import { isNestedScene } from '@/engine/Hierarchy';
 
 export default function MeshController({ entity }: ControllerProps) {
   const { renderComponents, transform, PositionalAudioComponent } =
@@ -27,7 +28,9 @@ export default function MeshController({ entity }: ControllerProps) {
       castShadow={mesh ? mesh.castShadow : false}
       receiveShadow={mesh ? mesh.receiveShadow : false}
     >
-      <HighlightHelper entity={entity} focused={!running ? focused : ''} />
+      {!isNestedScene(entity) && (
+        <HighlightHelper entity={entity} focused={!running ? focused : ''} />
+      )}
       <PositionalAudioComponent entity={entity} parent={object} />
       {renderComponents()}
     </mesh>

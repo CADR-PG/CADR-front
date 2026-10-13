@@ -18,6 +18,7 @@ import EntityDragObject from '@/types/EntityDragObject';
 import { AssetsFile } from '@/types/Assets';
 import { loadExternalScene } from '@/engine/Scene';
 import { useParams } from 'react-router-dom';
+import NestedScene from '@/engine/components/NestedScene';
 
 interface HierarchyEntityProps {
   entity: Entity;
@@ -127,7 +128,9 @@ export default function HierarchyEntity({
             >{`(${entity})`}</span>
           </div>
 
-          {children && children.children.length ? (
+          {children &&
+          children.children.length &&
+          !em.has(NestedScene, entity) ? (
             <IconButton
               className="visibilityButton"
               onClick={() => {
@@ -151,15 +154,17 @@ export default function HierarchyEntity({
         </IconButton>
       </div>
 
-      <Collapse in={open}>
-        <ul className="tree">
-          {em
-            .getComponent(Children, entity)
-            ?.children.map((child, i) => (
-              <HierarchyEntity parent={parent} key={i} entity={child} />
-            ))}
-        </ul>
-      </Collapse>
+      {!em.has(NestedScene, entity) && (
+        <Collapse in={open}>
+          <ul className="tree">
+            {em
+              .getComponent(Children, entity)
+              ?.children.map((child, i) => (
+                <HierarchyEntity parent={parent} key={i} entity={child} />
+              ))}
+          </ul>
+        </Collapse>
+      )}
     </li>
   );
 }

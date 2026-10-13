@@ -122,7 +122,11 @@ export async function loadExternalScene(
       if (!id || !name) continue;
 
       console.log('loading nested');
-      await loadExternalScene(uuid, { id, name }, newEntity, idx);
+      try {
+        await loadExternalScene(uuid, { id, name }, newEntity, idx);
+      } catch {
+        console.error('Error loading nested external scene');
+      }
     }
   }
 

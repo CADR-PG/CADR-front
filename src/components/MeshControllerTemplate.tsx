@@ -8,7 +8,7 @@ import { ReactNode } from 'react';
 import { MeshContext } from '@/data/MeshContext';
 import { useEditorContext } from '@/hooks/useEditorContext';
 import useWorldTransform from '@/hooks/useWorldTransform';
-import { isInvisible } from '@/engine/Hierarchy';
+import { isInvisible, isNestedScene } from '@/engine/Hierarchy';
 
 interface MeshControllerTemplateProps {
   children: ReactNode;
@@ -25,10 +25,14 @@ export default function MeshControllerTemplate({
 
   return (
     <MeshContext.Provider value={{ object, setRef }}>
-      <TransformControlsController entity={entity} />
+      {!isNestedScene(entity) && (
+        <TransformControlsController entity={entity} />
+      )}
       {!isInvisible(entity) && (
         <>
-          <Select enabled={hovered === entity}>{children}</Select>
+          <Select enabled={hovered === entity && !isNestedScene(entity)}>
+            {children}
+          </Select>
           {running ? (
             <RigidBodyController entity={entity}>
               <ColliderComponent entity={entity} />
