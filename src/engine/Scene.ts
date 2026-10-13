@@ -13,6 +13,7 @@ import NestedScene from './components/NestedScene';
 import { createEntity, Entity } from './Entity';
 import Transform from './components/Transform';
 import Children from './components/Children';
+import { GAME_SCENE } from './EntityManager';
 
 export async function loadScene(
   uuid: string,
@@ -28,11 +29,16 @@ export async function loadScene(
   const text = await fetch(normalizeUrl(scene));
   const body = (await text.json()) as SceneJSON;
 
-  await em.loadComponents(body.entities, uuid, sdk);
+  try {
+    await em.loadComponents(body.entities, uuid, sdk);
+  } catch {
+    console.error("Couldn't load components");
+    console.trace();
+  }
   em.setScene(body, idx);
 
   // Load external scenes
-  for (const entity of Object.keys(em.scenes[idx].entities)) {
+  for (const entity of Object.keys(em.getSceneAt(idx).entities)) {
     console.log(`${entity} from scene ${idx}`);
     if (em.has(NestedScene, entity)) {
       console.log('nested scene on scene: ', idx);
@@ -53,9 +59,13 @@ export async function loadScene(
         );
       } catch {
         console.error('Loading external scene failed');
+        console.trace();
       }
     }
   }
+
+  // Don't update editor settings when playing
+  if (em.currentScene === GAME_SCENE) return;
 
   useEditorSettingsStore.getState().updateScene(
     {
@@ -79,7 +89,12 @@ export async function loadExternalScene(
   const text = await fetch(normalizeUrl(scene));
   const body = (await text.json()) as SceneJSON;
 
-  await em.loadComponents(body.entities, uuid!, sdk);
+  try {
+    await em.loadComponents(body.entities, uuid!, sdk);
+  } catch {
+    console.error("Couldn't load components");
+    console.trace();
+  }
 
   if (!parent) {
     parent = createEntity(idx);
@@ -164,5 +179,5 @@ export async function loadExternalScene(
 
   // Adding entities to an already existing scene flips the dirty flag
   const sceneIdx = idx !== undefined ? idx : em.currentScene;
-  em.scenes[sceneIdx].dirty = false;
+  em.getSceneAt(sceneIdx).dirty = false;
 }

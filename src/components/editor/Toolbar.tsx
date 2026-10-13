@@ -1,15 +1,14 @@
-import { Checkbox, FormControlLabel, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { useEditorContext } from '../../hooks/useEditorContext';
-import StartStopBtnToolbar from './StartStopBtnToolbar';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import ControlCameraIcon from '@mui/icons-material/ControlCamera';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import SetGameComponent from './SetGameComponent';
 
 function Toolbar() {
-  const { editingMode, selectMode } = useEditorContext();
+  const { editingMode, selectMode, running } = useEditorContext();
 
-  return (
+  return !running ? (
     <div className="toolbar">
       <div>
         <IconButton
@@ -39,17 +38,11 @@ function Toolbar() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          gap: '16px',
         }}
-      >
-        <PlayArrowIcon />
-        <StartStopBtnToolbar />
-      </div>
-      <div>
-        <FormControlLabel label="Main" control={<Checkbox />} />
-      </div>
+      ></div>
+      <SetGameComponent />
     </div>
-  );
+  ) : null;
 }
 
 export default Toolbar;

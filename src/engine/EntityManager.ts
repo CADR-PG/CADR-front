@@ -9,6 +9,7 @@ import { Vec3 } from './components/Transform';
 import SceneJSON from '@/types/SceneJSON';
 
 const INITIAL_CAMERA_POSITION: Vec3 = [3, 2, 3];
+export const GAME_SCENE = -1;
 
 interface SceneData {
   id: number;
@@ -42,9 +43,11 @@ interface EntityRefs {
 
 export class EntityManager {
   constructor() {
-    if (this.scenes.length === 0) {
+    console.log('Initializing:', this.initialized, this.scenes.length);
+    if (this.scenes.length === 0 && !this.initialized) {
       this.createScene();
     }
+    this.initialized = true;
   }
 
   createEntity(): Entity {
@@ -87,6 +90,9 @@ export class EntityManager {
   }
 
   getScene() {
+    if (this.currentScene === GAME_SCENE) {
+      return this.game;
+    }
     return this.scenes[this.currentScene];
   }
 
@@ -96,7 +102,7 @@ export class EntityManager {
       id,
       entities: {},
       entitiesCopy: {},
-      dirty: true,
+      dirty: false,
       lastCameraPosition: INITIAL_CAMERA_POSITION,
       root: null,
     });
@@ -111,16 +117,26 @@ export class EntityManager {
     this.sceneId = this.sceneId + 1;
     this.currentScene = this.scenes.length - 1;
 
+    console.log('Creating scene');
+    console.trace();
+
     return id;
   }
 
-  setScene(scene: SceneJSON, index: number) {
-    this.scenes[index].entities = proxy(scene.entities);
-    this.scenes[index].lastCameraPosition = scene.camera;
-    this.scenes[index].id = this.sceneId;
-    this.scenes[index].dirty = false;
-    this.scenes[index].root = scene.root;
+  setScene(scene: SceneJSON, idx: number) {
+    this.getSceneAt(idx).entities = proxy(scene.entities);
+    this.getSceneAt(idx).lastCameraPosition = scene.camera;
+    this.getSceneAt(idx).id = this.sceneId;
+    this.getSceneAt(idx).dirty = false;
+    this.getSceneAt(idx).root = scene.root;
     this.sceneId = this.sceneId + 1;
+  }
+
+  getSceneAt(idx: number) {
+    if (idx === GAME_SCENE) {
+      return this.game;
+    }
+    return this.scenes[idx];
   }
 
   // Components imported through scripts should get registered on scene load.
@@ -276,7 +292,7 @@ export class EntityManager {
 
   copyScene() {
     const copy = structuredClone(snapshot(this.getScene().entities));
-    this.getScene().entitiesCopy = proxy(copy);
+    this.game.entities = proxy(copy);
   }
 
   restoreScene() {
@@ -314,6 +330,16 @@ export class EntityManager {
   refs: EntityRefs = {};
   animations: EntityAnimations = {};
   scenes: SceneData[] = [];
+  game: SceneData = {
+    id: -1,
+    entities: {},
+    entitiesCopy: {},
+    root: null,
+    dirty: false,
+    lastCameraPosition: [0, 0, 0],
+  };
   currentScene: number = 0;
   sceneId: number = 0;
+  initialized: boolean = false;
+  savedScene: number = GAME_SCENE;
 }

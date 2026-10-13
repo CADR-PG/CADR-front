@@ -28,16 +28,14 @@ import { ECS } from '@/engine/ECS';
 import RequestFileUploadResponse from '@/types/RequestFileUploadResponse';
 import { AssetsFileUploadReadModel } from '@/types/Assets';
 import External from '@/engine/components/External';
-import { setParent } from '@/engine/Hierarchy';
 import Parent from '@/engine/components/Parent';
-import Children from '@/engine/components/Children';
 import { snapshot } from 'valtio';
 import { EntityToComponent } from '@/engine/EntityManager';
 
 function FileNavigationItem() {
   const em = useEntityManager();
   const { focus, camera } = useEditorContext();
-  const { scenes, updateScene } = useEditorSettingsStore();
+  const { scenes, updateScene, game } = useEditorSettingsStore();
   const { mutate } = useSaveScene();
   const { data, mutate: upload } = useUploadFile();
   const { data: replaceData, mutate: replace } = useReplaceFile();
@@ -97,6 +95,7 @@ function FileNavigationItem() {
       data: {
         currentScene: em.currentScene,
         scenes: localScenes,
+        game,
       },
     });
 

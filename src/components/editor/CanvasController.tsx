@@ -4,6 +4,7 @@ import {
   GizmoViewport,
   Grid,
   OrbitControls,
+  Sky,
 } from '@react-three/drei';
 import ToolbarComponent from './Toolbar';
 import { useEditorContext } from '../../hooks/useEditorContext';
@@ -75,14 +76,19 @@ function CanvasController() {
       <Canvas
         className="canvas"
         onPointerMissed={() => focus(null)}
-        camera={{ position: em.getScene().lastCameraPosition }}
+        camera={{
+          position: em.getScene()
+            ? em.getScene().lastCameraPosition
+            : undefined,
+        }}
         shadows
-        frameloop={'always'}
+        frameloop={running ? 'always' : 'demand'}
         onCreated={({ camera }) => setCamera(camera)}
         ref={(node) => {
           drop(node);
         }}
       >
+        <Sky distance={450000} sunPosition={[0, 1, 0]} />
         <Physics colliders="hull" paused={!running} debug>
           <AudioListenerProvider>
             <OrbitControls

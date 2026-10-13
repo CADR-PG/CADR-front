@@ -18,6 +18,7 @@ import SceneTabs from '@/components/SceneTabs';
 import useEntityManager from '@/hooks/useEntityManager';
 import { Camera } from 'three';
 import { loadScene } from '@/engine/Scene';
+import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
 
 function Editor() {
   const em = useEntityManager();
@@ -31,6 +32,7 @@ function Editor() {
   const [editingMode, selectMode] = useState<EditingMode>('translate');
   const [dnd, setDnd] = useState<string | null>(null);
   const [camera, setCamera] = useState<Camera>(null!);
+  const { setGame } = useEditorSettingsStore();
 
   useEffect(() => {
     async function load() {
@@ -43,10 +45,16 @@ function Editor() {
             em.createScene();
           }
           if (scene && scene.id) {
-            await loadScene(uuid!, scene, i);
+            try {
+              await loadScene(uuid!, scene, i);
+            } catch {
+              console.error("Couldn't load the scene");
+              console.trace();
+            }
           }
         });
         em.currentScene = json.currentScene;
+        setGame(json.game);
       }
       if (isError) {
         console.error('Something went wrong with scene initialization');
@@ -57,7 +65,7 @@ function Editor() {
 
   const startstop = (newState: boolean) => {
     if (!running && newState) {
-      ECS.instance.entityManager.copyScene();
+      // ECS.instance.entityManager.copyScene();
       // TODO: we should probably create some sort of callback/event
       // for when scene transforms from editor to game mode
       stopAllAnimations();
@@ -65,7 +73,7 @@ function Editor() {
     }
     if (running && !newState) {
       ECS.instance.isRunning = false;
-      ECS.instance.entityManager.restoreScene();
+      // ECS.instance.entityManager.restoreScene();
     }
 
     setRunning(newState);

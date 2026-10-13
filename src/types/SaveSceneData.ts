@@ -5,6 +5,7 @@ interface SceneData {
   data: {
     currentScene: number;
     scenes: (Asset | null)[];
+    game: string | null;
   };
 }
 

@@ -19,8 +19,8 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 export default function SceneTabs() {
   const [closingTab, setClosingTab] = useState<number | null>(null!);
-  const { scenes, removeScene } = useEditorSettingsStore();
-  const { focus, camera } = useEditorContext();
+  const { scenes, removeScene, game } = useEditorSettingsStore();
+  const { focus, camera, running } = useEditorContext();
   const { mutate: saveScene } = useSaveScene();
   const { uuid } = useParams();
   const em = useEntityManager();
@@ -35,7 +35,7 @@ export default function SceneTabs() {
 
     saveScene({
       id: uuid ? uuid : '',
-      data: { currentScene: em.currentScene, scenes: localScenes },
+      data: { currentScene: em.currentScene, scenes: localScenes, game },
     });
   };
 
@@ -63,11 +63,12 @@ export default function SceneTabs() {
 
     saveScene({
       id: uuid ? uuid : '',
-      data: { currentScene: next, scenes: localScenes },
+      data: { currentScene: next, scenes: localScenes, game },
     });
   };
 
   const handleClick = (index: number) => {
+    console.log('Clicked on:', index);
     const em = ECS.instance.entityManager;
 
     em.getScene().lastCameraPosition = [
@@ -81,11 +82,13 @@ export default function SceneTabs() {
     // update project settings
     saveScene({
       id: uuid ? uuid : '',
-      data: { currentScene: em.currentScene, scenes },
+      data: { currentScene: em.currentScene, scenes, game },
     });
   };
 
-  return (
+  console.log('dupa', scenes);
+
+  return !running ? (
     <>
       <div style={{ display: 'flex', background: 'white' }}>
         {scenes.map((s, i) => (
@@ -117,13 +120,13 @@ export default function SceneTabs() {
                 }}
               >
                 {s?.name ?? `New scene`}
-                {em.scenes[i] && em.scenes[i].dirty ? (
+                {em.getSceneAt(i) && em.getSceneAt(i).dirty ? (
                   <FiberManualRecordIcon style={{ fontSize: '12px' }} />
                 ) : null}
               </div>
               <IconButton
                 onClick={() =>
-                  em.scenes[i] && em.scenes[i].dirty
+                  em.getSceneAt(i) && em.getSceneAt(i).dirty
                     ? setClosingTab(i)
                     : handleClose(i)
                 }
@@ -159,5 +162,5 @@ export default function SceneTabs() {
         </DialogActions>
       </Dialog>
     </>
-  );
+  ) : null;
 }

@@ -8,6 +8,7 @@ export interface Asset {
 
 interface State {
   scenes: (Asset | null)[];
+  game: string | null;
 }
 
 interface Action {
@@ -15,10 +16,12 @@ interface Action {
   pushScene: (scene: Asset | null) => void;
   removeScene: (index: number) => void;
   updateScene: (scene: Asset | null, index: number) => void;
+  setGame: (game: string | null) => void;
 }
 
 const initialState: State = {
   scenes: [],
+  game: null,
 };
 
 export const useEditorSettingsStore = create<State & Action>((set) => ({
@@ -48,5 +51,8 @@ export const useEditorSettingsStore = create<State & Action>((set) => ({
         };
       }),
     }));
+  },
+  setGame: (game) => {
+    set({ game });
   },
 }));
