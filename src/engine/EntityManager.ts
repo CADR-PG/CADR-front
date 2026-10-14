@@ -64,13 +64,15 @@ export class EntityManager {
   }
 
   pushEntity(components: { [name: string]: Component }, idx?: number): Entity {
-    const scene = idx !== undefined ? this.scenes[idx] : this.getScene();
+    const scene = idx !== undefined ? this.getSceneAt(idx) : this.getScene();
     const entity = crypto.randomUUID();
     console.log(`pushing ${entity} to ${idx}`, scene.entities);
 
     if (!(entity in scene.entities)) {
       console.log(`Pushing entity ${entity} for scene ${idx}`);
       scene.entities[entity] = components;
+    } else {
+      console.error('Entity already exists');
     }
 
     return entity;
@@ -116,9 +118,6 @@ export class EntityManager {
 
     this.sceneId = this.sceneId + 1;
     this.currentScene = this.scenes.length - 1;
-
-    console.log('Creating scene');
-    console.trace();
 
     return id;
   }
@@ -324,6 +323,20 @@ export class EntityManager {
     console.error(`Entity ${entity} doesn't exist`);
     console.trace();
     return null;
+  }
+
+  enterGame() {
+    if (this.currentScene === GAME_SCENE) return;
+    this.savedScene = this.currentScene;
+    this.currentScene = GAME_SCENE;
+    this.game.entities = proxy({});
+    this.game.root = null;
+  }
+
+  exitGame() {
+    if (this.currentScene !== GAME_SCENE) return;
+    this.currentScene = this.savedScene;
+    this.savedScene = GAME_SCENE;
   }
 
   mapNameToClass: NameToClass = {};

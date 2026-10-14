@@ -6,7 +6,7 @@ export interface EditorContextValues {
   focused: string | null;
   focus: Dispatch<SetStateAction<string | null>>;
   running: boolean;
-  setRunning: (newState: boolean) => void;
+  setRunning: (newState: boolean, current: boolean | null) => Promise<void>;
   editingMode: EditingMode;
   selectMode: Dispatch<SetStateAction<EditingMode>>;
   hovered: string | null;

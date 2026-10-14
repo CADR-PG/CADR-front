@@ -47,20 +47,15 @@ export async function loadScene(
 
       if (!nestedScene || !nestedScene.fileId || !name) continue;
 
-      try {
-        await loadExternalScene(
-          uuid,
-          {
-            id: nestedScene.fileId,
-            name: name.displayName, // name isn't important here actually
-          },
-          entity,
-          idx,
-        );
-      } catch {
-        console.error('Loading external scene failed');
-        console.trace();
-      }
+      await loadExternalScene(
+        uuid,
+        {
+          id: nestedScene.fileId,
+          name: name.displayName, // name isn't important here actually
+        },
+        entity,
+        idx,
+      );
     }
   }
 

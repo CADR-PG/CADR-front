@@ -7,7 +7,7 @@ export default function PauseButton() {
   return (
     <div>
       <IconButton disabled={!running}>
-        <PauseIcon onClick={() => setRunning(false)} />
+        <PauseIcon onClick={async () => await setRunning(false, null)} />
       </IconButton>
     </div>
   );

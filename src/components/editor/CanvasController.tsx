@@ -36,7 +36,7 @@ function CanvasController() {
   const em = useEntityManager();
   const { uuid } = useParams();
   const { mutate: saveScene } = useSaveScene();
-  const { scenes } = useEditorSettingsStore();
+  const { scenes, game } = useEditorSettingsStore();
   const [_, drop] = useDrop(
     () => ({
       accept: DndTypes.FILE,
@@ -56,6 +56,7 @@ function CanvasController() {
           data: {
             currentScene: em.currentScene,
             scenes: localScenes,
+            game,
           },
         });
       },
@@ -88,7 +89,7 @@ function CanvasController() {
           drop(node);
         }}
       >
-        <Sky distance={450000} sunPosition={[0, 1, 0]} />
+        {/* <Sky distance={450000} sunPosition={[0, 1, 0]} /> */}
         <Physics colliders="hull" paused={!running} debug>
           <AudioListenerProvider>
             <OrbitControls

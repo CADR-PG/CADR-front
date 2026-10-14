@@ -17,6 +17,16 @@ export class ECS {
     this.entityManager = proxy<EntityManager>(new EntityManager());
     this.unsub = subscribe(this.entityManager.scenes, (ops) => {
       if (
+        this.entityManager.currentScene !== -1 &&
+        !this.entityManager.scenes[this.entityManager.currentScene]
+      ) {
+        console.trace(
+          'em out of range',
+          this.entityManager.currentScene,
+          this.entityManager.scenes.length,
+        );
+      }
+      if (
         !this.isRunning &&
         this.isLoaded &&
         ops.some(([_, path]) => path.length > 2 && path[1] === 'entities')

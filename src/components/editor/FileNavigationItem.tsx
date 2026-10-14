@@ -164,6 +164,7 @@ function FileNavigationItem() {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
 
+        console.log('name:', scenes[em.currentScene]?.name);
         // if new scene, open dialog. save otherwise
         if (!scenes[em.currentScene]?.name) {
           setOpen(true);

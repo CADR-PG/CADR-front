@@ -19,6 +19,7 @@ import useEntityManager from '@/hooks/useEntityManager';
 import { Camera } from 'three';
 import { loadScene } from '@/engine/Scene';
 import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
+import { GAME_SCENE } from '@/engine/EntityManager';
 
 function Editor() {
   const em = useEntityManager();
@@ -32,7 +33,7 @@ function Editor() {
   const [editingMode, selectMode] = useState<EditingMode>('translate');
   const [dnd, setDnd] = useState<string | null>(null);
   const [camera, setCamera] = useState<Camera>(null!);
-  const { setGame } = useEditorSettingsStore();
+  const { setGame, scenes, game } = useEditorSettingsStore();
 
   useEffect(() => {
     async function load() {
@@ -63,20 +64,51 @@ function Editor() {
     load();
   }, [data, isError]);
 
-  const startstop = (newState: boolean) => {
+  const startstop = async (newState: boolean, current: boolean | null) => {
+    stopAllAnimations();
+
+    const em = ECS.instance.entityManager;
     if (!running && newState) {
-      // ECS.instance.entityManager.copyScene();
-      // TODO: we should probably create some sort of callback/event
-      // for when scene transforms from editor to game mode
-      stopAllAnimations();
+      const editorIdx = em.currentScene;
+      em.enterGame();
+
+      try {
+        if (current) {
+          const scene = scenes[editorIdx];
+          if (!scene?.id)
+            throw new Error('Current scene has no file (unsaved?)');
+          await loadScene(
+            uuid!,
+            {
+              id: scene.id,
+              name: scene.name!,
+              directoryId: scene.directoryId!,
+            },
+            GAME_SCENE,
+          );
+        } else {
+          if (!game) throw new Error('No main game scene set');
+          await loadScene(
+            uuid!,
+            { id: game, name: 'dummy', directoryId: 'dummy' },
+            GAME_SCENE,
+          );
+        }
+      } catch (e) {
+        console.error('Failed to start game', e);
+        em.exitGame();
+        return;
+      }
+
       ECS.instance.isRunning = true;
-    }
-    if (running && !newState) {
-      ECS.instance.isRunning = false;
-      // ECS.instance.entityManager.restoreScene();
+      setRunning(true);
     }
 
-    setRunning(newState);
+    if (running && !newState) {
+      setRunning(false);
+      ECS.instance.isRunning = false;
+      em.exitGame();
+    }
   };
 
   const contextValue: EditorContextValues = {

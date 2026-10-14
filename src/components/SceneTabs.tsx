@@ -41,29 +41,31 @@ export default function SceneTabs() {
 
   const handleClose = (index: number) => {
     const em = ECS.instance.entityManager;
-    const localScenes = scenes.filter((_, i) => i !== index);
-    em.scenes.splice(index, 1);
-    removeScene(index);
+    if (em.getScene() === em.game) return;
 
-    if (em.scenes.length === 0) {
-      localScenes.push({ id: null, name: null, directoryId: null });
+    if (em.scenes.length === 1) {
       em.createScene();
     }
 
-    let next = em.currentScene;
-    if (
-      index < em.currentScene ||
-      (index === em.currentScene && em.currentScene > 0)
-    ) {
-      next = em.currentScene - 1;
-    }
-    next = Math.min(next, em.scenes.length - 1);
+    const current = em.currentScene;
+    const next =
+      index < current || (index === current && current > 0)
+        ? current - 1
+        : current;
+
     em.currentScene = next;
+    em.scenes = em.scenes.filter((_, i) => i !== index);
+
+    removeScene(index);
     focus(null);
 
     saveScene({
       id: uuid ? uuid : '',
-      data: { currentScene: next, scenes: localScenes, game },
+      data: {
+        currentScene: next,
+        scenes: useEditorSettingsStore.getState().scenes,
+        game,
+      },
     });
   };
 
@@ -108,7 +110,6 @@ export default function SceneTabs() {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
-              onClick={() => handleClick(i)}
             >
               <div
                 style={{
@@ -118,6 +119,7 @@ export default function SceneTabs() {
                   alignItems: 'center',
                   gap: '8px',
                 }}
+                onClick={() => handleClick(i)}
               >
                 {s?.name ?? `New scene`}
                 {em.getSceneAt(i) && em.getSceneAt(i).dirty ? (
