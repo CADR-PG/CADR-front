@@ -50,6 +50,9 @@ function CanvasController() {
         };
 
         await loadScene(uuid!, item);
+        console.log('loaded entities:', em.getScene().entities);
+        console.log('scenes:', scenes);
+        console.log('scenes local:', localScenes);
 
         saveScene({
           id: uuid ? uuid : '',
@@ -65,7 +68,7 @@ function CanvasController() {
         canDrop: !!monitor.canDrop(),
       }),
     }),
-    [],
+    [scenes, loadScene, saveScene],
   );
   useEditorKeys();
   RectAreaLightTexturesLib.init();

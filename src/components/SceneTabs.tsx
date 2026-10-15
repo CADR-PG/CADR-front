@@ -92,38 +92,20 @@ export default function SceneTabs() {
 
   return !running ? (
     <>
-      <div style={{ display: 'flex', background: 'white' }}>
+      <div className="scene-tabs-container">
         {scenes.map((s, i) => (
           <div
-            style={{
-              background: em.currentScene === i ? '#333' : undefined,
-              padding: '0 8px 0 8px',
-              borderTopRightRadius: '8px',
-              borderTopLeftRadius: '8px',
-            }}
+            className={`scene-tabs-container-tab ${em.currentScene === i ? 'scene-tabs-container-tab-active' : ''}`}
             key={i}
           >
-            <span
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
+            <div className="scene-tabs-container-tab-content">
               <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: '8px',
-                }}
+                className="scene-tabs-container-tab-content-name"
                 onClick={() => handleClick(i)}
               >
                 {s?.name ?? `New scene`}
                 {em.getSceneAt(i) && em.getSceneAt(i).dirty ? (
-                  <FiberManualRecordIcon style={{ fontSize: '12px' }} />
+                  <FiberManualRecordIcon className="save-icon" />
                 ) : null}
               </div>
               <IconButton
@@ -135,7 +117,7 @@ export default function SceneTabs() {
               >
                 <CloseIcon />
               </IconButton>
-            </span>
+            </div>
           </div>
         ))}
         <IconButton onClick={handleAdd}>

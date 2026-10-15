@@ -7,14 +7,8 @@ import StartStopBtnToolbar from './StartStopBtnToolbar';
 
 function Navigation() {
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}
-    >
-      <div className="tool-bar">
+    <div className="tool-bar">
+      <div className="tool-bar--left">
         <FileNavigationItem />
         <ObjectNavigationItem />
         <LightNavigationItem />
@@ -30,7 +24,7 @@ function Navigation() {
         <PauseButton />
         <StartStopBtnToolbar />
       </div>
-      <div></div>
+      <div className="tool-bar--right"></div>
     </div>
   );
 }

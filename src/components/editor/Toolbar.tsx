@@ -33,13 +33,7 @@ function Toolbar() {
           <OpenInFullIcon />
         </IconButton>
       </div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      ></div>
+      <div></div>
       <SetGameComponent />
     </div>
   ) : null;
