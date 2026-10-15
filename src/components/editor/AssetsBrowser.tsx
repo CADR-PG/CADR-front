@@ -19,6 +19,7 @@ import { useSnackbarStore } from '@/stores/snackbarStore';
 
 interface FileItemProps {
   file: AssetsFile;
+  directoryId: string;
 }
 
 interface DirectoryItemProps {
@@ -30,10 +31,10 @@ interface SelectedDirectory {
   name: string;
 }
 
-function FileItem({ file }: FileItemProps) {
+function FileItem({ file, directoryId }: FileItemProps) {
   const [, drag] = useDrag(() => ({
     type: DndTypes.FILE,
-    item: file,
+    item: { ...file, directoryId },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -111,7 +112,9 @@ function DirectoryItem({ dir }: DirectoryItemProps) {
           {dir.directories?.map((sub) => (
             <DirectoryItem key={sub.id} dir={sub} />
           ))}
-          {dir.files?.map((file) => <FileItem key={file.id} file={file} />)}
+          {dir.files?.map((file) => (
+            <FileItem key={file.id} file={file} directoryId={dir.id} />
+          ))}
         </div>
       )}
     </div>
@@ -175,12 +178,6 @@ export default function AssetsBrowser() {
             </Button>
           </div>
 
-          {/* <div className={styles.toolbarRow}> */}
-          {/*   <span className={styles.uploadLabel}> */}
-          {/*     Upload to: <FolderIcon fontSize="small" />{' '} */}
-          {/*     {selectedDirectory.name} */}
-          {/*   </span> */}
-          {/* </div> */}
           <div className={styles.toolbarRow}>
             <Button
               component="label"
@@ -207,7 +204,7 @@ export default function AssetsBrowser() {
               <DirectoryItem key={dir.id} dir={dir} />
             ))}
             {assets.files?.map((file: AssetsFile) => (
-              <FileItem key={file.id} file={file} />
+              <FileItem key={file.id} file={file} directoryId={assets.id} />
             ))}
           </div>
         </div>

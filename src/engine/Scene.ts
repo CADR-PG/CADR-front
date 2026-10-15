@@ -59,9 +59,13 @@ export async function loadScene(
     }
   }
 
+  // Adding entities to an already existing scene flips the dirty flag
+  em.getSceneAt(idx).dirty = false;
+
   // Don't update editor settings when playing
   if (em.currentScene === GAME_SCENE) return;
 
+  console.log('directoryId--:', file.directoryId);
   useEditorSettingsStore.getState().updateScene(
     {
       id: file.id,
@@ -171,8 +175,4 @@ export async function loadExternalScene(
     em.removeComponent(Transform, body.root);
     em.addComponent(new Transform(), body.root);
   }
-
-  // Adding entities to an already existing scene flips the dirty flag
-  const sceneIdx = idx !== undefined ? idx : em.currentScene;
-  em.getSceneAt(sceneIdx).dirty = false;
 }

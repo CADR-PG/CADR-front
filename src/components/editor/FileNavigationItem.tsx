@@ -72,6 +72,7 @@ function FileNavigationItem() {
       name: data.data.name,
       directoryId: data.directoryId,
     };
+    console.log('directorryyyyy', data.directoryId);
     const localScenes = [...scenes];
 
     // NOTE: this is a bit dumb, but I don't know man
@@ -153,6 +154,7 @@ function FileNavigationItem() {
             );
             const id = scenes[em.currentScene]?.id;
             const directoryId = scenes[em.currentScene]?.directoryId;
+            console.log('directoryIdaaa', scenes[em.currentScene]?.directoryId);
             replace({ file, id, directoryId });
           });
         }
@@ -197,6 +199,7 @@ function FileNavigationItem() {
                   [JSON.stringify(sceneData)],
                   name.replace('.scene', '') + '.scene',
                 );
+                console.log('dir:', dir);
                 upload({ file, directoryId: dir });
                 setOpen(false);
               });

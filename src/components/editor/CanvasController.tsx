@@ -4,12 +4,10 @@ import {
   GizmoViewport,
   Grid,
   OrbitControls,
-  Sky,
 } from '@react-three/drei';
 import ToolbarComponent from './Toolbar';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEditorKeys from '../../hooks/useEditorKeys';
-import StartStopBtnToolbar from './StartStopBtnToolbar';
 import { RectAreaLightTexturesLib } from 'three/addons/lights/RectAreaLightTexturesLib.js';
 import { Physics } from '@react-three/rapier';
 import {
@@ -30,6 +28,14 @@ import { useParams } from 'react-router-dom';
 import useSaveScene from '@/hooks/useSaveScene';
 import { ECS } from '@/engine/ECS';
 import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
+import { useState } from 'react';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from '@mui/material';
 
 function CanvasController() {
   const { running, focus, setCamera } = useEditorContext();
@@ -37,103 +43,134 @@ function CanvasController() {
   const { uuid } = useParams();
   const { mutate: saveScene } = useSaveScene();
   const { scenes, game } = useEditorSettingsStore();
+  const [item, setItem] = useState<AssetsFile | null>(null);
+  useEditorKeys();
+  RectAreaLightTexturesLib.init();
+
+  const replaceScene = async (item: AssetsFile) => {
+    console.log('item:', item);
+    const em = ECS.instance.entityManager;
+    const localScenes = [...scenes];
+    localScenes[em.currentScene] = {
+      id: item.id,
+      name: item.name,
+      directoryId: item.directoryId,
+    };
+
+    await loadScene(uuid!, item);
+    console.log('loaded entities:', em.getScene().entities);
+    console.log('scenes:', scenes);
+    console.log('scenes local:', localScenes);
+
+    saveScene({
+      id: uuid ? uuid : '',
+      data: {
+        currentScene: em.currentScene,
+        scenes: localScenes,
+        game,
+      },
+    });
+  };
+
   const [_, drop] = useDrop(
     () => ({
       accept: DndTypes.FILE,
       drop: async (item: AssetsFile, _monitor) => {
         const em = ECS.instance.entityManager;
-        const localScenes = [...scenes];
-        localScenes[em.currentScene] = {
-          id: item.id,
-          name: item.name,
-          directoryId: item.directoryId,
-        };
-
-        await loadScene(uuid!, item);
-        console.log('loaded entities:', em.getScene().entities);
-        console.log('scenes:', scenes);
-        console.log('scenes local:', localScenes);
-
-        saveScene({
-          id: uuid ? uuid : '',
-          data: {
-            currentScene: em.currentScene,
-            scenes: localScenes,
-            game,
-          },
-        });
+        if (em.getScene().dirty) {
+          setItem(item);
+        } else {
+          await replaceScene(item);
+        }
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
         canDrop: !!monitor.canDrop(),
       }),
     }),
-    [scenes, loadScene, saveScene],
+    [scenes, loadScene, saveScene, replaceScene],
   );
-  useEditorKeys();
-  RectAreaLightTexturesLib.init();
 
   return (
-    <div className="canvas-container">
-      <ToolbarComponent />
-      {running && <UISystem />}
-      <Canvas
-        className="canvas"
-        onPointerMissed={() => focus(null)}
-        camera={{
-          position: em.getScene()
-            ? em.getScene().lastCameraPosition
-            : undefined,
-        }}
-        shadows
-        frameloop={running ? 'always' : 'demand'}
-        onCreated={({ camera }) => setCamera(camera)}
-        ref={(node) => {
-          drop(node);
-        }}
-      >
-        {/* <Sky distance={450000} sunPosition={[0, 1, 0]} /> */}
-        <Physics colliders="hull" paused={!running} debug>
-          <AudioListenerProvider>
-            <OrbitControls
-              makeDefault
-              enableDamping={false}
-              enabled={!running}
-            />
-            {!running && <Grid sectionSize={2} infiniteGrid />}
-            {!running && (
-              <GizmoHelper
-                alignment="top-right"
-                margin={[80, 80]}
-                renderPriority={2}
-              >
-                <GizmoViewport
-                  axisColors={['red', 'green', 'blue']}
-                  labelColor="black"
-                />
-              </GizmoHelper>
-            )}
-            {running && <ScriptSystem />}
+    <>
+      <div className="canvas-container">
+        <ToolbarComponent />
+        {running && <UISystem />}
+        <Canvas
+          className="canvas"
+          onPointerMissed={() => focus(null)}
+          camera={{
+            position: em.getScene()
+              ? em.getScene().lastCameraPosition
+              : undefined,
+          }}
+          shadows
+          frameloop={running ? 'always' : 'demand'}
+          onCreated={({ camera }) => setCamera(camera)}
+          ref={(node) => {
+            drop(node);
+          }}
+        >
+          {/* <Sky distance={450000} sunPosition={[0, 1, 0]} /> */}
+          <Physics colliders="hull" paused={!running} debug>
+            <AudioListenerProvider>
+              <OrbitControls
+                makeDefault
+                enableDamping={false}
+                enabled={!running}
+              />
+              {!running && <Grid sectionSize={2} infiniteGrid />}
+              {!running && (
+                <GizmoHelper
+                  alignment="top-right"
+                  margin={[80, 80]}
+                  renderPriority={2}
+                >
+                  <GizmoViewport
+                    axisColors={['red', 'green', 'blue']}
+                    labelColor="black"
+                  />
+                </GizmoHelper>
+              )}
+              {running && <ScriptSystem />}
 
-            <Selection>
-              <EffectComposer
-                autoClear={false}
-                multisampling={0}
-                renderPriority={1}
-              >
-                <Outline
-                  edgeStrength={1}
-                  visibleEdgeColor={0xffffff}
-                  resolutionX={480}
-                  resolutionY={480}
-                />
-              </EffectComposer>
-              <RenderSystemWrapper />
-            </Selection>
-          </AudioListenerProvider>
-        </Physics>
-      </Canvas>
-    </div>
+              <Selection>
+                <EffectComposer
+                  autoClear={false}
+                  multisampling={0}
+                  renderPriority={1}
+                >
+                  <Outline
+                    edgeStrength={1}
+                    visibleEdgeColor={0xffffff}
+                    resolutionX={480}
+                    resolutionY={480}
+                  />
+                </EffectComposer>
+                <RenderSystemWrapper />
+              </Selection>
+            </AudioListenerProvider>
+          </Physics>
+        </Canvas>
+      </div>
+      <Dialog open={item !== null} onClose={() => setItem(null)} role="dialog">
+        <DialogTitle>Unsaved changes</DialogTitle>
+        <DialogContent>
+          You have unsaved changes. Are you sure you want to replace the scene?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setItem(null)}>Cancel</Button>
+          <Button
+            onClick={() => {
+              replaceScene(item!);
+              setItem(null);
+            }}
+          >
+            Replace
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
 
