@@ -24,12 +24,12 @@ function HierarchyWindow() {
   return (
     <div className="hierarchy-window" ref={parentRef}>
       <h3>Hierarchy</h3>
-      <div style={{ paddingLeft: '18px' }}>
+      <div className="hierarchy-window-content">
         <b
           ref={(node) => {
             drop(node);
           }}
-          style={{ marginLeft: '-5px' }}
+          className="hierarchy-window-content-title"
         >
           Scene
         </b>

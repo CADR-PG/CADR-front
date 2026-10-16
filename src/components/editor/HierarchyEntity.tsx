@@ -97,19 +97,14 @@ export default function HierarchyEntity({
         onClick={() => {
           focus(entity);
         }}
-        style={{
-          background: focused == entity ? '#bbb' : '',
-          display: 'flex',
-          alignItems: 'center',
-        }}
+        className={`hierarchy-item ${focused === entity ? 'hierarchy-item-active' : ''}`}
       >
-        <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+        <div className="hierarchy-item-content">
           <div
             ref={(node) => {
               drag(node);
             }}
-            className={dnd === entity ? 'underline-hover' : ''}
-            style={{ width: '100%' }}
+            className={`hierarchy-item-content-name ${dnd === entity ? 'underline-hover' : ''}`}
           >
             {em.getComponent(Name, entity)?.displayName || entity}
           </div>
