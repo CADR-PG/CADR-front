@@ -160,12 +160,7 @@ function InspectorWindow() {
               !isInvalidKey(key) && (
                 <div key={key}>
                   <div
-                    className="component-header"
-                    style={
-                      key === 'Transform'
-                        ? { paddingBottom: '18px' }
-                        : undefined
-                    }
+                    className={`component-header ${key === 'Transform' ? 'component-header-transform' : ''}`}
                   >
                     <b>{key}</b>
                     {key !== 'Transform' && (

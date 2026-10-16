@@ -11,14 +11,7 @@ export default function AnimationsInspector({ entity }: InspectorProps) {
     <div>
       {animations.map((animation) => {
         return (
-          <div
-            key={animation}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
+          <div key={animation} className="animations-inspector">
             <div>{animation}</div>
             <Button
               onClick={() => {

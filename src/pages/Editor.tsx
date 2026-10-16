@@ -100,7 +100,7 @@ function Editor() {
                         minSize={screen.width / 6}
                         preferredSize={300}
                       >
-                        <div style={{ height: '100%', overflow: 'auto' }}>
+                        <div className="project-window-pane">
                           <ProjectWindow />
                         </div>
                       </Allotment.Pane>
