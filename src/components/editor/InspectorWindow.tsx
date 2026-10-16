@@ -51,7 +51,6 @@ function InspectorWindow() {
     async function load() {
       if (!data) return;
 
-      console.log(data);
       try {
         const { default: init } = await import(
           /* @vite-ignore */ normalizeUrl(data)

@@ -1,14 +1,16 @@
+@use "../0-site/variables";
+
 .drop-area {
   display: flex;
   align-items: center;
   justify-content: center;
 
   &--drag {
-    background-color: lightgreen;
+    background-color: #90ee90;
   }
 }
 
 .component-area {
   padding: 2em;
-  border: 1px solid grey;
+  border: 1px solid variables.$c-border;
 }
