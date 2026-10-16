@@ -18,8 +18,18 @@ import SceneTabs from '@/components/SceneTabs';
 import useEntityManager from '@/hooks/useEntityManager';
 import { Camera } from 'three';
 import { loadScene } from '@/engine/Scene';
-import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
+import { Asset, useEditorSettingsStore } from '@/stores/editorSettingsStore';
 import { GAME_SCENE } from '@/engine/EntityManager';
+import { AssetsFile } from '@/types/Assets';
+
+function isScene(
+  asset: Asset,
+): asset is Omit<
+  AssetsFile,
+  'sizeInBytes' | 'createdAt' | 'lastModifiedAt' | 'directories' | 'files'
+> {
+  return asset.id !== null && asset.id !== undefined;
+}
 
 function Editor() {
   const em = useEntityManager();
@@ -41,12 +51,12 @@ function Editor() {
         const em = ECS.instance.entityManager;
         // TODO: xdd
         const json = data.data.data;
-        console.log('json', json);
+        console.log(json.scenes);
         json.scenes.forEach(async (scene, i) => {
           if (i > em.scenes.length - 1) {
             em.createScene();
           }
-          if (scene && scene.id) {
+          if (scene && isScene(scene)) {
             try {
               await loadScene(uuid!, scene, i);
             } catch {

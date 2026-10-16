@@ -14,7 +14,6 @@ import { useAnimationStore } from '@/stores/animationStore';
 import { AnimationMixer } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { ref } from 'valtio';
-import { isNestedScene } from '@/engine/Hierarchy';
 
 interface AnimatedModelProps {
   entity: Entity;
@@ -103,9 +102,7 @@ export default function GLTFController({ entity }: ControllerProps) {
         useDraco={gltf?.useDraco}
         useMeshOpt={gltf?.useMeshOpt}
       >
-        {!isNestedScene(entity) && (
-          <HighlightHelper entity={entity} focused={!running ? focused : ''} />
-        )}
+        <HighlightHelper entity={entity} focused={!running ? focused : ''} />
         <PositionalAudioComponent entity={entity} parent={object} />
         {renderComponents()}
       </AnimatedModel>

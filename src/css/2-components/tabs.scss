@@ -3,14 +3,19 @@
 .scene-tabs-container {
   display: flex;
   background: white;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
 
   &-tab {
     padding: 0 8px 0 8px;
     border-top-right-radius: 8px;
     border-top-left-radius: 8px;
+    flex: 0 0 auto;
+    white-space: nowrap;
 
     &-active {
-      background: variables.$c-text-secondary;
+      background: variables.$c-border;
     }
 
     &-content {

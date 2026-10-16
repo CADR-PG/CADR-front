@@ -7,7 +7,7 @@ export function playAnimation(name: string, entity: Entity) {
   const anims = ECS.instance.entityManager.animations[entity];
   Object.values(anims).forEach((a) => a?.stop());
   anims[name]?.setLoop(LoopOnce, 1);
-  anims[name]?.reset().play();
+  anims[name]?.play();
   useAnimationStore.getState().setPlaying(name, entity);
 }
 

@@ -88,7 +88,14 @@ export default function SceneTabs() {
     });
   };
 
-  console.log('dupa', scenes);
+  const truncName = (name: string) => {
+    const MAX_LENGTH = 15;
+    const EXTENSION_LENGTH = 6;
+    if (name.length > MAX_LENGTH) {
+      return name.slice(0, MAX_LENGTH - 1) + '...';
+    }
+    return name.slice(0, name.length - EXTENSION_LENGTH);
+  };
 
   return !running ? (
     <>
@@ -103,7 +110,7 @@ export default function SceneTabs() {
                 className="scene-tabs-container-tab-content-name"
                 onClick={() => handleClick(i)}
               >
-                {s?.name ?? `New scene`}
+                {s?.name ? truncName(s.name) : `New scene`}
                 {em.getSceneAt(i) && em.getSceneAt(i).dirty ? (
                   <FiberManualRecordIcon className="save-icon" />
                 ) : null}

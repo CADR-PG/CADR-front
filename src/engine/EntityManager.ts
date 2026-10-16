@@ -1,4 +1,4 @@
-import { proxy, snapshot } from 'valtio';
+import { proxy } from 'valtio';
 import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
 import { AnimationAction, Object3D } from 'three';
@@ -14,7 +14,6 @@ export const GAME_SCENE = -1;
 interface SceneData {
   id: number;
   entities: EntityToComponent;
-  entitiesCopy: EntityToComponent;
   dirty: boolean;
   lastCameraPosition?: Vec3;
   root: Entity | null;
@@ -55,9 +54,6 @@ export class EntityManager {
 
     if (!(entity in this.getScene().entities)) {
       this.getScene().entities[entity] = {};
-    }
-
-    if (this.getScene().root) {
     }
 
     return entity;
@@ -103,7 +99,6 @@ export class EntityManager {
     this.scenes.push({
       id,
       entities: {},
-      entitiesCopy: {},
       dirty: false,
       lastCameraPosition: INITIAL_CAMERA_POSITION,
       root: null,
@@ -289,16 +284,6 @@ export class EntityManager {
     return component in scene.entities[entity];
   }
 
-  copyScene() {
-    const copy = structuredClone(snapshot(this.getScene().entities));
-    this.game.entities = proxy(copy);
-  }
-
-  restoreScene() {
-    this.getScene().entities = this.getScene().entitiesCopy;
-    this.getScene().entitiesCopy = {};
-  }
-
   // Find the scene in which the entity exists.
   // First work through current scene, and the interate over all of them.
   // Feature used only for loading nested scene in a scene that is not current.
@@ -346,7 +331,6 @@ export class EntityManager {
   game: SceneData = {
     id: -1,
     entities: {},
-    entitiesCopy: {},
     root: null,
     dirty: false,
     lastCameraPosition: [0, 0, 0],

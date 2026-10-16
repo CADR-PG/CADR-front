@@ -153,7 +153,7 @@ export async function loadExternalScene(
     }
 
     // Update children and their parent
-    let children = em.getComponent(Children, entity);
+    const children = em.getComponent(Children, entity);
     if (children) {
       children.children = children.children.map(
         (child) => remap.get(child) ?? child,

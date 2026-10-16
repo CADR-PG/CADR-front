@@ -154,8 +154,7 @@ function FileNavigationItem() {
             );
             const id = scenes[em.currentScene]?.id;
             const directoryId = scenes[em.currentScene]?.directoryId;
-            console.log('directoryIdaaa', scenes[em.currentScene]?.directoryId);
-            replace({ file, id, directoryId });
+            if (id && directoryId) replace({ file, id, directoryId });
           });
         }
       }

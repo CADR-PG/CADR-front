@@ -152,17 +152,37 @@ export function isInvisible(entity: Entity) {
 }
 
 export function isNestedScene(entity: Entity) {
-  const nestedScene = ECS.instance.entityManager.getComponent(
-    NestedScene,
-    entity,
-  );
-  if (nestedScene) return true;
-
   const parent = ECS.instance.entityManager.getComponent(
     Parent,
     entity,
   )?.entity;
+
   if (!parent) return false;
 
+  const nestedScene = ECS.instance.entityManager.getComponent(
+    NestedScene,
+    parent,
+  );
+
+  if (nestedScene) return true;
+
   return isNestedScene(parent);
+}
+
+export function getNestedParent(entity: Entity) {
+  const parent = ECS.instance.entityManager.getComponent(
+    Parent,
+    entity,
+  )?.entity;
+
+  if (!parent) return null;
+
+  const nestedScene = ECS.instance.entityManager.getComponent(
+    NestedScene,
+    parent,
+  );
+
+  if (nestedScene) return parent;
+
+  return getNestedParent(parent);
 }
