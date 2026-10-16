@@ -51,7 +51,6 @@ function Editor() {
         const em = ECS.instance.entityManager;
         // TODO: xdd
         const json = data.data.data;
-        console.log(json.scenes);
         json.scenes.forEach(async (scene, i) => {
           if (i > em.scenes.length - 1) {
             em.createScene();

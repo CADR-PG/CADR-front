@@ -12,7 +12,6 @@ export function createEntity(idx?: number) {
     scene.entities[entity] = {};
   }
 
-  console.log('uhhh');
   if (scene.root) {
     setParent(scene.root, entity);
   } else {

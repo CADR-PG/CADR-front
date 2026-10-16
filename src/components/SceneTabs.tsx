@@ -70,7 +70,6 @@ export default function SceneTabs() {
   };
 
   const handleClick = (index: number) => {
-    console.log('Clicked on:', index);
     const em = ECS.instance.entityManager;
 
     em.getScene().lastCameraPosition = [

@@ -21,7 +21,6 @@ export default function useReplaceFile() {
       if (!uuid) return Promise.reject(new Error('Project uuid is required!'));
 
       const { data } = await requestFileUpload(uuid, id);
-      console.log(data);
       await uploadFileStorage(data.downloadUrl, file);
 
       return { data, directoryId };
@@ -32,7 +31,6 @@ export default function useReplaceFile() {
         ...data,
         directoryId,
       };
-      console.log('directory id:', directoryId);
       addFile(directoryId, fileMeta);
     },
     onError: (err) => console.error(err),

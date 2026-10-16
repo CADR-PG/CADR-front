@@ -39,9 +39,7 @@ export async function loadScene(
 
   // Load external scenes
   for (const entity of Object.keys(em.getSceneAt(idx).entities)) {
-    console.log(`${entity} from scene ${idx}`);
     if (em.has(NestedScene, entity)) {
-      console.log('nested scene on scene: ', idx);
       const nestedScene = em.getComponent(NestedScene, entity);
       const name = em.getComponent(Name, entity);
 
@@ -65,7 +63,6 @@ export async function loadScene(
   // Don't update editor settings when playing
   if (em.currentScene === GAME_SCENE) return;
 
-  console.log('directoryId--:', file.directoryId);
   useEditorSettingsStore.getState().updateScene(
     {
       id: file.id,
@@ -135,7 +132,6 @@ export async function loadExternalScene(
 
       if (!id || !name) continue;
 
-      console.log('loading nested');
       try {
         await loadExternalScene(uuid, { id, name }, newEntity, idx);
       } catch {

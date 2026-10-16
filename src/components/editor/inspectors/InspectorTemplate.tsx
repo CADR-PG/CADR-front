@@ -24,7 +24,6 @@ export default function InspectorTemplate<T extends Component, S = T>({
   skipKeys = ['name', 'element', 'data'],
 }: InspectorTemplateProps<T, S>) {
   const em = useEntityManager();
-  console.log('Component type', componentType);
   const component = em.getComponent(componentType, entity);
   const componentWrite = ECS.instance.entityManager.getComponent(
     componentType,

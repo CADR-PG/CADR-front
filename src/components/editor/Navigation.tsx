@@ -13,13 +13,7 @@ function Navigation() {
         <ObjectNavigationItem />
         <LightNavigationItem />
       </div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
+      <div className="tool-bar--center">
         <PlayButton />
         <PauseButton />
         <StartStopBtnToolbar />

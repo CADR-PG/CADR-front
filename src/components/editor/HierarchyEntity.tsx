@@ -123,9 +123,7 @@ export default function HierarchyEntity({
             className={`hierarchy-item-content-name ${dnd === entity ? 'underline-hover' : ''}`}
           >
             {em.getComponent(Name, entity)?.displayName || 'Object'}
-            <span
-              style={{ fontSize: '8px', color: '#777', paddingLeft: '8px' }}
-            >{`(${entity})`}</span>
+            <span className="hierarchy-item-content-id">{`(${entity})`}</span>
           </div>
 
           {children &&

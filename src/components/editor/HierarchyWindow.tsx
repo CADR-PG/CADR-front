@@ -10,8 +10,8 @@ function HierarchyWindow() {
   return (
     <div className="hierarchy-window" ref={parentRef}>
       <h3>Hierarchy</h3>
-      <div className='hierarchy-window-content'>
-        <b className='hierarchy-window-content-title'>Scene</b>
+      <div className="hierarchy-window-content">
+        <b className="hierarchy-window-content-title">Scene</b>
         <ul className="tree">
           {em
             .getEntities()

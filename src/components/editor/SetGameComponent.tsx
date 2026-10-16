@@ -14,7 +14,6 @@ export default function SetGameComponent() {
           <Checkbox
             checked={scenes[em.currentScene]?.id === game}
             onChange={(e) => {
-              console.log('checked');
               if (e.target.checked && scenes[em.currentScene]) {
                 setGame(scenes[em.currentScene]!.id);
               } else {

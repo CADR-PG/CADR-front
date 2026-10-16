@@ -72,7 +72,6 @@ function FileNavigationItem() {
       name: data.data.name,
       directoryId: data.directoryId,
     };
-    console.log('directorryyyyy', data.directoryId);
     const localScenes = [...scenes];
 
     // NOTE: this is a bit dumb, but I don't know man
@@ -141,7 +140,6 @@ function FileNavigationItem() {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
 
-        console.log('name:', scenes[em.currentScene]?.name);
         // if new scene, open dialog. save otherwise
         if (!scenes[em.currentScene]?.name) {
           setOpen(true);
@@ -198,7 +196,6 @@ function FileNavigationItem() {
                   [JSON.stringify(sceneData)],
                   name.replace('.scene', '') + '.scene',
                 );
-                console.log('dir:', dir);
                 upload({ file, directoryId: dir });
                 setOpen(false);
               });

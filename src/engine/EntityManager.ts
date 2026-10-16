@@ -42,7 +42,6 @@ interface EntityRefs {
 
 export class EntityManager {
   constructor() {
-    console.log('Initializing:', this.initialized, this.scenes.length);
     if (this.scenes.length === 0 && !this.initialized) {
       this.createScene();
     }
@@ -62,10 +61,8 @@ export class EntityManager {
   pushEntity(components: { [name: string]: Component }, idx?: number): Entity {
     const scene = idx !== undefined ? this.getSceneAt(idx) : this.getScene();
     const entity = crypto.randomUUID();
-    console.log(`pushing ${entity} to ${idx}`, scene.entities);
 
     if (!(entity in scene.entities)) {
-      console.log(`Pushing entity ${entity} for scene ${idx}`);
       scene.entities[entity] = components;
     } else {
       console.error('Entity already exists');
@@ -201,12 +198,10 @@ export class EntityManager {
     const components = scene.entities[entity];
     // TODO: return early?
     if (!components) {
-      console.log('No components??');
       return;
     }
 
     for (const name of Object.keys(components)) {
-      console.log('Trying to call destrcutor for', name);
       this.mapNameToClass[name]?.onEntityDestroyed?.(entity);
     }
 

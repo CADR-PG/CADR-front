@@ -48,7 +48,6 @@ function CanvasController() {
   RectAreaLightTexturesLib.init();
 
   const replaceScene = async (item: AssetsFile) => {
-    console.log('item:', item);
     const em = ECS.instance.entityManager;
     const localScenes = [...scenes];
     localScenes[em.currentScene] = {
@@ -58,9 +57,6 @@ function CanvasController() {
     };
 
     await loadScene(uuid!, item);
-    console.log('loaded entities:', em.getScene().entities);
-    console.log('scenes:', scenes);
-    console.log('scenes local:', localScenes);
 
     saveScene({
       id: uuid ? uuid : '',
