@@ -32,7 +32,7 @@
         display: flex;
         align-items: flex-start;
         justify-content: center;
-        padding-top: 160px;
+        padding-top: 120px;
         background: variables.$c-shop-overlay;
         border-radius: 16px;
 
@@ -42,6 +42,8 @@
     }
 
     &__guest-box {
+        position: sticky;
+        top: 120px;
         max-width: 420px;
         padding: 32px;
         text-align: center;
@@ -542,7 +544,6 @@
         }
 
         &__guest-box {
-            position: sticky;
             top: 80px;
             padding: 24px 20px;
 
