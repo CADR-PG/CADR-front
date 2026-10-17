@@ -19,10 +19,12 @@ function Editor() {
   const [focused, focus] = useState<string | null>(null);
   const [hovered, hover] = useState<string | null>(null);
   const [dragged, drag] = useState<boolean>(false);
+  const [gDragged, gDrag] = useState<boolean>(false);
   const { uuid } = useParams();
   const { data, isError } = useLoadScene(uuid!);
   const [running, setRunning] = useState(false);
   const [editingMode, selectMode] = useState<EditingMode>('translate');
+  const [dnd, setDnd] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -62,6 +64,10 @@ function Editor() {
     hover,
     drag,
     dragged,
+    gDrag,
+    gDragged,
+    dnd,
+    setDnd,
   };
 
   return (

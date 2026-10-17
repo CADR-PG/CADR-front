@@ -1,43 +1,103 @@
-import { RigidBody } from '@react-three/rapier';
+import {
+  RapierRigidBody,
+  RigidBody,
+  useAfterPhysicsStep,
+} from '@react-three/rapier';
 import RBody from '../../engine/components/RigidBody';
 import useEntityManager from '../../hooks/useEntityManager';
 import ControllerProps from '../../types/ControllerProps';
-import { JSX, useRef } from 'react';
+import { JSX, useRef, useState } from 'react';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import physicsHandlers from '../../engine/handlers/Physics';
 import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
 import { ECS } from '../../engine/ECS';
 import Transform from '../../engine/components/Transform';
+import { useMeshContext } from '@/hooks/useMeshContext';
+import {
+  applyMatrix,
+  flattenHierarchy,
+  getWorldMatrix,
+  getWorldTransformOmitRoot,
+  isInRigidBody,
+  toMatrix,
+} from '@/engine/Hierarchy';
+import Parent from '@/engine/components/Parent';
+import useWorldTransform from '@/hooks/useWorldTransform';
+import Collider from '@/engine/components/Collider';
+import ComponentNames from '@/data/ComponentNames';
+import { Clone, useGLTF } from '@react-three/drei';
+import GLTF from '@/engine/components/GLTF';
+import useDownloadFile from '@/hooks/useDownloadFile';
+import { normalizeUrl } from '@/engine/components/helpers/material';
 
 interface RigidBodyControllerProps {
-  children: JSX.Element[];
-  mesh: THREE.Object3D | null;
+  children: JSX.Element | JSX.Element[];
 }
 
-const v = new THREE.Vector3();
+const p = new THREE.Vector3();
+const r = new THREE.Quaternion();
+const s = new THREE.Vector3();
+const e = new THREE.Euler();
 
+// NOTE: this component is a smoking pile of garbage. proceed with caution.
 export default function RigidBodyController({
   entity,
   children,
-  mesh,
 }: ControllerProps & RigidBodyControllerProps) {
   const em = useEntityManager();
   const rigidBody = em.getComponent(RBody, entity);
   const { running } = useEditorContext();
-  const ref = useRef(null!);
+  const ref = useRef<RapierRigidBody>(null!);
+  const t = useWorldTransform(entity);
   const transformWrite = ECS.instance.entityManager.getComponent(
     Transform,
     entity,
   );
-  const prev = useRef(new THREE.Vector3());
+  const parent = em.getComponent(Parent, entity)?.entity;
+  const { object: mesh } = useMeshContext();
+  // component mounts on running, initial position will be overwritten
+  // when starting the game again
+  const [initial] = useState(() => t);
 
-  useFrame(() => {
-    if (!running || !transformWrite || !mesh) return;
-    v.setFromMatrixPosition(mesh.matrixWorld);
-    if (v.distanceToSquared(prev.current) < 1e-6) return;
-    prev.current.copy(v);
-    transformWrite.position = [v.x, v.y, v.z];
+  // TODO: bad idea.....
+  const gltf = em.getComponent(GLTF, entity);
+  const { data: modelUrl } = useDownloadFile(gltf?.source);
+  const model = useGLTF(
+    modelUrl ? normalizeUrl(modelUrl) : '/error.glb',
+    gltf?.useDraco,
+    gltf?.useMeshOpt,
+  );
+
+  // sync Transform component with real transformation based on physics
+  useAfterPhysicsStep(() => {
+    if (
+      !rigidBody ||
+      !ref.current ||
+      !running ||
+      !transformWrite ||
+      !mesh ||
+      !initial
+    )
+      return;
+
+    const tr = ref.current.translation();
+    const ro = ref.current.rotation();
+    p.set(tr.x, tr.y, tr.z);
+    r.set(ro.x, ro.y, ro.z, ro.w);
+    s.fromArray(initial.scale);
+    e.setFromQuaternion(r);
+
+    const newT = new Transform(
+      [p.x, p.y, p.z],
+      [e.x, e.y, e.z],
+      [s.x, s.y, s.z],
+    );
+    const world = toMatrix(newT);
+    const local = parent
+      ? getWorldMatrix(parent).invert().multiply(world)
+      : world;
+    applyMatrix(transformWrite, local);
+    world.decompose(mesh.position, mesh.quaternion, mesh.scale);
   });
 
   return rigidBody && running ? (
@@ -56,16 +116,44 @@ export default function RigidBodyController({
       dominanceGroup={rigidBody.dominanceGroup}
       friction={rigidBody.friction}
       gravityScale={rigidBody.gravityScale}
-      includeInvisible={rigidBody.includeInvisible}
+      includeInvisible={true}
       mass={rigidBody.mass}
       restitution={rigidBody.restitution}
       sensor={rigidBody.sensor}
       softCcdPrediction={rigidBody.softCcdPrediction}
       type={rigidBody.type}
+      position={initial.position}
+      rotation={initial.rotation}
+      scale={initial.scale}
+    >
+      {gltf ? (
+        <Clone object={model.scene ?? null} visible={false} />
+      ) : (
+        <mesh geometry={mesh?.geometry} scale={[1, 1, 1]} visible={false} />
+      )}
+      {children}
+      {flattenHierarchy(entity).map((collider) => {
+        const c = ECS.instance.entityManager.getComponent(Collider, collider);
+        const tr = getWorldTransformOmitRoot(collider);
+        if (!c || !c.element) return null;
+
+        const ColliderComponent = ComponentNames[c.element];
+        return (
+          // making a new group is dumb I think but whatever
+          <group position={tr.position} rotation={tr.rotation} scale={tr.scale}>
+            <ColliderComponent entity={collider} />;
+          </group>
+        );
+      })}
+    </RigidBody>
+  ) : !isInRigidBody(entity) ? (
+    <object3D
+      position={t.position}
+      rotation={t.rotation}
+      scale={t.scale}
+      visible={false}
     >
       {children}
-    </RigidBody>
-  ) : (
-    <>{children}</>
-  );
+    </object3D>
+  ) : null;
 }

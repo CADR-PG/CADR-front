@@ -5,7 +5,7 @@ export function useEditorContext() {
   const context = useContext(EditorContext);
   if (!context) {
     throw new Error(
-      'useEditorContext must be used within EditorContext.Proivder',
+      'useEditorContext must be used within EditorContext.Provider',
     );
   }
 

@@ -131,6 +131,9 @@ function InspectorWindow() {
         );
       case 'GLTF':
         return <GLTFInspector entity={focused} />;
+      case 'Parent':
+      case 'Children':
+        return null;
       default:
         return (
           <InspectorTemplate

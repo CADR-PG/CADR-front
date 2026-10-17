@@ -9,7 +9,6 @@ import ToolbarComponent from './Toolbar';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEditorKeys from '../../hooks/useEditorKeys';
 import StartStopBtnToolbar from './StartStopBtnToolbar';
-import { RenderSystem } from '../../engine/systems/RenderSystem';
 import { RectAreaLightTexturesLib } from 'three/addons/lights/RectAreaLightTexturesLib.js';
 import { Physics } from '@react-three/rapier';
 import {
@@ -20,6 +19,7 @@ import {
 import AudioListenerProvider from './AudioListenerProvider';
 import ScriptSystem from '../../engine/systems/ScriptSystem';
 import UISystem from '@/engine/systems/UISystem';
+import RenderSystemWrapper from '@/engine/systems/RenderSystemWrapper';
 
 function CanvasController() {
   const { running, focus } = useEditorContext();
@@ -73,7 +73,7 @@ function CanvasController() {
                   resolutionY={480}
                 />
               </EffectComposer>
-              <RenderSystem />
+              <RenderSystemWrapper />
             </Selection>
           </AudioListenerProvider>
         </Physics>
