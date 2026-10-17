@@ -131,6 +131,10 @@
       color: #fff;
     }
   }
+
+  &-transform {
+    padding-bottom: 18px;
+  }
 }
 
 .add-component {
@@ -197,4 +201,9 @@
     align-items: center;
     justify-content: center;
   }
+}
+
+.project-window-pane {
+  height: 100%;
+  overflow: auto;
 }
