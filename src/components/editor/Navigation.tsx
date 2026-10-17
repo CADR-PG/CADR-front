@@ -1,6 +1,7 @@
 import FileNavigationItem from './FileNavigationItem';
 import LightNavigationItem from './LightNavigationItem';
 import ObjectNavigationItem from './ObjectNavigationItem';
+import ThemeToggle from '../ThemeToggle';
 
 function Navigation() {
   return (
@@ -8,6 +9,7 @@ function Navigation() {
       <FileNavigationItem />
       <ObjectNavigationItem />
       <LightNavigationItem />
+      <ThemeToggle className="tool-bar__theme-toggle" />
     </div>
   );
 }

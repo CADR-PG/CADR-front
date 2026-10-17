@@ -2,7 +2,29 @@
 
 .tool-bar {
   background-color: variables.$c-white;
+  border-bottom: 1px solid variables.$c-border;
   display: flex;
+  align-items: center;
+
+  .dark & {
+    background-color: variables.$c-bg-header-dark;
+    border-bottom: 1px solid variables.$c-border-dark;
+  }
+
+  .tool-bar__theme-toggle {
+    margin-left: auto;
+    margin-right: 8px;
+    padding: 4px;
+
+    .svg-darkmode-icons {
+      width: 18px;
+      height: 18px;
+    }
+
+    &:hover {
+      transform: none;
+    }
+  }
 }
 
 .editor {
@@ -54,6 +76,31 @@
   min-width: 200px;
   overflow: auto;
   height: 100%;
+
+  .dark & {
+    hr {
+      border-color: variables.$c-white;
+    }
+
+    .MuiIconButton-root,
+    .MuiCheckbox-root,
+    .MuiSelect-icon {
+      color: variables.$c-white;
+    }
+
+    .MuiInputAdornment-root {
+      border-color: variables.$c-white;
+    }
+
+    .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+      border-color: variables.$c-white;
+    }
+
+    .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+    .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: variables.$c-cyan-dark;
+    }
+  }
 }
 
 .inspector-panel {
