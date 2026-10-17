@@ -39,7 +39,12 @@ function FileItem({ file }: FileItemProps) {
   const deleteFile = useDeleteFile();
 
   return (
-    <div ref={drag} className={styles.row}>
+    <div
+      ref={(node) => {
+        drag(node);
+      }}
+      className={styles.row}
+    >
       <span className={styles.iconSpacer} />
       <span className={styles.fileName}>
         <InsertDriveFileIcon fontSize="small" />

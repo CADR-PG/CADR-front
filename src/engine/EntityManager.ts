@@ -2,6 +2,8 @@ import { proxy, snapshot } from 'valtio';
 import { Component, ComponentType } from './Component';
 import { Entity } from './Entity';
 import { Object3D } from 'three';
+import { requestFileDownload } from '@/api/client';
+import { normalizeUrlRaw } from './components/helpers/material';
 
 interface NameToClass {
   [name: string]: ComponentType;
@@ -48,6 +50,35 @@ export class EntityManager {
 
   setScene(entities: EntityToComponent) {
     this.entities = proxy(entities);
+  }
+
+  // Components imported through scripts should get registered on scene load.
+  // If a file is missing, remove the component as it's no longer valid.
+  async loadComponents(
+    entities: EntityToComponent,
+    uuid: string,
+    sdk: unknown,
+  ) {
+    for (const entity of Object.keys(entities)) {
+      for (const component of Object.keys(entities[entity])) {
+        if ('fileId' in entities[entity][component]) {
+          try {
+            const { data } = await requestFileDownload(
+              uuid,
+              entities[entity][component]['fileId'] as string,
+            );
+            if (!data) continue;
+            const { default: init } = await import(
+              /* @vite-ignore */ normalizeUrlRaw(data)
+            );
+            init(sdk);
+          } catch (e) {
+            console.error('File is no longer valid', e);
+            delete entities[entity][component];
+          }
+        }
+      }
+    }
   }
 
   // TODO: This function creates an instance of Component and assigns it to the entity.
@@ -112,19 +143,23 @@ export class EntityManager {
     return instance.name in this.entities[entity];
   }
 
-  hasAll(components: Component[], entity: Entity): boolean {
-    // TODO: I think this gets too complicated idk
-    const c = components.map(
-      (component) => this.mapNameToClass[component.name],
-    );
-
-    for (const component of c) {
-      if (!this.has(component, entity)) {
+  // PERF: cache components for all systems
+  hasAll(components: (Component | string)[], entity: Entity): boolean {
+    for (const component of components) {
+      if (typeof component === 'string') {
+        if (!this.is(component, entity)) {
+          return false;
+        }
+      } else if (!this.has(this.mapNameToClass[component.name], entity)) {
         return false;
       }
     }
 
     return true;
+  }
+
+  is(component: string, entity: Entity) {
+    return component in this.entities[entity];
   }
 
   copyScene() {

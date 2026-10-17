@@ -3,7 +3,7 @@ import { loadScene } from '../api/client';
 
 function useLoadScene(uuid: string) {
   return useQuery({
-    queryKey: ['project'],
+    queryKey: ['project', uuid],
     queryFn: () => loadScene(uuid),
     retry: false,
     refetchOnMount: 'always',
