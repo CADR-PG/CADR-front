@@ -9,6 +9,9 @@ import { useState } from 'react';
 import SceneData from '../../types/SaveSceneData';
 import useEntityManager from '../../hooks/useEntityManager';
 import { useSnackbarStore } from '../../stores/snackbarStore';
+import useGetProjects from '../../hooks/useGetProjects';
+import PublishGameModal from '../../modals/PublishGameModal';
+import ProjectData from '../../types/ProjectData';
 
 function FileNavigationItem() {
   const em = useEntityManager();
@@ -19,6 +22,12 @@ function FileNavigationItem() {
   const { openSnackbar } = useSnackbarStore();
 
   const [secondsLeft, setSecondsLeft] = useState(60);
+  const [publishOpen, setPublishOpen] = useState(false);
+  const getProjects = useGetProjects();
+
+  const project: ProjectData = getProjects.data?.data.items.find(
+    (p: ProjectData) => p.id === uuid,
+  ) ?? { id: uuid ?? '', name: '', description: '', lastUpdate: '' };
 
   const saveScene = useCallback(() => {
     const entities = em.getScene();
@@ -82,9 +91,25 @@ function FileNavigationItem() {
         <MenuItem onClick={() => filePickerRef.current[1]?.click()}>
           Import...
         </MenuItem>
+        <MenuItem
+          onClick={() => {
+            saveScene();
+            focus(null);
+            setPublishOpen(true);
+          }}
+        >
+          Publish...
+        </MenuItem>
         <MenuItem disabled>Autosave in: {secondsLeft}s</MenuItem>
       </NavigationItem>
       <input ref={setRef(0)} type="file" onChange={deserializeScene} hidden />
+      {publishOpen && (
+        <PublishGameModal
+          open={publishOpen}
+          onClose={() => setPublishOpen(false)}
+          project={project}
+        />
+      )}
       <SnackbarProvider />
     </>
   );
