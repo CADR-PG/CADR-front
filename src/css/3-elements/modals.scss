@@ -15,8 +15,11 @@
     &-content {
         background: #fff;
         border-radius: 8px;
-        width: 400px;
-        max-width: 90%;
+        width: 448px;
+        max-width: 92%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-sizing: border-box;
         box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         padding: 24px;
 

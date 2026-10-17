@@ -4,7 +4,6 @@
 @use '0-site/sections';
 
 @use '1-pages/editor';
-@use '1-pages/homepage';
 @use '1-pages/register';
 @use '1-pages/login';
 @use '1-pages/change-data';
@@ -13,6 +12,7 @@
 @use '1-pages/dashboard';
 @use '1-pages/user-location-map';
 @use '1-pages/not-found';
+@use '1-pages/shop';
 
 @use '2-components/navbar';
 @use '2-components/hierarchy-window';

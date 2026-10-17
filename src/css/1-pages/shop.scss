@@ -1,0 +1,695 @@
+@use "../0-site/variables";
+
+.l-section--shop {
+    padding: 48px 20px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow: visible;
+}
+
+.shop {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
+    &--guest {
+        min-height: 600px;
+
+        .shop__featured,
+        .shop__section,
+        .shop__layout {
+            filter: blur(3px);
+            pointer-events: none;
+            user-select: none;
+        }
+    }
+
+    &__guest-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding-top: 160px;
+        background: variables.$c-shop-overlay;
+        border-radius: 16px;
+
+        .dark & {
+            background: variables.$c-shop-overlay-dark;
+        }
+    }
+
+    &__guest-box {
+        max-width: 420px;
+        padding: 32px;
+        text-align: center;
+        background: variables.$c-card-bg;
+        border: 1px solid variables.$c-border;
+        border-radius: 16px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+        h3 {
+            margin: 0 0 8px;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        p {
+            margin: 0 0 20px;
+            color: variables.$c-text-secondary;
+            line-height: 1.6;
+
+            .dark & {
+                color: variables.$c-text-secondary-dark;
+            }
+        }
+
+        .dark & {
+            background: variables.$c-card-bg-dark;
+            border: 1px solid variables.$c-border-dark;
+        }
+    }
+
+    &__guest-actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    &__featured {
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+        background: variables.$c-card-bg;
+        border: 1px solid variables.$c-border;
+        border-radius: 16px;
+        overflow: hidden;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+        .dark & {
+            background: variables.$c-card-bg-dark;
+            border: 1px solid variables.$c-border-dark;
+        }
+
+        &-image {
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+            object-fit: cover;
+        }
+
+        &-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 28px;
+        }
+
+        &-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: variables.$c-cyan;
+
+            .dark & {
+                color: variables.$c-cyan-dark;
+            }
+        }
+
+        &-title {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        &-description {
+            margin: 0;
+            color: variables.$c-text-secondary;
+            line-height: 1.6;
+
+            .dark & {
+                color: variables.$c-text-secondary-dark;
+            }
+        }
+
+        &-tags {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        &-plays {
+            font-size: 0.85rem;
+            color: variables.$c-text-secondary;
+
+            .dark & {
+                color: variables.$c-text-secondary-dark;
+            }
+        }
+
+        &-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+
+            .btn-primary {
+                margin-right: 0;
+                border: none;
+                cursor: pointer;
+                font-size: 1rem;
+            }
+        }
+    }
+
+    &__section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 20px;
+
+        .search-bar {
+            padding: 10px 14px;
+            border: 1px solid variables.$c-border;
+            border-radius: 10px;
+            background: variables.$c-bg;
+            color: variables.$c-text;
+            font-size: 1rem;
+
+            .dark & {
+                background: variables.$c-bg-dark;
+                border: 1px solid variables.$c-border-dark;
+                color: variables.$c-text-dark;
+            }
+        }
+    }
+
+    &__section-title {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    &__section-subtitle {
+        font-size: 0.9rem;
+        color: variables.$c-text-secondary;
+
+        .dark & {
+            color: variables.$c-text-secondary-dark;
+        }
+    }
+
+    &__row {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 260px;
+        gap: 24px;
+        overflow-x: auto;
+        padding: 8px 4px 16px;
+        scroll-snap-type: x mandatory;
+
+        .game-card {
+            scroll-snap-align: start;
+        }
+    }
+
+    &__layout {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 32px;
+        align-items: start;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 24px;
+    }
+
+    &__sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        position: sticky;
+        top: 90px;
+    }
+
+    &__panel {
+        padding: 20px;
+        background: variables.$c-card-bg;
+        border: 1px solid variables.$c-border;
+        border-radius: 16px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+        .dark & {
+            background: variables.$c-card-bg-dark;
+            border: 1px solid variables.$c-border-dark;
+        }
+
+        &-title {
+            margin: 0 0 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        &-empty {
+            margin: 0;
+            font-size: 0.9rem;
+            color: variables.$c-text-secondary;
+
+            .dark & {
+                color: variables.$c-text-secondary-dark;
+            }
+        }
+    }
+
+    &__wallet-balance {
+        margin: 0;
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: variables.$c-cyan;
+
+        .dark & {
+            color: variables.$c-cyan-dark;
+        }
+    }
+
+    &__library {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        &-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid variables.$c-border;
+
+            &:last-child {
+                padding-bottom: 0;
+                border-bottom: none;
+            }
+
+            .dark & {
+                border-color: variables.$c-border-dark;
+            }
+        }
+
+        &-title {
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    .empty-state {
+        grid-column: 1 / -1;
+        padding: 24px 0;
+        color: variables.$c-text-secondary;
+
+        .dark & {
+            color: variables.$c-text-secondary-dark;
+        }
+    }
+}
+
+.game-card {
+    display: flex;
+    flex-direction: column;
+    background: variables.$c-card-bg;
+    border: 1px solid variables.$c-border;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(12px);
+    transition: transform 0.3s, box-shadow 0.3s;
+
+    .dark & {
+        background: variables.$c-card-bg-dark;
+        border: 1px solid variables.$c-border-dark;
+    }
+
+    &:hover {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    &__media {
+        position: relative;
+    }
+
+    &__thumbnail {
+        display: block;
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    &__age {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 4px 8px;
+        border-radius: 8px;
+        background: variables.$c-age-bg;
+        color: variables.$c-white;
+        font-size: 0.75rem;
+        font-weight: 700;
+
+        &--static {
+            position: static;
+        }
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        gap: 6px;
+        padding: 16px;
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 1.05rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__meta {
+        margin: 0;
+        font-size: 0.8rem;
+        color: variables.$c-text-secondary;
+
+        .dark & {
+            color: variables.$c-text-secondary-dark;
+        }
+    }
+
+    &__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: auto;
+        padding-top: 10px;
+    }
+
+    &__price {
+        font-weight: 700;
+
+        &--free {
+            color: variables.$c-price-free;
+
+            .dark & {
+                color: variables.$c-price-free-dark;
+            }
+        }
+    }
+
+    &__badge {
+        padding: 6px 10px;
+        border-radius: 10px;
+        background: variables.$c-badge-bg;
+        color: variables.$c-cyan;
+        font-size: 0.8rem;
+        font-weight: 600;
+
+        .dark & {
+            background: variables.$c-badge-bg-dark;
+            color: variables.$c-cyan-dark;
+        }
+    }
+}
+
+.buy-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+
+    &__row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+
+        span {
+            color: variables.$c-text-secondary;
+
+            .dark & {
+                color: variables.$c-text-secondary-dark;
+            }
+        }
+    }
+}
+
+.play-assets {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &__item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+
+        .btn-small {
+            text-decoration: none;
+        }
+    }
+
+    &__path {
+        font-size: 0.9rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__expires,
+    &__empty {
+        margin: 0 0 12px;
+        font-size: 0.85rem;
+        color: variables.$c-text-secondary;
+
+        .dark & {
+            color: variables.$c-text-secondary-dark;
+        }
+    }
+}
+
+.form-row--split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 900px) {
+    .shop {
+        &__layout {
+            grid-template-columns: 1fr;
+        }
+
+        &__sidebar {
+            position: static;
+            order: -1;
+        }
+
+        &__featured {
+            grid-template-columns: 1fr;
+
+            &-image {
+                min-height: 200px;
+                max-height: 260px;
+            }
+        }
+    }
+}
+
+@media (max-width: 584px) {
+    .l-section--shop {
+        padding: 24px 12px 48px;
+    }
+
+    .shop {
+        gap: 28px;
+
+        &--guest {
+            min-height: 100vh;
+        }
+
+        &__guest-overlay {
+            padding: 24px 12px 0;
+            border-radius: 12px;
+        }
+
+        &__guest-box {
+            position: sticky;
+            top: 80px;
+            padding: 24px 20px;
+
+            h3 {
+                font-size: 1.2rem;
+            }
+
+            p {
+                font-size: 0.95rem;
+            }
+        }
+
+        &__guest-actions {
+            flex-direction: column;
+            align-items: stretch;
+
+            .btn-primary {
+                justify-content: center;
+                margin-right: 0;
+            }
+        }
+
+        &__featured {
+            border-radius: 12px;
+
+            &-image {
+                min-height: 0;
+                height: 180px;
+            }
+
+            &-info {
+                gap: 10px;
+                padding: 18px;
+            }
+
+            &-title {
+                font-size: 1.35rem;
+            }
+
+            &-description {
+                font-size: 0.9rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            &-footer {
+                flex-wrap: wrap;
+                gap: 12px;
+
+                .btn-primary {
+                    flex: 1;
+                    justify-content: center;
+                    padding: 10px 14px;
+                }
+            }
+        }
+
+        &__section-header {
+            margin-bottom: 14px;
+
+            .search-bar {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+
+        &__section-title {
+            font-size: 1.25rem;
+        }
+
+        &__row {
+            grid-auto-columns: 70%;
+            gap: 14px;
+            margin: 0 -12px;
+            padding: 4px 12px 12px;
+            scroll-padding: 0 12px;
+        }
+
+        &__grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        &__sidebar {
+            gap: 12px;
+        }
+
+        &__panel {
+            padding: 16px;
+            border-radius: 12px;
+        }
+
+        &__wallet-balance {
+            font-size: 1.3rem;
+        }
+    }
+
+    .game-card {
+        border-radius: 12px;
+
+        &__thumbnail {
+            height: 110px;
+        }
+
+        &__content {
+            padding: 12px;
+            gap: 4px;
+        }
+
+        &__title {
+            font-size: 0.95rem;
+        }
+
+        &__footer {
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-top: 8px;
+
+            .btn-small {
+                flex: 1;
+            }
+        }
+
+        &__price {
+            font-size: 0.9rem;
+        }
+    }
+
+    .form-row--split {
+        grid-template-columns: 1fr;
+        gap: 0;
+
+        > div + div {
+            margin-top: 12px;
+        }
+    }
+
+    .buy-summary__row {
+        flex-wrap: wrap;
+    }
+}
+
+@media (hover: none) {
+    .game-card:hover {
+        transform: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+}

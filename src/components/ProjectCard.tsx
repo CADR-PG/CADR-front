@@ -6,6 +6,7 @@ import useEditProject from '../hooks/useEditProject';
 import useDeleteProject from '../hooks/useDeleteProject';
 import Modal from '../modals/ManageProjectModal';
 import DeleteProjectModal from '../modals/DeleteProjectModal';
+import PublishGameModal from '../modals/PublishGameModal';
 
 interface ProjectCardProps {
   project: ProjectData;
@@ -15,6 +16,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const navigate = useNavigate();
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [publishOpen, setPublishOpen] = useState(false);
   const deleteProject = useDeleteProject();
   const editProject = useEditProject();
   const deleting = deleteProject.status === 'pending';
@@ -102,6 +104,15 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               className="btn-small"
               onClick={(e) => {
                 e.stopPropagation();
+                setPublishOpen(true);
+              }}
+            >
+              Publish
+            </button>
+            <button
+              className="btn-small"
+              onClick={(e) => {
+                e.stopPropagation();
                 handleDeleteOpen(e);
               }}
             >
@@ -161,6 +172,12 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         projectName={project.name}
         onConfirm={handleDeleteConfirm}
         deleting={deleting}
+      />
+
+      <PublishGameModal
+        open={publishOpen}
+        onClose={() => setPublishOpen(false)}
+        project={project}
       />
     </>
   );

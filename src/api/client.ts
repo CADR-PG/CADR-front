@@ -12,6 +12,16 @@ import type {
   AssetsDirectory,
   AssetsFileUploadReadModel,
 } from '../types/Assets';
+import type {
+  AddGameToStoreData,
+  CreateSnapshotData,
+  GameReadModel,
+  GameShopCard,
+  GameVersionReadModel,
+  LibraryGame,
+  Paginated,
+  PlayGameReadModel,
+} from '../types/Shop';
 
 const localApiUrl = '/api';
 const productionApiUrl = 'https://api.cadr.games';
@@ -175,4 +185,56 @@ export const deleteFile = async (projectId: string, fileId: string) => {
   return await apiClient.delete(
     `/projects/${projectId}/assets/files/${fileId}`,
   );
+};
+
+export const getMostPopularGames = async () => {
+  return await apiClient.get<Paginated<GameShopCard>>(
+    '/shop/get-most-popular-games',
+  );
+};
+
+export const getGamesList = async () => {
+  return await apiClient.get<Paginated<GameReadModel>>('/shop/games-list');
+};
+
+export const getMyLibrary = async () => {
+  return await apiClient.get<Paginated<LibraryGame>>('/shop/my-library');
+};
+
+export const getWalletBalance = async () => {
+  return await apiClient.post<string>('/shop/wallet-balance');
+};
+
+export const buyGame = async (gameId: string) => {
+  return await apiClient.post('/shop/buy-game', { gameId });
+};
+
+export const playGame = async (gameId: string) => {
+  return await apiClient.post<PlayGameReadModel>(`/shop/${gameId}/play-game`);
+};
+
+export const addGameToStore = async (
+  projectId: string,
+  data: AddGameToStoreData,
+) => {
+  return await apiClient.post<GameReadModel>(
+    `/shop/${projectId}/add-game-to-store`,
+    data,
+  );
+};
+
+export const createSnapshot = async (
+  projectId: string,
+  data: CreateSnapshotData,
+) => {
+  return await apiClient.post<GameVersionReadModel>(
+    `/shop/${projectId}/create-snapshot`,
+    data,
+  );
+};
+
+export const publishVersion = async (gameId: string, gameVersionId: string) => {
+  return await apiClient.post(`/shop/${gameId}/publish-version`, {
+    gameVersionId,
+  });
 };
