@@ -21,7 +21,7 @@ export default function InspectorTemplate<T extends Component, S = T>({
   componentType,
   select,
   specialRender,
-  skipKeys = ['name', 'element', 'data', 'fileId'],
+  skipKeys = ['name', 'element', 'data'],
 }: InspectorTemplateProps<T, S>) {
   const em = useEntityManager();
   const component = em.getComponent(componentType, entity);

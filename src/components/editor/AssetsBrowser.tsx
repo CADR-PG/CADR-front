@@ -14,9 +14,12 @@ import { AssetsContext, useAssetsContext } from '../../data/AssetsContext';
 import { formatFileSize } from '../../utils/formatFileSize';
 import { useDrag } from 'react-dnd';
 import { DndTypes } from '../../types/DndTypes';
+import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
+import { useSnackbarStore } from '@/stores/snackbarStore';
 
 interface FileItemProps {
   file: AssetsFile;
+  directoryId: string;
 }
 
 interface DirectoryItemProps {
@@ -28,15 +31,26 @@ interface SelectedDirectory {
   name: string;
 }
 
-function FileItem({ file }: FileItemProps) {
+function FileItem({ file, directoryId }: FileItemProps) {
   const [, drag] = useDrag(() => ({
     type: DndTypes.FILE,
-    item: file,
+    item: { ...file, directoryId },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
   }));
   const deleteFile = useDeleteFile();
+  const { scenes } = useEditorSettingsStore();
+  const { openSnackbar } = useSnackbarStore();
+  const handleDelete = () => {
+    for (const scene of scenes) {
+      if (scene?.id === file.id) {
+        openSnackbar("You can't delete opened scene", 'error');
+        return;
+      }
+    }
+    deleteFile.mutate(file.id);
+  };
 
   return (
     <div
@@ -55,7 +69,7 @@ function FileItem({ file }: FileItemProps) {
       </span>
       <IconButton
         size="small"
-        onClick={() => deleteFile.mutate(file.id)}
+        onClick={() => handleDelete()}
         disabled={deleteFile.isPending}
       >
         <DeleteIcon fontSize="small" />
@@ -98,7 +112,9 @@ function DirectoryItem({ dir }: DirectoryItemProps) {
           {dir.directories?.map((sub) => (
             <DirectoryItem key={sub.id} dir={sub} />
           ))}
-          {dir.files?.map((file) => <FileItem key={file.id} file={file} />)}
+          {dir.files?.map((file) => (
+            <FileItem key={file.id} file={file} directoryId={dir.id} />
+          ))}
         </div>
       )}
     </div>
@@ -162,12 +178,6 @@ export default function AssetsBrowser() {
             </Button>
           </div>
 
-          {/* <div className={styles.toolbarRow}> */}
-          {/*   <span className={styles.uploadLabel}> */}
-          {/*     Upload to: <FolderIcon fontSize="small" />{' '} */}
-          {/*     {selectedDirectory.name} */}
-          {/*   </span> */}
-          {/* </div> */}
           <div className={styles.toolbarRow}>
             <Button
               component="label"
@@ -194,7 +204,7 @@ export default function AssetsBrowser() {
               <DirectoryItem key={dir.id} dir={dir} />
             ))}
             {assets.files?.map((file: AssetsFile) => (
-              <FileItem key={file.id} file={file} />
+              <FileItem key={file.id} file={file} directoryId={assets.id} />
             ))}
           </div>
         </div>

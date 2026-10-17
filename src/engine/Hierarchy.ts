@@ -6,44 +6,40 @@ import Transform from './components/Transform';
 import Children from './components/Children';
 import RBody from './components/RigidBody';
 import Invisible from './components/Invisible';
+import NestedScene from './components/NestedScene';
 
 export function setParent(parent: Entity | null, child: Entity) {
   if (parent === child) return;
   if (parent && isDescendant(parent, child)) return;
+  const em = ECS.instance.entityManager;
 
-  const oldParent =
-    ECS.instance.entityManager.getComponent(Parent, child)?.entity ?? null;
+  const oldParent = em.getComponent(Parent, child)?.entity ?? null;
   if (parent === oldParent) return;
 
   const world = getWorldMatrix(child);
 
   // remove child from original parent
   if (oldParent) {
-    const oldChildren = ECS.instance.entityManager.getComponent(
-      Children,
-      oldParent,
-    );
+    const oldChildren = em.getComponent(Children, oldParent);
     if (oldChildren) {
       oldChildren.children = oldChildren?.children.filter((c) => c !== child);
     }
   }
-  ECS.instance.entityManager.removeComponent(Parent, child);
+  em.removeComponent(Parent, child);
 
   // attach child to new parent and add new child to the new parent
   if (parent) {
-    ECS.instance.entityManager.addComponent(new Parent(parent), child);
+    em.addComponent(new Parent(parent), child);
 
-    if (ECS.instance.entityManager.has(Children, parent)) {
-      ECS.instance.entityManager
-        .getComponent(Children, parent)
-        ?.children.push(child);
+    if (em.has(Children, parent)) {
+      em.getComponent(Children, parent)?.children.push(child);
     } else {
-      ECS.instance.entityManager.addComponent(new Children([child]), parent);
+      em.addComponent(new Children([child]), parent);
     }
   }
 
   // set new local transform
-  const transform = ECS.instance.entityManager.getComponent(Transform, child);
+  const transform = em.getComponent(Transform, child);
   if (transform) {
     const local = parent
       ? getWorldMatrix(parent).invert().multiply(world)
@@ -153,4 +149,40 @@ export function isInvisible(entity: Entity) {
   if (!parent) return false;
 
   return isInvisible(parent);
+}
+
+export function isNestedScene(entity: Entity) {
+  const parent = ECS.instance.entityManager.getComponent(
+    Parent,
+    entity,
+  )?.entity;
+
+  if (!parent) return false;
+
+  const nestedScene = ECS.instance.entityManager.getComponent(
+    NestedScene,
+    parent,
+  );
+
+  if (nestedScene) return true;
+
+  return isNestedScene(parent);
+}
+
+export function getNestedParent(entity: Entity) {
+  const parent = ECS.instance.entityManager.getComponent(
+    Parent,
+    entity,
+  )?.entity;
+
+  if (!parent) return null;
+
+  const nestedScene = ECS.instance.entityManager.getComponent(
+    NestedScene,
+    parent,
+  );
+
+  if (nestedScene) return parent;
+
+  return getNestedParent(parent);
 }

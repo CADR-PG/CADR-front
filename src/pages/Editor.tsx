@@ -13,10 +13,26 @@ import { ECS } from '../engine/ECS';
 import EditingMode from '../types/EditingMode';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { sdk } from '@/data/Sdk';
 import { stopAllAnimations } from '@/engine/Animation';
+import SceneTabs from '@/components/SceneTabs';
+import useEntityManager from '@/hooks/useEntityManager';
+import { Camera } from 'three';
+import { loadScene } from '@/engine/Scene';
+import { Asset, useEditorSettingsStore } from '@/stores/editorSettingsStore';
+import { GAME_SCENE } from '@/engine/EntityManager';
+import { AssetsFile } from '@/types/Assets';
+
+function isScene(
+  asset: Asset,
+): asset is Omit<
+  AssetsFile,
+  'sizeInBytes' | 'createdAt' | 'lastModifiedAt' | 'directories' | 'files'
+> {
+  return asset.id !== null && asset.id !== undefined;
+}
 
 function Editor() {
+  const em = useEntityManager();
   const [focused, focus] = useState<string | null>(null);
   const [hovered, hover] = useState<string | null>(null);
   const [dragged, drag] = useState<boolean>(false);
@@ -26,35 +42,83 @@ function Editor() {
   const [running, setRunning] = useState(false);
   const [editingMode, selectMode] = useState<EditingMode>('translate');
   const [dnd, setDnd] = useState<string | null>(null);
+  const [camera, setCamera] = useState<Camera>(null!);
+  const { setGame, scenes, game } = useEditorSettingsStore();
 
   useEffect(() => {
     async function load() {
       if (data) {
+        const em = ECS.instance.entityManager;
         // TODO: xdd
         const json = data.data.data;
-        ECS.instance.systems = [];
-        await ECS.instance.entityManager.loadComponents(json, uuid!, sdk);
-        ECS.instance.entityManager.setScene(json);
+        json.scenes.forEach(async (scene, i) => {
+          if (i > em.scenes.length - 1) {
+            em.createScene();
+          }
+          if (scene && isScene(scene)) {
+            try {
+              await loadScene(uuid!, scene, i);
+            } catch {
+              console.error("Couldn't load the scene");
+              console.trace();
+            }
+          }
+        });
+        em.currentScene = json.currentScene;
+        setGame(json.game);
       }
       if (isError) {
-        ECS.instance.entityManager.setScene({});
+        console.error('Something went wrong with scene initialization');
       }
     }
     load();
   }, [data, isError]);
 
-  const startstop = (newState: boolean) => {
+  const startstop = async (newState: boolean, current: boolean | null) => {
+    stopAllAnimations();
+
+    const em = ECS.instance.entityManager;
     if (!running && newState) {
-      ECS.instance.entityManager.copyScene();
-      // TODO: we should probably create some sort of callback/event
-      // for when scene transforms from editor to game mode
-      stopAllAnimations();
-    }
-    if (running && !newState) {
-      ECS.instance.entityManager.restoreScene();
+      const editorIdx = em.currentScene;
+      em.enterGame();
+
+      try {
+        if (current) {
+          const scene = scenes[editorIdx];
+          if (!scene?.id)
+            throw new Error('Current scene has no file (unsaved?)');
+          await loadScene(
+            uuid!,
+            {
+              id: scene.id,
+              name: scene.name!,
+              directoryId: scene.directoryId!,
+            },
+            GAME_SCENE,
+          );
+        } else {
+          if (!game) throw new Error('No main game scene set');
+          await loadScene(
+            uuid!,
+            { id: game, name: 'dummy', directoryId: 'dummy' },
+            GAME_SCENE,
+          );
+        }
+      } catch (e) {
+        console.error('Failed to start game', e);
+        em.exitGame();
+        return;
+      }
+
+      ECS.instance.isRunning = true;
+      setRunning(true);
     }
 
-    setRunning(newState);
+    if (running && !newState) {
+      setRunning(false);
+      ECS.instance.isRunning = false;
+      em.exitGame();
+    }
   };
 
   const contextValue: EditorContextValues = {
@@ -72,6 +136,8 @@ function Editor() {
     gDragged,
     dnd,
     setDnd,
+    camera,
+    setCamera,
   };
 
   return (
@@ -111,7 +177,10 @@ function Editor() {
                     preferredSize={screen.width / 3}
                     snap={false}
                   >
-                    <CanvasController />
+                    <SceneTabs />
+                    <CanvasController
+                      key={`${em.currentScene} ${em.getScene().id}`}
+                    />
                   </Allotment.Pane>
                   <Allotment.Pane
                     minSize={screen.width / 6}

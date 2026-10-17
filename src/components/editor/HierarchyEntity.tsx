@@ -15,10 +15,21 @@ import { useEffect, useState } from 'react';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import EntityDragObject from '@/types/EntityDragObject';
+import { AssetsFile } from '@/types/Assets';
+import { loadExternalScene } from '@/engine/Scene';
+import { useParams } from 'react-router-dom';
+import NestedScene from '@/engine/components/NestedScene';
 
 interface HierarchyEntityProps {
   entity: Entity;
   parent: HTMLDivElement | null;
+}
+
+function isEntity(
+  item: EntityDragObject | AssetsFile,
+): item is EntityDragObject {
+  if ('child' in item) return true;
+  return false;
 }
 
 export default function HierarchyEntity({
@@ -28,6 +39,7 @@ export default function HierarchyEntity({
   const em = useEntityManager();
   const children = em.getComponent(Children, entity);
   const { focused, focus, dnd, setDnd } = useEditorContext();
+  const { uuid } = useParams();
   const [open, setOpen] = useState(true);
 
   const [, drag] = useDrag(
@@ -47,9 +59,13 @@ export default function HierarchyEntity({
 
   const [_, drop] = useDrop(
     () => ({
-      accept: DndTypes.ENTITY,
-      drop: (item: EntityDragObject, _monitor) => {
-        setParent(entity, item.child);
+      accept: [DndTypes.ENTITY, DndTypes.FILE],
+      drop: (item: EntityDragObject | AssetsFile, _monitor) => {
+        if (isEntity(item)) {
+          setParent(entity, item.child);
+        } else {
+          loadExternalScene(uuid!, item);
+        }
       },
       hover(_item, monitor) {
         if (monitor.isOver() && monitor.canDrop()) {
@@ -106,10 +122,13 @@ export default function HierarchyEntity({
             }}
             className={`hierarchy-item-content-name ${dnd === entity ? 'underline-hover' : ''}`}
           >
-            {em.getComponent(Name, entity)?.displayName || entity}
+            {em.getComponent(Name, entity)?.displayName || 'Object'}
+            <span className="hierarchy-item-content-id">{`(${entity})`}</span>
           </div>
 
-          {children && children.children.length ? (
+          {children &&
+          children.children.length &&
+          !em.has(NestedScene, entity) ? (
             <IconButton
               className="visibilityButton"
               onClick={() => {
@@ -133,15 +152,17 @@ export default function HierarchyEntity({
         </IconButton>
       </div>
 
-      <Collapse in={open}>
-        <ul className="tree">
-          {em
-            .getComponent(Children, entity)
-            ?.children.map((child, i) => (
-              <HierarchyEntity parent={parent} key={i} entity={child} />
-            ))}
-        </ul>
-      </Collapse>
+      {!em.has(NestedScene, entity) && (
+        <Collapse in={open}>
+          <ul className="tree">
+            {em
+              .getComponent(Children, entity)
+              ?.children.map((child, i) => (
+                <HierarchyEntity parent={parent} key={i} entity={child} />
+              ))}
+          </ul>
+        </Collapse>
+      )}
     </li>
   );
 }

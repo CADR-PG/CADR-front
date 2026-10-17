@@ -10,7 +10,6 @@ export default function GLTFInspector({ entity }: InspectorProps) {
       entity={entity}
       componentType={GLTF}
       specialRender={(key) => {
-        console.log(key);
         switch (key) {
           case 'source':
             return <ModelDropArea entity={entity} />;

@@ -2,7 +2,7 @@ import { Component } from './Component';
 import { Entity } from './Entity';
 import { System } from './System';
 import { EntityManager } from './EntityManager';
-import { proxy, snapshot } from 'valtio';
+import { proxy, snapshot, subscribe, unstable_enableOp } from 'valtio';
 import { RootState } from '@react-three/fiber';
 
 // Glue class that contains the whole logic of ECS.
@@ -13,7 +13,18 @@ export class ECS {
   static #instance: ECS;
 
   private constructor() {
+    unstable_enableOp(true);
     this.entityManager = proxy<EntityManager>(new EntityManager());
+    this.unsub = subscribe(this.entityManager.scenes, (ops) => {
+      if (
+        !this.isRunning &&
+        this.isLoaded &&
+        ops.some(([_, path]) => path.length > 2 && path[1] === 'entities')
+      ) {
+        this.entityManager.getScene().dirty = true;
+      }
+    });
+    this.isLoaded = true;
   }
 
   // Let it be a singleton, why the fuck not.
@@ -82,7 +93,10 @@ export class ECS {
     const components = structuredClone(
       snapshot(this.entityManager.getComponents(entity)),
     );
-    this.entityManager.entities[newEntity] = proxy(components);
+    this.entityManager.getScene().entities[newEntity] = proxy(components);
     return newEntity;
   }
+  unsub: () => void;
+  isLoaded: boolean = false;
+  isRunning: boolean = false;
 }
