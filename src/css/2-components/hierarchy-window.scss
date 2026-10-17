@@ -9,6 +9,11 @@
         padding: 0 10px;
         display: flex;
         justify-content: space-between;
+
+        &--focused {
+            background: #555;
+            color: #fff;
+        }
     }
     .buttonContainer {
         display: flex;
@@ -18,6 +23,7 @@
     .visibilityButton {
         background-color: transparent;
         border: transparent;
+        color: inherit;
         padding: 0;
         margin: 0;
     }

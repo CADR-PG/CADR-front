@@ -42,9 +42,8 @@ function HierarchyWindow() {
       {em.getEntities().map((entity) => (
         <div
           key={entity}
-          className="hierarchy-window__item"
+          className={`hierarchy-window__item ${focused == entity ? 'hierarchy-window__item--focused' : ''}`}
           onClick={() => focus(entity)}
-          style={{ background: focused == entity ? '#555' : '' }}
         >
           {em.getComponent(Name, entity)?.displayName || entity}
           <div className="buttonContainer">
