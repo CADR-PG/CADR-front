@@ -112,12 +112,6 @@ function NavBar() {
           </>
         ) : (
           <>
-            <Link to="/register" className="btn-primary">
-              Register now
-            </Link>
-            <Link to="/login" className="btn-primary">
-              Login
-            </Link>
           </>
         )}
       </div>
