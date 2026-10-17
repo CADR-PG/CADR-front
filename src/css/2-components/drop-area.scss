@@ -1,0 +1,9 @@
+.drop-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &--drag {
+    background-color: lightgreen;
+  }
+}

@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .vite
+.config.ts
 
 certs/
 
@@ -28,3 +29,4 @@ certs/
 
 .env
 .envrc
+.direnv/

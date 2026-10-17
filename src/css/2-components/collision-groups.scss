@@ -1,0 +1,9 @@
+.collision-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.collision-child {
+  flex: 1 0 21%;
+}

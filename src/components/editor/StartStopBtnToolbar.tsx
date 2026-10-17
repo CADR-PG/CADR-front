@@ -4,11 +4,16 @@ import { grey } from '@mui/material/colors';
 import { useEditorContext } from '../../hooks/useEditorContext';
 
 function StartStopBtnToolbar() {
-  const { running, setRunning } = useEditorContext();
+  const { running, setRunning, focus } = useEditorContext();
 
   return (
     <div className="start-stop-btn-toolbar">
-      <button onClick={() => setRunning((prev) => !prev)}>
+      <button
+        onClick={() => {
+          setRunning(!running);
+          focus(null);
+        }}
+      >
         {running ? (
           <PauseIcon sx={{ color: grey[500] }} />
         ) : (

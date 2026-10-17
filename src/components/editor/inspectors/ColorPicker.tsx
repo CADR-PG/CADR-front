@@ -5,37 +5,38 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { Entity } from '../../../engine/Entity';
-import { ECS } from '../../../engine/ECS';
-import Material, { MaterialData } from '../../../engine/components/Material';
 import { Button, InputAdornment, Popover, TextField } from '@mui/material';
 import { HexColorPicker } from 'react-colorful';
+import useEntityManager from '../../../hooks/useEntityManager';
+import { ECS } from '../../../engine/ECS';
+import { Component, ComponentType } from '../../../engine/Component';
+import { Entity } from '../../../engine/Entity';
 
-interface ColorData extends MaterialData {
-  color: number;
+interface HasData<S> {
+  data: S;
 }
 
-interface ColorMaterial extends Material {
-  data: ColorData;
-}
-
-interface ColorPickerProps {
+interface ColorPickerProps<S, T extends Component & HasData<S>> {
   entity: Entity;
-  componentColor: number;
+  component: ComponentType<T>;
+  field: keyof S;
 }
 
-export default function ColorPicker({
+export default function ColorPicker<S, T extends Component & HasData<S>>({
   entity,
-  componentColor,
-}: ColorPickerProps) {
-  const materialWrite = ECS.instance.entityManager.getComponent(
-    Material,
-    entity,
-  ) as ColorMaterial;
+  component,
+  field,
+}: ColorPickerProps<S, T>) {
+  const em = useEntityManager();
+  const c = em.getComponent(component, entity);
+  const cw = ECS.instance.entityManager.getComponent(component, entity);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [color, setColor] = useState<string>('');
+
+  const componentColor = c!.data as Record<keyof S, number>;
+  const data = cw!.data as Record<keyof S, number>;
   const open = Boolean(anchorEl);
-  const stringColor = `${componentColor.toString(16).padStart(6, '0')}`;
+  const stringColor = `${componentColor[field].toString(16).padStart(6, '0')}`;
 
   // NOTE(m1k53r): this is used only for the input below the picker,
   // so that both input forms are synchronized with each other.
@@ -48,14 +49,14 @@ export default function ColorPicker({
   ) => {
     const color = Number.parseInt(e.currentTarget.value, 16);
 
-    materialWrite.data.color = color;
+    data[field] = color;
   };
 
   const handleColor = (color: string) => {
     // NOTE(m1k53r): `color` starts with '#' character,
     // so we have to start from the second character to parse it correctly.
     const c = Number.parseInt(color.slice(1), 16);
-    materialWrite.data.color = c;
+    data[field] = c;
   };
 
   const handleOpen = (event: MouseEvent<HTMLButtonElement>) => {

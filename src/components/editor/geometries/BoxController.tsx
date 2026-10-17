@@ -6,24 +6,18 @@ import BoxGeometryData from '../../../engine/components/geometries/BoxGeometryDa
 export default function BoxController({ entity }: ControllerProps) {
   const em = useEntityManager();
   const geometry = em.getComponent(Geometry, entity);
-  let boxGeometry;
-
-  if (geometry) {
-    boxGeometry = geometry.data as BoxGeometryData;
-  }
+  const boxGeometry = geometry!.data as BoxGeometryData;
 
   return (
-    boxGeometry && (
-      <boxGeometry
-        args={[
-          boxGeometry.width,
-          boxGeometry.height,
-          boxGeometry.depth,
-          boxGeometry.widthSegments,
-          boxGeometry.heightSegments,
-          boxGeometry.depthSegments,
-        ]}
-      />
-    )
+    <boxGeometry
+      args={[
+        boxGeometry.width,
+        boxGeometry.height,
+        boxGeometry.depth,
+        boxGeometry.widthSegments,
+        boxGeometry.heightSegments,
+        boxGeometry.depthSegments,
+      ]}
+    />
   );
 }

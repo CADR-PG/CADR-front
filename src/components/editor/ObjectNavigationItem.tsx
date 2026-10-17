@@ -8,12 +8,14 @@ import Transform from '../../engine/components/Transform';
 import Geometry from '../../engine/components/Geometry';
 import Name from '../../engine/components/Name';
 import BasicMaterialData from '../../engine/components/materials/BasicMaterialData';
+import Mesh from '../../engine/components/Mesh';
 
 function ObjectNavigationItem() {
   const { focus } = useEditorContext();
 
   const handleAdd = (object: string) => {
     const entity = ECS.instance.entityManager.createEntity();
+    ECS.instance.entityManager.addComponent(new Mesh(), entity);
     ECS.instance.entityManager.addComponent(
       new Material(new BasicMaterialData()),
       entity,

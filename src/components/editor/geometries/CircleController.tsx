@@ -3,27 +3,19 @@ import CircleGeometryData from '../../../engine/components/geometries/CircleGeom
 import useEntityManager from '../../../hooks/useEntityManager';
 import Geometry from '../../../engine/components/Geometry';
 
-function CircleController({ entity }: ControllerProps) {
+export default function CircleController({ entity }: ControllerProps) {
   const em = useEntityManager();
   const geometry = em.getComponent(Geometry, entity);
-  let circleGeometry;
-
-  if (geometry) {
-    circleGeometry = geometry.data as CircleGeometryData;
-  }
+  const circleGeometry = geometry!.data as CircleGeometryData;
 
   return (
-    circleGeometry && (
-      <circleGeometry
-        args={[
-          circleGeometry.radius,
-          circleGeometry.segments,
-          circleGeometry.thetaStart,
-          circleGeometry.thetaLength,
-        ]}
-      />
-    )
+    <circleGeometry
+      args={[
+        circleGeometry.radius,
+        circleGeometry.segments,
+        circleGeometry.thetaStart,
+        circleGeometry.thetaLength,
+      ]}
+    />
   );
 }
-
-export default CircleController;
