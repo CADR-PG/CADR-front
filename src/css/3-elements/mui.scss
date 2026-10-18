@@ -1,0 +1,221 @@
+@use "../0-site/variables";
+
+.MuiButton {
+    &-root {
+        border-radius: 12px;
+        font-family: system-ui, sans-serif;
+        font-weight: 600;
+        text-transform: none;
+        transition: background 0.3s, box-shadow 0.3s, color 0.2s;
+
+        &.Mui-disabled {
+            opacity: 0.5;
+        }
+    }
+
+    &-contained {
+        background: variables.$c-cyan;
+        color: variables.$c-button-text;
+        box-shadow: 0 4px 16px variables.$c-cyan-hover;
+
+        &:hover {
+            background: variables.$c-cyan-hover;
+            box-shadow: 0 4px 16px variables.$c-cyan-hover;
+        }
+
+        .dark & {
+            background: variables.$c-cyan-dark;
+            color: variables.$c-button-text-dark;
+            box-shadow: 0 4px 16px variables.$c-cyan-hover-dark;
+
+            &:hover {
+                background: variables.$c-cyan-hover-dark;
+            }
+        }
+    }
+
+    &-outlined,
+    &-text {
+        border-radius: 10px;
+        color: variables.$c-text;
+
+        &:hover {
+            background: variables.$c-cyan;
+            color: variables.$c-button-text;
+            border-color: variables.$c-cyan-hover;
+        }
+
+        .dark & {
+            color: variables.$c-text-dark;
+
+            &:hover {
+                background: variables.$c-cyan-dark;
+                color: variables.$c-button-text-dark;
+                border-color: variables.$c-cyan-hover-dark;
+            }
+        }
+    }
+
+    &-outlined {
+        border: 1px solid variables.$c-border;
+        background: variables.$c-bg;
+
+        .dark & {
+            border-color: variables.$c-border-dark;
+            background: variables.$c-bg-dark;
+        }
+    }
+}
+
+.MuiIconButton-root {
+    border-radius: 10px;
+    transition: all 0.2s;
+
+    &:hover {
+        background: variables.$c-cyan;
+        color: variables.$c-button-text;
+
+        .dark & {
+            background: variables.$c-cyan-dark;
+            color: variables.$c-button-text-dark;
+        }
+    }
+}
+
+.MuiOutlinedInput {
+    &-root {
+        border-radius: 10px;
+        background: variables.$c-bg;
+        color: variables.$c-text;
+
+        .MuiOutlinedInput-notchedOutline {
+            border-color: variables.$c-border;
+        }
+
+        &:hover .MuiOutlinedInput-notchedOutline {
+            border-color: variables.$c-cyan-hover;
+        }
+
+        &.Mui-focused .MuiOutlinedInput-notchedOutline {
+            border-color: variables.$c-cyan;
+        }
+
+        .dark & {
+            background: variables.$c-bg-dark;
+            color: variables.$c-text-dark;
+
+            .MuiOutlinedInput-notchedOutline {
+                border-color: variables.$c-border-dark;
+            }
+
+            &.Mui-focused .MuiOutlinedInput-notchedOutline {
+                border-color: variables.$c-cyan-dark;
+            }
+        }
+    }
+}
+
+.MuiInputLabel-root {
+    color: variables.$c-text-secondary;
+
+    &.Mui-focused {
+        color: variables.$c-cyan;
+    }
+
+    .dark & {
+        color: variables.$c-text-secondary-dark;
+
+        &.Mui-focused {
+            color: variables.$c-cyan-dark;
+        }
+    }
+}
+
+.MuiPopover-paper {
+    border-radius: 10px;
+    border: 1px solid variables.$c-border;
+
+    .dark & {
+        background: variables.$c-bg-dark;
+        color: variables.$c-text-dark;
+        border-color: variables.$c-border-dark;
+    }
+}
+
+.MuiFilledInput {
+    &-root {
+        border-radius: 10px 10px 0 0;
+        background: variables.$c-bg;
+        color: variables.$c-text;
+
+        &:hover,
+        &.Mui-focused {
+            background: variables.$c-bg;
+        }
+
+        &::before {
+            border-bottom-color: variables.$c-border;
+        }
+
+        &::after {
+            border-bottom-color: variables.$c-cyan;
+        }
+
+        .dark & {
+            background: rgba(255, 255, 255, 0.06);
+            color: variables.$c-text-dark;
+
+            &:hover,
+            &.Mui-focused {
+                background: rgba(255, 255, 255, 0.09);
+            }
+
+            &::before {
+                border-bottom-color: variables.$c-border-dark;
+            }
+
+            &::after {
+                border-bottom-color: variables.$c-cyan-dark;
+            }
+        }
+    }
+}
+
+.MuiInputAdornment-root {
+    color: variables.$c-text-secondary;
+
+    .MuiTypography-root {
+        color: inherit;
+    }
+
+    .dark & {
+        color: variables.$c-text-secondary-dark;
+    }
+}
+
+.MuiMenuItem-root {
+    font-family: system-ui, sans-serif;
+
+    &:hover {
+        background: variables.$c-cyan;
+        color: variables.$c-button-text;
+
+        .dark & {
+            background: variables.$c-cyan-dark;
+            color: variables.$c-button-text-dark;
+        }
+    }
+}
+
+.MuiAlert-root {
+    border-radius: 12px;
+    font-family: system-ui, sans-serif;
+}
+
+.MuiAlert-filledError {
+    background: variables.$c-error;
+}
+
+.MuiAlert-filledSuccess {
+    background: variables.$c-success;
+}

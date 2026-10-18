@@ -1,3 +1,5 @@
+@use "../0-site/variables";
+
 .row {
   display: flex;
   align-items: center;
@@ -61,7 +63,13 @@
 }
 
 .selected {
-  background-color: #d0e8ff;
+  background-color: variables.$c-cyan;
+  color: variables.$c-button-text;
+
+  :global(.dark) & {
+    background-color: variables.$c-cyan-dark;
+    color: variables.$c-button-text-dark;
+  }
 }
 
 .children {
@@ -102,7 +110,12 @@
 }
 
 .toolbar {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid variables.$c-border;
+
+  :global(.dark) & {
+    border-bottom-color: variables.$c-border-dark;
+  }
+
   padding: 8px;
   display: flex;
   flex-direction: row;
@@ -113,6 +126,26 @@
   display: flex;
   gap: 4px;
   align-items: center;
+
+  :global(.MuiButton-root) {
+    border: 1px solid variables.$c-border;
+    background: variables.$c-bg;
+
+    &:hover {
+      background: variables.$c-cyan;
+      border-color: variables.$c-cyan-hover;
+    }
+
+    :global(.dark) & {
+      border-color: variables.$c-border-dark;
+      background: variables.$c-bg-dark;
+
+      &:hover {
+        background: variables.$c-cyan-dark;
+        border-color: variables.$c-cyan-hover-dark;
+      }
+    }
+  }
 }
 
 .uploadLabel {

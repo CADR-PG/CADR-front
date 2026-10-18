@@ -142,51 +142,7 @@
     }
 
     .theme-toggle {
-        position: relative;
         top: 5px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 6px;
-        border-radius: 6px;
-        transition: background 0.3s, transform 180ms;
-        display: inline-flex;
-        align-items: center;
-
-        .svg-darkmode-icons {
-            width: 22px;
-            height: 22px;
-            fill: variables.$c-text;
-
-            .dark & {
-                fill: variables.$c-text-dark;
-            }
-        }
-
-        .light-icon { 
-            display: inline; 
-
-            .dark & {
-                display: none; 
-            }
-        }
-
-        .dark-icon { 
-            display: none; 
-
-            .dark & {
-                display: inline; 
-            }
-        }
-
-        &:hover {
-            transform: translateY(-2px);
-            background: rgba(0, 0, 0, 0.04);
-
-            .dark & {
-                background: rgba(255, 255, 255, 0.06);
-            }
-        }
     }
 }
 
