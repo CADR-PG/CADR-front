@@ -1,8 +1,12 @@
-import { EntityToComponent } from '../engine/EntityManager';
+import { Asset } from '@/stores/editorSettingsStore';
 
 interface SceneData {
   id: string;
-  data: EntityToComponent;
+  data: {
+    currentScene: number;
+    scenes: (Asset | null)[];
+    game: string | null;
+  };
 }
 
 export default SceneData;

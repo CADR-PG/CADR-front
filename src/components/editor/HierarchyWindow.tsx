@@ -1,40 +1,11 @@
-import { useEffect, useRef } from 'react';
-import { useEditorContext } from '../../hooks/useEditorContext';
-import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import Name from '../../engine/components/Name';
+import { useRef } from 'react';
 import useEntityManager from '../../hooks/useEntityManager';
-import Invisible from '../../engine/components/Invisible';
-import { Entity } from '../../engine/Entity';
-import { ECS } from '../../engine/ECS';
+import HierarchyEntity from './HierarchyEntity';
+import Parent from '@/engine/components/Parent';
 
 function HierarchyWindow() {
   const em = useEntityManager();
-  const { focused, focus } = useEditorContext();
   const parentRef = useRef<HTMLDivElement>(null);
-
-  const handleClick = (entity: Entity) => {
-    if (!em.has(Invisible, entity)) {
-      ECS.instance.entityManager.addComponent(new Invisible(), entity);
-    } else {
-      ECS.instance.entityManager.removeComponent(Invisible, entity);
-    }
-  };
-
-  // TODO: make it more generic and extract it to a hook
-  useEffect(() => {
-    const handleClick = (event: MouseEvent) => {
-      const isInsideParent = parentRef.current?.contains(event.target as Node);
-      // TODO: this is kinda stupid, but `eventListener` gets called before `onClick`
-      // so on a valid object click it will override null
-      if (isInsideParent) focus(null);
-    };
-
-    document.addEventListener('mousedown', handleClick);
-    return () => {
-      document.removeEventListener('mousedown', handleClick);
-    };
-  }, [focus]);
 
   return (
     <div className="hierarchy-window" ref={parentRef}>
@@ -60,6 +31,25 @@ function HierarchyWindow() {
           </div>
         </div>
       ))}
+      <div className="hierarchy-window-content">
+        <b className="hierarchy-window-content-title">Scene</b>
+        <ul className="tree">
+          {em
+            .getEntities()
+            .filter(
+              (entity) =>
+                !em.getComponent(Parent, entity) ||
+                !em.getComponent(Parent, entity)?.entity,
+            )
+            .map((entity) => (
+              <HierarchyEntity
+                parent={parentRef.current}
+                entity={entity}
+                key={entity}
+              />
+            ))}
+        </ul>
+      </div>
     </div>
   );
 }

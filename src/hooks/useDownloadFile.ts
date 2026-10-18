@@ -6,7 +6,7 @@ export default function useDownloadFile(fileId: string | undefined) {
   const { uuid } = useParams<{ uuid: string }>();
 
   return useQuery({
-    queryKey: ['texture', uuid, fileId],
+    queryKey: ['asset', uuid, fileId],
     queryFn: () => {
       if (!uuid || !fileId)
         return Promise.reject(
@@ -17,6 +17,8 @@ export default function useDownloadFile(fileId: string | undefined) {
     retry: false,
     refetchOnWindowFocus: false,
     enabled: Boolean(uuid && fileId),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 50 * 60 * 1000,
+    gcTime: 55 * 60 * 1000,
+    refetchOnMount: false,
   });
 }

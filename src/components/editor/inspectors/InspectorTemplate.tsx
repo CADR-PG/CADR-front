@@ -67,22 +67,28 @@ export default function InspectorTemplate<T extends Component, S = T>({
           <div className="inspector-input-columns">
             <NumberField
               className="inspector-input-columns-column"
-              value={value[0]}
-              onValueChange={(value) => setVecField(key, value!, 0)}
+              value={value[0] ?? 0}
+              onValueChange={(v: number | null) =>
+                v !== null && setVecField(key, v!, 0)
+              }
               size="small"
               label="x"
             />
             <NumberField
               className="inspector-input-columns-column"
-              value={value[1]}
-              onValueChange={(value) => setVecField(key, value!, 1)}
+              value={value[1] ?? 0}
+              onValueChange={(v: number | null) =>
+                v !== null && setVecField(key, v!, 1)
+              }
               size="small"
               label="y"
             />
             <NumberField
               className="inspector-input-columns-column"
-              value={value[2]}
-              onValueChange={(value) => setVecField(key, value!, 2)}
+              value={value[2] ?? 0}
+              onValueChange={(v: number | null) =>
+                v !== null && setVecField(key, v!, 2)
+              }
               size="small"
               label="z"
             />

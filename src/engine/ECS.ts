@@ -2,7 +2,8 @@ import { Component } from './Component';
 import { Entity } from './Entity';
 import { System } from './System';
 import { EntityManager } from './EntityManager';
-import { proxy, snapshot } from 'valtio';
+import { proxy, snapshot, subscribe, unstable_enableOp } from 'valtio';
+import { RootState } from '@react-three/fiber';
 
 // Glue class that contains the whole logic of ECS.
 // TODO: Maybe add unit tests for this?
@@ -12,7 +13,18 @@ export class ECS {
   static #instance: ECS;
 
   private constructor() {
+    unstable_enableOp(true);
     this.entityManager = proxy<EntityManager>(new EntityManager());
+    this.unsub = subscribe(this.entityManager.scenes, (ops) => {
+      if (
+        !this.isRunning &&
+        this.isLoaded &&
+        ops.some(([_, path]) => path.length > 2 && path[1] === 'entities')
+      ) {
+        this.entityManager.getScene().dirty = true;
+      }
+    });
+    this.isLoaded = true;
   }
 
   // Let it be a singleton, why the fuck not.
@@ -34,8 +46,12 @@ export class ECS {
     this.systems.push(system);
   }
 
+  clearSystems() {
+    this.systems = [];
+  }
+
   // API
-  update() {
+  update(state: RootState, delta: number) {
     // TODO: Most likely a performance hit. Another way of doing this
     // is to specify an array of entities for each system beforehand
     // and updating it once entities change their components.
@@ -45,11 +61,21 @@ export class ECS {
     // from the beginning but go biased by tutorials lol.
     for (const system of this.systems) {
       // When we find all relevant entities, run the system.
-      system.update(this.query(system.components));
+      system.update(this.query(system.components), state, delta);
     }
   }
 
-  query(components: Component[]) {
+  start() {
+    for (const system of this.systems) {
+      system.start();
+    }
+  }
+
+  // Components can be either of type Component or string. String, because user
+  // defined components can't be referenced as Component inside user scripts.
+  // Current SDK doesn't allow for exporting those components.
+  // TODO: Maybe export this.systems and convert it into a map?
+  query(components: (Component | string)[]) {
     const matchingEntities: Entity[] = [];
 
     // When an entity satisfies a component condition for particular system,
@@ -67,7 +93,10 @@ export class ECS {
     const components = structuredClone(
       snapshot(this.entityManager.getComponents(entity)),
     );
-    this.entityManager.entities[newEntity] = proxy(components);
+    this.entityManager.getScene().entities[newEntity] = proxy(components);
     return newEntity;
   }
+  unsub: () => void;
+  isLoaded: boolean = false;
+  isRunning: boolean = false;
 }
