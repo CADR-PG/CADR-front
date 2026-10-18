@@ -10,27 +10,6 @@ function HierarchyWindow() {
   return (
     <div className="hierarchy-window" ref={parentRef}>
       <h3>Hierarchy</h3>
-      {em.getEntities().map((entity) => (
-        <div
-          key={entity}
-          className={`hierarchy-window__item ${focused == entity ? 'hierarchy-window__item--focused' : ''}`}
-          onClick={() => focus(entity)}
-        >
-          {em.getComponent(Name, entity)?.displayName || entity}
-          <div className="buttonContainer">
-            <button
-              className="visibilityButton"
-              onClick={() => handleClick(entity)}
-            >
-              {!em.has(Invisible, entity) ? (
-                <VisibilityOutlined />
-              ) : (
-                <VisibilityOffOutlinedIcon />
-              )}
-            </button>
-          </div>
-        </div>
-      ))}
       <div className="hierarchy-window-content">
         <b className="hierarchy-window-content-title">Scene</b>
         <ul className="tree">

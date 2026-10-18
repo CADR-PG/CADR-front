@@ -16,6 +16,7 @@
   .visibilityButton {
     background-color: transparent;
     border: transparent;
+    color: inherit;
     padding: 0;
     margin: 0;
   }
@@ -26,15 +27,6 @@
     &-title {
       margin-left: -5px;
     }
-    &__item {
-        padding: 0 10px;
-        display: flex;
-        justify-content: space-between;
-
-        &--focused {
-            background: #555;
-            color: #fff;
-        }
   }
 }
 
@@ -106,6 +98,11 @@ $line: 2px solid #000;
 
   &-active {
     background-color: #bbb;
+
+    .dark & {
+      background-color: #555;
+      color: #fff;
+    }
   }
 
   &-content {
@@ -116,12 +113,6 @@ $line: 2px solid #000;
     &-name {
       width: 100%;
     }
-    .visibilityButton {
-        background-color: transparent;
-        border: transparent;
-        color: inherit;
-        padding: 0;
-        margin: 0;
 
     &-id {
       font-size: 8px;
