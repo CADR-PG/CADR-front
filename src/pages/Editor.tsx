@@ -66,9 +66,11 @@ function Editor() {
         });
         em.currentScene = json.currentScene;
         setGame(json.game);
+        ECS.instance.ensureCamera();
       }
       if (isError) {
         console.error('Something went wrong with scene initialization');
+        ECS.instance.ensureCamera();
       }
     }
     load();

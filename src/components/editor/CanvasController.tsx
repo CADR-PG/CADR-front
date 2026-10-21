@@ -4,7 +4,10 @@ import {
   GizmoViewport,
   Grid,
   OrbitControls,
+  PerspectiveCamera,
 } from '@react-three/drei';
+import * as THREE from 'three';
+import { RefObject, useRef, useState } from 'react';
 import ToolbarComponent from './Toolbar';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEditorKeys from '../../hooks/useEditorKeys';
@@ -28,7 +31,6 @@ import { useParams } from 'react-router-dom';
 import useSaveScene from '@/hooks/useSaveScene';
 import { ECS } from '@/engine/ECS';
 import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
-import { useState } from 'react';
 import {
   Button,
   Dialog,
@@ -36,6 +38,21 @@ import {
   DialogContent,
   DialogTitle,
 } from '@mui/material';
+import useEditorCameraMovement from '../../hooks/useEditorCameraMovement';
+
+// useEditorCameraMovement uses r3f hooks (useThree/useFrame), which only
+// work inside the <Canvas> tree - CanvasController itself renders the
+// Canvas, so this tiny child does the actual hook call instead.
+function EditorFlyControls({
+  cameraRef,
+  active,
+}: {
+  cameraRef: RefObject<THREE.PerspectiveCamera>;
+  active: boolean;
+}) {
+  useEditorCameraMovement(cameraRef, active);
+  return null;
+}
 
 function CanvasController() {
   const { running, focus, setCamera } = useEditorContext();
@@ -44,6 +61,7 @@ function CanvasController() {
   const { mutate: saveScene } = useSaveScene();
   const { scenes, game } = useEditorSettingsStore();
   const [item, setItem] = useState<AssetsFile | null>(null);
+  const editCameraRef = useRef<THREE.PerspectiveCamera>(null!);
   useEditorKeys();
   RectAreaLightTexturesLib.init();
 
@@ -107,10 +125,20 @@ function CanvasController() {
             drop(node);
           }}
         >
-          {/* <Sky distance={450000} sunPosition={[0, 1, 0]} /> */}
+          {/* Explicit, always-mounted edit-viewport camera - given directly
+              to OrbitControls below so it can never end up bound to
+              whichever camera happens to be the scene's active default
+              (e.g. the player camera while Play is running). */}
+          <PerspectiveCamera
+            ref={editCameraRef}
+            makeDefault={!running}
+            position={[3, 2, -3]}
+          />
+          <EditorFlyControls cameraRef={editCameraRef} active={!running} />
           <Physics colliders="hull" paused={!running} debug>
             <AudioListenerProvider>
               <OrbitControls
+                camera={editCameraRef.current ?? undefined}
                 makeDefault
                 enableDamping={false}
                 enabled={!running}
