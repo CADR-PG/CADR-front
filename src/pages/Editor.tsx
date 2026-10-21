@@ -51,7 +51,10 @@ function Editor() {
         const em = ECS.instance.entityManager;
         // TODO: xdd
         const json = data.data.data;
-        json.scenes.forEach(async (scene, i) => {
+        // A brand-new, never-saved project loads as an empty object (no
+        // scenes/currentScene/game keys yet) - fall back to the defaults
+        // the EntityManager already starts with instead of crashing.
+        (json.scenes ?? []).forEach(async (scene, i) => {
           if (i > em.scenes.length - 1) {
             em.createScene();
           }
@@ -64,8 +67,8 @@ function Editor() {
             }
           }
         });
-        em.currentScene = json.currentScene;
-        setGame(json.game);
+        em.currentScene = json.currentScene ?? em.currentScene;
+        setGame(json.game ?? null);
         ECS.instance.ensureCamera();
       }
       if (isError) {
