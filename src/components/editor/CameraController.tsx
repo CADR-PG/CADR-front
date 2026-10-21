@@ -20,16 +20,22 @@ export default function CameraController({ entity }: ControllerProps) {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null!);
   useHelper(!running && cameraRef, THREE.CameraHelper);
 
-  // Play-mode camera control is left entirely to the game; this just keeps
-  // the camera synced to the ECS transform while editing.
+  // Keep the camera synced to the ECS transform at all times, the same way
+  // MeshController binds its mesh's position/rotation straight from the
+  // transform - Play mode loads a freshly-cloned game scene with brand new
+  // entities, so the camera has no prior position to fall back on and must
+  // be placed from its Transform component on mount, same as every other
+  // entity. A script that wants to move the camera should do so through the
+  // ECS Transform component, which will flow through here like any other
+  // entity's mesh.
   const [px, py, pz] = transform?.position ?? [0, 0, 0];
   const [rx, ry, rz] = transform?.rotation ?? [0, 0, 0];
   useLayoutEffect(() => {
     const mesh = cameraRef.current;
-    if (running || !mesh) return;
+    if (!mesh) return;
     mesh.position.set(px, py, pz);
     mesh.rotation.set(rx, ry, rz);
-  }, [running, px, py, pz, rx, ry, rz]);
+  }, [px, py, pz, rx, ry, rz]);
 
   const persistTransform = () => {
     const mesh = cameraRef.current;
