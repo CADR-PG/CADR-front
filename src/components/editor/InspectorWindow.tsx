@@ -23,6 +23,7 @@ import { AssetsFile } from '@/types/Assets';
 import useDownloadFile from '@/hooks/useDownloadFile';
 import { normalizeUrl } from '@/engine/components/helpers/material';
 import { sdk } from '@/data/Sdk';
+import CameraInspector from './inspectors/CameraInspector';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -135,6 +136,8 @@ function InspectorWindow() {
       case 'Children':
       case 'External':
         return null;
+      case 'camera':
+        return <CameraInspector entity={focused} />;
       default:
         return (
           <InspectorTemplate
