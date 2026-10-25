@@ -153,22 +153,28 @@ function Editor() {
               <Allotment vertical snap={true}>
                 <Allotment.Pane minSize={200} preferredSize={1000}>
                   <Allotment vertical={false} separator={true} snap={true}>
-                    <Allotment.Pane preferredSize={500}>
+                    <Allotment.Pane
+                      minSize={screen.width / 8}
+                      preferredSize={screen.width / 6}
+                      snap
+                    >
                       <Allotment
                         vertical={true}
                         separator={true}
-                        minSize={300}
+                        minSize={screen.width / 6}
                         snap
                       >
                         <Allotment.Pane
                           minSize={screen.width / 6}
-                          preferredSize={300}
+                          preferredSize={screen.width / 5}
+                          snap
                         >
                           <HierarchyWindow />
                         </Allotment.Pane>
                         <Allotment.Pane
                           minSize={screen.width / 6}
-                          preferredSize={300}
+                          preferredSize={screen.width / 5}
+                          snap
                         >
                           <div className="project-window-pane">
                             <ProjectWindow />
@@ -176,15 +182,25 @@ function Editor() {
                         </Allotment.Pane>
                       </Allotment>
                     </Allotment.Pane>
-                    <Allotment.Pane
-                      minSize={screen.width / 3}
-                      preferredSize={screen.width / 3}
-                      snap={false}
-                    >
-                      <SceneTabs />
-                      <CanvasController
-                        key={`${em.currentScene} ${em.getScene().id}`}
-                      />
+                    <Allotment.Pane>
+                      <Allotment vertical separator minSize={300} snap>
+                        <Allotment.Pane
+                          minSize={screen.width / 6}
+                          preferredSize={screen.width / 3}
+                          snap={false}
+                        >
+                          <SceneTabs />
+                          <CanvasController
+                            key={`${em.currentScene} ${em.getScene().id}`}
+                          />
+                        </Allotment.Pane>
+                        <Allotment.Pane
+                          minSize={screen.height / 6}
+                          preferredSize={screen.height / 4}
+                        >
+                          <ConsoleWindow />
+                        </Allotment.Pane>
+                      </Allotment>
                     </Allotment.Pane>
                     <Allotment.Pane
                       minSize={screen.width / 6}
@@ -193,9 +209,6 @@ function Editor() {
                       <InspectorWindow />
                     </Allotment.Pane>
                   </Allotment>
-                </Allotment.Pane>
-                <Allotment.Pane minSize={100} preferredSize={screen.height / 4}>
-                  <ConsoleWindow />
                 </Allotment.Pane>
               </Allotment>
             </div>

@@ -59,6 +59,8 @@
 }
 
 .project-window {
+  user-select: none;
+  overflow: auto;
   height: 100%;
 
   h3 {
@@ -79,6 +81,7 @@
 
     h3 {
       margin: 0;
+      padding: 10px 0 0 0;
     }
   }
 
@@ -87,6 +90,9 @@
     overflow: auto;
     font-family: monospace;
     font-size: 0.85rem;
+    background-color: variables.$c-border;
+    margin: 8px;
+    border-radius: 8px;
   }
 
   &__entry {
@@ -114,6 +120,26 @@
   &__message {
     white-space: pre-wrap;
     word-break: break-word;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 8px 8px;
+  }
+
+  &__level-filters {
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  &__level-filter {
+    opacity: 0.35;
+
+    &--active {
+      opacity: 1;
+    }
   }
 }
 

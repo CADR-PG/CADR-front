@@ -13,7 +13,14 @@ interface Action {
 }
 
 export const useConsoleStore = create<State & Action>((set) => ({
-  logs: [],
+  logs: [
+    {
+      id: crypto.randomUUID(),
+      level: 'log',
+      message: 'Welcome to CADR Engine!',
+      timestamp: Date.now(),
+    },
+  ],
   log: (message, level = 'log') =>
     set((state) => ({
       logs: [

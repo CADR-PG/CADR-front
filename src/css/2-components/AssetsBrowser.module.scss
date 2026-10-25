@@ -19,6 +19,9 @@
 
 .fileName {
   flex: 1;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 1px 4px;
   display: flex;
   align-items: center;
   gap: 4px;

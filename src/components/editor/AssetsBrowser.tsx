@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { IconButton, Menu, MenuItem } from '@mui/material';
+import { Menu, MenuItem } from '@mui/material';
 import FolderIcon from '@mui/icons-material/Folder';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -35,6 +35,8 @@ interface FileItemProps {
 interface DirectoryItemProps {
   dir: AssetsDirectory;
   renamingId: string | null;
+  expandedIds: Set<string>;
+  onToggleOpen: (id: string) => void;
   onContextMenu: (event: React.MouseEvent, target: ContextMenuTarget) => void;
   onStartRename: (id: string) => void;
   onRenameDirectory: (id: string, name: string) => void;
@@ -92,12 +94,14 @@ function RenameInput({
       onChange={(e) => setValue(e.target.value)}
       onBlur={commit}
       onKeyDown={(e) => {
+        e.stopPropagation();
         if (e.key === 'Enter') {
           e.preventDefault();
           commit();
         }
         if (e.key === 'Escape') onCancel();
       }}
+      onKeyUp={(e) => e.stopPropagation()}
     />
   );
 }
@@ -121,15 +125,8 @@ function FileItem({
   const deleteFile = useDeleteFile();
   const { scenes } = useEditorSettingsStore();
   const { openSnackbar } = useSnackbarStore();
-  const handleDelete = () => {
-    for (const scene of scenes) {
-      if (scene?.id === file.id) {
-        openSnackbar("You can't delete opened scene", 'error');
-        return;
-      }
-    }
-    deleteFile.mutate(file.id);
-  };
+  const { selectedId, onSelect } = useAssetsContext();
+  const isSelected = file.id === selectedId;
 
   return (
     <div
@@ -140,7 +137,10 @@ function FileItem({
       onContextMenu={(e) => onContextMenu(e, { type: 'file', file })}
     >
       <span className={styles.iconSpacer} />
-      <span className={styles.fileName}>
+      <span
+        className={`${styles.fileName} ${isSelected ? styles.selected : ''}`}
+        onClick={() => onSelect(file.id, file.name)}
+      >
         <InsertDriveFileIcon fontSize="small" />
         {isRenaming ? (
           <RenameInput
@@ -155,13 +155,6 @@ function FileItem({
           ({formatFileSize(file.sizeInBytes)})
         </span>
       </span>
-      <IconButton
-        size="small"
-        onClick={() => handleDelete()}
-        disabled={deleteFile.isPending}
-      >
-        <DeleteIcon fontSize="small" />
-      </IconButton>
     </div>
   );
 }
@@ -169,6 +162,8 @@ function FileItem({
 function DirectoryItem({
   dir,
   renamingId,
+  expandedIds,
+  onToggleOpen,
   onContextMenu,
   onStartRename,
   onRenameDirectory,
@@ -176,8 +171,7 @@ function DirectoryItem({
   onRenameCancel,
 }: DirectoryItemProps) {
   const { selectedId, onSelect } = useAssetsContext();
-  const deleteDirectory = useDeleteDirectory();
-  const [open, setOpen] = useState(false);
+  const open = expandedIds.has(dir.id);
   const isSelected = dir.id === selectedId;
   const isRenaming = renamingId === dir.id;
   const hasChildren =
@@ -189,7 +183,10 @@ function DirectoryItem({
         className={styles.row}
         onContextMenu={(e) => onContextMenu(e, { type: 'directory', dir })}
       >
-        <span className={styles.toggleIcon} onClick={() => setOpen(!open)}>
+        <span
+          className={styles.toggleIcon}
+          onClick={() => onToggleOpen(dir.id)}
+        >
           {hasChildren ? (open ? '▾' : '▸') : ' '}
         </span>
         <span
@@ -208,13 +205,6 @@ function DirectoryItem({
             <span>{dir.name}</span>
           )}
         </span>
-        <IconButton
-          size="small"
-          onClick={() => deleteDirectory.mutate(dir.id)}
-          disabled={deleteDirectory.isPending}
-        >
-          <DeleteIcon fontSize="small" />
-        </IconButton>
       </div>
       {open && (
         <div className={styles.children}>
@@ -223,6 +213,8 @@ function DirectoryItem({
               key={sub.id}
               dir={sub}
               renamingId={renamingId}
+              expandedIds={expandedIds}
+              onToggleOpen={onToggleOpen}
               onContextMenu={onContextMenu}
               onStartRename={onStartRename}
               onRenameDirectory={onRenameDirectory}
@@ -264,6 +256,7 @@ export default function AssetsBrowser() {
   );
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const uploadTargetRef = useRef<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -282,6 +275,11 @@ export default function AssetsBrowser() {
   ) => {
     event.preventDefault();
     event.stopPropagation();
+    if (target.type === 'directory') {
+      setSelectedDirectory({ id: target.dir.id, name: target.dir.name });
+    } else if (target.type === 'file') {
+      setSelectedDirectory({ id: target.file.id, name: target.file.name });
+    }
     setContextMenu({
       mouseX: event.clientX + 2,
       mouseY: event.clientY - 6,
@@ -290,6 +288,19 @@ export default function AssetsBrowser() {
   };
 
   const closeContextMenu = () => setContextMenu(null);
+
+  const toggleOpen = (id: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const expandDirectory = (id: string) => {
+    setExpandedIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
+  };
 
   const handleNewFolder = () => {
     if (!contextMenu || contextMenu.target.type === 'file') return;
@@ -300,10 +311,16 @@ export default function AssetsBrowser() {
       target.type === 'directory'
         ? (target.dir.directories ?? []).map((d) => d.name)
         : target.existingNames;
-    createDir.mutate({
-      name: uniqueFolderName(existingNames),
-      parentDirectoryId,
-    });
+    if (target.type === 'directory') expandDirectory(target.dir.id);
+    createDir.mutate(
+      {
+        name: uniqueFolderName(existingNames),
+        parentDirectoryId,
+      },
+      {
+        onSuccess: (response) => setRenamingId(response.data.id),
+      },
+    );
     closeContextMenu();
   };
 
@@ -380,6 +397,8 @@ export default function AssetsBrowser() {
                 key={dir.id}
                 dir={dir}
                 renamingId={renamingId}
+                expandedIds={expandedIds}
+                onToggleOpen={toggleOpen}
                 onContextMenu={openContextMenu}
                 onStartRename={setRenamingId}
                 onRenameDirectory={handleRenameDirectory}
@@ -410,6 +429,8 @@ export default function AssetsBrowser() {
           }
           open={contextMenu !== null}
           onClose={closeContextMenu}
+          disableRestoreFocus
+          disableEnforceFocus
         >
           {contextMenu?.target.type !== 'file' && (
             <MenuItem onClick={handleNewFolder}>
