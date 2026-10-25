@@ -100,10 +100,11 @@ function Editor() {
             GAME_SCENE,
           );
         } else {
-          if (!game) throw new Error('No main game scene set');
+          const g = useEditorSettingsStore.getState().game;
+          if (!g) throw new Error('No main game scene set');
           await loadScene(
             uuid!,
-            { id: game, name: 'dummy', directoryId: 'dummy' },
+            { id: g, name: 'dummy', directoryId: 'dummy' },
             GAME_SCENE,
           );
         }

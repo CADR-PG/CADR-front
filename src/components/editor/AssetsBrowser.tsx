@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useKeyboardControls } from '@react-three/drei';
 import { Menu, MenuItem } from '@mui/material';
 import FolderIcon from '@mui/icons-material/Folder';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
@@ -21,6 +22,8 @@ import { useDrag } from 'react-dnd';
 import { DndTypes } from '../../types/DndTypes';
 import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
+import { useEditorContext } from '../../hooks/useEditorContext';
+import Controls from '../../types/Controls';
 
 interface FileItemProps {
   file: AssetsFile;
@@ -44,9 +47,10 @@ interface DirectoryItemProps {
   onRenameCancel: () => void;
 }
 
-interface SelectedDirectory {
+interface SelectedAsset {
   id: string;
   name: string;
+  type: 'file' | 'directory';
 }
 
 type ContextMenuTarget =
@@ -122,9 +126,6 @@ function FileItem({
       isDragging: !!monitor.isDragging(),
     }),
   }));
-  const deleteFile = useDeleteFile();
-  const { scenes } = useEditorSettingsStore();
-  const { openSnackbar } = useSnackbarStore();
   const { selectedId, onSelect } = useAssetsContext();
   const isSelected = file.id === selectedId;
 
@@ -139,7 +140,7 @@ function FileItem({
       <span className={styles.iconSpacer} />
       <span
         className={`${styles.fileName} ${isSelected ? styles.selected : ''}`}
-        onClick={() => onSelect(file.id, file.name)}
+        onClick={() => onSelect(file.id, file.name, 'file')}
       >
         <InsertDriveFileIcon fontSize="small" />
         {isRenaming ? (
@@ -191,7 +192,7 @@ function DirectoryItem({
         </span>
         <span
           className={`${styles.dirName} ${isSelected ? styles.selected : ''}`}
-          onClick={() => onSelect(dir.id, dir.name)}
+          onClick={() => onSelect(dir.id, dir.name, 'directory')}
           onDoubleClick={() => onStartRename(dir.id)}
         >
           <FolderIcon fontSize="small" />
@@ -248,17 +249,57 @@ export default function AssetsBrowser() {
   const renameDirectory = useRenameDirectory();
   const deleteFile = useDeleteFile();
   const renameFile = useRenameFile();
-  const [selectedDirectory, setSelectedDirectory] = useState<SelectedDirectory>(
-    {
-      id: '',
-      name: 'Assets',
-    },
-  );
+  const { scenes } = useEditorSettingsStore();
+  const { openSnackbar } = useSnackbarStore();
+  const { focused, focus } = useEditorContext();
+  const del = useKeyboardControls<Controls>((state) => state.del);
+  const [selected, setSelected] = useState<SelectedAsset>({
+    id: '',
+    name: 'Assets',
+    type: 'directory',
+  });
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const uploadTargetRef = useRef<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const selectAsset = (
+    id: string,
+    name: string,
+    type: 'file' | 'directory',
+  ) => {
+    setSelected({ id, name, type });
+    // An asset is now the delete target - a stale entity focus shouldn't
+    // also get deleted by useEditorKeys when Delete is pressed.
+    focus(null);
+  };
+
+  const isFileOpenInEditor = (fileId: string) =>
+    scenes.some((scene) => scene?.id === fileId);
+
+  const deleteAsset = (type: 'file' | 'directory', id: string) => {
+    if (type === 'directory') {
+      deleteDirectory.mutate(id);
+      return true;
+    }
+    if (isFileOpenInEditor(id)) {
+      openSnackbar("You can't delete opened scene.", 'error');
+      return false;
+    }
+    deleteFile.mutate(id);
+    return true;
+  };
+
+  useEffect(() => {
+    if (!del || focused || !assets) return;
+    if (!selected.id || selected.id === assets.id) return;
+    if (deleteAsset(selected.type, selected.id)) {
+      setSelected({ id: '', name: 'Assets', type: 'directory' });
+    }
+    // Only react to the key edge, not to every state change it depends on.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [del]);
 
   if (!assets) return null;
 
@@ -276,9 +317,9 @@ export default function AssetsBrowser() {
     event.preventDefault();
     event.stopPropagation();
     if (target.type === 'directory') {
-      setSelectedDirectory({ id: target.dir.id, name: target.dir.name });
+      selectAsset(target.dir.id, target.dir.name, 'directory');
     } else if (target.type === 'file') {
-      setSelectedDirectory({ id: target.file.id, name: target.file.name });
+      selectAsset(target.file.id, target.file.name, 'file');
     }
     setContextMenu({
       mouseX: event.clientX + 2,
@@ -343,8 +384,8 @@ export default function AssetsBrowser() {
   const handleDeleteFromMenu = () => {
     if (!contextMenu) return;
     const { target } = contextMenu;
-    if (target.type === 'directory') deleteDirectory.mutate(target.dir.id);
-    if (target.type === 'file') deleteFile.mutate(target.file.id);
+    if (target.type === 'directory') deleteAsset('directory', target.dir.id);
+    if (target.type === 'file') deleteAsset('file', target.file.id);
     closeContextMenu();
   };
 
@@ -362,8 +403,8 @@ export default function AssetsBrowser() {
     <div className={styles.container}>
       <AssetsContext.Provider
         value={{
-          selectedId: selectedDirectory.id,
-          onSelect: (id, name) => setSelectedDirectory({ id, name }),
+          selectedId: selected.id,
+          onSelect: selectAsset,
         }}
       >
         <input
@@ -383,10 +424,8 @@ export default function AssetsBrowser() {
           }
         >
           <div
-            className={`${styles.rootDir} ${selectedDirectory.id === assets.id ? styles.selected : ''}`}
-            onClick={() =>
-              setSelectedDirectory({ id: assets.id, name: 'Assets' })
-            }
+            className={`${styles.rootDir} ${selected.id === assets.id ? styles.selected : ''}`}
+            onClick={() => selectAsset(assets.id, 'Assets', 'directory')}
           >
             <FolderIcon fontSize="small" />
             <span>{assets.name}</span>
