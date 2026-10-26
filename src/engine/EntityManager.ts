@@ -7,6 +7,7 @@ import { normalizeUrlRaw } from './components/helpers/material';
 import { Asset, useEditorSettingsStore } from '@/stores/editorSettingsStore';
 import { Vec3 } from './components/Transform';
 import SceneJSON from '@/types/SceneJSON';
+import Command from '@/types/Command';
 
 const INITIAL_CAMERA_POSITION: Vec3 = [3, 2, 3];
 export const GAME_SCENE = -1;
@@ -17,6 +18,7 @@ interface SceneData {
   dirty: boolean;
   lastCameraPosition?: Vec3;
   root: Entity | null;
+  history: Command[];
 }
 
 export interface EntityAnimations {
@@ -99,6 +101,7 @@ export class EntityManager {
       dirty: false,
       lastCameraPosition: INITIAL_CAMERA_POSITION,
       root: null,
+      history: [],
     });
 
     const newScene: Asset = {
@@ -189,6 +192,13 @@ export class EntityManager {
     const instance: T = new component();
 
     delete scene.entities[entity][instance.name];
+  }
+
+  removeComponentByName(name: string, entity: Entity): void {
+    const scene = this.find(entity);
+    if (!scene) return;
+
+    delete scene.entities[entity][name];
   }
 
   destroyEntity(entity: Entity) {
@@ -319,6 +329,18 @@ export class EntityManager {
     this.savedScene = GAME_SCENE;
   }
 
+  pushCommand(command: Command) {
+    this.getScene().history.push(command);
+    command.execute();
+  }
+
+  popCommand() {
+    if (this.getScene().history.length === 0) return;
+
+    const command = this.getScene().history.pop();
+    command?.undo();
+  }
+
   mapNameToClass: NameToClass = {};
   refs: EntityRefs = {};
   animations: EntityAnimations = {};
@@ -329,6 +351,7 @@ export class EntityManager {
     root: null,
     dirty: false,
     lastCameraPosition: [0, 0, 0],
+    history: [],
   };
   currentScene: number = 0;
   sceneId: number = 0;

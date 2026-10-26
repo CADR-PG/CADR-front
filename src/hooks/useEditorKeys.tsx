@@ -3,6 +3,7 @@ import Controls from '../types/Controls';
 import { useEditorContext } from './useEditorContext';
 import { useEffect, useState } from 'react';
 import { ECS } from '../engine/ECS';
+import { makeDestroyEntityCommand } from '@/engine/Command';
 
 function useEditorKeys() {
   const { focused, focus } = useEditorContext();
@@ -13,17 +14,21 @@ function useEditorKeys() {
   const ctrl = useKeyboardControls<Controls>((state) => state.ctrl);
   const copy = useKeyboardControls<Controls>((state) => state.copy);
   const paste = useKeyboardControls<Controls>((state) => state.paste);
+  const z = useKeyboardControls<Controls>((state) => state.z);
 
   useEffect(() => {
-    if (!focused) return;
-
-    if (del) {
-      ECS.instance.entityManager.destroyEntity(focused);
-      focus(null);
+    if (del && focused) {
+      const command = makeDestroyEntityCommand(focused, focus);
+      ECS.instance.entityManager.pushCommand(command);
     }
 
     if (ctrl) {
-      if (copy) {
+      if (z) {
+        console.log('Undoing');
+        ECS.instance.entityManager.popCommand();
+      }
+
+      if (copy && focused) {
         copyUuid(focused);
       }
 
@@ -35,7 +40,7 @@ function useEditorKeys() {
     // TODO: we absolutely shouldn't do this but I can't be bothered right now
     // with fixing this shit
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [del, ctrl, copy, paste]);
+  }, [del, ctrl, copy, paste, z]);
 }
 
 export default useEditorKeys;

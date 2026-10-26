@@ -19,6 +19,8 @@ import { AssetsFile } from '@/types/Assets';
 import { loadExternalScene } from '@/engine/Scene';
 import { useParams } from 'react-router-dom';
 import NestedScene from '@/engine/components/NestedScene';
+import { makeLoadSceneCommand, makeSetParentCommand } from '@/engine/Command';
+import Command from '@/types/Command';
 
 interface HierarchyEntityProps {
   entity: Entity;
@@ -60,12 +62,14 @@ export default function HierarchyEntity({
   const [_, drop] = useDrop(
     () => ({
       accept: [DndTypes.ENTITY, DndTypes.FILE],
-      drop: (item: EntityDragObject | AssetsFile, _monitor) => {
+      drop: async (item: EntityDragObject | AssetsFile, _monitor) => {
+        let command: Command;
         if (isEntity(item)) {
-          setParent(entity, item.child);
+          command = makeSetParentCommand(entity, item.child);
         } else {
-          loadExternalScene(uuid!, item);
+          command = await makeLoadSceneCommand(uuid!, item);
         }
+        ECS.instance.entityManager.pushCommand(command);
       },
       hover(_item, monitor) {
         if (monitor.isOver() && monitor.canDrop()) {

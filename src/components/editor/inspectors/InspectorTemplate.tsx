@@ -7,6 +7,7 @@ import NumberField from '../../NumberField';
 import { Checkbox, TextField } from '@mui/material';
 import InspectorKey from './InspectorKey';
 import { Vec3 } from '../../../engine/components/Transform';
+import { makeSetCommand, makeSetVec3Command } from '@/engine/Command';
 
 interface InspectorTemplateProps<T extends Component, S = T> {
   entity: Entity;
@@ -38,11 +39,13 @@ export default function InspectorTemplate<T extends Component, S = T>({
   const write = pick(componentWrite);
 
   const setField = (key: keyof S, value: string | number | boolean) => {
-    (write as Record<keyof S, unknown>)[key] = value;
+    const command = makeSetCommand(value, write, key);
+    ECS.instance.entityManager.pushCommand(command);
   };
 
   const setVecField = (key: keyof S, value: number, index: 0 | 1 | 2) => {
-    (write as Record<keyof S, Vec3>)[key][index] = value;
+    const command = makeSetVec3Command(value, write, key, index);
+    ECS.instance.entityManager.pushCommand(command);
   };
 
   const isVec3 = (key: unknown): key is Vec3 => {

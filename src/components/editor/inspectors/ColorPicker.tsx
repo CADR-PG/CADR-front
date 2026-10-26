@@ -11,6 +11,7 @@ import useEntityManager from '../../../hooks/useEntityManager';
 import { ECS } from '../../../engine/ECS';
 import { Component, ComponentType } from '../../../engine/Component';
 import { Entity } from '../../../engine/Entity';
+import { makeSetCommand } from '@/engine/Command';
 
 interface HasData<S> {
   data: S;
@@ -58,7 +59,8 @@ export default function ColorPicker<S, T extends Component & HasData<S>>({
     // NOTE(m1k53r): `color` starts with '#' character,
     // so we have to start from the second character to parse it correctly.
     const c = Number.parseInt(color.slice(1), 16);
-    data[field] = c;
+    const command = makeSetCommand(c, data as S, field);
+    ECS.instance.entityManager.pushCommand(command);
   };
 
   const handleOpen = (event: MouseEvent<HTMLButtonElement>) => {
