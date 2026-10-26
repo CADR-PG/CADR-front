@@ -139,6 +139,10 @@ function FileNavigationItem() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
+        // Capture-phase stop so drei's KeyboardControls (bubble-phase,
+        // mapped to WASD movement) never sees this keydown - otherwise
+        // the "S" in Ctrl+S also gets read as "move backwards".
+        e.stopPropagation();
 
         // if new scene, open dialog. save otherwise
         if (!scenes[em.currentScene]?.name) {
@@ -157,8 +161,9 @@ function FileNavigationItem() {
         }
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown, { capture: true });
+    return () =>
+      window.removeEventListener('keydown', handleKeyDown, { capture: true });
   }, [scenes, handleSave, replace]);
 
   return (
