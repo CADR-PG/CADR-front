@@ -10,6 +10,7 @@ import { useFrame } from '@react-three/fiber';
 import Parent from '@/engine/components/Parent';
 import useWorldTransform from '@/hooks/useWorldTransform';
 import { applyMatrix, getWorldMatrix, toMatrix } from '@/engine/Hierarchy';
+import { makeDragCommand } from '@/engine/Command';
 
 const p = new THREE.Vector3();
 const r = new THREE.Quaternion();
@@ -68,6 +69,15 @@ export default function TransformControlsController({
           onMouseDown={() => {
             drag(true);
             lDrag(true);
+            if (transform) {
+              const command = makeDragCommand(
+                transform,
+                transform.position,
+                transform.rotation,
+                transform.scale,
+              );
+              ECS.instance.entityManager.pushCommand(command);
+            }
           }}
           onMouseUp={() => {
             drag(false);

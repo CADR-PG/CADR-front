@@ -24,6 +24,10 @@ import useDownloadFile from '@/hooks/useDownloadFile';
 import { normalizeUrl } from '@/engine/components/helpers/material';
 import { sdk } from '@/data/Sdk';
 import CameraInspector from './inspectors/CameraInspector';
+import {
+  makeAddComponentCommand,
+  makeRemoveComponentCommand,
+} from '@/engine/Command';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -59,7 +63,8 @@ function InspectorWindow() {
         const constructor = init(sdk);
         const instance = new constructor();
         instance.fileId = file;
-        ECS.instance.entityManager.addComponent(instance, focused!);
+        const command = makeAddComponentCommand(instance, focused!);
+        ECS.instance.entityManager.pushCommand(command);
         setFile('');
       } catch (e) {
         console.error(e);
@@ -83,20 +88,18 @@ function InspectorWindow() {
   };
   const handleAdd = (name: string) => {
     if (focused) {
-      ECS.instance.entityManager.addComponent(
-        new ECS.instance.entityManager.mapNameToClass[name](),
-        focused,
-      );
+      const instance = new ECS.instance.entityManager.mapNameToClass[name]();
+      const command = makeAddComponentCommand(instance, focused);
+      ECS.instance.entityManager.pushCommand(command);
     }
     setAnchorEl(null);
   };
 
   const handleDelete = (component: string) => {
     if (focused) {
-      ECS.instance.entityManager.removeComponent(
-        ECS.instance.entityManager.mapNameToClass[component],
-        focused,
-      );
+      const c = ECS.instance.entityManager.mapNameToClass[component];
+      const command = makeRemoveComponentCommand(c, focused);
+      ECS.instance.entityManager.pushCommand(command);
     }
   };
 

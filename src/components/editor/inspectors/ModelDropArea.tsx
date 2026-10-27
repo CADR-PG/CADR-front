@@ -7,6 +7,7 @@ import { Entity } from '../../../engine/Entity';
 import { IconButton } from '@mui/material';
 import { ECS } from '../../../engine/ECS';
 import GLTF from '../../../engine/components/GLTF';
+import { makeSetCommand } from '@/engine/Command';
 
 interface ModelDropAreaProps {
   entity: Entity;
@@ -21,7 +22,8 @@ export default function ModelDropArea({ entity }: ModelDropAreaProps) {
       accept: DndTypes.FILE,
       drop: (item: AssetsFile, _monitor) => {
         if (!gltfWrite) return;
-        gltfWrite.source = item.id;
+        const command = makeSetCommand(item.id, gltfWrite, 'source');
+        ECS.instance.entityManager.pushCommand(command);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),

@@ -20,6 +20,7 @@ function KeyboardController({ children }: KeyboardControllerProps) {
       { name: Controls.right, keys: ['KeyD', 'ArrowRight'] },
       { name: Controls.up, keys: ['Space'] },
       { name: Controls.down, keys: ['ShiftLeft', 'ShiftRight'] },
+      { name: Controls.z, keys: ['z', 'Z'] },
     ],
     [],
   );

@@ -10,6 +10,7 @@ enum Controls {
   right = 'right',
   up = 'up',
   down = 'down',
+  z = 'z',
 }
 
 export default Controls;

@@ -8,6 +8,7 @@ import { IconButton } from '@mui/material';
 import cAudio from '../../../engine/components/Audio';
 import { ComponentType } from '../../../engine/Component';
 import { ECS } from '../../../engine/ECS';
+import { makeSetCommand } from '@/engine/Command';
 
 interface AudioDropAreaProps<T extends cAudio> {
   entity: Entity;
@@ -29,7 +30,8 @@ export default function AudioDropArea<T extends cAudio>({
       accept: DndTypes.FILE,
       drop: (item: AssetsFile, _monitor) => {
         if (!audioWrite) return;
-        audioWrite.source = item.id;
+        const command = makeSetCommand(item.id, audioWrite, 'source');
+        ECS.instance.entityManager.pushCommand(command);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
