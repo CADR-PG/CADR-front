@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useKeyboardControls } from '@react-three/drei';
-import { Menu, MenuItem } from '@mui/material';
+import { InputAdornment, Menu, MenuItem, TextField } from '@mui/material';
 import FolderIcon from '@mui/icons-material/Folder';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -24,6 +24,7 @@ import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import Controls from '../../types/Controls';
+import SearchIcon from '@mui/icons-material/Search';
 
 interface FileItemProps {
   file: AssetsFile;
@@ -39,6 +40,7 @@ interface DirectoryItemProps {
   dir: AssetsDirectory;
   renamingId: string | null;
   expandedIds: Set<string>;
+  forceOpen: boolean;
   onToggleOpen: (id: string) => void;
   onContextMenu: (event: React.MouseEvent, target: ContextMenuTarget) => void;
   onStartRename: (id: string) => void;
@@ -70,6 +72,35 @@ function uniqueFolderName(existingNames: string[]) {
   let i = 2;
   while (existingNames.includes(`${base} ${i}`)) i++;
   return `${base} ${i}`;
+}
+
+const MAX_NAME_LENGTH = 32;
+
+function truncateName(name: string) {
+  if (name.length <= MAX_NAME_LENGTH) return name;
+  return `${name.slice(0, MAX_NAME_LENGTH - 1)}…`;
+}
+
+// Recursively keeps only directories/files whose name matches `query`
+// (case-insensitive), along with any ancestor directories needed to reach
+// them. `query` must already be lowercased and trimmed.
+function filterDirectory(
+  dir: AssetsDirectory,
+  query: string,
+): AssetsDirectory | null {
+  const directories = (dir.directories ?? [])
+    .map((d) => filterDirectory(d, query))
+    .filter((d): d is AssetsDirectory => d !== null);
+  const files = (dir.files ?? []).filter((f) =>
+    f.name.toLowerCase().includes(query),
+  );
+  const matchesSelf = dir.name.toLowerCase().includes(query);
+
+  if (!matchesSelf && directories.length === 0 && files.length === 0) {
+    return null;
+  }
+
+  return { ...dir, directories, files };
 }
 
 function RenameInput({
@@ -150,7 +181,9 @@ function FileItem({
             onCancel={onRenameCancel}
           />
         ) : (
-          <span onDoubleClick={() => onStartRename(file.id)}>{file.name}</span>
+          <span title={file.name} onDoubleClick={() => onStartRename(file.id)}>
+            {truncateName(file.name)}
+          </span>
         )}
         <span className={styles.fileSize}>
           ({formatFileSize(file.sizeInBytes)})
@@ -164,6 +197,7 @@ function DirectoryItem({
   dir,
   renamingId,
   expandedIds,
+  forceOpen,
   onToggleOpen,
   onContextMenu,
   onStartRename,
@@ -172,7 +206,7 @@ function DirectoryItem({
   onRenameCancel,
 }: DirectoryItemProps) {
   const { selectedId, onSelect } = useAssetsContext();
-  const open = expandedIds.has(dir.id);
+  const open = forceOpen || expandedIds.has(dir.id);
   const isSelected = dir.id === selectedId;
   const isRenaming = renamingId === dir.id;
   const hasChildren =
@@ -203,7 +237,7 @@ function DirectoryItem({
               onCancel={onRenameCancel}
             />
           ) : (
-            <span>{dir.name}</span>
+            <span title={dir.name}>{truncateName(dir.name)}</span>
           )}
         </span>
       </div>
@@ -215,6 +249,7 @@ function DirectoryItem({
               dir={sub}
               renamingId={renamingId}
               expandedIds={expandedIds}
+              forceOpen={forceOpen}
               onToggleOpen={onToggleOpen}
               onContextMenu={onContextMenu}
               onStartRename={onStartRename}
@@ -261,6 +296,7 @@ export default function AssetsBrowser() {
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const [search, setSearch] = useState('');
   const uploadTargetRef = useRef<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -302,6 +338,9 @@ export default function AssetsBrowser() {
   }, [del]);
 
   if (!assets) return null;
+
+  const query = search.trim().toLowerCase();
+  const filteredRoot = query ? filterDirectory(assets, query) : assets;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -413,6 +452,26 @@ export default function AssetsBrowser() {
           hidden
           onChange={handleFileChange}
         />
+        <TextField
+          className={styles.searchInput}
+          placeholder="Filter files..."
+          value={search}
+          size="small"
+          onChange={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setSearch(e.target.value);
+          }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
         <div
           className={styles.scrollArea}
           onContextMenu={(e) =>
@@ -428,15 +487,16 @@ export default function AssetsBrowser() {
             onClick={() => selectAsset(assets.id, 'Assets', 'directory')}
           >
             <FolderIcon fontSize="small" />
-            <span>{assets.name}</span>
+            <span title={assets.name}>{truncateName(assets.name)}</span>
           </div>
           <div className={styles.tree}>
-            {assets.directories?.map((dir: AssetsDirectory) => (
+            {filteredRoot?.directories?.map((dir: AssetsDirectory) => (
               <DirectoryItem
                 key={dir.id}
                 dir={dir}
                 renamingId={renamingId}
                 expandedIds={expandedIds}
+                forceOpen={!!query}
                 onToggleOpen={toggleOpen}
                 onContextMenu={openContextMenu}
                 onStartRename={setRenamingId}
@@ -445,7 +505,7 @@ export default function AssetsBrowser() {
                 onRenameCancel={() => setRenamingId(null)}
               />
             ))}
-            {assets.files?.map((file: AssetsFile) => (
+            {filteredRoot?.files?.map((file: AssetsFile) => (
               <FileItem
                 key={file.id}
                 file={file}
@@ -457,6 +517,11 @@ export default function AssetsBrowser() {
                 onRenameCancel={() => setRenamingId(null)}
               />
             ))}
+            {query &&
+              (filteredRoot?.directories?.length ?? 0) === 0 &&
+              (filteredRoot?.files?.length ?? 0) === 0 && (
+                <div className={styles.noResults}>No matching files.</div>
+              )}
           </div>
         </div>
         <Menu

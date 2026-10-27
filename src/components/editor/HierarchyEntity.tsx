@@ -23,6 +23,7 @@ import Command from '@/types/Command';
 interface HierarchyEntityProps {
   entity: Entity;
   parent: HTMLDivElement | null;
+  onContextMenu: (event: React.MouseEvent, entity: Entity) => void;
 }
 
 function isEntity(
@@ -35,6 +36,7 @@ function isEntity(
 export default function HierarchyEntity({
   entity,
   parent,
+  onContextMenu,
 }: HierarchyEntityProps) {
   const em = useEntityManager();
   const children = em.getComponent(Children, entity);
@@ -115,6 +117,10 @@ export default function HierarchyEntity({
         onClick={() => {
           focus(entity);
         }}
+        onContextMenu={(e) => {
+          e.stopPropagation();
+          onContextMenu(e, entity);
+        }}
         className={`hierarchy-item ${focused === entity ? 'hierarchy-item-active' : ''}`}
       >
         <div className="hierarchy-item-content">
@@ -160,7 +166,12 @@ export default function HierarchyEntity({
             {em
               .getComponent(Children, entity)
               ?.children.map((child, i) => (
-                <HierarchyEntity parent={parent} key={i} entity={child} />
+                <HierarchyEntity
+                  parent={parent}
+                  key={i}
+                  entity={child}
+                  onContextMenu={onContextMenu}
+                />
               ))}
           </ul>
         </Collapse>
