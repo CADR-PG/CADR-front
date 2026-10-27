@@ -119,7 +119,7 @@ function CanvasController() {
               : undefined,
           }}
           shadows
-          frameloop={'always'}
+          frameloop={running ? 'always' : 'demand'}
           onCreated={({ camera }) => setCamera(camera)}
           ref={(node) => {
             drop(node);

@@ -3,7 +3,7 @@ import Command from '@/types/Command';
 import Transform, { Vec3 } from './components/Transform';
 import { GeometryPointsData } from '@/types/GeometryPointsData';
 import { CollisionGroupsComponent } from '@/types/CollisionGroupsProps';
-import { createEntity, Entity } from './Entity';
+import { createEntity, Entity, resurrectEntity } from './Entity';
 import { ECS } from './ECS';
 import Parent from './components/Parent';
 import { setParent } from './Hierarchy';
@@ -188,7 +188,7 @@ export async function makeLoadSceneCommand(uuid: string, item: AssetsFile) {
 // handle entity creation lol
 export function makeCreateEntityCommand(
   focused: Entity | null,
-  focus: (value: SetStateAction<string | null>) => void,
+  focus: ((value: SetStateAction<string | null>) => void) | null,
   addComponents: (entity: Entity) => void,
 ) {
   const entity = createEntity();
@@ -198,11 +198,11 @@ export function makeCreateEntityCommand(
       if (focused) {
         setParent(focused, entity);
       }
-      focus(entity);
+      if (focus) focus(entity);
     },
     undo: () => {
       ECS.instance.entityManager.destroyEntity(entity);
-      focus(null);
+      if (focus) focus(null);
     },
   };
 }
@@ -214,15 +214,18 @@ export function makeDestroyEntityCommand(
 ) {
   // PERF: potential big memory usage?
   const prevValue = ECS.instance.entityManager.getComponents(entity);
+  const prevParent = ECS.instance.entityManager.getComponent(
+    Parent,
+    entity,
+  )?.entity;
   return {
     execute: () => {
       ECS.instance.entityManager.destroyEntity(entity);
       focus(null);
     },
     undo: () => {
-      const newEntity = createEntity();
-      ECS.instance.entityManager.getScene().entities[newEntity] = prevValue;
-      focus(newEntity);
+      resurrectEntity(entity, prevValue, prevParent);
+      focus(entity);
     },
   };
 }
