@@ -1,4 +1,5 @@
 import { Euler, Matrix4, Quaternion, Vector3 } from 'three';
+import { snapshot } from 'valtio';
 import Parent from './components/Parent';
 import { ECS } from './ECS';
 import { Entity } from './Entity';
@@ -7,6 +8,7 @@ import Children from './components/Children';
 import RBody from './components/RigidBody';
 import Invisible from './components/Invisible';
 import NestedScene from './components/NestedScene';
+import { Component } from './Component';
 
 export function setParent(parent: Entity | null, child: Entity) {
   if (parent === child) return;
@@ -46,6 +48,48 @@ export function setParent(parent: Entity | null, child: Entity) {
       : world;
     applyMatrix(transform, local);
   }
+}
+
+// Deep-clones `entity` (and all of its descendants) as a new entity parented
+// under `parent`, preserving the original's world transform - consistent with
+// how reparenting via `setParent` preserves world position elsewhere.
+//
+// `setParent` is deliberately called LAST, after the whole subtree has been
+// cloned. `parent` may be `entity` itself, or any other descendant of it
+// (pasting a copied tree back into itself/one of its own children) - calling
+// setParent early would push the newly created clone into that node's real
+// `Children` array, and since that same node gets visited again further down
+// this recursion (it's part of the tree being duplicated), the clone would
+// get read back as one of its own "original" children and cloned into itself
+// forever.
+export function cloneEntityTree(entity: Entity, parent: Entity): Entity {
+  const em = ECS.instance.entityManager;
+  const world = getWorldMatrix(entity);
+  const children = [...(em.getComponent(Children, entity)?.children ?? [])];
+  const newEntity = em.createEntity();
+
+  const components = structuredClone(snapshot(em.getComponents(entity))) as {
+    [name: string]: Component;
+  };
+  delete components['Parent'];
+  delete components['Children'];
+
+  for (const component of Object.values(components)) {
+    em.addComponent(component, newEntity);
+  }
+
+  const transform = em.getComponent(Transform, newEntity);
+  if (transform) {
+    applyMatrix(transform, world);
+  }
+
+  for (const child of children) {
+    cloneEntityTree(child, newEntity);
+  }
+
+  setParent(parent, newEntity);
+
+  return newEntity;
 }
 
 function isDescendant(entity: Entity, ancestor: Entity) {

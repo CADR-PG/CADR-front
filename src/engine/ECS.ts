@@ -21,7 +21,6 @@ export class ECS {
         this.isLoaded &&
         ops.some(([_, path]) => path.length > 2 && path[1] === 'entities')
       ) {
-        console.log(ops);
         this.entityManager.getScene().dirty = true;
       }
     });

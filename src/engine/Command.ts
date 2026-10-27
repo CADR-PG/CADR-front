@@ -6,7 +6,7 @@ import { CollisionGroupsComponent } from '@/types/CollisionGroupsProps';
 import { createEntity, Entity, resurrectEntity } from './Entity';
 import { ECS } from './ECS';
 import Parent from './components/Parent';
-import { setParent } from './Hierarchy';
+import { cloneEntityTree, setParent } from './Hierarchy';
 import { AssetsFile } from '@/types/Assets';
 import { loadExternalScene } from './Scene';
 import { SetStateAction } from 'react';
@@ -169,6 +169,24 @@ export function makeSetParentCommand(parent: Entity, child: Entity) {
       } else {
         setParent(null, child);
       }
+    },
+  };
+}
+
+export function makePasteEntityCommand(
+  source: Entity,
+  parent: Entity,
+  focus: ((value: SetStateAction<string | null>) => void) | null,
+) {
+  let newEntity: Entity;
+  return {
+    execute: () => {
+      newEntity = cloneEntityTree(source, parent);
+      if (focus) focus(newEntity);
+    },
+    undo: () => {
+      ECS.instance.entityManager.destroyEntity(newEntity);
+      if (focus) focus(null);
     },
   };
 }

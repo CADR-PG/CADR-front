@@ -3,11 +3,15 @@ import Controls from '../types/Controls';
 import { useEditorContext } from './useEditorContext';
 import { useEffect, useState } from 'react';
 import { ECS } from '../engine/ECS';
-import { makeDestroyEntityCommand } from '@/engine/Command';
+import {
+  makeDestroyEntityCommand,
+  makePasteEntityCommand,
+} from '@/engine/Command';
+import { useClipboardStore } from '@/stores/clipboardStore';
 
 function useEditorKeys() {
   const { focused, focus } = useEditorContext();
-  const [copiedUuid, copyUuid] = useState<string>('');
+  const { clipboard, copy: copyAction } = useClipboardStore();
   // TODO: making new variable for every key like this is going to suck.
   // need a better way to handle this
   const del = useKeyboardControls<Controls>((state) => state.del);
@@ -29,12 +33,15 @@ function useEditorKeys() {
       }
 
       if (copy && focused) {
-        copyUuid(focused);
+        copyAction(focused);
       }
 
-      if (paste && copiedUuid) {
-        const entity = ECS.instance.clone(copiedUuid);
-        focus(entity);
+      if (paste) {
+        const parent = focused ?? ECS.instance.entityManager.getScene().root;
+        if (clipboard && parent) {
+          const command = makePasteEntityCommand(clipboard, parent, focus);
+          ECS.instance.entityManager.pushCommand(command);
+        }
       }
     }
     // TODO: we absolutely shouldn't do this but I can't be bothered right now
