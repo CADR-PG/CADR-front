@@ -124,6 +124,7 @@ export function makeSetDataCommand(
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function makeAddComponentCommand(instance: any, entity: Entity) {
   return {
     execute: () => {
