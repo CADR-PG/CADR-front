@@ -10,6 +10,8 @@ import Invisible from './components/Invisible';
 import NestedScene from './components/NestedScene';
 import { Component } from './Component';
 
+const ROTATION_ORDER = 'YXZ';
+
 export function setParent(parent: Entity | null, child: Entity) {
   if (parent === child) return;
   if (parent && isDescendant(parent, child)) return;
@@ -117,7 +119,7 @@ export function toMatrix(t: Transform): Matrix4 {
   return new Matrix4().compose(
     new Vector3(t.position[0], t.position[1], t.position[2]),
     new Quaternion().setFromEuler(
-      new Euler(t.rotation[0], t.rotation[1], t.rotation[2]),
+      new Euler(t.rotation[0], t.rotation[1], t.rotation[2], ROTATION_ORDER),
     ),
     new Vector3(t.scale[0], t.scale[1], t.scale[2]),
   );
@@ -128,7 +130,7 @@ export function applyMatrix(t: Transform, m: Matrix4) {
   const q = new Quaternion();
   const s = new Vector3();
   m.decompose(p, q, s);
-  const r = new Euler().setFromQuaternion(q);
+  const r = new Euler().setFromQuaternion(q, ROTATION_ORDER);
   t.position = [p.x, p.y, p.z];
   t.rotation = [r.x, r.y, r.z];
   t.scale = [s.x, s.y, s.z];

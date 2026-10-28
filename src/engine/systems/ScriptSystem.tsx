@@ -1,4 +1,4 @@
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { ECS } from '../ECS';
 import { useEffect, useState } from 'react';
 import useAssets from '@/stores/useAssets';
@@ -12,6 +12,7 @@ export default function ScriptSystem() {
   const { uuid } = useParams<{ uuid: string }>();
   const [initialized, initialize] = useState(false);
   const [started, start] = useState(false);
+  const { pointer } = useThree();
 
   useEffect(() => {
     if (!uuid) return;
@@ -60,7 +61,7 @@ export default function ScriptSystem() {
       start(true);
     }
 
-    ECS.instance.update(state, delta);
+    ECS.instance.update(state, delta, pointer);
   });
 
   return null;
