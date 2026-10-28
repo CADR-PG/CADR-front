@@ -7,7 +7,7 @@ import {
   PerspectiveCamera,
 } from '@react-three/drei';
 import * as THREE from 'three';
-import { RefObject, useRef, useState } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 import ToolbarComponent from './Toolbar';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEditorKeys from '../../hooks/useEditorKeys';
@@ -62,6 +62,7 @@ function CanvasController() {
   const { scenes, game } = useEditorSettingsStore();
   const [item, setItem] = useState<AssetsFile | null>(null);
   const editCameraRef = useRef<THREE.PerspectiveCamera>(null!);
+  const [canvas, setCanvas] = useState<any>(null);
   useEditorKeys();
   RectAreaLightTexturesLib.init();
 
@@ -105,6 +106,36 @@ function CanvasController() {
     [scenes, loadScene, saveScene, replaceScene],
   );
 
+  useEffect(() => {
+    if (!canvas || !running) return;
+
+    const handler = async () => {
+      await canvas.requestPointerLock();
+    };
+
+    const updatePosition = (e: MouseEvent) => {
+      const m = ECS.instance.state.mouse;
+      m.movementX += e.movementX;
+      m.movementY += e.movementY;
+    };
+
+    const lockChangeAlert = () => {
+      ECS.instance.state.locked = document.pointerLockElement === canvas;
+      ECS.instance.state.mouse.movementX = 0;
+      ECS.instance.state.mouse.movementY = 0;
+    };
+
+    canvas.addEventListener('click', handler);
+    document.addEventListener('mousemove', updatePosition);
+    document.addEventListener('pointerlockchange', lockChangeAlert);
+
+    return () => {
+      canvas.removeEventListener('click', handler);
+      document.removeEventListener('mousemove', updatePosition);
+      document.removeEventListener('pointerlockchange', lockChangeAlert);
+    };
+  }, [canvas, running]);
+
   return (
     <>
       <div className="canvas-container">
@@ -123,26 +154,19 @@ function CanvasController() {
           onCreated={({ camera }) => setCamera(camera)}
           ref={(node) => {
             drop(node);
+            setCanvas(node);
           }}
         >
-          {/* Explicit, always-mounted edit-viewport camera - given directly
-              to OrbitControls below so it can never end up bound to
-              whichever camera happens to be the scene's active default
-              (e.g. the player camera while Play is running). */}
-          <PerspectiveCamera
-            ref={editCameraRef}
-            makeDefault={!running}
-            position={[3, 2, -3]}
-          />
           <EditorFlyControls cameraRef={editCameraRef} active={!running} />
           <Physics colliders="hull" paused={!running} debug>
             <AudioListenerProvider>
-              <OrbitControls
-                camera={editCameraRef.current ?? undefined}
-                makeDefault
-                enableDamping={false}
-                enabled={!running}
-              />
+              {!running && (
+                <OrbitControls
+                  makeDefault
+                  enableDamping={false}
+                  enabled={!running}
+                />
+              )}
               {!running && <Grid sectionSize={2} infiniteGrid />}
               {!running && (
                 <GizmoHelper

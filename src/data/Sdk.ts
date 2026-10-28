@@ -1,6 +1,7 @@
 import { playAnimation, stopAnimation } from '@/engine/Animation';
 import { Component } from '@/engine/Component';
 import cAudio from '@/engine/components/Audio';
+import { Camera } from '@/engine/components/Camera';
 import Collider from '@/engine/components/Collider';
 import Geometry from '@/engine/components/Geometry';
 import GLTF from '@/engine/components/GLTF';
@@ -49,4 +50,5 @@ export const sdk = {
   playAnimation,
   stopAnimation,
   useConsoleStore,
+  Camera,
 };

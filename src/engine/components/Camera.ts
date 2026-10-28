@@ -2,7 +2,7 @@ import { Component } from '../Component';
 import { ECS } from '../ECS';
 
 export class Camera implements Component {
-  name = 'camera';
+  name = 'Camera';
 
   constructor(
     public fov = 50,

@@ -2,6 +2,7 @@ import {
   RapierRigidBody,
   RigidBody,
   useAfterPhysicsStep,
+  useRapier,
 } from '@react-three/rapier';
 import RBody from '../../engine/components/RigidBody';
 import useEntityManager from '../../hooks/useEntityManager';
@@ -49,6 +50,8 @@ export default function RigidBodyController({
   const { running } = useEditorContext();
   const ref = useRef<RapierRigidBody>(null!);
   const t = useWorldTransform(entity);
+  const { world } = useRapier();
+  world.forEachCollider((c) => console.log(c.radius()));
   const transformWrite = ECS.instance.entityManager.getComponent(
     Transform,
     entity,
@@ -77,8 +80,9 @@ export default function RigidBodyController({
       !transformWrite ||
       !mesh ||
       !initial
-    )
+    ) {
       return;
+    }
 
     const tr = ref.current.translation();
     const ro = ref.current.rotation();
@@ -126,6 +130,9 @@ export default function RigidBodyController({
       rotation={initial.rotation}
       scale={initial.scale}
     >
+      <mesh visible={false}>
+        <sphereGeometry />
+      </mesh>
       {gltf ? (
         <Clone object={model.scene ?? null} visible={false} />
       ) : (
@@ -141,7 +148,7 @@ export default function RigidBodyController({
         return (
           // making a new group is dumb I think but whatever
           <group position={tr.position} rotation={tr.rotation} scale={tr.scale}>
-            <ColliderComponent entity={collider} />;
+            <ColliderComponent entity={collider} />
           </group>
         );
       })}

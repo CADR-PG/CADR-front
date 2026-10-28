@@ -274,6 +274,12 @@ export class EntityManager {
         if (!this.is(component, entity)) {
           return false;
         }
+        // TODO: don't know where to put this, but when we use lowercase name for components
+        // it suddenly doesn't work lol. the name gets transformed into Uppercase lol.
+        // I have no idea why, maybe there is a hidden name property that gets overwritten?
+        // so far I've only used names equal to the class' name, but maybe I should try
+        // and actually debug this at some point lol. though I've used custom Ammo component
+        // and didn't have any issues so wtf
       } else if (!this.has(this.mapNameToClass[component.name], entity)) {
         return false;
       }
