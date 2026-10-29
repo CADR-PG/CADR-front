@@ -23,6 +23,7 @@ import { useConsoleStore } from '@/stores/consoleStore';
 import Controls from '@/types/Controls';
 import { useKeyboardControls } from '@react-three/drei';
 import React from 'react';
+import * as THREE from 'three';
 
 export const sdk = {
   ECS,
@@ -51,4 +52,5 @@ export const sdk = {
   stopAnimation,
   useConsoleStore,
   Camera,
+  THREE,
 };

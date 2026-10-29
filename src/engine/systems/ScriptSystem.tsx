@@ -6,6 +6,7 @@ import { normalizeUrl } from '../components/helpers/material';
 import { sdk } from '@/data/Sdk';
 import { useParams } from 'react-router-dom';
 import { requestFileDownload } from '@/api/client';
+import { useRapier } from '@react-three/rapier';
 
 export default function ScriptSystem() {
   const { assets } = useAssets();
@@ -13,6 +14,7 @@ export default function ScriptSystem() {
   const [initialized, initialize] = useState(false);
   const [started, start] = useState(false);
   const { pointer } = useThree();
+  const { world, rapier } = useRapier();
 
   useEffect(() => {
     if (!uuid) return;
@@ -61,7 +63,7 @@ export default function ScriptSystem() {
       start(true);
     }
 
-    ECS.instance.update(state, delta, pointer);
+    ECS.instance.update({ state, delta, pointer, world, rapier });
   });
 
   return null;
