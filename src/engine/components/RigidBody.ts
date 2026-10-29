@@ -1,4 +1,5 @@
 import {
+  RapierRigidBody,
   RigidBodyAutoCollider,
   RigidBodyTypeString,
 } from '@react-three/rapier';
@@ -28,6 +29,7 @@ export default class RBody implements Component {
   ) {}
 
   name: string = 'RigidBody';
+  ref: RapierRigidBody | null = null;
 }
 
 ECS.instance.entityManager.registerComponent(RBody);

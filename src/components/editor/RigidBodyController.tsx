@@ -1,13 +1,8 @@
-import {
-  RapierRigidBody,
-  RigidBody,
-  useAfterPhysicsStep,
-  useRapier,
-} from '@react-three/rapier';
+import { RigidBody, useAfterPhysicsStep, useRapier } from '@react-three/rapier';
 import RBody from '../../engine/components/RigidBody';
 import useEntityManager from '../../hooks/useEntityManager';
 import ControllerProps from '../../types/ControllerProps';
-import { JSX, useRef, useState } from 'react';
+import { JSX, useState } from 'react';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import physicsHandlers from '../../engine/handlers/Physics';
 import * as THREE from 'three';
@@ -47,11 +42,11 @@ export default function RigidBodyController({
 }: ControllerProps & RigidBodyControllerProps) {
   const em = useEntityManager();
   const rigidBody = em.getComponent(RBody, entity);
+  const rbWrite = ECS.instance.entityManager.getComponent(RBody, entity);
   const { running } = useEditorContext();
-  const ref = useRef<RapierRigidBody>(null!);
   const t = useWorldTransform(entity);
-  const { world } = useRapier();
-  world.forEachCollider((c) => console.log(c.radius()));
+  // const { world } = useRapier();
+  // world.forEachCollider((c) => console.log(c.radius()));
   const transformWrite = ECS.instance.entityManager.getComponent(
     Transform,
     entity,
@@ -75,7 +70,8 @@ export default function RigidBodyController({
   useAfterPhysicsStep(() => {
     if (
       !rigidBody ||
-      !ref.current ||
+      !rbWrite ||
+      !rbWrite.ref ||
       !running ||
       !transformWrite ||
       !mesh ||
@@ -84,8 +80,8 @@ export default function RigidBodyController({
       return;
     }
 
-    const tr = ref.current.translation();
-    const ro = ref.current.rotation();
+    const tr = rbWrite.ref.translation();
+    const ro = rbWrite.ref.rotation();
     p.set(tr.x, tr.y, tr.z);
     r.set(ro.x, ro.y, ro.z, ro.w);
     s.fromArray(initial.scale);
@@ -108,7 +104,12 @@ export default function RigidBodyController({
     <RigidBody
       {...physicsHandlers}
       name={entity}
-      ref={ref}
+      userData={{ entity }}
+      ref={(ref) => {
+        if (!rbWrite) return;
+
+        rbWrite.ref = ref;
+      }}
       activeCollisionTypes={rigidBody.activeCollisionTypes}
       additionalSolverIterations={rigidBody.additionalSolverIterations}
       angularDamping={rigidBody.angularDamping}

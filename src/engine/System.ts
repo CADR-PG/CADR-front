@@ -1,7 +1,6 @@
 import { Entity } from './Entity';
 import { ComponentType } from './Component';
-import { RootState } from '@react-three/fiber';
-import { Vector2 } from 'three';
+import UpdateData from '@/types/UpdateData';
 
 // Instantiate every system with the components that it requires.
 // Components should never change.
@@ -11,11 +10,6 @@ export abstract class System {
     this.components = components;
   }
 
-  abstract update(
-    entities: Entity[],
-    state: RootState,
-    delta: number,
-    pointer: Vector2,
-  ): void;
+  abstract update(entities: Entity[], data: UpdateData): void;
   abstract start(): void;
 }

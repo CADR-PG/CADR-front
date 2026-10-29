@@ -125,14 +125,26 @@ function CanvasController() {
       ECS.instance.state.mouse.movementY = 0;
     };
 
+    const onKeyDown = (e: KeyboardEvent) => {
+      ECS.instance.state.input.add(e.code);
+    };
+
+    const onKeyUp = (e: KeyboardEvent) => {
+      ECS.instance.state.input.delete(e.code);
+    };
+
     canvas.addEventListener('click', handler);
     document.addEventListener('mousemove', updatePosition);
     document.addEventListener('pointerlockchange', lockChangeAlert);
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
 
     return () => {
       canvas.removeEventListener('click', handler);
       document.removeEventListener('mousemove', updatePosition);
       document.removeEventListener('pointerlockchange', lockChangeAlert);
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('keyup', onKeyUp);
     };
   }, [canvas, running]);
 

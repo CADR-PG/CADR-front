@@ -1,7 +1,7 @@
 import { useKeyboardControls } from '@react-three/drei';
 import Controls from '../types/Controls';
 import { useEditorContext } from './useEditorContext';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { ECS } from '../engine/ECS';
 import {
   makeDestroyEntityCommand,
