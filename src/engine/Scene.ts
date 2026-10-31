@@ -29,6 +29,7 @@ export async function loadScene(
   const text = await fetch(normalizeUrl(scene));
   const body = (await text.json()) as SceneJSON;
 
+  console.log('loading');
   try {
     await em.loadComponents(body.entities, uuid, sdk);
   } catch {

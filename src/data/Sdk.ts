@@ -24,6 +24,9 @@ import Controls from '@/types/Controls';
 import { useKeyboardControls } from '@react-three/drei';
 import React from 'react';
 import * as THREE from 'three';
+import { loadExternalScene } from '@/engine/Scene';
+import { destroyTree, searchTree } from '@/engine/Entity';
+import { waitForBody } from '@/engine/Waiter';
 
 export const sdk = {
   ECS,
@@ -53,4 +56,8 @@ export const sdk = {
   useConsoleStore,
   Camera,
   THREE,
+  loadExternalScene,
+  destroyTree,
+  searchTree,
+  waitForBody,
 };

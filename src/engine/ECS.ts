@@ -3,8 +3,6 @@ import { Entity } from './Entity';
 import { System } from './System';
 import { EntityManager } from './EntityManager';
 import { proxy, snapshot, subscribe, unstable_enableOp } from 'valtio';
-import { RootState } from '@react-three/fiber';
-import { Vector2 } from 'three';
 import EventState from '@/types/EventState';
 import UpdateData from '@/types/UpdateData';
 
@@ -66,6 +64,12 @@ export class ECS {
       // When we find all relevant entities, run the system.
       system.update(this.query(system.components), data);
     }
+
+    for (const entity of this.entityManager.toDestroy) {
+      this.entityManager.destroyEntity(entity);
+    }
+
+    this.entityManager.toDestroy = [];
   }
 
   start() {
@@ -104,7 +108,7 @@ export class ECS {
   isLoaded: boolean = false;
   isRunning: boolean = false;
   state: EventState = {
-    mouse: { movementX: 0, movementY: 0 },
+    mouse: { movementX: 0, movementY: 0, buttons: 0 },
     locked: false,
     input: new Set(),
   };

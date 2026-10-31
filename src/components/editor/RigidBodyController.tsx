@@ -1,4 +1,4 @@
-import { RigidBody, useAfterPhysicsStep, useRapier } from '@react-three/rapier';
+import { RigidBody, useAfterPhysicsStep } from '@react-three/rapier';
 import RBody from '../../engine/components/RigidBody';
 import useEntityManager from '../../hooks/useEntityManager';
 import ControllerProps from '../../types/ControllerProps';
@@ -25,6 +25,7 @@ import { Clone, useGLTF } from '@react-three/drei';
 import GLTF from '@/engine/components/GLTF';
 import useDownloadFile from '@/hooks/useDownloadFile';
 import { normalizeUrl } from '@/engine/components/helpers/material';
+import { notifyBodyReady } from '@/engine/Waiter';
 
 interface RigidBodyControllerProps {
   children: JSX.Element | JSX.Element[];
@@ -106,9 +107,8 @@ export default function RigidBodyController({
       name={entity}
       userData={{ entity }}
       ref={(ref) => {
-        if (!rbWrite) return;
-
-        rbWrite.ref = ref;
+        if (rbWrite) rbWrite.ref = ref;
+        if (ref) notifyBodyReady(entity, ref);
       }}
       activeCollisionTypes={rigidBody.activeCollisionTypes}
       additionalSolverIterations={rigidBody.additionalSolverIterations}
@@ -130,6 +130,9 @@ export default function RigidBodyController({
       position={initial.position}
       rotation={initial.rotation}
       scale={initial.scale}
+      // linearVelocity={rigidBody.linearVelocity}
+      lockRotations={rigidBody.lockRotations}
+      lockTranslations={rigidBody.lockTranslations}
     >
       <mesh visible={false}>
         <sphereGeometry />

@@ -1,6 +1,7 @@
-import { Component } from './Component';
+import { Component, ComponentType } from './Component';
+import Children from './components/Children';
 import { ECS } from './ECS';
-import { setParent } from './Hierarchy';
+import { getNestedParent, setParent } from './Hierarchy';
 
 export type Entity = string;
 
@@ -46,4 +47,45 @@ export function resurrectEntity(
   }
 
   return entity;
+}
+
+// Pick between destroying only one entity or the whole tree if it's a nested scene.
+// Made to be used in scripts.
+export function destroyTree(entity: Entity) {
+  const parent = getNestedParent(entity);
+  if (parent) {
+    // ECS.instance.entityManager.destroyEntity(parent);
+    ECS.instance.entityManager.toDestroy.push(parent);
+  } else {
+    // ECS.instance.entityManager.destroyEntity(entity);
+    ECS.instance.entityManager.toDestroy.push(entity);
+  }
+}
+
+export function searchTree(
+  component: ComponentType | string,
+  entity: Entity,
+): Entity | null {
+  const em = ECS.instance.entityManager;
+
+  if (typeof component === 'string') {
+    if (em.is(component, entity)) {
+      return entity;
+    }
+  } else {
+    if (em.has(component, entity)) {
+      return entity;
+    }
+  }
+
+  const children = em.getComponent(Children, entity)?.children;
+
+  if (!children) return null;
+
+  for (const child of children) {
+    const result = searchTree(component, child);
+    if (result) return result;
+  }
+
+  return null;
 }

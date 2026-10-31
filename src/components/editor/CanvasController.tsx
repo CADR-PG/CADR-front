@@ -133,8 +133,24 @@ function CanvasController() {
       ECS.instance.state.input.delete(e.code);
     };
 
+    const onMouseDown = (e: MouseEvent) => {
+      if (!running) {
+        ECS.instance.state.mouse.buttons = 0;
+      }
+      ECS.instance.state.mouse.buttons = e.buttons;
+    };
+
+    const onMouseUp = (e: MouseEvent) => {
+      if (!running) {
+        ECS.instance.state.mouse.buttons = 0;
+      }
+      ECS.instance.state.mouse.buttons = e.buttons;
+    };
+
     canvas.addEventListener('click', handler);
     document.addEventListener('mousemove', updatePosition);
+    canvas.addEventListener('mousedown', onMouseDown);
+    canvas.addEventListener('mouseup', onMouseUp);
     document.addEventListener('pointerlockchange', lockChangeAlert);
     document.addEventListener('keydown', onKeyDown);
     document.addEventListener('keyup', onKeyUp);
@@ -142,6 +158,8 @@ function CanvasController() {
     return () => {
       canvas.removeEventListener('click', handler);
       document.removeEventListener('mousemove', updatePosition);
+      canvas.removeEventListener('mousedown', onMouseDown);
+      canvas.removeEventListener('mouseup', onMouseUp);
       document.removeEventListener('pointerlockchange', lockChangeAlert);
       document.removeEventListener('keydown', onKeyDown);
       document.removeEventListener('keyup', onKeyUp);

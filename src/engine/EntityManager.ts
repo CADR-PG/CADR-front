@@ -247,9 +247,24 @@ export class EntityManager {
         return null;
       }
       return scene.entities[entity][instance.name] as T;
-    } else {
-      return null;
     }
+
+    return null;
+  }
+
+  getComponentS(component: string, entity: Entity) {
+    if (this.is(component, entity)) {
+      const scene = this.find(entity);
+      if (!scene) {
+        console.error(
+          'Catastrophic failure: component exists, but entity doesnt',
+        );
+        return null;
+      }
+      return scene.entities[entity][component];
+    }
+
+    return null;
   }
 
   // TODO: When creating systems, we need to get all the entities with specified components.
@@ -363,4 +378,5 @@ export class EntityManager {
   sceneId: number = 0;
   initialized: boolean = false;
   savedScene: number = GAME_SCENE;
+  toDestroy: Entity[] = [];
 }
