@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import useAssets from '../../stores/useAssets';
 import useCreateDirectory from '../../hooks/useCreateDirectory';
 import useDeleteDirectory from '../../hooks/useDeleteDirectory';
@@ -428,6 +429,16 @@ export default function AssetsBrowser() {
     closeContextMenu();
   };
 
+  const handleCopyIdFromMenu = () => {
+    if (!contextMenu || contextMenu.target.type !== 'file') return;
+    const { target } = contextMenu;
+    navigator.clipboard
+      .writeText(target.file.id)
+      .then(() => openSnackbar('File ID copied to clipboard.', 'success'))
+      .catch(() => openSnackbar('Failed to copy file ID.', 'error'));
+    closeContextMenu();
+  };
+
   const handleRenameDirectory = (directoryId: string, name: string) => {
     renameDirectory.mutate({ directoryId, name });
     setRenamingId(null);
@@ -552,6 +563,12 @@ export default function AssetsBrowser() {
             <MenuItem onClick={handleRenameFromMenu}>
               <DriveFileRenameOutlineIcon fontSize="small" sx={{ mr: 1 }} />
               Rename
+            </MenuItem>
+          )}
+          {contextMenu?.target.type === 'file' && (
+            <MenuItem onClick={handleCopyIdFromMenu}>
+              <ContentCopyIcon fontSize="small" sx={{ mr: 1 }} />
+              Copy ID
             </MenuItem>
           )}
           {contextMenu?.target.type !== 'background' && (

@@ -36,6 +36,7 @@ export class EventBus {
       this.subscribers[event] = [];
     }
     this.subscribers[event]!.push(callback);
+    console.log('subscribers', this.subscribers);
   }
 
   publish<T extends EventMessageData>(event: EventMessage<T>) {
@@ -43,8 +44,14 @@ export class EventBus {
 
     if (!callbacks) return;
 
-    for (const callback of callbacks) {
-      callback(event.data);
+    console.log(callbacks);
+    for (let callback of callbacks) {
+      try {
+        console.log('calling callback', callback);
+        callback(event.data);
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
 }

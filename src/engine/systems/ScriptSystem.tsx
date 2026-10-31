@@ -7,6 +7,7 @@ import { sdk } from '@/data/Sdk';
 import { useParams } from 'react-router-dom';
 import { requestFileDownload } from '@/api/client';
 import { useRapier } from '@react-three/rapier';
+import { EventBus } from '../EventBus';
 
 export default function ScriptSystem() {
   const { assets } = useAssets();
@@ -28,11 +29,14 @@ export default function ScriptSystem() {
     const { signal } = controller;
 
     async function load() {
+      // TODO: clear event subscribers here?
+      EventBus.instance.subscribers = {};
       ECS.instance.clearSystems();
 
       for (const file of files!) {
         try {
           const data = await requestFileDownload(uuid!, file.id, { signal });
+          console.log(data);
           if (signal.aborted) return;
 
           const { default: init } = await import(
@@ -52,7 +56,11 @@ export default function ScriptSystem() {
 
     load();
 
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      EventBus.instance.subscribers = {};
+      ECS.instance.clearSystems();
+    };
   }, [uuid, assets]);
 
   useFrame((state, delta) => {
