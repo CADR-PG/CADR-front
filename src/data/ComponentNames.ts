@@ -40,6 +40,7 @@ import RoundCylinderColliderController from '../components/editor/colliders/Roun
 import AudioController from '../components/editor/audio/AudioController';
 import PositionalAudioController from '../components/editor/audio/PositionalAudioController';
 import CameraController from '../components/editor/CameraController';
+import ParticleEmitterController from '../components/editor/particles/ParticleEmitterController';
 
 interface ComponentToElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -90,6 +91,8 @@ const ComponentNames: ComponentToElement = {
 
   audio: AudioController,
   paudio: PositionalAudioController,
+
+  particleEmitter: ParticleEmitterController,
 };
 
 export default ComponentNames;
