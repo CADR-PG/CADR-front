@@ -134,9 +134,6 @@ export default function RigidBodyController({
       lockRotations={rigidBody.lockRotations}
       lockTranslations={rigidBody.lockTranslations}
     >
-      <mesh visible={false}>
-        <sphereGeometry />
-      </mesh>
       {gltf ? (
         <Clone object={model.scene ?? null} visible={false} />
       ) : (

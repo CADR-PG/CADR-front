@@ -4,7 +4,7 @@ import TransformControlsController from './editor/TransformControlsController';
 import RigidBodyController from './editor/RigidBodyController';
 import { Select } from '@react-three/postprocessing';
 import useComponents from '../hooks/useComponents';
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { MeshContext } from '@/data/MeshContext';
 import { useEditorContext } from '@/hooks/useEditorContext';
 import useWorldTransform from '@/hooks/useWorldTransform';
@@ -22,10 +22,11 @@ export default function MeshControllerTemplate({
   const { hovered } = useMesh(entity);
   const { running } = useEditorContext();
   const t = useWorldTransform(entity);
+  const ctx = useMemo(() => ({ object, setRef }), [object, setRef]);
 
   return (
-    <MeshContext.Provider value={{ object, setRef }}>
-      {!isNestedScene(entity) && (
+    <MeshContext.Provider value={ctx}>
+      {!running && !isNestedScene(entity) && (
         <TransformControlsController entity={entity} />
       )}
       {!isInvisible(entity) && (
