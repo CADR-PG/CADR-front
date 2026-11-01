@@ -188,7 +188,8 @@ function CanvasController() {
           }}
         >
           <EditorFlyControls cameraRef={editCameraRef} active={!running} />
-          <Physics colliders="hull" paused={!running} debug>
+          {/* TODO: set timestep as modifiable value from inside the editor */}
+          <Physics colliders="hull" paused={!running} debug timeStep="vary">
             <AudioListenerProvider>
               {!running && (
                 <OrbitControls

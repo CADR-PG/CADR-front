@@ -9,7 +9,7 @@ export default function CuboidColliderController({ entity }: ControllerProps) {
   return (
     params && (
       <CuboidCollider
-        {...physicsHandlers}
+        // {...physicsHandlers}
         {...params}
         args={[args.halfWidth, args.halfHeight, args.halfDepth]}
       />
