@@ -41,6 +41,7 @@ import AudioController from '../components/editor/audio/AudioController';
 import PositionalAudioController from '../components/editor/audio/PositionalAudioController';
 import CameraController from '../components/editor/CameraController';
 import NavMeshController from '@/components/editor/NavMeshController';
+import ParticleEmitterController from '../components/editor/particles/ParticleEmitterController';
 
 interface ComponentToElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -93,6 +94,7 @@ const ComponentNames: ComponentToElement = {
   paudio: PositionalAudioController,
 
   navmesh: NavMeshController,
+  particleEmitter: ParticleEmitterController,
 };
 
 export default ComponentNames;
