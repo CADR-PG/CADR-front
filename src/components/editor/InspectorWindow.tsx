@@ -24,6 +24,7 @@ import useDownloadFile from '@/hooks/useDownloadFile';
 import { normalizeUrl } from '@/engine/components/helpers/material';
 import { sdk } from '@/data/Sdk';
 import CameraInspector from './inspectors/CameraInspector';
+import ParticleEmitterInspector from './inspectors/ParticleEmitterInspector';
 import {
   makeAddComponentCommand,
   makeRemoveComponentCommand,
@@ -135,6 +136,8 @@ function InspectorWindow() {
         );
       case 'GLTF':
         return <GLTFInspector entity={focused} />;
+      case 'ParticleEmitter':
+        return <ParticleEmitterInspector entity={focused} />;
       case 'Parent':
       case 'Children':
       case 'External':
