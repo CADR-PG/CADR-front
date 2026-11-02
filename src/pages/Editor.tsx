@@ -22,6 +22,9 @@ import { loadScene } from '@/engine/Scene';
 import { Asset, useEditorSettingsStore } from '@/stores/editorSettingsStore';
 import { GAME_SCENE } from '@/engine/EntityManager';
 import { AssetsFile } from '@/types/Assets';
+import { init } from 'recast-navigation';
+
+await init();
 
 function isScene(
   asset: Asset,

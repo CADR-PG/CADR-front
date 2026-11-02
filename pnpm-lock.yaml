@@ -35,6 +35,9 @@ importers:
       '@react-three/rapier':
         specifier: ^2.2.0
         version: 2.2.0(@react-three/fiber@9.7.0(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.175.0))(react@19.2.3)(three@0.175.0)
+      '@recast-navigation/three':
+        specifier: ^0.44.0
+        version: 0.44.0(@types/three@0.175.0)(three@0.175.0)
       '@tanstack/react-query':
         specifier: ^5.90.12
         version: 5.90.16(react@19.2.3)
@@ -86,6 +89,9 @@ importers:
       react-router-dom:
         specifier: ^7.10.1
         version: 7.11.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      recast-navigation:
+        specifier: ^0.44.0
+        version: 0.44.0
       rollup:
         specifier: ^4.53.3
         version: 4.55.1
@@ -1030,6 +1036,21 @@ packages:
       '@react-three/fiber': ^9.0.4
       react: ^19
       three: '>=0.159.0'
+
+  '@recast-navigation/core@0.44.0':
+    resolution: {integrity: sha512-N4YO9JBXrGFf3LkrhXmABa7pEwLHvq/gq6o7pLKKu5A4JAp+A5y/9424ps3cVpO1m7ibh3zlXmeewTut9LeXQw==}
+
+  '@recast-navigation/generators@0.44.0':
+    resolution: {integrity: sha512-i2N/sCfuq7IJcSuMmHuX2Uer6oonr9PzFZTrPpwS/e2t+ZpVLHb3DHFY9evKrL2X8diO7sDUDBOpTfW/4Nwucw==}
+
+  '@recast-navigation/three@0.44.0':
+    resolution: {integrity: sha512-7PYy9sAJMK66+0g87xJ4x+jUL9Lv4DrtOwXrJYo1W5YB29f6HjSTVGXw5LooPgqqQcf+RUpoeQaSSul0cvVw/A==}
+    peerDependencies:
+      '@types/three': 0.x.x
+      three: 0.x.x
+
+  '@recast-navigation/wasm@0.44.0':
+    resolution: {integrity: sha512-VNv7xv50cFCdsGd2LdQWZqtLcWXB7nyi4Ilq9t5GMn3GEfCmJEbbeZWSXX5Mgdc4yj71QueTv15V7hPDAQ9gaw==}
 
   '@rolldown/pluginutils@1.0.0-beta.27':
     resolution: {integrity: sha512-+d0F4MKMCbeVUJwG96uQ4SgAznZNSq93I3V+9NHA4OpvqG8mRCpGdKmK8l/dl02h2CCDHwW2FqilnTyDcAnqjA==}
@@ -2910,6 +2931,9 @@ packages:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
 
+  recast-navigation@0.44.0:
+    resolution: {integrity: sha512-Qu5ETIZZo69uk3lvjJpdgopPUFp95dTmKljckjpSdL1IbdX26837R8j4nC2oHT6tEKViVwkIvy9Zbzyxr27GiQ==}
+
   redux@4.2.1:
     resolution: {integrity: sha512-LAUYz4lc+Do8/g7aeRa8JkyDErK6ekstQaqWQrNRW//MY1TvCEpMtpTWvlQ+FPbWCx+Xixu/6SHt5N0HR+SB4w==}
 
@@ -4466,6 +4490,24 @@ snapshots:
       suspend-react: 0.1.3(react@19.2.3)
       three: 0.175.0
       three-stdlib: 2.36.1(three@0.175.0)
+
+  '@recast-navigation/core@0.44.0':
+    dependencies:
+      '@recast-navigation/wasm': 0.44.0
+
+  '@recast-navigation/generators@0.44.0':
+    dependencies:
+      '@recast-navigation/core': 0.44.0
+      '@recast-navigation/wasm': 0.44.0
+
+  '@recast-navigation/three@0.44.0(@types/three@0.175.0)(three@0.175.0)':
+    dependencies:
+      '@recast-navigation/core': 0.44.0
+      '@recast-navigation/generators': 0.44.0
+      '@types/three': 0.175.0
+      three: 0.175.0
+
+  '@recast-navigation/wasm@0.44.0': {}
 
   '@rolldown/pluginutils@1.0.0-beta.27': {}
 
@@ -6280,6 +6322,11 @@ snapshots:
       util-deprecate: 1.0.2
 
   readdirp@4.1.2: {}
+
+  recast-navigation@0.44.0:
+    dependencies:
+      '@recast-navigation/core': 0.44.0
+      '@recast-navigation/generators': 0.44.0
 
   redux@4.2.1:
     dependencies:
