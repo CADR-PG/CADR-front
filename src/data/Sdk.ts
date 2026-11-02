@@ -27,6 +27,8 @@ import * as THREE from 'three';
 import { loadExternalScene } from '@/engine/Scene';
 import { destroyTree, searchTree } from '@/engine/Entity';
 import { waitForBody } from '@/engine/Waiter';
+import * as RECAST from 'recast-navigation';
+import NavMesh from '@/engine/components/NavMesh';
 
 export const sdk = {
   ECS,
@@ -60,4 +62,6 @@ export const sdk = {
   destroyTree,
   searchTree,
   waitForBody,
+  RECAST,
+  NavMesh,
 };

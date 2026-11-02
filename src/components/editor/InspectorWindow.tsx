@@ -28,6 +28,7 @@ import {
   makeAddComponentCommand,
   makeRemoveComponentCommand,
 } from '@/engine/Command';
+import NavMeshInspector from './inspectors/NavMeshInspector';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -141,6 +142,8 @@ function InspectorWindow() {
         return null;
       case 'camera':
         return <CameraInspector entity={focused} />;
+      case 'NavMesh':
+        return <NavMeshInspector entity={focused} />;
       default:
         return (
           <InspectorTemplate

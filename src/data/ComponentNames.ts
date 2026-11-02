@@ -40,6 +40,7 @@ import RoundCylinderColliderController from '../components/editor/colliders/Roun
 import AudioController from '../components/editor/audio/AudioController';
 import PositionalAudioController from '../components/editor/audio/PositionalAudioController';
 import CameraController from '../components/editor/CameraController';
+import NavMeshController from '@/components/editor/NavMeshController';
 
 interface ComponentToElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -90,6 +91,8 @@ const ComponentNames: ComponentToElement = {
 
   audio: AudioController,
   paudio: PositionalAudioController,
+
+  navmesh: NavMeshController,
 };
 
 export default ComponentNames;
