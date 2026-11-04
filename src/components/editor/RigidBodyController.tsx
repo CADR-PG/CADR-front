@@ -13,6 +13,7 @@ import {
   applyMatrix,
   flattenHierarchy,
   getWorldMatrix,
+  getWorldTransform,
   getWorldTransformOmitRoot,
   isInRigidBody,
   toMatrix,
@@ -86,7 +87,7 @@ export default function RigidBodyController({
     p.set(tr.x, tr.y, tr.z);
     r.set(ro.x, ro.y, ro.z, ro.w);
     s.fromArray(initial.scale);
-    e.setFromQuaternion(r);
+    e.setFromQuaternion(r, 'YXZ');
 
     const newT = new Transform(
       [p.x, p.y, p.z],
@@ -142,13 +143,25 @@ export default function RigidBodyController({
       {children}
       {flattenHierarchy(entity).map((collider) => {
         const c = ECS.instance.entityManager.getComponent(Collider, collider);
-        const tr = getWorldTransformOmitRoot(collider);
         if (!c || !c.element) return null;
+        {
+          /* const tr = getWorldTransformOmitRoot(collider); */
+        }
+        {
+          /* const trp = getWorldTransform(collider); */
+        }
+        const colliderPos = ECS.instance.entityManager.getComponent(
+          Transform,
+          collider,
+        );
 
         const ColliderComponent = ComponentNames[c.element];
         return (
           // making a new group is dumb I think but whatever
-          <group position={tr.position} rotation={tr.rotation} scale={tr.scale}>
+          <group
+            position={colliderPos!.position}
+            rotation={colliderPos!.rotation}
+          >
             <ColliderComponent entity={collider} />
           </group>
         );
