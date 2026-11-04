@@ -184,6 +184,26 @@ export function getWorldTransformOmitRoot(entity: Entity): Transform {
   return newT;
 }
 
+// TODO: xd
+// "you shouldn't copy-paste functions"
+// what am I? a fucking clean coder?
+export function getWorldTransform(entity: Entity): Transform {
+  const em = ECS.instance.entityManager;
+
+  function calculateWorld(entity: Entity): Matrix4 {
+    const t = em.getComponent(Transform, entity);
+    const local = t ? toMatrix(t) : new Matrix4();
+    const parent = em.getComponent(Parent, entity)?.entity;
+    return parent ? calculateWorld(parent).multiply(local) : local;
+  }
+
+  const world = calculateWorld(entity);
+  const newT = new Transform();
+  applyMatrix(newT, world);
+
+  return newT;
+}
+
 export function isInvisible(entity: Entity) {
   const invisible = ECS.instance.entityManager.getComponent(Invisible, entity);
   if (invisible) return true;

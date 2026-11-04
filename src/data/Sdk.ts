@@ -29,6 +29,8 @@ import { destroyTree, searchTree } from '@/engine/Entity';
 import { waitForBody } from '@/engine/Waiter';
 import * as RECAST from 'recast-navigation';
 import NavMesh from '@/engine/components/NavMesh';
+import * as RECAST_HELPERS from '@recast-navigation/three';
+import { getWorldTransform } from '@/engine/Hierarchy';
 
 export const sdk = {
   ECS,
@@ -64,4 +66,6 @@ export const sdk = {
   waitForBody,
   RECAST,
   NavMesh,
+  RECAST_HELPERS,
+  getWorldTransform,
 };

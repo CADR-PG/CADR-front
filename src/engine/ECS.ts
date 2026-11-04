@@ -5,6 +5,7 @@ import { EntityManager } from './EntityManager';
 import { proxy, snapshot, subscribe, unstable_enableOp } from 'valtio';
 import EventState from '@/types/EventState';
 import UpdateData from '@/types/UpdateData';
+import StartData from '@/types/StartData';
 
 // Glue class that contains the whole logic of ECS.
 // TODO: Maybe add unit tests for this?
@@ -72,9 +73,9 @@ export class ECS {
     this.entityManager.toDestroy = [];
   }
 
-  start() {
+  start(data: StartData) {
     for (const system of this.systems) {
-      system.start();
+      system.start(data);
     }
   }
 

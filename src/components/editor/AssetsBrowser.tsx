@@ -8,6 +8,8 @@ import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import DownloadIcon from '@mui/icons-material/Download';
+import { useParams } from 'react-router-dom';
 import useAssets from '../../stores/useAssets';
 import useCreateDirectory from '../../hooks/useCreateDirectory';
 import useDeleteDirectory from '../../hooks/useDeleteDirectory';
@@ -26,6 +28,8 @@ import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import Controls from '../../types/Controls';
 import SearchIcon from '@mui/icons-material/Search';
+import { requestFileDownload } from '../../api/client';
+import { normalizeUrlRaw } from '../../engine/components/helpers/material';
 
 interface FileItemProps {
   file: AssetsFile;
@@ -279,6 +283,7 @@ function DirectoryItem({
 
 export default function AssetsBrowser() {
   const { assets } = useAssets();
+  const { uuid } = useParams<{ uuid: string }>();
   const uploadFile = useUploadFile();
   const createDir = useCreateDirectory();
   const deleteDirectory = useDeleteDirectory();
@@ -439,6 +444,28 @@ export default function AssetsBrowser() {
     closeContextMenu();
   };
 
+  const handleDownloadFromMenu = async () => {
+    if (!contextMenu || contextMenu.target.type !== 'file' || !uuid) return;
+    const { file } = contextMenu.target;
+    closeContextMenu();
+    try {
+      // The download URL points at blob storage (cross-origin), where the
+      // `download` attribute is ignored - fetch it so the file keeps its name.
+      const { data } = await requestFileDownload(uuid, file.id);
+      const response = await fetch(normalizeUrlRaw(data));
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const objectUrl = URL.createObjectURL(await response.blob());
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = file.name;
+      link.click();
+      URL.revokeObjectURL(objectUrl);
+    } catch (err) {
+      console.error(err);
+      openSnackbar('Failed to download file.', 'error');
+    }
+  };
+
   const handleRenameDirectory = (directoryId: string, name: string) => {
     renameDirectory.mutate({ directoryId, name });
     setRenamingId(null);
@@ -569,6 +596,12 @@ export default function AssetsBrowser() {
             <MenuItem onClick={handleCopyIdFromMenu}>
               <ContentCopyIcon fontSize="small" sx={{ mr: 1 }} />
               Copy ID
+            </MenuItem>
+          )}
+          {contextMenu?.target.type === 'file' && (
+            <MenuItem onClick={handleDownloadFromMenu}>
+              <DownloadIcon fontSize="small" sx={{ mr: 1 }} />
+              Download
             </MenuItem>
           )}
           {contextMenu?.target.type !== 'background' && (

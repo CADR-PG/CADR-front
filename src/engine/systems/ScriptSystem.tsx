@@ -14,7 +14,7 @@ export default function ScriptSystem() {
   const { uuid } = useParams<{ uuid: string }>();
   const [initialized, initialize] = useState(false);
   const [started, start] = useState(false);
-  const { pointer } = useThree();
+  const { pointer, scene } = useThree();
   const { world, rapier } = useRapier();
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function ScriptSystem() {
     if (!initialized) return;
 
     if (!started) {
-      ECS.instance.start();
+      ECS.instance.start({ scene });
       start(true);
     }
 
