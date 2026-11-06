@@ -1,5 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 import {
+  Environment,
   GizmoHelper,
   GizmoViewport,
   Grid,
@@ -188,8 +189,18 @@ function CanvasController() {
           }}
         >
           <EditorFlyControls cameraRef={editCameraRef} active={!running} />
+          {running && (
+            <Environment preset="night" environmentIntensity={0.3} background />
+          )}
           {/* TODO: set timestep as modifiable value from inside the editor */}
-          <Physics colliders="hull" paused={!running} debug timeStep="vary">
+          <Physics
+            colliders="hull"
+            paused={!running}
+            debug={false}
+            timeStep="vary"
+          >
+            {!running && <ambientLight />}
+            {running && <fog attach="fog" args={['#0a0d12', 5, 40]} />}
             <AudioListenerProvider>
               {!running && (
                 <OrbitControls

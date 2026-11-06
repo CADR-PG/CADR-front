@@ -1,8 +1,12 @@
-import { RigidBody, useAfterPhysicsStep } from '@react-three/rapier';
+import {
+  RapierRigidBody,
+  RigidBody,
+  useAfterPhysicsStep,
+} from '@react-three/rapier';
 import RBody from '../../engine/components/RigidBody';
 import useEntityManager from '../../hooks/useEntityManager';
 import ControllerProps from '../../types/ControllerProps';
-import { JSX, useState } from 'react';
+import { JSX, useCallback, useMemo, useState } from 'react';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import physicsHandlers from '../../engine/handlers/Physics';
 import * as THREE from 'three';
@@ -102,15 +106,27 @@ export default function RigidBodyController({
     world.decompose(mesh.position, mesh.quaternion, mesh.scale);
   });
 
+  const userData = useMemo(
+    () => ({
+      entity,
+    }),
+    [entity],
+  );
+
+  const setBodyRef = useCallback(
+    (ref: RapierRigidBody | null) => {
+      if (rbWrite) rbWrite.ref = ref;
+      if (ref) notifyBodyReady(entity, ref);
+    },
+    [entity],
+  );
+
   return rigidBody && running ? (
     <RigidBody
       {...physicsHandlers}
       name={entity}
-      userData={{ entity }}
-      ref={(ref) => {
-        if (rbWrite) rbWrite.ref = ref;
-        if (ref) notifyBodyReady(entity, ref);
-      }}
+      userData={userData}
+      ref={setBodyRef}
       activeCollisionTypes={rigidBody.activeCollisionTypes}
       additionalSolverIterations={rigidBody.additionalSolverIterations}
       angularDamping={rigidBody.angularDamping}

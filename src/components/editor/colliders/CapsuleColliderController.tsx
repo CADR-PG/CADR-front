@@ -9,7 +9,7 @@ export default function CapsuleColliderController({ entity }: ControllerProps) {
   return (
     params && (
       <CapsuleCollider
-        {...physicsHandlers}
+        // {...physicsHandlers}
         {...params}
         args={[args.halfHeight, args.radius]}
       />

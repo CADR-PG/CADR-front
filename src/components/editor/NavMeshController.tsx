@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import * as RECAST from 'recast-navigation';
 import { NavMeshHelper } from '@recast-navigation/three';
+import { useEditorContext } from '@/hooks/useEditorContext';
 
 export default function NavMeshController({ entity }: ControllerProps) {
   const em = useEntityManager();
@@ -16,11 +17,13 @@ export default function NavMeshController({ entity }: ControllerProps) {
   const nmWrite = ECS.instance.entityManager.getComponent(NavMesh, entity);
   const { uuid } = useParams();
   const { scene } = useThree();
+  const { running } = useEditorContext();
 
   useEffect(() => {
     const controller = new AbortController();
     const { signal } = controller;
 
+    let navMeshHelper: NavMeshHelper;
     async function load() {
       if (!navMesh || !nmWrite || navMesh.source === '') return;
 
@@ -34,8 +37,8 @@ export default function NavMeshController({ entity }: ControllerProps) {
       const { navMesh: mesh } = RECAST.importNavMesh(array);
 
       nmWrite.mesh = mesh;
-      const navMeshHelper = new NavMeshHelper(mesh);
-      scene.add(navMeshHelper);
+      navMeshHelper = new NavMeshHelper(mesh);
+      if (!running) scene.add(navMeshHelper);
       //
       // const navMeshQuery = new RECAST.NavMeshQuery(mesh);
       // const start = { x: 0, y: 0, z: 0 };
@@ -48,8 +51,11 @@ export default function NavMeshController({ entity }: ControllerProps) {
 
     return () => {
       controller.abort();
+      if (navMeshHelper) {
+        scene.remove(navMeshHelper);
+      }
     };
-  }, [uuid, navMesh]);
+  }, [uuid, navMesh, running]);
 
   return null;
 }
