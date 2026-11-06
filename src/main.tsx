@@ -14,6 +14,7 @@ import Dashboard from './pages/Dashboard.tsx';
 import ChangeData from './pages/Profile.tsx';
 import UserLocationMap from './pages/UserLocationMap.tsx';
 import NotFound from './pages/404.tsx';
+import GithubLoginCallback from './pages/GithubLoginCallback.ts';
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
   {
     path: '/map',
     element: <UserLocationMap />,
+  },
+  {
+    path: '/login/github/callback',
+    element: <GithubLoginCallback />,
   },
   {
     path: '*',
