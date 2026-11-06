@@ -40,7 +40,7 @@ export default function TransformControlsController({
     if (!dragged || !lDragged || !transform) return;
 
     ref.current.matrixWorld.decompose(p, r, s);
-    e.setFromQuaternion(r);
+    e.setFromQuaternion(r, 'YXZ');
     const newT = new Transform(
       [p.x, p.y, p.z],
       [e.x, e.y, e.z],

@@ -1,5 +1,6 @@
 import { Component, ComponentType } from './Component';
 import Children from './components/Children';
+import Name from './components/Name';
 import { ECS } from './ECS';
 import { getNestedParent, setParent } from './Hierarchy';
 
@@ -62,6 +63,17 @@ export function destroyTree(entity: Entity) {
   }
 }
 
+export function destroyTreeUnsafe(entity: Entity) {
+  const parent = getNestedParent(entity);
+  if (parent) {
+    // ECS.instance.entityManager.destroyEntity(parent);
+    ECS.instance.entityManager.destroyEntity(parent);
+  } else {
+    // ECS.instance.entityManager.destroyEntity(entity);
+    ECS.instance.entityManager.destroyEntity(entity);
+  }
+}
+
 export function searchTree(
   component: ComponentType | string,
   entity: Entity,
@@ -84,6 +96,24 @@ export function searchTree(
 
   for (const child of children) {
     const result = searchTree(component, child);
+    if (result) return result;
+  }
+
+  return null;
+}
+
+export function searchByName(name: string, entity: Entity): Entity | null {
+  const em = ECS.instance.entityManager;
+  const entityName = em.getComponent(Name, entity)?.displayName;
+
+  if (entityName && entityName === name) return entity;
+
+  const children = em.getComponent(Children, entity)?.children;
+
+  if (!children) return null;
+
+  for (const child of children) {
+    const result = searchByName(name, child);
     if (result) return result;
   }
 

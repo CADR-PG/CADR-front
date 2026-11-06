@@ -31,7 +31,11 @@ export default function MeshControllerTemplate({
       )}
       {!isInvisible(entity) && (
         <>
-          <Select enabled={hovered === entity}>{children}</Select>
+          {!running ? (
+            <Select enabled={hovered === entity}>{children}</Select>
+          ) : (
+            children
+          )}
           {running ? (
             <RigidBodyController entity={entity}>
               <ColliderComponent entity={entity} />

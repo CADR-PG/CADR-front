@@ -14,11 +14,11 @@ export default function AnimationsInspector({ entity }: InspectorProps) {
           <div key={animation} className="animations-inspector">
             <div>{animation}</div>
             <Button
-              onClick={() => {
+              onClick={async () => {
                 if (playing === animation) {
                   stopAnimation(animation, entity);
                 } else {
-                  playAnimation(animation, entity);
+                  await playAnimation(animation, entity);
                 }
               }}
             >

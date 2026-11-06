@@ -26,7 +26,7 @@ export default function MeshController({ entity }: ControllerProps) {
       onPointerOver={!running ? handlePointerOver : undefined}
       onPointerOut={!running ? handlePointerOut : undefined}
       position={transform?.position}
-      rotation={transform?.rotation}
+      rotation={[...transform?.rotation, 'YXZ']}
       scale={transform?.scale}
       ref={setRef}
       castShadow={mesh ? mesh.castShadow : false}

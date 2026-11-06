@@ -3,7 +3,8 @@ export type EventMessageType =
   | 'collisionExit'
   | 'intersectEnter'
   | 'intersectExit'
-  | 'contactForce';
+  | 'contactForce'
+  | 'animationFinished';
 
 export interface EventMessageData {
   type: EventMessageType;
