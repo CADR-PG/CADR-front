@@ -32,7 +32,7 @@ function Editor() {
   const em = useEntityManager();
   const { uuid } = useParams();
   const { data, isError } = useLoadScene(uuid!);
-  const { setGame } = useEditorSettingsStore();
+  const { setGame, setScenes } = useEditorSettingsStore();
   const setProjectId = useEditorStore((s) => s.setProjectId);
   const reset = useEditorStore((s) => s.reset);
 
@@ -47,7 +47,8 @@ function Editor() {
         const em = ECS.instance.entityManager;
         // TODO: xdd
         const json = data.data.data;
-        (json.scenes ?? []).forEach(async (scene, i) => {
+        const savedScenes = json.scenes ?? [];
+        savedScenes.forEach(async (scene, i) => {
           if (i > em.scenes.length - 1) {
             em.createScene();
           }
@@ -60,6 +61,13 @@ function Editor() {
             }
           }
         });
+        if (savedScenes.length > 0) {
+          setScenes(
+            savedScenes.map(
+              (scene) => scene ?? { id: null, name: null, directoryId: null },
+            ),
+          );
+        }
         em.currentScene = json.currentScene ?? em.currentScene;
         setGame(json.game ?? null);
         ECS.instance.ensureCamera();
