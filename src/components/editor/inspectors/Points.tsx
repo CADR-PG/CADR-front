@@ -1,26 +1,15 @@
-import Geometry, {
-  GeometryData,
-  Point,
-} from '../../../engine/components/Geometry';
-import { Entity } from '../../../engine/Entity';
+import Geometry from '../../../engine/components/Geometry';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { ECS } from '../../../engine/ECS';
 import NumberField from '../../NumberField';
 import { Button } from '@mui/material';
-
-interface GeometryPointsData extends GeometryData {
-  points: Point[];
-}
-
-interface GeometryPoints extends Geometry {
-  data: GeometryPointsData;
-}
-
-interface PointsProps {
-  entity: Entity;
-  points: Point[];
-}
+import { GeometryPoints, PointsProps } from '@/types/GeometryPointsData';
+import {
+  makePopPointsCommand,
+  makePushPointsCommand,
+  makeSetPointsCommand,
+} from '@/engine/Command';
 
 export default function Points({ entity, points }: PointsProps) {
   const geometryWrite = ECS.instance.entityManager.getComponent(
@@ -31,7 +20,9 @@ export default function Points({ entity, points }: PointsProps) {
   if (!geometryWrite) return;
 
   const handlePoints = (value: number | null, index: number, xy: number) => {
-    geometryWrite.data.points[index][xy] = Number(value);
+    const command = makeSetPointsCommand(value, geometryWrite.data, index, xy);
+    ECS.instance.entityManager.pushCommand(command);
+    // geometryWrite.data.points[index][xy] = Number(value);
   };
 
   return (
@@ -60,11 +51,12 @@ export default function Points({ entity, points }: PointsProps) {
         <Button
           fullWidth
           size="small"
-          onClick={() =>
-            geometryWrite.data.points.length > 2
-              ? geometryWrite.data.points.pop()
-              : null
-          }
+          onClick={() => {
+            if (geometryWrite.data.points.length > 2) {
+              const command = makePopPointsCommand(geometryWrite.data);
+              ECS.instance.entityManager.pushCommand(command);
+            }
+          }}
           variant="contained"
         >
           <CloseIcon
@@ -75,7 +67,10 @@ export default function Points({ entity, points }: PointsProps) {
         <Button
           fullWidth
           size="small"
-          onClick={() => geometryWrite.data.points.push([0, 0])}
+          onClick={() => {
+            const command = makePushPointsCommand(geometryWrite.data);
+            ECS.instance.entityManager.pushCommand(command);
+          }}
           variant="contained"
         >
           <AddIcon

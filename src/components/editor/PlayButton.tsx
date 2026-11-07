@@ -20,6 +20,7 @@ function PlayButton() {
 
   const handleClick = async () => {
     await setRunning(true, false);
+    setOpen(false);
     focus(null);
   };
 
@@ -48,10 +49,10 @@ function PlayButton() {
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
           <Button
-            onClick={() => {
+            onClick={async () => {
               if (scenes[em.currentScene]) {
                 setGame(scenes[em.currentScene]!.id);
-                handleClick();
+                await handleClick();
               }
             }}
           >

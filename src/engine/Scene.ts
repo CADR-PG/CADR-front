@@ -171,4 +171,6 @@ export async function loadExternalScene(
     em.removeComponent(Transform, body.root);
     em.addComponent(new Transform(), body.root);
   }
+
+  return parent;
 }

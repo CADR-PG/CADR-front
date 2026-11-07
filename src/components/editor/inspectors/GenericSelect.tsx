@@ -4,6 +4,7 @@ import { ECS } from '../../../engine/ECS';
 import { Entity } from '../../../engine/Entity';
 import useEntityManager from '../../../hooks/useEntityManager';
 import TypedMenuItem from '../../TypedMenuItem';
+import { makeSetCommand } from '@/engine/Command';
 
 interface GenericSelectProps<T extends Component, S = T> {
   entity: Entity;
@@ -39,7 +40,8 @@ export default function GenericSelect<T extends Component, S = T>({
       displayEmpty
       onChange={(e) => {
         if (!componentWrite) return null;
-        (write as Record<keyof S, unknown>)[componentKey] = e.target.value;
+        const command = makeSetCommand(e.target.value, write, componentKey);
+        ECS.instance.entityManager.pushCommand(command);
       }}
       value={read[componentKey] as string | number | undefined | boolean}
       size="small"

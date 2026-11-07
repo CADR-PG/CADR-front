@@ -2,6 +2,7 @@ import { playAnimation, stopAnimation } from '@/engine/Animation';
 import { Component } from '@/engine/Component';
 import cAudio from '@/engine/components/Audio';
 import Collider from '@/engine/components/Collider';
+import Geometry from '@/engine/components/Geometry';
 import GLTF from '@/engine/components/GLTF';
 import Invisible from '@/engine/components/Invisible';
 import Light from '@/engine/components/Light';
@@ -17,6 +18,7 @@ import { EntityManager } from '@/engine/EntityManager';
 import { EventBus } from '@/engine/EventBus';
 import { System } from '@/engine/System';
 import useEntityManager from '@/hooks/useEntityManager';
+import { useConsoleStore } from '@/stores/consoleStore';
 import Controls from '@/types/Controls';
 import { useKeyboardControls } from '@react-three/drei';
 import React from 'react';
@@ -39,10 +41,12 @@ export const sdk = {
   RBody,
   Component,
   UserComponent,
+  Geometry,
   React,
   useEntityManager,
   useKeyboardControls,
   Controls,
   playAnimation,
   stopAnimation,
+  useConsoleStore,
 };

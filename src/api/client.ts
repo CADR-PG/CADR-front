@@ -255,3 +255,24 @@ export const publishVersion = async (gameId: string, gameVersionId: string) => {
     gameVersionId,
   });
 };
+export const renameDirectory = async (
+  projectId: string,
+  directoryId: string,
+  name: string,
+) => {
+  return await apiClient.post(
+    `/projects/${projectId}/assets/directories/${directoryId}/rename`,
+    { name },
+  );
+};
+
+export const renameFile = async (
+  projectId: string,
+  fileId: string,
+  name: string,
+) => {
+  return await apiClient.post(
+    `/projects/${projectId}/assets/files/${fileId}/rename`,
+    { name },
+  );
+};
