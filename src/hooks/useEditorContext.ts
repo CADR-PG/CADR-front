@@ -1,13 +1,5 @@
-import { useContext } from 'react';
-import { EditorContext } from '../data/EditorContext';
+import { useEditorStore } from '../stores/editorStore';
 
 export function useEditorContext() {
-  const context = useContext(EditorContext);
-  if (!context) {
-    throw new Error(
-      'useEditorContext must be used within EditorContext.Provider',
-    );
-  }
-
-  return context;
+  return useEditorStore();
 }

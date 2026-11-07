@@ -145,26 +145,29 @@ function FileNavigationItem() {
     setDir(event.target.value);
   };
 
+  const saveCurrentScene = () => {
+    // if new scene, open dialog. save otherwise
+    if (!scenes[em.currentScene]?.name) {
+      setOpen(true);
+    } else {
+      handleSave((sceneData) => {
+        const em = ECS.instance.entityManager;
+        const file = new File(
+          [JSON.stringify(sceneData)],
+          scenes[em.currentScene]?.name?.replace('.scene', '') + '.scene',
+        );
+        const id = scenes[em.currentScene]?.id;
+        const directoryId = scenes[em.currentScene]?.directoryId;
+        if (id && directoryId) replace({ file, id, directoryId });
+      });
+    }
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
-
-        // if new scene, open dialog. save otherwise
-        if (!scenes[em.currentScene]?.name) {
-          setOpen(true);
-        } else {
-          handleSave((sceneData) => {
-            const em = ECS.instance.entityManager;
-            const file = new File(
-              [JSON.stringify(sceneData)],
-              scenes[em.currentScene]?.name?.replace('.scene', '') + '.scene',
-            );
-            const id = scenes[em.currentScene]?.id;
-            const directoryId = scenes[em.currentScene]?.directoryId;
-            if (id && directoryId) replace({ file, id, directoryId });
-          });
-        }
+        saveCurrentScene();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -180,6 +183,7 @@ function FileNavigationItem() {
         <MenuItem onClick={() => filePickerRef.current[1]?.click()}>
           Import...
         </MenuItem>
+        <MenuItem onClick={saveCurrentScene}>Save scene (Ctrl+S)</MenuItem>
         <MenuItem onClick={() => setPublishOpen(true)}>Publish...</MenuItem>
       </NavigationItem>
       {publishOpen && (

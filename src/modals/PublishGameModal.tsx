@@ -5,7 +5,10 @@ import { GameStates } from '../types/Shop';
 import useAddGameToStore from '../hooks/useAddGameToStore';
 import useCreateSnapshot from '../hooks/useCreateSnapshot';
 import usePublishVersion from '../hooks/usePublishVersion';
+import useLoadScene from '../hooks/useLoadScene';
 import { getPublishedGame, PublishedGame } from '../utils/publishedGames';
+import { useEditorSettingsStore } from '../stores/editorSettingsStore';
+import { useEditorStore } from '../stores/editorStore';
 
 type PublishGameModalProps = {
   open: boolean;
@@ -24,10 +27,24 @@ export default function PublishGameModal({
   const addGame = useAddGameToStore();
   const createSnapshot = useCreateSnapshot();
   const publishVersion = usePublishVersion();
+  const editorProjectId = useEditorStore((s) => s.projectId);
+  const editorMainScene = useEditorSettingsStore((s) => s.game);
+  const inEditor = editorProjectId === project.id;
+  const { data: savedProject } = useLoadScene(project.id, !inEditor);
+  const mainSceneFileId = inEditor
+    ? editorMainScene
+    : (savedProject?.data.data.game ?? null);
   const pending =
     addGame.status === 'pending' ||
     createSnapshot.status === 'pending' ||
     publishVersion.status === 'pending';
+  const missingMainScene = !mainSceneFileId && (inEditor || !!savedProject);
+  const mainSceneWarning = missingMainScene ? (
+    <p className="modal-warning">
+      Set a main scene in the editor (the &quot;Main&quot; checkbox) and save
+      the project before publishing.
+    </p>
+  ) : null;
 
   const refresh = () => setPublished(getPublishedGame(project.id));
 
@@ -35,7 +52,7 @@ export default function PublishGameModal({
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const title = String(data.get('title') || '').trim();
-    if (!title) return;
+    if (!title || !mainSceneFileId) return;
 
     addGame.mutate(
       {
@@ -47,6 +64,7 @@ export default function PublishGameModal({
           amount: Number(data.get('amount') || 0),
           ageRestriction: Number(data.get('ageRestriction') || 0),
           state: String(data.get('state')) as GameStates,
+          mainSceneFileId,
         },
       },
       { onSuccess: refresh },
@@ -55,13 +73,16 @@ export default function PublishGameModal({
 
   const handleCreateSnapshot = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!published) return;
+    if (!published || !mainSceneFileId) return;
     const form = event.currentTarget;
     const version = String(new FormData(form).get('version') || '').trim();
     if (!version) return;
 
     createSnapshot.mutate(
-      { projectId: project.id, data: { gameId: published.gameId, version } },
+      {
+        projectId: project.id,
+        data: { gameId: published.gameId, version, mainSceneFileId },
+      },
       {
         onSuccess: () => {
           form.reset();
@@ -171,6 +192,7 @@ export default function PublishGameModal({
               </select>
             </div>
           </div>
+          {mainSceneWarning}
 
           <div className="modal-actions">
             <button
@@ -184,7 +206,7 @@ export default function PublishGameModal({
             <button
               type="submit"
               className="btn btn-primary"
-              disabled={pending}
+              disabled={pending || !mainSceneFileId}
             >
               {pending ? 'Publishing...' : 'Add to store'}
             </button>
@@ -221,8 +243,13 @@ export default function PublishGameModal({
             required
           />
         </div>
+        {mainSceneWarning}
         <div className="modal-actions">
-          <button type="submit" className="btn-small" disabled={pending}>
+          <button
+            type="submit"
+            className="btn-small"
+            disabled={pending || !mainSceneFileId}
+          >
             Create snapshot
           </button>
           <button

@@ -28,6 +28,7 @@ import { useParams } from 'react-router-dom';
 import useSaveScene from '@/hooks/useSaveScene';
 import { ECS } from '@/engine/ECS';
 import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
+import { isGameRoute } from '@/utils/isGameRoute';
 import { useState } from 'react';
 import {
   Button,
@@ -44,6 +45,7 @@ function CanvasController() {
   const { mutate: saveScene } = useSaveScene();
   const { scenes, game } = useEditorSettingsStore();
   const [item, setItem] = useState<AssetsFile | null>(null);
+  const isGame = isGameRoute();
   useEditorKeys();
   RectAreaLightTexturesLib.init();
 
@@ -71,6 +73,7 @@ function CanvasController() {
   const [_, drop] = useDrop(
     () => ({
       accept: DndTypes.FILE,
+      canDrop: () => !isGame,
       drop: async (item: AssetsFile, _monitor) => {
         const em = ECS.instance.entityManager;
         if (em.getScene().dirty) {
@@ -84,13 +87,13 @@ function CanvasController() {
         canDrop: !!monitor.canDrop(),
       }),
     }),
-    [scenes, loadScene, saveScene, replaceScene],
+    [scenes, loadScene, saveScene, replaceScene, isGame],
   );
 
   return (
     <>
       <div className="canvas-container">
-        <ToolbarComponent />
+        {!isGame && <ToolbarComponent />}
         {running && <UISystem />}
         <Canvas
           className="canvas"
@@ -108,7 +111,7 @@ function CanvasController() {
           }}
         >
           {/* <Sky distance={450000} sunPosition={[0, 1, 0]} /> */}
-          <Physics colliders="hull" paused={!running} debug>
+          <Physics colliders="hull" paused={!running} debug={!isGame}>
             <AudioListenerProvider>
               <OrbitControls
                 makeDefault

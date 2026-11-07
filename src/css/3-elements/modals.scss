@@ -102,6 +102,16 @@
         gap: 12px;
         margin-top: 20px;
     }
+
+    &-warning {
+        margin: 16px 0 0;
+        font-size: 14px;
+        color: variables.$c-text-secondary;
+
+        .dark & {
+            color: variables.$c-text-secondary-dark;
+        }
+    }
 }
 
 .form {

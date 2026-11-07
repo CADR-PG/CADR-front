@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavBar from './../components/NavBar';
 import SnackbarProvider from '../components/SnackbarProvider';
 import useAuth from '../hooks/useAuth';
@@ -6,15 +7,13 @@ import useUserStore from '../stores/useUserStore';
 import useGetMostPopularGames from '../hooks/useGetMostPopularGames';
 import useGetGamesList from '../hooks/useGetGamesList';
 import useGetMyLibrary from '../hooks/useGetMyLibrary';
-import usePlayGame from '../hooks/usePlayGame';
 import GameCard from '../components/shop/GameCard';
 import FeaturedGame from '../components/shop/FeaturedGame';
 import WalletBalance from '../components/shop/WalletBalance';
 import LibraryList from '../components/shop/LibraryList';
 import StoreGuestOverlay from '../components/shop/StoreGuestOverlay';
 import BuyGameModal from '../modals/BuyGameModal';
-import PlayGameModal from '../modals/PlayGameModal';
-import { LibraryGame, PlayGameReadModel, StoreGame } from '../types/Shop';
+import { LibraryGame, StoreGame } from '../types/Shop';
 
 const placeholderGames: StoreGame[] = Array.from({ length: 4 }, (_, i) => ({
   id: `placeholder-${i}`,
@@ -38,12 +37,10 @@ function Home() {
   const popular = useGetMostPopularGames();
   const gamesList = useGetGamesList();
   const library = useGetMyLibrary();
-  const playGame = usePlayGame();
+  const navigate = useNavigate();
 
   const [query, setQuery] = useState<string>('');
   const [buying, setBuying] = useState<StoreGame | null>(null);
-  const [session, setSession] = useState<PlayGameReadModel | null>(null);
-  const [sessionTitle, setSessionTitle] = useState<string>('');
 
   const allGames: StoreGame[] = useMemo(
     () =>
@@ -88,12 +85,7 @@ function Home() {
   );
 
   const handlePlay = (game: LibraryGame) => {
-    playGame.mutate(game.id, {
-      onSuccess: (response) => {
-        setSessionTitle(game.title);
-        setSession(response.data);
-      },
-    });
+    navigate(`/game/${game.id}`);
   };
 
   const renderAllGames = () => {
@@ -172,15 +164,7 @@ function Home() {
             {isLoggedIn && (
               <aside className="shop__sidebar">
                 <WalletBalance />
-                <LibraryList
-                  games={libraryGames}
-                  onPlay={handlePlay}
-                  playingId={
-                    playGame.status === 'pending'
-                      ? playGame.variables
-                      : undefined
-                  }
-                />
+                <LibraryList games={libraryGames} onPlay={handlePlay} />
               </aside>
             )}
           </div>
@@ -188,11 +172,6 @@ function Home() {
       </section>
 
       <BuyGameModal game={buying} onClose={() => setBuying(null)} />
-      <PlayGameModal
-        title={sessionTitle}
-        session={session}
-        onClose={() => setSession(null)}
-      />
       <SnackbarProvider />
     </div>
   );

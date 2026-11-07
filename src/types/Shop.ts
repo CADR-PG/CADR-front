@@ -82,9 +82,11 @@ export type AddGameToStoreData = {
   amount: number;
   ageRestriction: number;
   state: GameStates;
+  mainSceneFileId: string;
 };
 
 export type CreateSnapshotData = {
   gameId: string;
   version: string;
+  mainSceneFileId: string;
 };

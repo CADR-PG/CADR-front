@@ -23,6 +23,8 @@ import type {
   PlayGameReadModel,
 } from '../types/Shop';
 import RequestFileUploadResponse from '@/types/RequestFileUploadResponse';
+import { useGameAssetsStore } from '@/stores/gameAssetsStore';
+import { isGameRoute } from '@/utils/isGameRoute';
 
 const localApiUrl = '/api';
 const productionApiUrl = 'https://api.cadr.games';
@@ -178,6 +180,12 @@ export const requestFileDownload = async (
   fileId: string,
   opts?: { signal: AbortSignal },
 ) => {
+  if (isGameRoute()) {
+    const downloadUrl = useGameAssetsStore.getState().assets[fileId];
+    if (!downloadUrl) throw new Error(`Asset ${fileId} not found in game`);
+    return { data: { downloadUrl } };
+  }
+
   return await apiClient.post<{ downloadUrl: string }>(
     `/projects/${projectId}/assets/files/${fileId}/request-download`,
     { signal: opts?.signal },
