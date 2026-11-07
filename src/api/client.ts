@@ -255,6 +255,7 @@ export const publishVersion = async (gameId: string, gameVersionId: string) => {
     gameVersionId,
   });
 };
+
 export const renameDirectory = async (
   projectId: string,
   directoryId: string,

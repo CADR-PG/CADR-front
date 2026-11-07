@@ -167,27 +167,11 @@ function FileNavigationItem() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
-        saveCurrentScene();
         // Capture-phase stop so drei's KeyboardControls (bubble-phase,
         // mapped to WASD movement) never sees this keydown - otherwise
         // the "S" in Ctrl+S also gets read as "move backwards".
         e.stopPropagation();
-
-        // if new scene, open dialog. save otherwise
-        if (!scenes[em.currentScene]?.name) {
-          setOpen(true);
-        } else {
-          handleSave((sceneData) => {
-            const em = ECS.instance.entityManager;
-            const file = new File(
-              [JSON.stringify(sceneData)],
-              scenes[em.currentScene]?.name?.replace('.scene', '') + '.scene',
-            );
-            const id = scenes[em.currentScene]?.id;
-            const directoryId = scenes[em.currentScene]?.directoryId;
-            if (id && directoryId) replace({ file, id, directoryId });
-          });
-        }
+        saveCurrentScene();
       }
     };
     window.addEventListener('keydown', handleKeyDown, { capture: true });

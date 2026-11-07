@@ -32,7 +32,6 @@ import useSaveScene from '@/hooks/useSaveScene';
 import { ECS } from '@/engine/ECS';
 import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
 import { isGameRoute } from '@/utils/isGameRoute';
-import { useState } from 'react';
 import {
   Button,
   Dialog,
@@ -130,7 +129,6 @@ function CanvasController() {
           }}
         >
           {/* <Sky distance={450000} sunPosition={[0, 1, 0]} /> */}
-          <Physics colliders="hull" paused={!running} debug={!isGame}>
           {/* Explicit, always-mounted edit-viewport camera - given directly
               to OrbitControls below so it can never end up bound to
               whichever camera happens to be the scene's active default
@@ -141,7 +139,7 @@ function CanvasController() {
             position={[3, 2, -3]}
           />
           <EditorFlyControls cameraRef={editCameraRef} active={!running} />
-          <Physics colliders="hull" paused={!running} debug>
+          <Physics colliders="hull" paused={!running} debug={!isGame}>
             <AudioListenerProvider>
               <OrbitControls
                 camera={editCameraRef.current ?? undefined}

@@ -79,181 +79,65 @@ function Editor() {
         <KeyboardController>
           <div className="editor-section">
             <Allotment vertical snap={true}>
-              <Allotment vertical={false} separator={true} snap={true}>
-                <Allotment.Pane preferredSize={500}>
-                  <Allotment
-                    vertical={true}
-                    separator={true}
-                    minSize={300}
+              <Allotment.Pane minSize={200} preferredSize={1000}>
+                <Allotment vertical={false} separator={true} snap={true}>
+                  <Allotment.Pane
+                    minSize={screen.width / 8}
+                    preferredSize={screen.width / 6}
                     snap
                   >
-                    <Allotment.Pane
+                    <Allotment
+                      vertical={true}
+                      separator={true}
                       minSize={screen.width / 6}
-                      preferredSize={300}
-                    >
-                      <HierarchyWindow />
-                    </Allotment.Pane>
-                    <Allotment.Pane
-                      minSize={screen.width / 6}
-                      preferredSize={300}
-                    >
-                      <div className="project-window-pane">
-                        <ProjectWindow />
-                      </div>
-                    </Allotment.Pane>
-                  </Allotment>
-                </Allotment.Pane>
-                <Allotment.Pane
-                  minSize={screen.width / 3}
-                  preferredSize={screen.width / 3}
-                  snap={false}
-                >
-                  <SceneTabs />
-                  <CanvasController
-                    key={`${em.currentScene} ${em.getScene().id}`}
-                  />
-                </Allotment.Pane>
-                <Allotment.Pane
-                  minSize={screen.width / 6}
-                  preferredSize={screen.width / 5}
-                >
-                  <InspectorWindow />
-                </Allotment.Pane>
-  const startstop = async (newState: boolean, current: boolean | null) => {
-    stopAllAnimations();
-
-    const em = ECS.instance.entityManager;
-    if (!running && newState) {
-      const editorIdx = em.currentScene;
-      em.enterGame();
-
-      try {
-        if (current) {
-          const scene = scenes[editorIdx];
-          if (!scene?.id)
-            throw new Error('Current scene has no file (unsaved?)');
-          await loadScene(
-            uuid!,
-            {
-              id: scene.id,
-              name: scene.name!,
-              directoryId: scene.directoryId!,
-            },
-            GAME_SCENE,
-          );
-        } else {
-          const g = useEditorSettingsStore.getState().game;
-          if (!g) throw new Error('No main game scene set');
-          await loadScene(
-            uuid!,
-            { id: g, name: 'dummy', directoryId: 'dummy' },
-            GAME_SCENE,
-          );
-        }
-      } catch (e) {
-        console.error('Failed to start game', e);
-        em.exitGame();
-        return;
-      }
-
-      ECS.instance.isRunning = true;
-      setRunning(true);
-    }
-
-    if (running && !newState) {
-      setRunning(false);
-      ECS.instance.isRunning = false;
-      em.exitGame();
-    }
-  };
-
-  const contextValue: EditorContextValues = {
-    focused,
-    focus,
-    running,
-    setRunning: startstop,
-    editingMode,
-    selectMode,
-    hovered,
-    hover,
-    drag,
-    dragged,
-    gDrag,
-    gDragged,
-    dnd,
-    setDnd,
-    camera,
-    setCamera,
-  };
-
-  return (
-    <EditorContext.Provider value={contextValue}>
-      <DndProvider backend={HTML5Backend}>
-        <div className="editor-hld">
-          <Navigation />
-          <KeyboardController>
-            <div className="editor-section">
-              <Allotment vertical snap={true}>
-                <Allotment.Pane minSize={200} preferredSize={1000}>
-                  <Allotment vertical={false} separator={true} snap={true}>
-                    <Allotment.Pane
-                      minSize={screen.width / 8}
-                      preferredSize={screen.width / 6}
                       snap
                     >
-                      <Allotment
-                        vertical={true}
-                        separator={true}
+                      <Allotment.Pane
                         minSize={screen.width / 6}
+                        preferredSize={screen.width / 5}
                         snap
                       >
-                        <Allotment.Pane
-                          minSize={screen.width / 6}
-                          preferredSize={screen.width / 5}
-                          snap
-                        >
-                          <HierarchyWindow />
-                        </Allotment.Pane>
-                        <Allotment.Pane
-                          minSize={screen.width / 6}
-                          preferredSize={screen.width / 5}
-                          snap
-                        >
-                          <div className="project-window-pane">
-                            <ProjectWindow />
-                          </div>
-                        </Allotment.Pane>
-                      </Allotment>
-                    </Allotment.Pane>
-                    <Allotment.Pane>
-                      <Allotment vertical separator minSize={300} snap>
-                        <Allotment.Pane
-                          minSize={screen.width / 6}
-                          preferredSize={screen.width / 3}
-                          snap={false}
-                        >
-                          <SceneTabs />
-                          <CanvasController
-                            key={`${em.currentScene} ${em.getScene().id}`}
-                          />
-                        </Allotment.Pane>
-                        <Allotment.Pane
-                          minSize={screen.height / 6}
-                          preferredSize={screen.height / 4}
-                        >
-                          <ConsoleWindow />
-                        </Allotment.Pane>
-                      </Allotment>
-                    </Allotment.Pane>
-                    <Allotment.Pane
-                      minSize={screen.width / 6}
-                      preferredSize={screen.width / 5}
-                    >
-                      <InspectorWindow />
-                    </Allotment.Pane>
-                  </Allotment>
-                </Allotment.Pane>
-              </Allotment>
+                        <HierarchyWindow />
+                      </Allotment.Pane>
+                      <Allotment.Pane
+                        minSize={screen.width / 6}
+                        preferredSize={screen.width / 5}
+                        snap
+                      >
+                        <div className="project-window-pane">
+                          <ProjectWindow />
+                        </div>
+                      </Allotment.Pane>
+                    </Allotment>
+                  </Allotment.Pane>
+                  <Allotment.Pane>
+                    <Allotment vertical separator minSize={300} snap>
+                      <Allotment.Pane
+                        minSize={screen.width / 6}
+                        preferredSize={screen.width / 3}
+                        snap={false}
+                      >
+                        <SceneTabs />
+                        <CanvasController
+                          key={`${em.currentScene} ${em.getScene().id}`}
+                        />
+                      </Allotment.Pane>
+                      <Allotment.Pane
+                        minSize={screen.height / 6}
+                        preferredSize={screen.height / 4}
+                      >
+                        <ConsoleWindow />
+                      </Allotment.Pane>
+                    </Allotment>
+                  </Allotment.Pane>
+                  <Allotment.Pane
+                    minSize={screen.width / 6}
+                    preferredSize={screen.width / 5}
+                  >
+                    <InspectorWindow />
+                  </Allotment.Pane>
+                </Allotment>
+              </Allotment.Pane>
             </Allotment>
           </div>
         </KeyboardController>

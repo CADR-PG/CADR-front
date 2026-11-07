@@ -37,22 +37,5 @@ export default function SetGameComponent() {
         />
       </span>
     </Tooltip>
-    <div>
-      <FormControlLabel
-        label="Main"
-        control={
-          <Checkbox
-            checked={scenes[em.currentScene]?.id === game && game !== null}
-            onChange={(e) => {
-              if (e.target.checked && scenes[em.currentScene]) {
-                setGame(scenes[em.currentScene]!.id);
-              } else {
-                setGame(null);
-              }
-            }}
-          />
-        }
-      />
-    </div>
   );
 }
