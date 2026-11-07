@@ -22,6 +22,7 @@ import type {
   Paginated,
   PlayGameReadModel,
 } from '../types/Shop';
+import RequestFileUploadResponse from '@/types/RequestFileUploadResponse';
 
 const localApiUrl = '/api';
 const productionApiUrl = 'https://api.cadr.games';
@@ -175,15 +176,23 @@ export const uploadFileStorage = async (uploadUrl: string, file: File) => {
 export const requestFileDownload = async (
   projectId: string,
   fileId: string,
+  opts?: { signal: AbortSignal },
 ) => {
   return await apiClient.post<{ downloadUrl: string }>(
     `/projects/${projectId}/assets/files/${fileId}/request-download`,
+    { signal: opts?.signal },
   );
 };
 
 export const deleteFile = async (projectId: string, fileId: string) => {
   return await apiClient.delete(
     `/projects/${projectId}/assets/files/${fileId}`,
+  );
+};
+
+export const requestFileUpload = async (projectId: string, fileId: string) => {
+  return await apiClient.post<RequestFileUploadResponse>(
+    `/projects/${projectId}/assets/files/${fileId}/move`,
   );
 };
 

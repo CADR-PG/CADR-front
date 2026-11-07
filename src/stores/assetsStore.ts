@@ -75,6 +75,7 @@ interface AssetsStore {
   removeDirectory: (directoryId: string) => void;
   addFile: (directoryId: string, newFile: AssetsFile) => void;
   removeFile: (fileId: string) => void;
+  getDirs: (dir: AssetsDirectory) => AssetsDirectory[];
 }
 
 export const useAssetsStore = create<AssetsStore>((set, get) => ({
@@ -102,5 +103,15 @@ export const useAssetsStore = create<AssetsStore>((set, get) => ({
     const { assets } = get();
     if (!assets) return;
     set({ assets: removeFileById(assets, fileId) });
+  },
+  getDirs: (dir: AssetsDirectory) => {
+    const { getDirs } = get();
+    const array = [dir];
+
+    dir.directories?.forEach((child) => {
+      array.push(...getDirs(child));
+    });
+
+    return array;
   },
 }));

@@ -6,12 +6,13 @@ import Light from '../../engine/components/Light';
 import { ECS } from '../../engine/ECS';
 import Name from '../../engine/components/Name';
 import Transform from '../../engine/components/Transform';
+import { createEntity } from '@/engine/Entity';
 
 function LightNavigationItem() {
   const { focus } = useEditorContext();
 
   const handleAdd = (light: string) => {
-    const entity = ECS.instance.entityManager.createEntity();
+    const entity = createEntity();
 
     ECS.instance.entityManager.addComponent(
       new Light(new Lights[light]()),

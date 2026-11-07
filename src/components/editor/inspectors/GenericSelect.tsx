@@ -40,7 +40,6 @@ export default function GenericSelect<T extends Component, S = T>({
       onChange={(e) => {
         if (!componentWrite) return null;
         (write as Record<keyof S, unknown>)[componentKey] = e.target.value;
-        console.log(componentKey, '=', write[componentKey]);
       }}
       value={read[componentKey] as string | number | undefined | boolean}
       size="small"

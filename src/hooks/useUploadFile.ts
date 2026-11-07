@@ -26,7 +26,7 @@ export default function useUploadFile() {
       return { data, directoryId };
     },
     onSuccess: ({ data, directoryId }) => {
-      const { uploadUrl: _uploadUrl, ...fileMeta } = data;
+      const { uploadUrl: _uploadUrl, ...fileMeta } = { ...data, directoryId };
       addFile(directoryId, fileMeta);
     },
     onError: (err) => console.error(err),

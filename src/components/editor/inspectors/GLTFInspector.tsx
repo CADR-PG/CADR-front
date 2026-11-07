@@ -1,5 +1,6 @@
 import GLTF from '../../../engine/components/GLTF';
 import InspectorProps from '../../../types/InspectorProps';
+import AnimationsInspector from './AnimationsInspector';
 import InspectorTemplate from './InspectorTemplate';
 import ModelDropArea from './ModelDropArea';
 
@@ -12,6 +13,8 @@ export default function GLTFInspector({ entity }: InspectorProps) {
         switch (key) {
           case 'source':
             return <ModelDropArea entity={entity} />;
+          case 'animations':
+            return <AnimationsInspector entity={entity} />;
           default:
             return undefined;
         }

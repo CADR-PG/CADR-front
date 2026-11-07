@@ -13,6 +13,7 @@ export type AssetsFile = {
   sizeInBytes: number;
   createdAt: string;
   lastModifiedAt: string | null;
+  directoryId: string;
 };
 
 export type AssetsFileUploadReadModel = {
