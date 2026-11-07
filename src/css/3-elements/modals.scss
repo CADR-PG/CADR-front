@@ -15,8 +15,11 @@
     &-content {
         background: #fff;
         border-radius: 8px;
-        width: 400px;
-        max-width: 90%;
+        width: 448px;
+        max-width: 92%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-sizing: border-box;
         box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         padding: 24px;
 
@@ -98,6 +101,16 @@
         justify-content: center;
         gap: 12px;
         margin-top: 20px;
+    }
+
+    &-warning {
+        margin: 16px 0 0;
+        font-size: 14px;
+        color: variables.$c-text-secondary;
+
+        .dark & {
+            color: variables.$c-text-secondary-dark;
+        }
     }
 }
 

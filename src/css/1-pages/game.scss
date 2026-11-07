@@ -1,0 +1,33 @@
+@use "../0-site/variables";
+
+.game {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+
+  &__bar {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background: variables.$c-bg-header;
+  }
+
+  &__canvas {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: variables.$c-text-secondary;
+
+    .dark & {
+      color: variables.$c-text-secondary-dark;
+    }
+  }
+}

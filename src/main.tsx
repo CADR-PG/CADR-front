@@ -14,6 +14,7 @@ import Dashboard from './pages/Dashboard.tsx';
 import ChangeData from './pages/Profile.tsx';
 import UserLocationMap from './pages/UserLocationMap.tsx';
 import NotFound from './pages/404.tsx';
+import Game from './pages/Game.tsx';
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: '/editor/:uuid',
     element: <App />,
+  },
+  {
+    path: '/game/:gameId',
+    element: <Game />,
   },
   {
     path: '/register',

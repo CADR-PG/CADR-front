@@ -31,6 +31,7 @@ import { useParams } from 'react-router-dom';
 import useSaveScene from '@/hooks/useSaveScene';
 import { ECS } from '@/engine/ECS';
 import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
+import { isGameRoute } from '@/utils/isGameRoute';
 import {
   Button,
   Dialog,
@@ -61,6 +62,7 @@ function CanvasController() {
   const { mutate: saveScene } = useSaveScene();
   const { scenes, game } = useEditorSettingsStore();
   const [item, setItem] = useState<AssetsFile | null>(null);
+  const isGame = isGameRoute();
   const editCameraRef = useRef<THREE.PerspectiveCamera>(null!);
   useEditorKeys();
   RectAreaLightTexturesLib.init();
@@ -89,6 +91,7 @@ function CanvasController() {
   const [_, drop] = useDrop(
     () => ({
       accept: DndTypes.FILE,
+      canDrop: () => !isGame,
       drop: async (item: AssetsFile, _monitor) => {
         const em = ECS.instance.entityManager;
         if (em.getScene().dirty) {
@@ -102,13 +105,13 @@ function CanvasController() {
         canDrop: !!monitor.canDrop(),
       }),
     }),
-    [scenes, loadScene, saveScene, replaceScene],
+    [scenes, loadScene, saveScene, replaceScene, isGame],
   );
 
   return (
     <>
       <div className="canvas-container">
-        <ToolbarComponent />
+        {!isGame && <ToolbarComponent />}
         {running && <UISystem />}
         <Canvas
           className="canvas"
@@ -125,6 +128,7 @@ function CanvasController() {
             drop(node);
           }}
         >
+          {/* <Sky distance={450000} sunPosition={[0, 1, 0]} /> */}
           {/* Explicit, always-mounted edit-viewport camera - given directly
               to OrbitControls below so it can never end up bound to
               whichever camera happens to be the scene's active default
@@ -135,7 +139,7 @@ function CanvasController() {
             position={[3, 2, -3]}
           />
           <EditorFlyControls cameraRef={editCameraRef} active={!running} />
-          <Physics colliders="hull" paused={!running} debug>
+          <Physics colliders="hull" paused={!running} debug={!isGame}>
             <AudioListenerProvider>
               <OrbitControls
                 camera={editCameraRef.current ?? undefined}

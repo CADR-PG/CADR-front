@@ -12,7 +12,19 @@ import type {
   AssetsDirectory,
   AssetsFileUploadReadModel,
 } from '../types/Assets';
+import type {
+  AddGameToStoreData,
+  CreateSnapshotData,
+  GameReadModel,
+  GameShopCard,
+  GameVersionReadModel,
+  LibraryGame,
+  Paginated,
+  PlayGameReadModel,
+} from '../types/Shop';
 import RequestFileUploadResponse from '@/types/RequestFileUploadResponse';
+import { useGameAssetsStore } from '@/stores/gameAssetsStore';
+import { isGameRoute } from '@/utils/isGameRoute';
 
 const localApiUrl = '/api';
 const productionApiUrl = 'https://api.cadr.games';
@@ -168,6 +180,12 @@ export const requestFileDownload = async (
   fileId: string,
   opts?: { signal: AbortSignal },
 ) => {
+  if (isGameRoute()) {
+    const downloadUrl = useGameAssetsStore.getState().assets[fileId];
+    if (!downloadUrl) throw new Error(`Asset ${fileId} not found in game`);
+    return { data: { downloadUrl } };
+  }
+
   return await apiClient.post<{ downloadUrl: string }>(
     `/projects/${projectId}/assets/files/${fileId}/request-download`,
     { signal: opts?.signal },
@@ -184,6 +202,58 @@ export const requestFileUpload = async (projectId: string, fileId: string) => {
   return await apiClient.post<RequestFileUploadResponse>(
     `/projects/${projectId}/assets/files/${fileId}/move`,
   );
+};
+
+export const getMostPopularGames = async () => {
+  return await apiClient.get<Paginated<GameShopCard>>(
+    '/shop/get-most-popular-games',
+  );
+};
+
+export const getGamesList = async () => {
+  return await apiClient.get<Paginated<GameReadModel>>('/shop/games-list');
+};
+
+export const getMyLibrary = async () => {
+  return await apiClient.get<Paginated<LibraryGame>>('/shop/my-library');
+};
+
+export const getWalletBalance = async () => {
+  return await apiClient.post<string>('/shop/wallet-balance');
+};
+
+export const buyGame = async (gameId: string) => {
+  return await apiClient.post('/shop/buy-game', { gameId });
+};
+
+export const playGame = async (gameId: string) => {
+  return await apiClient.post<PlayGameReadModel>(`/shop/${gameId}/play-game`);
+};
+
+export const addGameToStore = async (
+  projectId: string,
+  data: AddGameToStoreData,
+) => {
+  return await apiClient.post<GameReadModel>(
+    `/shop/${projectId}/add-game-to-store`,
+    data,
+  );
+};
+
+export const createSnapshot = async (
+  projectId: string,
+  data: CreateSnapshotData,
+) => {
+  return await apiClient.post<GameVersionReadModel>(
+    `/shop/${projectId}/create-snapshot`,
+    data,
+  );
+};
+
+export const publishVersion = async (gameId: string, gameVersionId: string) => {
+  return await apiClient.post(`/shop/${gameId}/publish-version`, {
+    gameVersionId,
+  });
 };
 
 export const renameDirectory = async (

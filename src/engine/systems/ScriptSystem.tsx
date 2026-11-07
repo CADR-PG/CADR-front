@@ -6,6 +6,7 @@ import { normalizeUrl } from '../components/helpers/material';
 import { sdk } from '@/data/Sdk';
 import { useParams } from 'react-router-dom';
 import { requestFileDownload } from '@/api/client';
+import { isGameRoute } from '@/utils/isGameRoute';
 
 export default function ScriptSystem() {
   const { assets } = useAssets();
@@ -14,6 +15,10 @@ export default function ScriptSystem() {
   const [started, start] = useState(false);
 
   useEffect(() => {
+    if (isGameRoute()) {
+      initialize(true);
+      return;
+    }
     if (!uuid) return;
 
     const files = assets?.directories?.find(

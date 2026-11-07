@@ -17,6 +17,9 @@ import { useParams } from 'react-router-dom';
 import SnackbarProvider from '../SnackbarProvider';
 import { useState } from 'react';
 import useEntityManager from '../../hooks/useEntityManager';
+import useGetProjects from '../../hooks/useGetProjects';
+import PublishGameModal from '../../modals/PublishGameModal';
+import ProjectData from '../../types/ProjectData';
 import useUploadFile from '@/hooks/useUploadFile';
 import { useAssetsStore } from '@/stores/assetsStore';
 import { useEditorSettingsStore } from '@/stores/editorSettingsStore';
@@ -43,6 +46,13 @@ function FileNavigationItem() {
   const [name, setName] = useState<string>(null!);
   const { getDirs, assets } = useAssetsStore();
   const [dir, setDir] = useState<string>(null!);
+
+  const [publishOpen, setPublishOpen] = useState(false);
+  const getProjects = useGetProjects();
+
+  const project: ProjectData = getProjects.data?.data.items.find(
+    (p: ProjectData) => p.id === uuid,
+  ) ?? { id: uuid ?? '', name: '', description: '', lastUpdate: '' };
 
   // display confirmation popup if user really wants to leave the page
   // when scene is not saved
@@ -135,6 +145,24 @@ function FileNavigationItem() {
     setDir(event.target.value);
   };
 
+  const saveCurrentScene = () => {
+    // if new scene, open dialog. save otherwise
+    if (!scenes[em.currentScene]?.name) {
+      setOpen(true);
+    } else {
+      handleSave((sceneData) => {
+        const em = ECS.instance.entityManager;
+        const file = new File(
+          [JSON.stringify(sceneData)],
+          scenes[em.currentScene]?.name?.replace('.scene', '') + '.scene',
+        );
+        const id = scenes[em.currentScene]?.id;
+        const directoryId = scenes[em.currentScene]?.directoryId;
+        if (id && directoryId) replace({ file, id, directoryId });
+      });
+    }
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
@@ -143,22 +171,7 @@ function FileNavigationItem() {
         // mapped to WASD movement) never sees this keydown - otherwise
         // the "S" in Ctrl+S also gets read as "move backwards".
         e.stopPropagation();
-
-        // if new scene, open dialog. save otherwise
-        if (!scenes[em.currentScene]?.name) {
-          setOpen(true);
-        } else {
-          handleSave((sceneData) => {
-            const em = ECS.instance.entityManager;
-            const file = new File(
-              [JSON.stringify(sceneData)],
-              scenes[em.currentScene]?.name?.replace('.scene', '') + '.scene',
-            );
-            const id = scenes[em.currentScene]?.id;
-            const directoryId = scenes[em.currentScene]?.directoryId;
-            if (id && directoryId) replace({ file, id, directoryId });
-          });
-        }
+        saveCurrentScene();
       }
     };
     window.addEventListener('keydown', handleKeyDown, { capture: true });
@@ -175,7 +188,16 @@ function FileNavigationItem() {
         <MenuItem onClick={() => filePickerRef.current[1]?.click()}>
           Import...
         </MenuItem>
+        <MenuItem onClick={saveCurrentScene}>Save scene (Ctrl+S)</MenuItem>
+        <MenuItem onClick={() => setPublishOpen(true)}>Publish...</MenuItem>
       </NavigationItem>
+      {publishOpen && (
+        <PublishGameModal
+          open={publishOpen}
+          onClose={() => setPublishOpen(false)}
+          project={project}
+        />
+      )}
       <SnackbarProvider />
       <Dialog open={open} onClose={handleClose} role="dialog">
         <DialogTitle>Save scene</DialogTitle>
