@@ -155,8 +155,7 @@ function NavBar() {
             </Link>
           </>
         ) : (
-          <>
-          </>
+          <></>
         )}
       </div>
     </header>

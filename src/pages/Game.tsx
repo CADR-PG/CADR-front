@@ -80,9 +80,7 @@ function Game() {
             {running ? (
               <CanvasController />
             ) : (
-              <div className="game__status">
-                {error ?? 'Loading game...'}
-              </div>
+              <div className="game__status">{error ?? 'Loading game...'}</div>
             )}
           </div>
         </div>

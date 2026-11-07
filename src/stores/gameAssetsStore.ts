@@ -25,9 +25,7 @@ export const useGameAssetsStore = create<State & Action>((set) => ({
     );
     set({ gameId: session.gameId, assets });
 
-    useEditorSettingsStore
-      .getState()
-      .setGame(session.assets[0]?.path ?? null);
+    useEditorSettingsStore.getState().setGame(session.assets[0]?.path ?? null);
   },
   clear: () => {
     set(initialState);

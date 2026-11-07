@@ -46,9 +46,7 @@ const initialState: State = {
 };
 
 function resolve<T>(value: SetStateAction<T>, prev: T): T {
-  return typeof value === 'function'
-    ? (value as (prev: T) => T)(prev)
-    : value;
+  return typeof value === 'function' ? (value as (prev: T) => T)(prev) : value;
 }
 
 export const useEditorStore = create<State & Action>((set, get) => ({
