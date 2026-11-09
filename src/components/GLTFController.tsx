@@ -107,7 +107,7 @@ export default function GLTFController({ entity }: ControllerProps) {
     <group
       ref={setRef}
       position={transform?.position}
-      rotation={[...transform?.rotation, 'YXZ']}
+      rotation={transform ? [...transform.rotation, 'YXZ'] : [0, 0, 0, 'YXZ']}
       scale={transform?.scale}
     >
       <AnimatedModel

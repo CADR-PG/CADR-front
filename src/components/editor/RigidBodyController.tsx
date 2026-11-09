@@ -17,8 +17,6 @@ import {
   applyMatrix,
   flattenHierarchy,
   getWorldMatrix,
-  getWorldTransform,
-  getWorldTransformOmitRoot,
   isInRigidBody,
   toMatrix,
 } from '@/engine/Hierarchy';
@@ -118,6 +116,7 @@ export default function RigidBodyController({
       if (rbWrite) rbWrite.ref = ref;
       if (ref) notifyBodyReady(entity, ref);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [entity],
   );
 

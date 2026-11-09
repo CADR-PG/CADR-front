@@ -66,7 +66,7 @@ function CanvasController() {
   const { scenes, game } = useEditorSettingsStore();
   const [item, setItem] = useState<AssetsFile | null>(null);
   const editCameraRef = useRef<THREE.PerspectiveCamera>(null!);
-  const [canvas, setCanvas] = useState<any>(null);
+  const [canvas, setCanvas] = useState<HTMLCanvasElement>(null!);
   const root = em.getScene()?.root;
   useEditorKeys();
   RectAreaLightTexturesLib.init();

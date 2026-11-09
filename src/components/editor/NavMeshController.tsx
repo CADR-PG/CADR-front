@@ -39,12 +39,6 @@ export default function NavMeshController({ entity }: ControllerProps) {
       nmWrite.mesh = mesh;
       navMeshHelper = new NavMeshHelper(mesh);
       if (!running) scene.add(navMeshHelper);
-      //
-      // const navMeshQuery = new RECAST.NavMeshQuery(mesh);
-      // const start = { x: 0, y: 0, z: 0 };
-      // const end = { x: -5, y: 0, z: 0 };
-      // const { success, error, path } = navMeshQuery.computePath(start, end);
-      // console.log('Computed path', success, error, path);
     }
 
     load();
@@ -55,6 +49,7 @@ export default function NavMeshController({ entity }: ControllerProps) {
         scene.remove(navMeshHelper);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid, navMesh, running]);
 
   return null;

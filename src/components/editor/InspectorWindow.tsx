@@ -31,7 +31,6 @@ import {
 import NavMeshInspector from './inspectors/NavMeshInspector';
 import EnvironmentInspector from './inspectors/EnvironmentInspector';
 import FogInspector from './inspectors/FogInspector';
-import AssetListInspector from './inspectors/AssetListInspector';
 import ScriptHolder from '@/engine/components/ScriptHolder';
 import TemplateHolder from '@/engine/components/TemplateHolder';
 import HoldersInspector from './inspectors/HoldersInspector';

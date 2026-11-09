@@ -46,7 +46,7 @@ export class EventBus {
     if (!callbacks) return;
 
     console.log(callbacks);
-    for (let callback of callbacks) {
+    for (const callback of callbacks) {
       try {
         console.log('calling callback', callback);
         callback(event.data);
