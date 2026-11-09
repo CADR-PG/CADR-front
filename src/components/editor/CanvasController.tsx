@@ -1,6 +1,5 @@
 import { Canvas } from '@react-three/fiber';
 import {
-  Environment,
   GizmoHelper,
   GizmoViewport,
   Grid,
@@ -40,6 +39,10 @@ import {
   DialogTitle,
 } from '@mui/material';
 import useEditorCameraMovement from '../../hooks/useEditorCameraMovement';
+import EnvironmentController from './EnvironmentController';
+import FogController from './FogController';
+import cEnvironment from '@/engine/components/Environment';
+import Fog from '@/engine/components/Fog';
 
 // useEditorCameraMovement uses r3f hooks (useThree/useFrame), which only
 // work inside the <Canvas> tree - CanvasController itself renders the
@@ -64,6 +67,7 @@ function CanvasController() {
   const [item, setItem] = useState<AssetsFile | null>(null);
   const editCameraRef = useRef<THREE.PerspectiveCamera>(null!);
   const [canvas, setCanvas] = useState<any>(null);
+  const root = em.getScene()?.root;
   useEditorKeys();
   RectAreaLightTexturesLib.init();
 
@@ -189,8 +193,8 @@ function CanvasController() {
           }}
         >
           <EditorFlyControls cameraRef={editCameraRef} active={!running} />
-          {running && (
-            <Environment preset="night" environmentIntensity={0.3} background />
+          {running && root && em.getComponent(cEnvironment, root) && (
+            <EnvironmentController entity={root} />
           )}
           {/* TODO: set timestep as modifiable value from inside the editor */}
           <Physics
@@ -200,7 +204,9 @@ function CanvasController() {
             timeStep="vary"
           >
             {!running && <ambientLight />}
-            {running && <fog attach="fog" args={['#0a0d12', 5, 40]} />}
+            {running && root && em.getComponent(Fog, root) && (
+              <FogController entity={root} />
+            )}
             <AudioListenerProvider>
               {!running && (
                 <OrbitControls

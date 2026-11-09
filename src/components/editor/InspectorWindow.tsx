@@ -29,6 +29,8 @@ import {
   makeRemoveComponentCommand,
 } from '@/engine/Command';
 import NavMeshInspector from './inspectors/NavMeshInspector';
+import EnvironmentInspector from './inspectors/EnvironmentInspector';
+import FogInspector from './inspectors/FogInspector';
 import AssetListInspector from './inspectors/AssetListInspector';
 import ScriptHolder from '@/engine/components/ScriptHolder';
 import TemplateHolder from '@/engine/components/TemplateHolder';
@@ -148,6 +150,10 @@ function InspectorWindow() {
         return <CameraInspector entity={focused} />;
       case 'NavMesh':
         return <NavMeshInspector entity={focused} />;
+      case 'Environment':
+        return <EnvironmentInspector entity={focused} />;
+      case 'Fog':
+        return <FogInspector entity={focused} />;
       case 'ScriptHolder':
         return (
           <HoldersInspector entity={focused} componentType={ScriptHolder} />
