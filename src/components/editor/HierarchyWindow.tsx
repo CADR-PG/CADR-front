@@ -17,6 +17,8 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useClipboardStore } from '@/stores/clipboardStore';
+import ScriptHolder from '@/engine/components/ScriptHolder';
+import TemplateHolder from '@/engine/components/TemplateHolder';
 
 interface ContextMenuState {
   mouseX: number;
@@ -35,6 +37,8 @@ function HierarchyWindow() {
     const command = makeCreateEntityCommand(null, null, (entity) => {
       ECS.instance.entityManager.addComponent(new Name('root'), entity);
       ECS.instance.entityManager.addComponent(new Transform(), entity);
+      ECS.instance.entityManager.addComponent(new ScriptHolder(), entity);
+      ECS.instance.entityManager.addComponent(new TemplateHolder(), entity);
     });
     ECS.instance.entityManager.pushCommand(command);
   };

@@ -267,3 +267,27 @@ export function makeDragCommand(
     },
   };
 }
+
+export function makePushArrayCommand<T>(value: T, write: T[]): Command {
+  return {
+    execute: () => {
+      write.push(value);
+    },
+    undo: () => {
+      const index = write.lastIndexOf(value);
+      if (index !== -1) write.splice(index, 1);
+    },
+  };
+}
+
+export function makeRemoveArrayCommand<T>(index: number, write: T[]): Command {
+  const prevValue = write[index];
+  return {
+    execute: () => {
+      write.splice(index, 1);
+    },
+    undo: () => {
+      write.splice(index, 0, prevValue);
+    },
+  };
+}

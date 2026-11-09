@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import { requestFileDownload } from '@/api/client';
 import { useRapier } from '@react-three/rapier';
 import { EventBus } from '../EventBus';
+import ScriptHolder from '../components/ScriptHolder';
 
 export default function ScriptSystem() {
   const { assets } = useAssets();
@@ -20,11 +21,6 @@ export default function ScriptSystem() {
   useEffect(() => {
     if (!uuid) return;
 
-    const files = assets?.directories?.find(
-      (dir) => dir.name.toLowerCase() === 'systems',
-    )?.files;
-    if (!files?.length) return;
-
     const controller = new AbortController();
     const { signal } = controller;
 
@@ -33,7 +29,16 @@ export default function ScriptSystem() {
       EventBus.instance.subscribers = {};
       ECS.instance.clearSystems();
 
-      for (const file of files!) {
+      const root = ECS.instance.entityManager.getScene().root;
+      if (!root) return;
+
+      const scripts = ECS.instance.entityManager.getComponent(
+        ScriptHolder,
+        root,
+      )?.scripts;
+      if (!scripts) return;
+
+      for (const file of scripts) {
         try {
           const data = await requestFileDownload(uuid!, file.id, { signal });
           console.log(data);

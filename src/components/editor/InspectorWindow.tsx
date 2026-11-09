@@ -29,6 +29,10 @@ import {
   makeRemoveComponentCommand,
 } from '@/engine/Command';
 import NavMeshInspector from './inspectors/NavMeshInspector';
+import AssetListInspector from './inspectors/AssetListInspector';
+import ScriptHolder from '@/engine/components/ScriptHolder';
+import TemplateHolder from '@/engine/components/TemplateHolder';
+import HoldersInspector from './inspectors/HoldersInspector';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -144,6 +148,14 @@ function InspectorWindow() {
         return <CameraInspector entity={focused} />;
       case 'NavMesh':
         return <NavMeshInspector entity={focused} />;
+      case 'ScriptHolder':
+        return (
+          <HoldersInspector entity={focused} componentType={ScriptHolder} />
+        );
+      case 'TemplateHolder':
+        return (
+          <HoldersInspector entity={focused} componentType={TemplateHolder} />
+        );
       default:
         return (
           <InspectorTemplate

@@ -4,6 +4,8 @@ import { normalizeUrl } from '../components/helpers/material';
 import { sdk } from '@/data/Sdk';
 import { requestFileDownload } from '@/api/client';
 import { useParams } from 'react-router-dom';
+import { ECS } from '../ECS';
+import TemplateHolder from '../components/TemplateHolder';
 
 export default function UISystem() {
   const [uis, setUis] = useState<ComponentType[]>([]);
@@ -13,18 +15,22 @@ export default function UISystem() {
   useEffect(() => {
     if (!uuid) return;
 
-    const files = assets?.directories?.find(
-      (dir) => dir.name.toLowerCase() === 'templates',
-    )?.files;
-
-    if (!files?.length) return;
-
     const controller = new AbortController();
     const { signal } = controller;
 
     async function load() {
       const loaded: ComponentType[] = [];
-      for (const file of files!) {
+
+      const root = ECS.instance.entityManager.getScene().root;
+      if (!root) return;
+
+      const templates = ECS.instance.entityManager.getComponent(
+        TemplateHolder,
+        root,
+      )?.templates;
+      if (!templates) return;
+
+      for (const file of templates) {
         try {
           const data = await requestFileDownload(uuid!, file.id);
           if (signal.aborted) return;
