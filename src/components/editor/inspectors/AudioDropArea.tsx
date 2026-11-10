@@ -54,7 +54,8 @@ export default function AudioDropArea<T extends cAudio>({
       <IconButton
         onClick={() => {
           if (!audioWrite) return;
-          audioWrite.source = '';
+          const command = makeSetCommand('', audioWrite, 'source');
+          ECS.instance.entityManager.pushCommand(command);
         }}
       >
         <DeleteIcon />

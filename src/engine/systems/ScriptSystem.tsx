@@ -1,4 +1,4 @@
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { ECS } from '../ECS';
 import { useEffect, useState } from 'react';
 import useAssets from '@/stores/useAssets';
@@ -6,30 +6,42 @@ import { normalizeUrl } from '../components/helpers/material';
 import { sdk } from '@/data/Sdk';
 import { useParams } from 'react-router-dom';
 import { requestFileDownload } from '@/api/client';
+import { useRapier } from '@react-three/rapier';
+import { EventBus } from '../EventBus';
+import ScriptHolder from '../components/ScriptHolder';
 
 export default function ScriptSystem() {
   const { assets } = useAssets();
   const { uuid } = useParams<{ uuid: string }>();
   const [initialized, initialize] = useState(false);
   const [started, start] = useState(false);
+  const { pointer, scene } = useThree();
+  const { world, rapier } = useRapier();
 
   useEffect(() => {
     if (!uuid) return;
-
-    const files = assets?.directories?.find(
-      (dir) => dir.name.toLowerCase() === 'systems',
-    )?.files;
-    if (!files?.length) return;
 
     const controller = new AbortController();
     const { signal } = controller;
 
     async function load() {
+      // TODO: clear event subscribers here?
+      EventBus.instance.subscribers = {};
       ECS.instance.clearSystems();
 
-      for (const file of files!) {
+      const root = ECS.instance.entityManager.getScene().root;
+      if (!root) return;
+
+      const scripts = ECS.instance.entityManager.getComponent(
+        ScriptHolder,
+        root,
+      )?.scripts;
+      if (!scripts) return;
+
+      for (const file of scripts) {
         try {
           const data = await requestFileDownload(uuid!, file.id, { signal });
+          console.log(data);
           if (signal.aborted) return;
 
           const { default: init } = await import(
@@ -49,18 +61,22 @@ export default function ScriptSystem() {
 
     load();
 
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      EventBus.instance.subscribers = {};
+      ECS.instance.clearSystems();
+    };
   }, [uuid, assets]);
 
   useFrame((state, delta) => {
     if (!initialized) return;
 
     if (!started) {
-      ECS.instance.start();
+      ECS.instance.start({ scene });
       start(true);
     }
 
-    ECS.instance.update(state, delta);
+    ECS.instance.update({ state, delta, pointer, world, rapier });
   });
 
   return null;

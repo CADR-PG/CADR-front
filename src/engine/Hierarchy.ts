@@ -1,4 +1,5 @@
 import { Euler, Matrix4, Quaternion, Vector3 } from 'three';
+import { snapshot } from 'valtio';
 import Parent from './components/Parent';
 import { ECS } from './ECS';
 import { Entity } from './Entity';
@@ -7,6 +8,9 @@ import Children from './components/Children';
 import RBody from './components/RigidBody';
 import Invisible from './components/Invisible';
 import NestedScene from './components/NestedScene';
+import { Component } from './Component';
+
+const ROTATION_ORDER = 'YXZ';
 
 export function setParent(parent: Entity | null, child: Entity) {
   if (parent === child) return;
@@ -48,6 +52,48 @@ export function setParent(parent: Entity | null, child: Entity) {
   }
 }
 
+// Deep-clones `entity` (and all of its descendants) as a new entity parented
+// under `parent`, preserving the original's world transform - consistent with
+// how reparenting via `setParent` preserves world position elsewhere.
+//
+// `setParent` is deliberately called LAST, after the whole subtree has been
+// cloned. `parent` may be `entity` itself, or any other descendant of it
+// (pasting a copied tree back into itself/one of its own children) - calling
+// setParent early would push the newly created clone into that node's real
+// `Children` array, and since that same node gets visited again further down
+// this recursion (it's part of the tree being duplicated), the clone would
+// get read back as one of its own "original" children and cloned into itself
+// forever.
+export function cloneEntityTree(entity: Entity, parent: Entity): Entity {
+  const em = ECS.instance.entityManager;
+  const world = getWorldMatrix(entity);
+  const children = [...(em.getComponent(Children, entity)?.children ?? [])];
+  const newEntity = em.createEntity();
+
+  const components = structuredClone(snapshot(em.getComponents(entity))) as {
+    [name: string]: Component;
+  };
+  delete components['Parent'];
+  delete components['Children'];
+
+  for (const component of Object.values(components)) {
+    em.addComponent(component, newEntity);
+  }
+
+  const transform = em.getComponent(Transform, newEntity);
+  if (transform) {
+    applyMatrix(transform, world);
+  }
+
+  for (const child of children) {
+    cloneEntityTree(child, newEntity);
+  }
+
+  setParent(parent, newEntity);
+
+  return newEntity;
+}
+
 function isDescendant(entity: Entity, ancestor: Entity) {
   let current =
     ECS.instance.entityManager.getComponent(Parent, entity)?.entity ?? null;
@@ -73,7 +119,7 @@ export function toMatrix(t: Transform): Matrix4 {
   return new Matrix4().compose(
     new Vector3(t.position[0], t.position[1], t.position[2]),
     new Quaternion().setFromEuler(
-      new Euler(t.rotation[0], t.rotation[1], t.rotation[2]),
+      new Euler(t.rotation[0], t.rotation[1], t.rotation[2], ROTATION_ORDER),
     ),
     new Vector3(t.scale[0], t.scale[1], t.scale[2]),
   );
@@ -84,7 +130,7 @@ export function applyMatrix(t: Transform, m: Matrix4) {
   const q = new Quaternion();
   const s = new Vector3();
   m.decompose(p, q, s);
-  const r = new Euler().setFromQuaternion(q);
+  const r = new Euler().setFromQuaternion(q, ROTATION_ORDER);
   t.position = [p.x, p.y, p.z];
   t.rotation = [r.x, r.y, r.z];
   t.scale = [s.x, s.y, s.z];
@@ -129,6 +175,26 @@ export function getWorldTransformOmitRoot(entity: Entity): Transform {
     const local = t ? toMatrix(t) : new Matrix4();
     const parent = em.getComponent(Parent, entity)?.entity;
     return parent ? calculateWorld(parent).multiply(local) : new Matrix4();
+  }
+
+  const world = calculateWorld(entity);
+  const newT = new Transform();
+  applyMatrix(newT, world);
+
+  return newT;
+}
+
+// TODO: xd
+// "you shouldn't copy-paste functions"
+// what am I? a fucking clean coder?
+export function getWorldTransform(entity: Entity): Transform {
+  const em = ECS.instance.entityManager;
+
+  function calculateWorld(entity: Entity): Matrix4 {
+    const t = em.getComponent(Transform, entity);
+    const local = t ? toMatrix(t) : new Matrix4();
+    const parent = em.getComponent(Parent, entity)?.entity;
+    return parent ? calculateWorld(parent).multiply(local) : local;
   }
 
   const world = calculateWorld(entity);

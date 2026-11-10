@@ -3,10 +3,10 @@ import Command from '@/types/Command';
 import Transform, { Vec3 } from './components/Transform';
 import { GeometryPointsData } from '@/types/GeometryPointsData';
 import { CollisionGroupsComponent } from '@/types/CollisionGroupsProps';
-import { createEntity, Entity } from './Entity';
+import { createEntity, Entity, resurrectEntity } from './Entity';
 import { ECS } from './ECS';
 import Parent from './components/Parent';
-import { setParent } from './Hierarchy';
+import { cloneEntityTree, setParent } from './Hierarchy';
 import { AssetsFile } from '@/types/Assets';
 import { loadExternalScene } from './Scene';
 import { SetStateAction } from 'react';
@@ -173,6 +173,24 @@ export function makeSetParentCommand(parent: Entity, child: Entity) {
   };
 }
 
+export function makePasteEntityCommand(
+  source: Entity,
+  parent: Entity,
+  focus: ((value: SetStateAction<string | null>) => void) | null,
+) {
+  let newEntity: Entity;
+  return {
+    execute: () => {
+      newEntity = cloneEntityTree(source, parent);
+      if (focus) focus(newEntity);
+    },
+    undo: () => {
+      ECS.instance.entityManager.destroyEntity(newEntity);
+      if (focus) focus(null);
+    },
+  };
+}
+
 // NOTE: this command is a hack because there is no easy way to undo this action
 export async function makeLoadSceneCommand(uuid: string, item: AssetsFile) {
   const scene = await loadExternalScene(uuid!, item);
@@ -188,7 +206,7 @@ export async function makeLoadSceneCommand(uuid: string, item: AssetsFile) {
 // handle entity creation lol
 export function makeCreateEntityCommand(
   focused: Entity | null,
-  focus: (value: SetStateAction<string | null>) => void,
+  focus: ((value: SetStateAction<string | null>) => void) | null,
   addComponents: (entity: Entity) => void,
 ) {
   const entity = createEntity();
@@ -198,11 +216,11 @@ export function makeCreateEntityCommand(
       if (focused) {
         setParent(focused, entity);
       }
-      focus(entity);
+      if (focus) focus(entity);
     },
     undo: () => {
       ECS.instance.entityManager.destroyEntity(entity);
-      focus(null);
+      if (focus) focus(null);
     },
   };
 }
@@ -214,15 +232,18 @@ export function makeDestroyEntityCommand(
 ) {
   // PERF: potential big memory usage?
   const prevValue = ECS.instance.entityManager.getComponents(entity);
+  const prevParent = ECS.instance.entityManager.getComponent(
+    Parent,
+    entity,
+  )?.entity;
   return {
     execute: () => {
       ECS.instance.entityManager.destroyEntity(entity);
       focus(null);
     },
     undo: () => {
-      const newEntity = createEntity();
-      ECS.instance.entityManager.getScene().entities[newEntity] = prevValue;
-      focus(newEntity);
+      resurrectEntity(entity, prevValue, prevParent);
+      focus(entity);
     },
   };
 }
@@ -243,6 +264,30 @@ export function makeDragCommand(
       write.position = position;
       write.rotation = rotation;
       write.scale = scale;
+    },
+  };
+}
+
+export function makePushArrayCommand<T>(value: T, write: T[]): Command {
+  return {
+    execute: () => {
+      write.push(value);
+    },
+    undo: () => {
+      const index = write.lastIndexOf(value);
+      if (index !== -1) write.splice(index, 1);
+    },
+  };
+}
+
+export function makeRemoveArrayCommand<T>(index: number, write: T[]): Command {
+  const prevValue = write[index];
+  return {
+    execute: () => {
+      write.splice(index, 1);
+    },
+    undo: () => {
+      write.splice(index, 0, prevValue);
     },
   };
 }

@@ -24,3 +24,8 @@ export type AssetsFileUploadReadModel = {
   lastModifiedAt: string | null;
   uploadUrl: string;
 };
+
+export type AssetsFileMinimal = {
+  id: string;
+  name: string;
+};

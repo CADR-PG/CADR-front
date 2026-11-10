@@ -7,8 +7,8 @@ export function useMesh(entity: Entity) {
   const { focus, focused, hover, hovered, running } = useEditorContext();
 
   const handleClick = (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
     if (!running && !isNestedScene(entity)) {
-      e.stopPropagation();
       focus(entity);
       return;
     }
@@ -19,15 +19,15 @@ export function useMesh(entity: Entity) {
   };
 
   const handlePointerOver = (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
     if (!running) {
-      e.stopPropagation();
       hover(entity);
     }
   };
 
   const handlePointerOut = (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
     if (!running) {
-      e.stopPropagation();
       hover(null);
     }
   };

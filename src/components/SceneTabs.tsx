@@ -8,6 +8,8 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import { ECS } from '@/engine/ECS';
 import { useEditorContext } from '@/hooks/useEditorContext';
@@ -17,9 +19,16 @@ import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
+interface ContextMenuState {
+  mouseX: number;
+  mouseY: number;
+  index: number;
+}
+
 export default function SceneTabs() {
-  const [closingTab, setClosingTab] = useState<number | null>(null!);
-  const { scenes, removeScene, game } = useEditorSettingsStore();
+  const [closingTabs, setClosingTabs] = useState<number[] | null>(null);
+  const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
+  const { scenes, removeScenes, game } = useEditorSettingsStore();
   const { focus, camera, running } = useEditorContext();
   const { mutate: saveScene } = useSaveScene();
   const { uuid } = useParams();
@@ -39,24 +48,28 @@ export default function SceneTabs() {
     });
   };
 
-  const handleClose = (index: number) => {
+  const handleClose = (indices: number[]) => {
     const em = ECS.instance.entityManager;
     if (em.getScene() === em.game) return;
+    if (indices.length === 0) return;
 
-    if (em.scenes.length === 1) {
+    if (em.scenes.length === indices.length) {
       em.createScene();
     }
 
+    // If the current scene gets closed, fall back to the nearest remaining
+    // tab before it, or the first remaining tab if there is none.
     const current = em.currentScene;
-    const next =
-      index < current || (index === current && current > 0)
-        ? current - 1
-        : current;
+    const kept = em.scenes.map((_, i) => i).filter((i) => !indices.includes(i));
+    const target = indices.includes(current)
+      ? (kept.filter((i) => i < current).pop() ?? kept[0])
+      : current;
+    const next = kept.indexOf(target);
 
     em.currentScene = next;
-    em.scenes = em.scenes.filter((_, i) => i !== index);
+    em.scenes = em.scenes.filter((_, i) => !indices.includes(i));
 
-    removeScene(index);
+    removeScenes(indices);
     focus(null);
 
     saveScene({
@@ -67,6 +80,15 @@ export default function SceneTabs() {
         game,
       },
     });
+  };
+
+  // Ask for confirmation if any of the scenes being closed has unsaved changes.
+  const requestClose = (indices: number[]) => {
+    if (indices.some((i) => em.getSceneAt(i)?.dirty)) {
+      setClosingTabs(indices);
+    } else {
+      handleClose(indices);
+    }
   };
 
   const handleClick = (index: number) => {
@@ -87,6 +109,25 @@ export default function SceneTabs() {
     });
   };
 
+  const openContextMenu = (event: React.MouseEvent, index: number) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setContextMenu({
+      mouseX: event.clientX + 2,
+      mouseY: event.clientY - 6,
+      index,
+    });
+  };
+
+  const closeContextMenu = () => setContextMenu(null);
+
+  const handleMenuClose = (getIndices: (index: number) => number[]) => {
+    if (contextMenu === null) return;
+    const indices = getIndices(contextMenu.index);
+    closeContextMenu();
+    requestClose(indices);
+  };
+
   const truncName = (name: string) => {
     const MAX_LENGTH = 15;
     const EXTENSION_LENGTH = 6;
@@ -103,6 +144,7 @@ export default function SceneTabs() {
           <div
             className={`scene-tabs-container-tab ${em.currentScene === i ? 'scene-tabs-container-tab-active' : ''}`}
             key={i}
+            onContextMenu={(e) => openContextMenu(e, i)}
           >
             <div className="scene-tabs-container-tab-content">
               <div
@@ -114,13 +156,7 @@ export default function SceneTabs() {
                   <FiberManualRecordIcon className="save-icon" />
                 ) : null}
               </div>
-              <IconButton
-                onClick={() =>
-                  em.getSceneAt(i) && em.getSceneAt(i).dirty
-                    ? setClosingTab(i)
-                    : handleClose(i)
-                }
-              >
+              <IconButton onClick={() => requestClose([i])}>
                 <CloseIcon />
               </IconButton>
             </div>
@@ -130,21 +166,61 @@ export default function SceneTabs() {
           <AddIcon />
         </IconButton>
       </div>
+      <Menu
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+        open={contextMenu !== null}
+        onClose={closeContextMenu}
+        disableRestoreFocus
+        disableEnforceFocus
+      >
+        <MenuItem onClick={() => handleMenuClose((index) => [index])}>
+          Close
+        </MenuItem>
+        <MenuItem
+          disabled={contextMenu?.index === 0}
+          onClick={() =>
+            handleMenuClose((index) =>
+              scenes.map((_, i) => i).filter((i) => i < index),
+            )
+          }
+        >
+          Close Tabs to the Left
+        </MenuItem>
+        <MenuItem
+          disabled={contextMenu?.index === scenes.length - 1}
+          onClick={() =>
+            handleMenuClose((index) =>
+              scenes.map((_, i) => i).filter((i) => i > index),
+            )
+          }
+        >
+          Close Tabs to the Right
+        </MenuItem>
+      </Menu>
       <Dialog
-        open={closingTab !== null}
-        onClose={() => setClosingTab(null)}
+        open={closingTabs !== null}
+        onClose={() => setClosingTabs(null)}
         role="dialog"
       >
         <DialogTitle>Unsaved changes</DialogTitle>
         <DialogContent>
-          You have unsaved changes. Are you sure you want to close the scene?
+          You have unsaved changes. Are you sure you want to close
+          {closingTabs && closingTabs.length > 1
+            ? ' these scenes'
+            : ' the scene'}
+          ?
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setClosingTab(null)}>Cancel</Button>
+          <Button onClick={() => setClosingTabs(null)}>Cancel</Button>
           <Button
             onClick={() => {
-              handleClose(closingTab!);
-              setClosingTab(null);
+              handleClose(closingTabs!);
+              setClosingTabs(null);
             }}
           >
             Close
