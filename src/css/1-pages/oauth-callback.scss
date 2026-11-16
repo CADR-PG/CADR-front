@@ -1,0 +1,54 @@
+@use "../0-site/variables";
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex: 0 0 auto;
+
+    &--large {
+        width: 48px;
+        height: 48px;
+        border-width: 4px;
+        color: variables.$c-cyan;
+        margin-bottom: 24px;
+
+        .dark & {
+            color: variables.$c-cyan-dark;
+        }
+    }
+}
+
+.oauth-callback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    .login__subtitle {
+        margin-bottom: 0;
+    }
+
+    &__error {
+        color: variables.$c-error;
+        margin-bottom: 24px;
+    }
+
+    &__actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        width: 100%;
+    }
+}

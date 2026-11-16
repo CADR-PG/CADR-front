@@ -10,17 +10,15 @@ import { ConsoleLogLevel } from '../../types/ConsoleLog';
 const LEVEL_FILTERS: {
   level: ConsoleLogLevel;
   icon: typeof InfoOutlinedIcon;
-  color: string;
   title: string;
 }[] = [
-  { level: 'log', icon: InfoOutlinedIcon, color: '#475569', title: 'Logs' },
+  { level: 'log', icon: InfoOutlinedIcon, title: 'Logs' },
   {
     level: 'warn',
     icon: WarningAmberIcon,
-    color: '#d97706',
     title: 'Warnings',
   },
-  { level: 'error', icon: ErrorOutlineIcon, color: '#a31621', title: 'Errors' },
+  { level: 'error', icon: ErrorOutlineIcon, title: 'Errors' },
 ];
 
 function ConsoleWindow() {
@@ -94,7 +92,7 @@ function ConsoleWindow() {
           }}
         />
         <div className="console-window__level-filters">
-          {LEVEL_FILTERS.map(({ level, icon: Icon, color, title }) => {
+          {LEVEL_FILTERS.map(({ level, icon: Icon, title }) => {
             const active = activeLevels.has(level);
             return (
               <Button
@@ -102,8 +100,7 @@ function ConsoleWindow() {
                 size="small"
                 onClick={() => toggleLevel(level)}
                 title={`${title} (${counts[level]})`}
-                className={`console-window__level-filter${active ? ' console-window__level-filter--active' : ''}`}
-                sx={{ color }}
+                className={`console-window__level-filter console-window__level-filter--${level}${active ? ' console-window__level-filter--active' : ''}`}
               >
                 <Icon fontSize="small" />
                 {counts[level]}

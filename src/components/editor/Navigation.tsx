@@ -1,3 +1,4 @@
+import BackToDashboardButton from './BackToDashboardButton';
 import FileNavigationItem from './FileNavigationItem';
 import LightNavigationItem from './LightNavigationItem';
 import ObjectNavigationItem from './ObjectNavigationItem';
@@ -11,6 +12,7 @@ function Navigation() {
   return (
     <div className="tool-bar">
       <div className="tool-bar--left">
+        <BackToDashboardButton />
         <FileNavigationItem />
         <ObjectNavigationItem />
         <LightNavigationItem />

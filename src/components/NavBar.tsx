@@ -79,9 +79,6 @@ function NavBar() {
             <Link to="/change-data" className="navbar__link">
               Change data
             </Link>
-            <Link to="/map" className="navbar__link">
-              User Map
-            </Link>
           </nav>
         </div>
       )}
@@ -94,9 +91,6 @@ function NavBar() {
             </Link>
             <Link to="/change-data" className="navbar__link">
               Change data
-            </Link>
-            <Link to="/map" className="navbar__link">
-              User Map
             </Link>
           </>
         ) : null}

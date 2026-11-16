@@ -13,9 +13,8 @@ import RegistrationSuccessful from './pages/RegistrationSuccessful.tsx';
 import Logout from './pages/Logout.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import ChangeData from './pages/Profile.tsx';
-import UserLocationMap from './pages/UserLocationMap.tsx';
 import NotFound from './pages/404.tsx';
-import GithubLoginCallback from './pages/GithubLoginCallback.ts';
+import GithubLoginCallback from './pages/GithubLoginCallback.tsx';
 
 const router = createBrowserRouter([
   {
@@ -55,10 +54,6 @@ const router = createBrowserRouter([
     element: <Dashboard />,
   },
   {
-    path: '/map',
-    element: <UserLocationMap />,
-  },
-  {
     path: '/login/github/callback',
     element: <GithubLoginCallback />,
   },
@@ -78,5 +73,5 @@ createRoot(document.getElementById('root')!).render(
         <RouterProvider router={router} />
       </QueryClientProvider>
     </StyledEngineProvider>
-  </StrictMode>
+  </StrictMode>,
 );

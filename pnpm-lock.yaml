@@ -101,6 +101,9 @@ importers:
       three:
         specifier: ^0.175.0
         version: 0.175.0
+      three-nebula:
+        specifier: ^13.3.0
+        version: 13.3.0(@types/three@0.175.0)(three@0.175.0)
       three-stdlib:
         specifier: ^2.36.1
         version: 2.36.1(three@0.175.0)
@@ -3185,6 +3188,15 @@ packages:
     resolution: {integrity: sha512-4G5lBaF+g2auKX3P0yqx+MJC6oVt6sB5k+CchS6Ob0qvH0YIhuUk1eYr7ktsIpY+albCqE80/FVQGV190PmiAg==}
     peerDependencies:
       three: '>= 0.159.0'
+
+  three-nebula@13.3.0:
+    resolution: {integrity: sha512-+xVEdowgaiVChyjvDNyRiTe1FrkkPWihmkfUMIL++zs7rME/jzlbNW2PTsglXJp2AjGkMML5qfh4KXIfWo2rzA==}
+    peerDependencies:
+      '@types/three': '>=0.122.0 <1.0.0'
+      three: '>=0.122.0 <1.0.0'
+    peerDependenciesMeta:
+      '@types/three':
+        optional: true
 
   three-stdlib@2.36.1:
     resolution: {integrity: sha512-XyGQrFmNQ5O/IoKm556ftwKsBg11TIb301MB5dWNicziQBEs2g3gtOYIf7pFiLa0zI2gUwhtCjv9fmjnxKZ1Cg==}
@@ -6589,6 +6601,12 @@ snapshots:
   three-mesh-bvh@0.8.3(three@0.175.0):
     dependencies:
       three: 0.175.0
+
+  three-nebula@13.3.0(@types/three@0.175.0)(three@0.175.0):
+    dependencies:
+      three: 0.175.0
+    optionalDependencies:
+      '@types/three': 0.175.0
 
   three-stdlib@2.36.1(three@0.175.0):
     dependencies:

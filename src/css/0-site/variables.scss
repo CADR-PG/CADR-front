@@ -38,15 +38,31 @@ $c-mui-primary: var(--mui-palette-primary-main, #1976d2);
 $c-mui-primary-hover-bg: rgba(25, 118, 210, 0.04);
 $c-mui-primary-hover-bg-dark: rgba(25, 118, 210, 0.08);
 
+//github button
+$c-github: #24292f;
+$c-github-hover: #32383f;
+$c-github-dark: #30363d;
+$c-github-shadow: rgba(36, 41, 47, 0.3);
+
+//neutral / utility colors
+$c-border-input: #ccc;
+$c-muted: #999;
+$c-muted-strong: #666;
+$c-muted-text: #777;
+$c-gray-light: #ddd;
+$c-gray: #bbb;
+$c-gray-dark: #555;
+$c-light-blue: #90caf9;
+$c-light-green: #90ee90;
+$c-warning: #d97706;
+$c-disabled: rgba(0, 0, 0, 0.26);
+$c-disabled-dark: rgba(255, 255, 255, 0.3);
+$c-navbar-overlay: rgba(8, 12, 20, 0.35);
+$c-navbar-shadow: rgba(8, 12, 20, 0.12);
+
 //common colors
 $c-glow1: rgba(56,189,248,0.25);
 $c-glow2: rgba(99,102,241,0.25);
-
-// heatmap colors
-$c-heat-yellow: #facc15;
-$c-heat-orange: #fb923c;
-$c-heat-deep-orange: #f97316;
-$c-heat-red: #dc2626;
 
 
 

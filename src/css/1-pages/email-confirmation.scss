@@ -9,7 +9,7 @@
         border-radius: 16px;
         padding: 40px 32px;
         backdrop-filter: blur(16px);
-        box-shadow: 0 0 40px rgba(0,0,0,0.05);
+        box-shadow: 0 0 40px rgba(variables.$c-black, 0.05);
         text-align: center;
 
         .dark & {

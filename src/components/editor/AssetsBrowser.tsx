@@ -576,37 +576,37 @@ export default function AssetsBrowser() {
         >
           {contextMenu?.target.type !== 'file' && (
             <MenuItem onClick={handleNewFolder}>
-              <CreateNewFolderIcon fontSize="small" sx={{ mr: 1 }} />
+              <CreateNewFolderIcon fontSize="small" className="menu-item-icon" />
               New Folder
             </MenuItem>
           )}
           {contextMenu?.target.type !== 'file' && (
             <MenuItem onClick={handleUploadFromMenu}>
-              <UploadFileIcon fontSize="small" sx={{ mr: 1 }} />
+              <UploadFileIcon fontSize="small" className="menu-item-icon" />
               Upload File
             </MenuItem>
           )}
           {contextMenu?.target.type !== 'background' && (
             <MenuItem onClick={handleRenameFromMenu}>
-              <DriveFileRenameOutlineIcon fontSize="small" sx={{ mr: 1 }} />
+              <DriveFileRenameOutlineIcon fontSize="small" className="menu-item-icon" />
               Rename
             </MenuItem>
           )}
           {contextMenu?.target.type === 'file' && (
             <MenuItem onClick={handleCopyIdFromMenu}>
-              <ContentCopyIcon fontSize="small" sx={{ mr: 1 }} />
+              <ContentCopyIcon fontSize="small" className="menu-item-icon" />
               Copy ID
             </MenuItem>
           )}
           {contextMenu?.target.type === 'file' && (
             <MenuItem onClick={handleDownloadFromMenu}>
-              <DownloadIcon fontSize="small" sx={{ mr: 1 }} />
+              <DownloadIcon fontSize="small" className="menu-item-icon" />
               Download
             </MenuItem>
           )}
           {contextMenu?.target.type !== 'background' && (
             <MenuItem onClick={handleDeleteFromMenu}>
-              <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
+              <DeleteIcon fontSize="small" className="menu-item-icon" />
               Delete
             </MenuItem>
           )}

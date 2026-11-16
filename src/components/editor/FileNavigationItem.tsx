@@ -14,6 +14,7 @@ import { useEditorContext } from '../../hooks/useEditorContext';
 import { useEffect, useRef } from 'react';
 import useSaveScene from '../../hooks/useSaveScene';
 import { useParams } from 'react-router-dom';
+import useBackToDashboard from '@/hooks/useBackToDashboard';
 import SnackbarProvider from '../SnackbarProvider';
 import { useState } from 'react';
 import useEntityManager from '../../hooks/useEntityManager';
@@ -38,6 +39,7 @@ function FileNavigationItem() {
   const { data, mutate: upload } = useUploadFile();
   const { data: replaceData, mutate: replace } = useReplaceFile();
   const { uuid } = useParams();
+  const handleBackToDashboard = useBackToDashboard();
   const filePickerRef = useRef<(HTMLInputElement | null)[]>([]);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState<string>(null!);
@@ -175,6 +177,7 @@ function FileNavigationItem() {
         <MenuItem onClick={() => filePickerRef.current[1]?.click()}>
           Import...
         </MenuItem>
+        <MenuItem onClick={handleBackToDashboard}>Back to dashboard</MenuItem>
       </NavigationItem>
       <SnackbarProvider />
       <Dialog open={open} onClose={handleClose} role="dialog">

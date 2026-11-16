@@ -133,17 +133,17 @@ function HierarchyWindow() {
       >
         {contextMenu?.entity && (
           <MenuItem onClick={handleCopy}>
-            <ContentCopyIcon fontSize="small" sx={{ mr: 1 }} />
+            <ContentCopyIcon fontSize="small" className="menu-item-icon" />
             Copy
           </MenuItem>
         )}
         <MenuItem onClick={handlePaste} disabled={!clipboard}>
-          <ContentPasteIcon fontSize="small" sx={{ mr: 1 }} />
+          <ContentPasteIcon fontSize="small" className="menu-item-icon" />
           Paste
         </MenuItem>
         {contextMenu?.entity && (
           <MenuItem onClick={handleDelete}>
-            <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
+            <DeleteIcon fontSize="small" className="menu-item-icon" />
             Delete
           </MenuItem>
         )}

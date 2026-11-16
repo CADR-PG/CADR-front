@@ -56,7 +56,7 @@ export default function MapDropArea<T extends MaterialData>({
         alt=""
         width={64}
         height={64}
-        style={{ objectFit: 'cover' }}
+        className="drop-area__image"
       />
       <IconButton
         onClick={() => {

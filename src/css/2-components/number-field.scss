@@ -1,0 +1,31 @@
+.number-field {
+  &__input {
+    padding-right: 0;
+  }
+
+  &__adornment {
+    flex-direction: column;
+    max-height: unset;
+    align-self: stretch;
+    margin-left: 0;
+    border-left: 1px solid;
+    border-color: var(--mui-palette-divider);
+
+    & button {
+      padding-top: 0;
+      padding-bottom: 0;
+      flex: 1;
+      border-radius: calc(var(--mui-shape-borderRadius, 4px) * 0.5);
+    }
+  }
+
+  &__icon {
+    &--up {
+      transform: translateY(2px);
+    }
+
+    &--down {
+      transform: translateY(-2px);
+    }
+  }
+}

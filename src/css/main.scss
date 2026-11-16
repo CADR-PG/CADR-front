@@ -7,11 +7,11 @@
 @use '1-pages/homepage';
 @use '1-pages/register';
 @use '1-pages/login';
+@use '1-pages/oauth-callback';
 @use '1-pages/change-data';
 @use '1-pages/email-confirmation';
 @use '1-pages/registration-successful';
 @use '1-pages/dashboard';
-@use '1-pages/user-location-map';
 @use '1-pages/not-found';
 
 @use '2-components/navbar';
@@ -22,6 +22,7 @@
 @use '2-components/drop-area.scss';
 @use '2-components/animations-inspector.scss';
 @use '2-components/tabs.scss';
+@use '2-components/number-field.scss';
 
 @use '3-elements/buttons';
 @use '3-elements/modals';

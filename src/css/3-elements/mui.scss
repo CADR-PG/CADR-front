@@ -179,12 +179,12 @@
         }
 
         .dark & {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(variables.$c-white, 0.06);
             color: variables.$c-text-dark;
 
             &:hover,
             &.Mui-focused {
-                background: rgba(255, 255, 255, 0.09);
+                background: rgba(variables.$c-white, 0.09);
             }
 
             &::before {

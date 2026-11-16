@@ -5,8 +5,12 @@
   align-items: center;
   justify-content: center;
 
+  &__image {
+    object-fit: cover;
+  }
+
   &--drag {
-    background-color: #90ee90;
+    background-color: variables.$c-light-green;
   }
 }
 

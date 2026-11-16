@@ -34,7 +34,7 @@
 }
 
 .fileSize {
-  color: #999;
+  color: variables.$c-muted;
   font-size: 11px;
 }
 
@@ -97,19 +97,19 @@
   flex-shrink: 0;
   font-size: 13px;
   font-family: inherit;
-  border: 1px solid #ccc;
+  border: 1px solid variables.$c-border-input;
   border-radius: 3px;
   padding: 4px 6px;
   margin: 8px 8px 0;
   outline: none;
 
   &:focus {
-    border-color: #90caf9;
+    border-color: variables.$c-light-blue;
   }
 }
 
 .noResults {
-  color: #999;
+  color: variables.$c-muted;
   padding: 4px;
 }
 
@@ -173,12 +173,14 @@
 
 .uploadLabel {
   font-size: 11px;
-  color: #666;
+  color: variables.$c-muted-strong;
+}
+
 .renameInput {
   flex: 1;
   font-size: 13px;
   font-family: inherit;
-  border: 1px solid #90caf9;
+  border: 1px solid variables.$c-light-blue;
   border-radius: 3px;
   padding: 1px 4px;
   outline: none;

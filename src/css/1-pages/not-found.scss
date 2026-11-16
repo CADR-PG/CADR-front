@@ -47,7 +47,7 @@
 
     &:hover {
       text-decoration: underline;
-      background-color: rgba(0,0,0,0.03);
+      background-color: rgba(variables.$c-black, 0.03);
     }
   }
 }
