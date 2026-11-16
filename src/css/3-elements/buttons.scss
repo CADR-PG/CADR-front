@@ -29,9 +29,29 @@
                     height: 20px;
                     flex: 0 0 20px;
                     display: inline-block;
-                    margin-right: 8px;
                 }
             }
+
+        &.btn-github {
+            margin-top: 12px;
+            background: variables.$c-github;
+            color: variables.$c-white;
+            box-shadow: 0 4px 16px variables.$c-github-shadow;
+
+            &:hover:not(:disabled) {
+                background: variables.$c-github-hover;
+            }
+
+            .dark & {
+                background: variables.$c-github-dark;
+                color: variables.$c-white;
+            }
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
         &:hover {
             background: variables.$c-cyan-hover;
@@ -47,8 +67,8 @@
     &-secondary {
         padding: 8px 12px;
         border-radius: 12px;
-        border: 1px solid #ccc;
-        background: #fff;
+        border: 1px solid variables.$c-border-input;
+        background: variables.$c-white;
         cursor: pointer;
 
         .dark & {
@@ -117,4 +137,11 @@
             box-shadow: 0 4px 16px variables.$c-glow2;
         }
     }
+}
+.tool-bar__button {
+    text-transform: none;
+}
+
+.menu-item-icon {
+    margin-right: 8px;
 }

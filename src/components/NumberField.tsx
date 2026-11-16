@@ -67,26 +67,14 @@ export default function NumberField({
             endAdornment={
               <InputAdornment
                 position="end"
-                sx={{
-                  flexDirection: 'column',
-                  maxHeight: 'unset',
-                  alignSelf: 'stretch',
-                  borderLeft: '1px solid',
-                  borderColor: 'divider',
-                  ml: 0,
-                  '& button': {
-                    py: 0,
-                    flex: 1,
-                    borderRadius: 0.5,
-                  },
-                }}
+                className="number-field__adornment"
               >
                 <BaseNumberField.Increment
                   render={<IconButton size={size} aria-label="Increase" />}
                 >
                   <KeyboardArrowUpIcon
                     fontSize={size}
-                    sx={{ transform: 'translateY(2px)' }}
+                    className="number-field__icon number-field__icon--up"
                   />
                 </BaseNumberField.Increment>
 
@@ -95,12 +83,12 @@ export default function NumberField({
                 >
                   <KeyboardArrowDownIcon
                     fontSize={size}
-                    sx={{ transform: 'translateY(-2px)' }}
+                    className="number-field__icon number-field__icon--down"
                   />
                 </BaseNumberField.Decrement>
               </InputAdornment>
             }
-            sx={{ pr: 0 }}
+            className="number-field__input"
           />
         )}
       />

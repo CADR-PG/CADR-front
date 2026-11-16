@@ -1,3 +1,5 @@
+@use "../0-site/variables";
+
 .hierarchy-window {
   display: flex;
   flex-direction: column;
@@ -18,6 +20,7 @@
   .visibilityButton {
     background-color: transparent;
     border: transparent;
+    color: inherit;
     padding: 0;
     margin: 0;
   }
@@ -51,7 +54,7 @@
 
 $dot: 0.5rem;
 $cy: 0.75em;
-$line: 2px solid #000;
+$line: 2px solid variables.$c-black;
 
 .tree {
 
@@ -78,7 +81,7 @@ $line: 2px solid #000;
       width: 1em;
       height: 1em;
       z-index: 1;
-      background-image: linear-gradient(to bottom, #bbb, #bbb), linear-gradient(to right, #bbb, #bbb);
+      background-image: linear-gradient(to bottom, variables.$c-gray, variables.$c-gray), linear-gradient(to right, variables.$c-gray, variables.$c-gray);
       background-size: 2px, 50% 2px;
       background-position: center, bottom right;
       background-repeat: no-repeat;
@@ -91,7 +94,7 @@ $line: 2px solid #000;
       top: $cy;
       bottom: -$cy;
       border-left: $line;
-      border-color: #bbb;
+      border-color: variables.$c-gray;
     }
 
     &:last-child::after {
@@ -109,7 +112,12 @@ $line: 2px solid #000;
   align-items: center;
 
   &-active {
-    background-color: #bbb;
+    background-color: variables.$c-gray;
+
+    .dark & {
+      background-color: variables.$c-gray-dark;
+      color: variables.$c-white;
+    }
   }
 
   &-content {
@@ -123,7 +131,7 @@ $line: 2px solid #000;
 
     &-id {
       font-size: 8px;
-      color: #777;
+      color: variables.$c-muted-text;
       padding-left: 8px;
     }
   }

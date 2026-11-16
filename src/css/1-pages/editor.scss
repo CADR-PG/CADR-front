@@ -2,23 +2,112 @@
 
 .tool-bar {
   background-color: variables.$c-white;
+  border-bottom: 1px solid variables.$c-border;
   display: flex;
   align-items: center;
   justify-content: space-between;
 
+  .dark & {
+    background-color: variables.$c-bg-header-dark;
+    border-bottom: 1px solid variables.$c-border-dark;
+  }
+
+  .tool-bar__item .MuiButton-root {
+    color: variables.$c-mui-primary;
+    border-radius: 4px;
+
+    &:hover {
+      background: variables.$c-mui-primary-hover-bg;
+      color: variables.$c-mui-primary;
+    }
+
+    .dark & {
+      color: variables.$c-mui-primary;
+
+      &:hover {
+        background: variables.$c-mui-primary-hover-bg-dark;
+        color: variables.$c-mui-primary;
+      }
+    }
+  }
+
+  .tool-bar__theme-toggle {
+    margin-left: auto;
+    margin-right: 8px;
+    padding: 4px;
+
+    .svg-darkmode-icons {
+      width: 18px;
+      height: 18px;
+    }
+
+    &:hover {
+      transform: none;
+    }
+  }
+
   &--left {
     display: flex;
     flex: 1;
+    align-items: center;
+
+    .MuiIconButton-root {
+      color: variables.$c-mui-primary;
+      border-radius: 4px;
+
+      &:hover {
+        background: variables.$c-mui-primary-hover-bg;
+        color: variables.$c-mui-primary;
+      }
+
+      .dark & {
+        color: variables.$c-mui-primary;
+
+        &:hover {
+          background: variables.$c-mui-primary-hover-bg-dark;
+          color: variables.$c-mui-primary;
+        }
+      }
+    }
   }
 
   &--right {
+    display: flex;
     flex: 1;
+    justify-content: flex-end;
+    align-items: center;
   }
 
   &--center {
     display: flex;
     justify-content: center;
     align-items: center;
+
+    .MuiIconButton-root {
+      color: variables.$c-text-secondary;
+
+      &.Mui-disabled {
+        color: variables.$c-disabled;
+      }
+
+      .dark & {
+        color: variables.$c-text-dark;
+
+        &.Mui-disabled {
+          color: variables.$c-disabled-dark;
+        }
+      }
+
+      &:hover:not(.Mui-disabled) {
+        background: variables.$c-cyan;
+        color: variables.$c-button-text;
+
+        .dark & {
+          background: variables.$c-cyan-dark;
+          color: variables.$c-button-text-dark;
+        }
+      }
+    }
   }
 }
 
@@ -46,7 +135,7 @@
 }
 
 .gutter {
-  background-color: #ddd;
+  background-color: variables.$c-gray-light;
   background-clip: padding-box;
 
   .gutter-horizontal {
@@ -102,12 +191,12 @@
     border-bottom: 1px solid variables.$c-border;
 
     &--warn {
-      background-color: rgba(217, 119, 6, 0.1);
-      color: #d97706;
+      background-color: rgba(variables.$c-warning, 0.1);
+      color: variables.$c-warning;
     }
 
     &--error {
-      background-color: rgba(163, 22, 33, 0.1);
+      background-color: rgba(variables.$c-error, 0.1);
       color: variables.$c-error;
     }
   }
@@ -137,6 +226,18 @@
   &__level-filter {
     opacity: 0.35;
 
+    &--log {
+      color: variables.$c-text-secondary;
+    }
+
+    &--warn {
+      color: variables.$c-warning;
+    }
+
+    &--error {
+      color: variables.$c-error;
+    }
+
     &--active {
       opacity: 1;
     }
@@ -148,6 +249,31 @@
   min-width: 200px;
   overflow: auto;
   height: 100%;
+
+  .dark & {
+    hr {
+      border-color: variables.$c-white;
+    }
+
+    .MuiIconButton-root,
+    .MuiCheckbox-root,
+    .MuiSelect-icon {
+      color: variables.$c-white;
+    }
+
+    .MuiInputAdornment-root {
+      border-color: variables.$c-white;
+    }
+
+    .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+      border-color: variables.$c-white;
+    }
+
+    .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+    .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: variables.$c-cyan-dark;
+    }
+  }
 }
 
 .inspector-panel {
@@ -222,7 +348,7 @@
     background: none;
 
     &-icon {
-      color: #fff;
+      color: variables.$c-white;
     }
   }
 
@@ -253,14 +379,29 @@
   align-items: center;
   padding: 0 16px 0 16px;
   background: variables.$c-border;
+  color: variables.$c-text;
+
+  .dark & {
+    background: variables.$c-bg-header-dark;
+    color: variables.$c-text-dark;
+  }
 
   .toolbar-item {
     border-radius: 0;
     font-size: 10px;
+    color: variables.$c-text-secondary;
+
+    .dark & {
+      color: variables.$c-text-secondary-dark;
+    }
   }
 
   .active {
     color: variables.$c-blue;
+
+    .dark & {
+      color: variables.$c-cyan-dark;
+    }
   }
 }
 

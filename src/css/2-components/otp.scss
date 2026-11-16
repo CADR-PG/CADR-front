@@ -1,3 +1,5 @@
+@use "../0-site/variables";
+
 .otp {
     &-hld {
         justify-content: center;
@@ -5,7 +7,7 @@
     }
 
     &-input {
-        border: 1px solid #ccc;
+        border: 1px solid variables.$c-border-input;
         text-align: center;
         font-size: 32px;
         font-weight: bold;

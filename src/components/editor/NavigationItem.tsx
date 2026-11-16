@@ -50,7 +50,7 @@ function NavigationItem({ label, children }: NavigationItemProps) {
         onClick={openMenu}
         size="small"
         color="primary"
-        sx={{ textTransform: 'none' }}
+        className="tool-bar__button"
       >
         {label}
       </Button>

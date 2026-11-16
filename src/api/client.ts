@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import loginData from '../types/LoginData';
 import registerData from '../types/RegisterData';
+import loginWithGithubData from '../types/LoginWithGithubData';
 import verifyData from '../types/VerifyData';
 import UserData from '../types/UserData';
 import ChangeInfoData from '../types/ChangeInfoData';
@@ -72,10 +73,6 @@ export const logout = async () => {
 
 export const refreshToken = async () => {
   return await apiClient.post('/users/refresh');
-};
-
-export const fetchLocationLogs = async () => {
-  return await apiClient.get('/users/location-logs');
 };
 
 export const changeUserInfo = async (data: ChangeInfoData) =>

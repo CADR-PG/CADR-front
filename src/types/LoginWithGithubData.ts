@@ -1,6 +1,5 @@
 interface LoginWithGithubData {
-  email: string;
-  password: string;
+  code: string;
 }
 
 export default LoginWithGithubData;
