@@ -11,9 +11,12 @@ import { SkeletonUtils } from 'three-stdlib';
 import { ECS } from '@/engine/ECS';
 import { Entity } from '@/engine/Entity';
 import { useAnimationStore } from '@/stores/animationStore';
-import { AnimationMixer } from 'three';
+import { AnimationAction, AnimationMixer } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { ref } from 'valtio';
+import { notifyAnimationReady } from '@/engine/Animation';
+import { EventBus } from '@/engine/EventBus';
+import { AnimationFinished } from '@/engine/events/Animations';
 
 interface AnimatedModelProps {
   entity: Entity;
@@ -49,13 +52,25 @@ function AnimatedModel({
     const { setClips, setPlaying } = useAnimationStore.getState();
 
     em.animations[entity] = ref(actions);
+    notifyAnimationReady(entity, em.animations[entity]);
     setClips(
       animations.map((a) => a.name),
       entity,
     );
     setPlaying(null, entity);
 
-    const onFinished = () => setPlaying(null, entity);
+    const onFinished = (data: {
+      action: AnimationAction;
+      direction: number;
+    }) => {
+      EventBus.instance.publish<AnimationFinished>({
+        data: {
+          type: 'animationFinished',
+          payload: data,
+        },
+      });
+      setPlaying(null, entity);
+    };
     mixer.addEventListener('finished', onFinished);
 
     return () => {
@@ -92,7 +107,7 @@ export default function GLTFController({ entity }: ControllerProps) {
     <group
       ref={setRef}
       position={transform?.position}
-      rotation={transform?.rotation}
+      rotation={transform ? [...transform.rotation, 'YXZ'] : [0, 0, 0, 'YXZ']}
       scale={transform?.scale}
     >
       <AnimatedModel

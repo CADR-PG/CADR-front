@@ -47,6 +47,10 @@ export const userLogin = async (userData: loginData) => {
   return await apiClient.post('/users/login', userData);
 };
 
+export const userLoginWithGithub = async (userData: loginWithGithubData) => {
+  return await apiClient.post('/users/github-login', userData);
+};
+
 export const resendEmail = async (email: string) => {
   return await apiClient.post(
     `/users/resend-email-confirmation?email=${email}`,
@@ -183,5 +187,27 @@ export const deleteFile = async (projectId: string, fileId: string) => {
 export const requestFileUpload = async (projectId: string, fileId: string) => {
   return await apiClient.post<RequestFileUploadResponse>(
     `/projects/${projectId}/assets/files/${fileId}/move`,
+  );
+};
+
+export const renameDirectory = async (
+  projectId: string,
+  directoryId: string,
+  name: string,
+) => {
+  return await apiClient.post(
+    `/projects/${projectId}/assets/directories/${directoryId}/rename`,
+    { name },
+  );
+};
+
+export const renameFile = async (
+  projectId: string,
+  fileId: string,
+  name: string,
+) => {
+  return await apiClient.post(
+    `/projects/${projectId}/assets/files/${fileId}/rename`,
+    { name },
   );
 };

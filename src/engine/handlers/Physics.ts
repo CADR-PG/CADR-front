@@ -7,12 +7,14 @@ import { EventBus } from '../EventBus';
 import {
   CollisionEnter,
   CollisionExit,
+  ContactForce,
   IntersectEnter,
   IntersectExit,
 } from '../events/Physics';
 
 const physicsHandlers = {
   onCollisionEnter: (payload: CollisionEnterPayload) => {
+    console.log('COLLISION');
     EventBus.instance.publish<CollisionEnter>({
       data: {
         type: 'collisionEnter',
@@ -30,7 +32,8 @@ const physicsHandlers = {
     });
   },
 
-  onIntersectEnter: (payload: CollisionPayload) => {
+  onIntersectionEnter: (payload: CollisionPayload) => {
+    console.log('INTERSECT');
     EventBus.instance.publish<IntersectEnter>({
       data: {
         type: 'intersectEnter',
@@ -39,7 +42,7 @@ const physicsHandlers = {
     });
   },
 
-  onIntersectExit: (payload: CollisionPayload) => {
+  onIntersectionExit: (payload: CollisionPayload) => {
     EventBus.instance.publish<IntersectExit>({
       data: {
         type: 'intersectExit',
@@ -49,9 +52,9 @@ const physicsHandlers = {
   },
 
   onContactForce: (payload: ContactForcePayload) => {
-    EventBus.instance.publish<IntersectExit>({
+    EventBus.instance.publish<ContactForce>({
       data: {
-        type: 'intersectExit',
+        type: 'contactForce',
         payload,
       },
     });

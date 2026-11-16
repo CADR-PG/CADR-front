@@ -1,3 +1,4 @@
+import { PositionalAudio } from 'three';
 import { ECS } from '../ECS';
 import cAudio from './Audio';
 
@@ -20,6 +21,7 @@ export class cPositionalAudio implements cAudio {
     public maxDistance: number = 10000,
     public refDistance: number = 1,
     public rolloffFactor: number = 1,
+    public ref: PositionalAudio | null = null,
   ) {}
   name = 'PositionalAudio';
   element = 'paudio';

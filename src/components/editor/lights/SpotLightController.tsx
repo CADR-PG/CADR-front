@@ -2,11 +2,12 @@ import { SpotLight, SpotLightHelper } from 'three';
 import Light from '../../../engine/components/Light';
 import useEntityManager from '../../../hooks/useEntityManager';
 import ControllerProps from '../../../types/ControllerProps';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useHelper } from '@react-three/drei';
 import SpotLightData from '../../../engine/components/lights/SpotLightData';
 import { useEditorContext } from '../../../hooks/useEditorContext';
 import LightTemplate from './LightTemplate';
+import * as THREE from 'three';
 
 export default function SpotLightController({ entity }: ControllerProps) {
   const { focused } = useEditorContext();
@@ -14,6 +15,7 @@ export default function SpotLightController({ entity }: ControllerProps) {
   const lightData = em.getComponent(Light, entity);
   const ref = useRef<SpotLight>(null!);
   const params = lightData!.data as SpotLightData;
+  const target = useMemo(() => new THREE.Object3D(), []);
   useHelper(focused === entity && ref, SpotLightHelper, 'red');
 
   return (
@@ -27,7 +29,10 @@ export default function SpotLightController({ entity }: ControllerProps) {
         penumbra={params.penumbra}
         decay={params.decay}
         castShadow={params.castShadow}
-      />
+        target={target}
+      >
+        <primitive object={target} position={[0, 0, -1]} />
+      </spotLight>
     </LightTemplate>
   );
 }

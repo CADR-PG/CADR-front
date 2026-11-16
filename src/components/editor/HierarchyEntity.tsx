@@ -9,20 +9,21 @@ import { useDrag, useDrop } from 'react-dnd';
 import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import Children from '@/engine/components/Children';
-import { setParent } from '@/engine/Hierarchy';
 import { Collapse, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import EntityDragObject from '@/types/EntityDragObject';
 import { AssetsFile } from '@/types/Assets';
-import { loadExternalScene } from '@/engine/Scene';
 import { useParams } from 'react-router-dom';
 import NestedScene from '@/engine/components/NestedScene';
+import { makeLoadSceneCommand, makeSetParentCommand } from '@/engine/Command';
+import Command from '@/types/Command';
 
 interface HierarchyEntityProps {
   entity: Entity;
   parent: HTMLDivElement | null;
+  onContextMenu: (event: React.MouseEvent, entity: Entity) => void;
 }
 
 function isEntity(
@@ -35,6 +36,7 @@ function isEntity(
 export default function HierarchyEntity({
   entity,
   parent,
+  onContextMenu,
 }: HierarchyEntityProps) {
   const em = useEntityManager();
   const children = em.getComponent(Children, entity);
@@ -60,12 +62,14 @@ export default function HierarchyEntity({
   const [_, drop] = useDrop(
     () => ({
       accept: [DndTypes.ENTITY, DndTypes.FILE],
-      drop: (item: EntityDragObject | AssetsFile, _monitor) => {
+      drop: async (item: EntityDragObject | AssetsFile, _monitor) => {
+        let command: Command;
         if (isEntity(item)) {
-          setParent(entity, item.child);
+          command = makeSetParentCommand(entity, item.child);
         } else {
-          loadExternalScene(uuid!, item);
+          command = await makeLoadSceneCommand(uuid!, item);
         }
+        ECS.instance.entityManager.pushCommand(command);
       },
       hover(_item, monitor) {
         if (monitor.isOver() && monitor.canDrop()) {
@@ -113,6 +117,10 @@ export default function HierarchyEntity({
         onClick={() => {
           focus(entity);
         }}
+        onContextMenu={(e) => {
+          e.stopPropagation();
+          onContextMenu(e, entity);
+        }}
         className={`hierarchy-item ${focused === entity ? 'hierarchy-item-active' : ''}`}
       >
         <div className="hierarchy-item-content">
@@ -158,7 +166,12 @@ export default function HierarchyEntity({
             {em
               .getComponent(Children, entity)
               ?.children.map((child, i) => (
-                <HierarchyEntity parent={parent} key={i} entity={child} />
+                <HierarchyEntity
+                  parent={parent}
+                  key={i}
+                  entity={child}
+                  onContextMenu={onContextMenu}
+                />
               ))}
           </ul>
         </Collapse>

@@ -8,6 +8,8 @@ import useDownloadFile from '../../../hooks/useDownloadFile';
 import { normalizeUrl } from '../../../engine/components/helpers/material';
 import useAudio from '../../../hooks/useAudio';
 import { cPositionalAudio } from '../../../engine/components/PositionalAudio';
+import { ECS } from '@/engine/ECS';
+import { ref } from 'valtio';
 
 interface PositionalAudioControllerProps {
   parent: Object3D;
@@ -19,6 +21,10 @@ export default function PositionalAudioController({
 }: ControllerProps & PositionalAudioControllerProps) {
   const em = useEntityManager();
   const paudio = em.getComponent(cPositionalAudio, entity);
+  const paudioWrite = ECS.instance.entityManager.getComponent(
+    cPositionalAudio,
+    entity,
+  );
   const { focus, running } = useEditorContext();
   const listener = useAudioListener();
   const { data: audioFile } = useDownloadFile(paudio?.source);
@@ -30,7 +36,7 @@ export default function PositionalAudioController({
     params: paudio!,
     enabled: running && !!paudio && !!parent,
     applyExtra: (s) => {
-      if (!paudio) return;
+      if (!paudio || !paudioWrite) return;
       s.setDirectionalCone(
         paudio.coneInnerAngle,
         paudio.coneOuterAngle,
@@ -40,6 +46,8 @@ export default function PositionalAudioController({
       s.setMaxDistance(paudio.maxDistance);
       s.setRefDistance(paudio.refDistance);
       s.setRolloffFactor(paudio.rolloffFactor);
+
+      paudioWrite.ref = ref(s);
     },
     parent: parent,
   });

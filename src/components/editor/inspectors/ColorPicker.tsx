@@ -11,21 +11,24 @@ import useEntityManager from '../../../hooks/useEntityManager';
 import { ECS } from '../../../engine/ECS';
 import { Component, ComponentType } from '../../../engine/Component';
 import { Entity } from '../../../engine/Entity';
+import { makeSetCommand } from '@/engine/Command';
 
 interface HasData<S> {
   data: S;
 }
 
-interface ColorPickerProps<S, T extends Component & HasData<S>> {
+interface ColorPickerProps<S, T extends Component> {
   entity: Entity;
   component: ComponentType<T>;
   field: keyof S;
+  select?: (component: T) => S;
 }
 
-export default function ColorPicker<S, T extends Component & HasData<S>>({
+export default function ColorPicker<S, T extends Component>({
   entity,
   component,
   field,
+  select,
 }: ColorPickerProps<S, T>) {
   const em = useEntityManager();
   const c = em.getComponent(component, entity);
@@ -33,8 +36,9 @@ export default function ColorPicker<S, T extends Component & HasData<S>>({
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [color, setColor] = useState<string>('');
 
-  const componentColor = c ? (c.data as Record<keyof S, number>) : null;
-  const data = cw!.data as Record<keyof S, number>;
+  const pick = select ?? ((comp: T) => (comp as unknown as HasData<S>).data);
+  const componentColor = c ? (pick(c) as Record<keyof S, number>) : null;
+  const data = pick(cw!) as Record<keyof S, number>;
   const open = Boolean(anchorEl);
   const stringColor = componentColor
     ? `${componentColor[field].toString(16).padStart(6, '0')}`
@@ -58,7 +62,8 @@ export default function ColorPicker<S, T extends Component & HasData<S>>({
     // NOTE(m1k53r): `color` starts with '#' character,
     // so we have to start from the second character to parse it correctly.
     const c = Number.parseInt(color.slice(1), 16);
-    data[field] = c;
+    const command = makeSetCommand(c, data as S, field);
+    ECS.instance.entityManager.pushCommand(command);
   };
 
   const handleOpen = (event: MouseEvent<HTMLButtonElement>) => {

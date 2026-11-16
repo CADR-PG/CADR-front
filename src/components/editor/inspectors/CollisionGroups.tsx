@@ -1,20 +1,15 @@
 import { Button } from '@mui/material';
 import useEntityManager from '../../../hooks/useEntityManager';
 import { ECS } from '../../../engine/ECS';
-import { Component, ComponentType } from '../../../engine/Component';
-import { Entity } from '../../../engine/Entity';
+import { Component } from '../../../engine/Component';
+import {
+  CollisionGroupsComponent,
+  CollisionGroupsProps,
+} from '@/types/CollisionGroupsProps';
+import { makeSetCollisionCommand } from '@/engine/Command';
 
 function dec2bin(dec: number) {
   return (dec >>> 0).toString(2);
-}
-
-interface CollisionGroupsComponent {
-  collisionGroups: number;
-}
-
-interface CollisionGroupsProps<T extends Component & CollisionGroupsComponent> {
-  entity: Entity;
-  component: ComponentType<T>;
 }
 
 export default function CollisionGroups<
@@ -26,7 +21,9 @@ export default function CollisionGroups<
   const handleClick = (index: number, collider: boolean) => {
     const i = collider ? index + 16 : index;
     const bit = Math.pow(2, i);
-    cw!.collisionGroups ^= bit;
+    const command = makeSetCollisionCommand(cw!, bit);
+    ECS.instance.entityManager.pushCommand(command);
+    // cw!.collisionGroups ^= bit;
   };
 
   return (

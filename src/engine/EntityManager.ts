@@ -7,6 +7,7 @@ import { normalizeUrlRaw } from './components/helpers/material';
 import { Asset, useEditorSettingsStore } from '@/stores/editorSettingsStore';
 import { Vec3 } from './components/Transform';
 import SceneJSON from '@/types/SceneJSON';
+import Command from '@/types/Command';
 
 const INITIAL_CAMERA_POSITION: Vec3 = [3, 2, 3];
 export const GAME_SCENE = -1;
@@ -17,6 +18,7 @@ interface SceneData {
   dirty: boolean;
   lastCameraPosition?: Vec3;
   root: Entity | null;
+  history: Command[];
 }
 
 export interface EntityAnimations {
@@ -99,6 +101,7 @@ export class EntityManager {
       dirty: false,
       lastCameraPosition: INITIAL_CAMERA_POSITION,
       root: null,
+      history: [],
     });
 
     const newScene: Asset = {
@@ -191,6 +194,13 @@ export class EntityManager {
     delete scene.entities[entity][instance.name];
   }
 
+  removeComponentByName(name: string, entity: Entity): void {
+    const scene = this.find(entity);
+    if (!scene) return;
+
+    delete scene.entities[entity][name];
+  }
+
   destroyEntity(entity: Entity) {
     const scene = this.find(entity);
     if (!scene) return;
@@ -237,9 +247,24 @@ export class EntityManager {
         return null;
       }
       return scene.entities[entity][instance.name] as T;
-    } else {
-      return null;
     }
+
+    return null;
+  }
+
+  getComponentS(component: string, entity: Entity) {
+    if (this.is(component, entity)) {
+      const scene = this.find(entity);
+      if (!scene) {
+        console.error(
+          'Catastrophic failure: component exists, but entity doesnt',
+        );
+        return null;
+      }
+      return scene.entities[entity][component];
+    }
+
+    return null;
   }
 
   // TODO: When creating systems, we need to get all the entities with specified components.
@@ -264,6 +289,12 @@ export class EntityManager {
         if (!this.is(component, entity)) {
           return false;
         }
+        // TODO: don't know where to put this, but when we use lowercase name for components
+        // it suddenly doesn't work lol. the name gets transformed into Uppercase lol.
+        // I have no idea why, maybe there is a hidden name property that gets overwritten?
+        // so far I've only used names equal to the class' name, but maybe I should try
+        // and actually debug this at some point lol. though I've used custom Ammo component
+        // and didn't have any issues so wtf
       } else if (!this.has(this.mapNameToClass[component.name], entity)) {
         return false;
       }
@@ -319,6 +350,18 @@ export class EntityManager {
     this.savedScene = GAME_SCENE;
   }
 
+  pushCommand(command: Command) {
+    this.getScene().history.push(command);
+    command.execute();
+  }
+
+  popCommand() {
+    if (this.getScene().history.length === 0) return;
+
+    const command = this.getScene().history.pop();
+    command?.undo();
+  }
+
   mapNameToClass: NameToClass = {};
   refs: EntityRefs = {};
   animations: EntityAnimations = {};
@@ -329,9 +372,11 @@ export class EntityManager {
     root: null,
     dirty: false,
     lastCameraPosition: [0, 0, 0],
+    history: [],
   };
   currentScene: number = 0;
   sceneId: number = 0;
   initialized: boolean = false;
   savedScene: number = GAME_SCENE;
+  toDestroy: Entity[] = [];
 }

@@ -23,6 +23,18 @@ import { AssetsFile } from '@/types/Assets';
 import useDownloadFile from '@/hooks/useDownloadFile';
 import { normalizeUrl } from '@/engine/components/helpers/material';
 import { sdk } from '@/data/Sdk';
+import CameraInspector from './inspectors/CameraInspector';
+import ParticleEmitterInspector from './inspectors/ParticleEmitterInspector';
+import {
+  makeAddComponentCommand,
+  makeRemoveComponentCommand,
+} from '@/engine/Command';
+import NavMeshInspector from './inspectors/NavMeshInspector';
+import EnvironmentInspector from './inspectors/EnvironmentInspector';
+import FogInspector from './inspectors/FogInspector';
+import ScriptHolder from '@/engine/components/ScriptHolder';
+import TemplateHolder from '@/engine/components/TemplateHolder';
+import HoldersInspector from './inspectors/HoldersInspector';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -58,7 +70,8 @@ function InspectorWindow() {
         const constructor = init(sdk);
         const instance = new constructor();
         instance.fileId = file;
-        ECS.instance.entityManager.addComponent(instance, focused!);
+        const command = makeAddComponentCommand(instance, focused!);
+        ECS.instance.entityManager.pushCommand(command);
         setFile('');
       } catch (e) {
         console.error(e);
@@ -82,20 +95,18 @@ function InspectorWindow() {
   };
   const handleAdd = (name: string) => {
     if (focused) {
-      ECS.instance.entityManager.addComponent(
-        new ECS.instance.entityManager.mapNameToClass[name](),
-        focused,
-      );
+      const instance = new ECS.instance.entityManager.mapNameToClass[name]();
+      const command = makeAddComponentCommand(instance, focused);
+      ECS.instance.entityManager.pushCommand(command);
     }
     setAnchorEl(null);
   };
 
   const handleDelete = (component: string) => {
     if (focused) {
-      ECS.instance.entityManager.removeComponent(
-        ECS.instance.entityManager.mapNameToClass[component],
-        focused,
-      );
+      const c = ECS.instance.entityManager.mapNameToClass[component];
+      const command = makeRemoveComponentCommand(c, focused);
+      ECS.instance.entityManager.pushCommand(command);
     }
   };
 
@@ -131,10 +142,28 @@ function InspectorWindow() {
         );
       case 'GLTF':
         return <GLTFInspector entity={focused} />;
+      case 'ParticleEmitter':
+        return <ParticleEmitterInspector entity={focused} />;
       case 'Parent':
       case 'Children':
       case 'External':
         return null;
+      case 'camera':
+        return <CameraInspector entity={focused} />;
+      case 'NavMesh':
+        return <NavMeshInspector entity={focused} />;
+      case 'Environment':
+        return <EnvironmentInspector entity={focused} />;
+      case 'Fog':
+        return <FogInspector entity={focused} />;
+      case 'ScriptHolder':
+        return (
+          <HoldersInspector entity={focused} componentType={ScriptHolder} />
+        );
+      case 'TemplateHolder':
+        return (
+          <HoldersInspector entity={focused} componentType={TemplateHolder} />
+        );
       default:
         return (
           <InspectorTemplate

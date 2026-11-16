@@ -5,8 +5,13 @@ import { applyMatrix, toMatrix } from '@/engine/Hierarchy';
 import { Matrix4 } from 'three';
 import Parent from '@/engine/components/Parent';
 
-export default function useWorldTransform(entity: Entity): Transform {
+export default function useWorldTransform(
+  entity: Entity,
+  running: boolean = false,
+): Transform {
   const em = useEntityManager();
+
+  if (running) return new Transform();
 
   function calculateWorld(entity: Entity): Matrix4 {
     const t = em.getComponent(Transform, entity);

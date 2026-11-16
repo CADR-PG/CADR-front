@@ -6,7 +6,7 @@ import {
 import RBody from '../../engine/components/RigidBody';
 import useEntityManager from '../../hooks/useEntityManager';
 import ControllerProps from '../../types/ControllerProps';
-import { JSX, useRef, useState } from 'react';
+import { JSX, useCallback, useMemo, useState } from 'react';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import physicsHandlers from '../../engine/handlers/Physics';
 import * as THREE from 'three';
@@ -17,7 +17,6 @@ import {
   applyMatrix,
   flattenHierarchy,
   getWorldMatrix,
-  getWorldTransformOmitRoot,
   isInRigidBody,
   toMatrix,
 } from '@/engine/Hierarchy';
@@ -29,6 +28,7 @@ import { Clone, useGLTF } from '@react-three/drei';
 import GLTF from '@/engine/components/GLTF';
 import useDownloadFile from '@/hooks/useDownloadFile';
 import { normalizeUrl } from '@/engine/components/helpers/material';
+import { notifyBodyReady } from '@/engine/Waiter';
 
 interface RigidBodyControllerProps {
   children: JSX.Element | JSX.Element[];
@@ -46,9 +46,11 @@ export default function RigidBodyController({
 }: ControllerProps & RigidBodyControllerProps) {
   const em = useEntityManager();
   const rigidBody = em.getComponent(RBody, entity);
+  const rbWrite = ECS.instance.entityManager.getComponent(RBody, entity);
   const { running } = useEditorContext();
-  const ref = useRef<RapierRigidBody>(null!);
   const t = useWorldTransform(entity);
+  // const { world } = useRapier();
+  // world.forEachCollider((c) => console.log(c.radius()));
   const transformWrite = ECS.instance.entityManager.getComponent(
     Transform,
     entity,
@@ -72,20 +74,22 @@ export default function RigidBodyController({
   useAfterPhysicsStep(() => {
     if (
       !rigidBody ||
-      !ref.current ||
+      !rbWrite ||
+      !rbWrite.ref ||
       !running ||
       !transformWrite ||
       !mesh ||
       !initial
-    )
+    ) {
       return;
+    }
 
-    const tr = ref.current.translation();
-    const ro = ref.current.rotation();
+    const tr = rbWrite.ref.translation();
+    const ro = rbWrite.ref.rotation();
     p.set(tr.x, tr.y, tr.z);
     r.set(ro.x, ro.y, ro.z, ro.w);
     s.fromArray(initial.scale);
-    e.setFromQuaternion(r);
+    e.setFromQuaternion(r, 'YXZ');
 
     const newT = new Transform(
       [p.x, p.y, p.z],
@@ -100,11 +104,28 @@ export default function RigidBodyController({
     world.decompose(mesh.position, mesh.quaternion, mesh.scale);
   });
 
+  const userData = useMemo(
+    () => ({
+      entity,
+    }),
+    [entity],
+  );
+
+  const setBodyRef = useCallback(
+    (ref: RapierRigidBody | null) => {
+      if (rbWrite) rbWrite.ref = ref;
+      if (ref) notifyBodyReady(entity, ref);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [entity],
+  );
+
   return rigidBody && running ? (
     <RigidBody
       {...physicsHandlers}
       name={entity}
-      ref={ref}
+      userData={userData}
+      ref={setBodyRef}
       activeCollisionTypes={rigidBody.activeCollisionTypes}
       additionalSolverIterations={rigidBody.additionalSolverIterations}
       angularDamping={rigidBody.angularDamping}
@@ -125,6 +146,9 @@ export default function RigidBodyController({
       position={initial.position}
       rotation={initial.rotation}
       scale={initial.scale}
+      // linearVelocity={rigidBody.linearVelocity}
+      lockRotations={rigidBody.lockRotations}
+      lockTranslations={rigidBody.lockTranslations}
     >
       {gltf ? (
         <Clone object={model.scene ?? null} visible={false} />
@@ -134,14 +158,26 @@ export default function RigidBodyController({
       {children}
       {flattenHierarchy(entity).map((collider) => {
         const c = ECS.instance.entityManager.getComponent(Collider, collider);
-        const tr = getWorldTransformOmitRoot(collider);
         if (!c || !c.element) return null;
+        {
+          /* const tr = getWorldTransformOmitRoot(collider); */
+        }
+        {
+          /* const trp = getWorldTransform(collider); */
+        }
+        const colliderPos = ECS.instance.entityManager.getComponent(
+          Transform,
+          collider,
+        );
 
         const ColliderComponent = ComponentNames[c.element];
         return (
           // making a new group is dumb I think but whatever
-          <group position={tr.position} rotation={tr.rotation} scale={tr.scale}>
-            <ColliderComponent entity={collider} />;
+          <group
+            position={colliderPos!.position}
+            rotation={colliderPos!.rotation}
+          >
+            <ColliderComponent entity={collider} />
           </group>
         );
       })}

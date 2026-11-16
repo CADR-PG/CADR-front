@@ -15,6 +15,7 @@ import Dashboard from './pages/Dashboard.tsx';
 import ChangeData from './pages/Profile.tsx';
 import UserLocationMap from './pages/UserLocationMap.tsx';
 import NotFound from './pages/404.tsx';
+import GithubLoginCallback from './pages/GithubLoginCallback.ts';
 
 const router = createBrowserRouter([
   {
@@ -58,6 +59,10 @@ const router = createBrowserRouter([
     element: <UserLocationMap />,
   },
   {
+    path: '/login/github/callback',
+    element: <GithubLoginCallback />,
+  },
+  {
     path: '*',
     element: <NotFound />,
   },
@@ -73,5 +78,5 @@ createRoot(document.getElementById('root')!).render(
         <RouterProvider router={router} />
       </QueryClientProvider>
     </StyledEngineProvider>
-  </StrictMode>,
+  </StrictMode>
 );

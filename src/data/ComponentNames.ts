@@ -39,6 +39,9 @@ import RoundCuboidColliderController from '../components/editor/colliders/RoundC
 import RoundCylinderColliderController from '../components/editor/colliders/RoundCylinderColliderController';
 import AudioController from '../components/editor/audio/AudioController';
 import PositionalAudioController from '../components/editor/audio/PositionalAudioController';
+import CameraController from '../components/editor/CameraController';
+import NavMeshController from '@/components/editor/NavMeshController';
+import ParticleEmitterController from '../components/editor/particles/ParticleEmitterController';
 
 interface ComponentToElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,6 +49,7 @@ interface ComponentToElement {
 }
 
 const ComponentNames: ComponentToElement = {
+  camera: CameraController,
   box: BoxController,
   capsule: CapsuleController,
   circle: CircleController,
@@ -88,6 +92,9 @@ const ComponentNames: ComponentToElement = {
 
   audio: AudioController,
   paudio: PositionalAudioController,
+
+  navmesh: NavMeshController,
+  particleEmitter: ParticleEmitterController,
 };
 
 export default ComponentNames;

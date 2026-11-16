@@ -2,6 +2,7 @@ import FileNavigationItem from './FileNavigationItem';
 import LightNavigationItem from './LightNavigationItem';
 import ObjectNavigationItem from './ObjectNavigationItem';
 import ThemeToggle from '../ThemeToggle';
+import ParticleNavigationItem from './ParticleNavigationItem';
 import PauseButton from './PauseButton';
 import PlayButton from './PlayButton';
 import StartStopBtnToolbar from './StartStopBtnToolbar';
@@ -13,6 +14,7 @@ function Navigation() {
         <FileNavigationItem />
         <ObjectNavigationItem />
         <LightNavigationItem />
+        <ParticleNavigationItem />
       </div>
       <div className="tool-bar--center">
         <PlayButton />

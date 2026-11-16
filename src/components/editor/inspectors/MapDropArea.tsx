@@ -8,6 +8,8 @@ import useEntityManager from '../../../hooks/useEntityManager';
 import { Entity } from '../../../engine/Entity';
 import { normalizeUrl } from '../../../engine/components/helpers/material';
 import { IconButton } from '@mui/material';
+import { makeSetCommand } from '@/engine/Command';
+import { ECS } from '@/engine/ECS';
 
 interface MapDropAreaProps<T extends MaterialData> {
   entity: Entity;
@@ -24,7 +26,8 @@ export default function MapDropArea<T extends MaterialData>({
     () => ({
       accept: DndTypes.FILE,
       drop: (item: AssetsFile, _monitor) => {
-        (componentWrite as Record<keyof T, unknown>)[mapType] = item.id;
+        const command = makeSetCommand(item.id, componentWrite, mapType);
+        ECS.instance.entityManager.pushCommand(command);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),

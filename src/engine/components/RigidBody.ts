@@ -1,10 +1,12 @@
 import {
+  RapierRigidBody,
   RigidBodyAutoCollider,
   RigidBodyTypeString,
 } from '@react-three/rapier';
 import { Component } from '../Component';
 import { ECS } from '../ECS';
 import { ActiveCollisionTypes } from './Collider';
+import { Vec3 } from './Transform';
 
 export default class RBody implements Component {
   constructor(
@@ -25,9 +27,13 @@ export default class RBody implements Component {
     public sensor = false,
     public softCcdPrediction = 0,
     public type: RigidBodyTypeString = 'dynamic',
+    public linearVelocity: Vec3 = [0, 0, 0],
+    public lockRotations: boolean = false,
+    public lockTranslations: boolean = false,
   ) {}
 
   name: string = 'RigidBody';
+  ref: RapierRigidBody | null = null;
 }
 
 ECS.instance.entityManager.registerComponent(RBody);

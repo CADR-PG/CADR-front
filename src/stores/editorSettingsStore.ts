@@ -15,6 +15,7 @@ interface Action {
   setScenes: (scenes: Asset[]) => void;
   pushScene: (scene: Asset | null) => void;
   removeScene: (index: number) => void;
+  removeScenes: (indices: number[]) => void;
   updateScene: (scene: Asset | null, index: number) => void;
   setGame: (game: string | null) => void;
 }
@@ -38,6 +39,11 @@ export const useEditorSettingsStore = create<State & Action>((set) => ({
         scenes: state.scenes.filter((_, i) => i !== index),
       };
     });
+  },
+  removeScenes: (indices: number[]) => {
+    set((state) => ({
+      scenes: state.scenes.filter((_, i) => !indices.includes(i)),
+    }));
   },
   updateScene: (scene, index) => {
     set((state) => ({

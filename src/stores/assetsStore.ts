@@ -68,14 +68,52 @@ function removeFileById(
   };
 }
 
+function renameDirectoryById(
+  tree: AssetsDirectory,
+  directoryId: string,
+  name: string,
+): AssetsDirectory {
+  if (tree.id === directoryId) {
+    return { ...tree, name };
+  }
+
+  return {
+    ...tree,
+    directories:
+      tree.directories?.map((directory) =>
+        renameDirectoryById(directory, directoryId, name),
+      ) ?? null,
+  };
+}
+
+function renameFileById(
+  tree: AssetsDirectory,
+  fileId: string,
+  name: string,
+): AssetsDirectory {
+  return {
+    ...tree,
+    files:
+      tree.files?.map((file) =>
+        file.id === fileId ? { ...file, name } : file,
+      ) ?? null,
+    directories:
+      tree.directories?.map((directory) =>
+        renameFileById(directory, fileId, name),
+      ) ?? null,
+  };
+}
+
 interface AssetsStore {
   assets: AssetsDirectory | null;
   fetch: (projectId: string) => Promise<void>;
   addDirectory: (parentId: string, newDirectory: AssetsDirectory) => void;
   removeDirectory: (directoryId: string) => void;
+  renameDirectory: (directoryId: string, name: string) => void;
   addFile: (directoryId: string, newFile: AssetsFile) => void;
   removeFile: (fileId: string) => void;
   getDirs: (dir: AssetsDirectory) => AssetsDirectory[];
+  renameFile: (fileId: string, name: string) => void;
 }
 
 export const useAssetsStore = create<AssetsStore>((set, get) => ({
@@ -113,5 +151,15 @@ export const useAssetsStore = create<AssetsStore>((set, get) => ({
     });
 
     return array;
+  },
+  renameDirectory: (directoryId, name) => {
+    const { assets } = get();
+    if (!assets) return;
+    set({ assets: renameDirectoryById(assets, directoryId, name) });
+  },
+  renameFile: (fileId, name) => {
+    const { assets } = get();
+    if (!assets) return;
+    set({ assets: renameFileById(assets, fileId, name) });
   },
 }));
