@@ -101,7 +101,9 @@ function Login() {
                   />
                 </svg>
               )}
-              {isRedirecting ? 'Redirecting to GitHub...' : 'Continue with GitHub'}
+              {isRedirecting
+                ? 'Redirecting to GitHub...'
+                : 'Continue with GitHub'}
             </button>
             <p className="login-form__content">
               {' '}

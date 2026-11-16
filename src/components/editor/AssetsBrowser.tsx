@@ -576,7 +576,10 @@ export default function AssetsBrowser() {
         >
           {contextMenu?.target.type !== 'file' && (
             <MenuItem onClick={handleNewFolder}>
-              <CreateNewFolderIcon fontSize="small" className="menu-item-icon" />
+              <CreateNewFolderIcon
+                fontSize="small"
+                className="menu-item-icon"
+              />
               New Folder
             </MenuItem>
           )}
@@ -588,7 +591,10 @@ export default function AssetsBrowser() {
           )}
           {contextMenu?.target.type !== 'background' && (
             <MenuItem onClick={handleRenameFromMenu}>
-              <DriveFileRenameOutlineIcon fontSize="small" className="menu-item-icon" />
+              <DriveFileRenameOutlineIcon
+                fontSize="small"
+                className="menu-item-icon"
+              />
               Rename
             </MenuItem>
           )}
