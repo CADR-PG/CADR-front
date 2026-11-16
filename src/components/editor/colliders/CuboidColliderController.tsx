@@ -9,12 +9,9 @@ export default function CuboidColliderController({ entity }: ControllerProps) {
   return (
     params && (
       <CuboidCollider
-        {...physicsHandlers}
+        // {...physicsHandlers}
         {...params}
         args={[args.halfWidth, args.halfHeight, args.halfDepth]}
-        // W/A because it seems that rapier doesn't request a new frame
-        // on prop changes. Might change that later idk
-        key={`${args.halfWidth} ${args.halfHeight} ${args.halfDepth}`}
       />
     )
   );

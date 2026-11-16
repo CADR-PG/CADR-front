@@ -3,6 +3,7 @@ import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { Entity } from '../../../engine/Entity';
 import { Component, ComponentType } from '../../../engine/Component';
 import useEntityManager from '../../../hooks/useEntityManager';
+import { makeSetDataCommand } from '@/engine/Command';
 
 interface HasData<S> {
   data: S & { type: string };
@@ -30,11 +31,12 @@ export default function GenericFactory<S, T extends Component & HasData<S>>({
 
     const name = e.target.value;
 
-    ECS.instance.entityManager.removeComponent(component, entity);
-    ECS.instance.entityManager.addComponent(
-      new component(new data[name]()),
+    const command = makeSetDataCommand(
       entity,
+      component,
+      new component(new data[name]()),
     );
+    ECS.instance.entityManager.pushCommand(command);
   };
 
   return (

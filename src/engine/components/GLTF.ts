@@ -6,6 +6,7 @@ export default class GLTF implements Component {
     public source: string = '',
     public useDraco: boolean = false,
     public useMeshOpt: boolean = true,
+    public animations = null,
   ) {}
 
   name = 'GLTF';

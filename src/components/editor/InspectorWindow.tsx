@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useEditorContext } from '../../hooks/useEditorContext';
 import useEntityManager from '../../hooks/useEntityManager';
 import AddIcon from '@mui/icons-material/Add';
@@ -17,6 +17,24 @@ import cAudio from '../../engine/components/Audio';
 import { cPositionalAudio } from '../../engine/components/PositionalAudio';
 import InspectorTemplate from './inspectors/InspectorTemplate';
 import GLTFInspector from './inspectors/GLTFInspector';
+import { useDrop } from 'react-dnd';
+import { DndTypes } from '@/types/DndTypes';
+import { AssetsFile } from '@/types/Assets';
+import useDownloadFile from '@/hooks/useDownloadFile';
+import { normalizeUrl } from '@/engine/components/helpers/material';
+import { sdk } from '@/data/Sdk';
+import CameraInspector from './inspectors/CameraInspector';
+import ParticleEmitterInspector from './inspectors/ParticleEmitterInspector';
+import {
+  makeAddComponentCommand,
+  makeRemoveComponentCommand,
+} from '@/engine/Command';
+import NavMeshInspector from './inspectors/NavMeshInspector';
+import EnvironmentInspector from './inspectors/EnvironmentInspector';
+import FogInspector from './inspectors/FogInspector';
+import ScriptHolder from '@/engine/components/ScriptHolder';
+import TemplateHolder from '@/engine/components/TemplateHolder';
+import HoldersInspector from './inspectors/HoldersInspector';
 
 function InspectorWindow() {
   const [anchorEl, setAnchorEl] = useState<{
@@ -28,6 +46,39 @@ function InspectorWindow() {
   const em = useEntityManager();
   const snap = em.getComponents(focused);
   const nameMap = em.mapNameToClass;
+  const [file, setFile] = useState('');
+  const [{ canDrop }, drop] = useDrop(() => ({
+    accept: DndTypes.FILE,
+    drop: (item: AssetsFile, _monitor) => {
+      setFile(item.id);
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+      canDrop: !!monitor.canDrop(),
+    }),
+  }));
+  const { data } = useDownloadFile(file);
+
+  useEffect(() => {
+    async function load() {
+      if (!data) return;
+
+      try {
+        const { default: init } = await import(
+          /* @vite-ignore */ normalizeUrl(data)
+        );
+        const constructor = init(sdk);
+        const instance = new constructor();
+        instance.fileId = file;
+        const command = makeAddComponentCommand(instance, focused!);
+        ECS.instance.entityManager.pushCommand(command);
+        setFile('');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    load();
+  }, [data, file]);
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(
@@ -44,20 +95,18 @@ function InspectorWindow() {
   };
   const handleAdd = (name: string) => {
     if (focused) {
-      ECS.instance.entityManager.addComponent(
-        new ECS.instance.entityManager.mapNameToClass[name](),
-        focused,
-      );
+      const instance = new ECS.instance.entityManager.mapNameToClass[name]();
+      const command = makeAddComponentCommand(instance, focused);
+      ECS.instance.entityManager.pushCommand(command);
     }
     setAnchorEl(null);
   };
 
   const handleDelete = (component: string) => {
     if (focused) {
-      ECS.instance.entityManager.removeComponent(
-        ECS.instance.entityManager.mapNameToClass[component],
-        focused,
-      );
+      const c = ECS.instance.entityManager.mapNameToClass[component];
+      const command = makeRemoveComponentCommand(c, focused);
+      ECS.instance.entityManager.pushCommand(command);
     }
   };
 
@@ -93,6 +142,28 @@ function InspectorWindow() {
         );
       case 'GLTF':
         return <GLTFInspector entity={focused} />;
+      case 'ParticleEmitter':
+        return <ParticleEmitterInspector entity={focused} />;
+      case 'Parent':
+      case 'Children':
+      case 'External':
+        return null;
+      case 'camera':
+        return <CameraInspector entity={focused} />;
+      case 'NavMesh':
+        return <NavMeshInspector entity={focused} />;
+      case 'Environment':
+        return <EnvironmentInspector entity={focused} />;
+      case 'Fog':
+        return <FogInspector entity={focused} />;
+      case 'ScriptHolder':
+        return (
+          <HoldersInspector entity={focused} componentType={ScriptHolder} />
+        );
+      case 'TemplateHolder':
+        return (
+          <HoldersInspector entity={focused} componentType={TemplateHolder} />
+        );
       default:
         return (
           <InspectorTemplate
@@ -105,6 +176,10 @@ function InspectorWindow() {
     }
   };
 
+  const isInvalidKey = (key: string) => {
+    return key === 'Parent' || key === 'Children' || key === 'External';
+  };
+
   return (
     <div className="inspector-window">
       <h3>Inspector</h3>
@@ -112,27 +187,26 @@ function InspectorWindow() {
         <>
           {Object.keys(snap).map((key) => {
             return (
-              <div key={key}>
-                <div
-                  className="component-header"
-                  style={
-                    key === 'Transform' ? { paddingBottom: '18px' } : undefined
-                  }
-                >
-                  <b>{key}</b>
-                  {key !== 'Transform' && (
-                    <IconButton
-                      size="small"
-                      className="component-header-close-btn"
-                      onClick={() => handleDelete(key)}
-                    >
-                      <DeleteIcon></DeleteIcon>
-                    </IconButton>
-                  )}
+              !isInvalidKey(key) && (
+                <div key={key}>
+                  <div
+                    className={`component-header ${key === 'Transform' ? 'component-header-transform' : ''}`}
+                  >
+                    <b>{key}</b>
+                    {key !== 'Transform' && (
+                      <IconButton
+                        size="small"
+                        className="component-header-close-btn"
+                        onClick={() => handleDelete(key)}
+                      >
+                        <DeleteIcon></DeleteIcon>
+                      </IconButton>
+                    )}
+                  </div>
+                  <div className="inspector-panel">{renderSwitch(key)}</div>
+                  <hr />
                 </div>
-                <div className="inspector-panel">{renderSwitch(key)}</div>
-                <hr />
-              </div>
+              )
             );
           })}
           <div className="add-component">
@@ -158,6 +232,15 @@ function InspectorWindow() {
               );
             })}
           </Menu>
+
+          <div
+            ref={(node) => {
+              drop(node);
+            }}
+            className={`component-area drop-area ${canDrop ? 'drop-area--drag' : ''}`}
+          >
+            ...or drop your script here
+          </div>
         </>
       )}
     </div>

@@ -1,25 +1,21 @@
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
-import { grey } from '@mui/material/colors';
 import { useEditorContext } from '../../hooks/useEditorContext';
+import { IconButton } from '@mui/material';
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 
 function StartStopBtnToolbar() {
   const { running, setRunning, focus } = useEditorContext();
 
   return (
-    <div className="start-stop-btn-toolbar">
-      <button
-        onClick={() => {
-          setRunning(!running);
+    <div>
+      <IconButton
+        disabled={running}
+        onClick={async () => {
+          await setRunning(true, true);
           focus(null);
         }}
       >
-        {running ? (
-          <PauseIcon sx={{ color: grey[500] }} />
-        ) : (
-          <PlayArrowIcon sx={{ color: grey[500] }} />
-        )}
-      </button>
+        <OndemandVideoIcon />
+      </IconButton>
     </div>
   );
 }

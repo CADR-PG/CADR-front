@@ -2,7 +2,10 @@ import { Component } from './Component';
 import { Entity } from './Entity';
 import { System } from './System';
 import { EntityManager } from './EntityManager';
-import { proxy, snapshot } from 'valtio';
+import { proxy, snapshot, subscribe, unstable_enableOp } from 'valtio';
+import EventState from '@/types/EventState';
+import UpdateData from '@/types/UpdateData';
+import StartData from '@/types/StartData';
 
 // Glue class that contains the whole logic of ECS.
 // TODO: Maybe add unit tests for this?
@@ -12,7 +15,18 @@ export class ECS {
   static #instance: ECS;
 
   private constructor() {
+    unstable_enableOp(true);
     this.entityManager = proxy<EntityManager>(new EntityManager());
+    this.unsub = subscribe(this.entityManager.scenes, (ops) => {
+      if (
+        !this.isRunning &&
+        this.isLoaded &&
+        ops.some(([_, path]) => path.length > 2 && path[1] === 'entities')
+      ) {
+        this.entityManager.getScene().dirty = true;
+      }
+    });
+    this.isLoaded = true;
   }
 
   // Let it be a singleton, why the fuck not.
@@ -34,8 +48,12 @@ export class ECS {
     this.systems.push(system);
   }
 
+  clearSystems() {
+    this.systems = [];
+  }
+
   // API
-  update() {
+  update(data: UpdateData) {
     // TODO: Most likely a performance hit. Another way of doing this
     // is to specify an array of entities for each system beforehand
     // and updating it once entities change their components.
@@ -45,11 +63,27 @@ export class ECS {
     // from the beginning but go biased by tutorials lol.
     for (const system of this.systems) {
       // When we find all relevant entities, run the system.
-      system.update(this.query(system.components));
+      system.update(this.query(system.components), data);
+    }
+
+    for (const entity of this.entityManager.toDestroy) {
+      this.entityManager.destroyEntity(entity);
+    }
+
+    this.entityManager.toDestroy = [];
+  }
+
+  start(data: StartData) {
+    for (const system of this.systems) {
+      system.start(data);
     }
   }
 
-  query(components: Component[]) {
+  // Components can be either of type Component or string. String, because user
+  // defined components can't be referenced as Component inside user scripts.
+  // Current SDK doesn't allow for exporting those components.
+  // TODO: Maybe export this.systems and convert it into a map?
+  query(components: (Component | string)[]) {
     const matchingEntities: Entity[] = [];
 
     // When an entity satisfies a component condition for particular system,
@@ -66,8 +100,40 @@ export class ECS {
     const newEntity = this.entityManager.createEntity();
     const components = structuredClone(
       snapshot(this.entityManager.getComponents(entity)),
-    );
-    this.entityManager.entities[newEntity] = proxy(components);
+    ) as { [name: string]: Component };
+    this.entityManager.getScene().entities[newEntity] = proxy(components);
     return newEntity;
+  }
+
+  unsub: () => void;
+  isLoaded: boolean = false;
+  isRunning: boolean = false;
+  state: EventState = {
+    mouse: { movementX: 0, movementY: 0, buttons: 0 },
+    locked: false,
+    input: new Set(),
+  };
+
+  // Looked up by name instead of importing the component classes directly,
+  // since those files import `ECS` themselves to self-register - importing
+  // them back here would be a circular import.
+  ensureCamera() {
+    const em = this.entityManager;
+    const CameraType = em.mapNameToClass['camera'];
+    const TransformType = em.mapNameToClass['Transform'];
+    const NameType = em.mapNameToClass['Name'];
+
+    if (!CameraType || !TransformType || !NameType) return;
+
+    const hasCamera = em
+      .getEntities()
+      .some((entity) => em.has(CameraType, entity));
+
+    if (hasCamera) return;
+
+    const entity = em.createEntity();
+    em.addComponent(new CameraType(), entity);
+    em.addComponent(new TransformType([0, 1.6, 5]), entity);
+    em.addComponent(new NameType('camera'), entity);
   }
 }

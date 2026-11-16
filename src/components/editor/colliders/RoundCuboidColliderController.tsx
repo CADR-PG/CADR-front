@@ -19,7 +19,6 @@ export default function RoundCuboidColliderController({
           args.halfDepth,
           args.borderRadius,
         ]}
-        key={`${args.halfWidth} ${args.halfHeight} ${args.halfDepth} ${args.borderRadius}`}
       />
     )
   );

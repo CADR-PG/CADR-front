@@ -9,10 +9,9 @@ export default function BallColliderController({ entity }: ControllerProps) {
   return (
     params && (
       <BallCollider
-        {...physicsHandlers}
+        // {...physicsHandlers}
         {...params}
         args={[args.radius]}
-        key={`${args.radius}`}
       />
     )
   );

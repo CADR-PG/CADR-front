@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react';
-import { Object3D } from 'three';
+import { Mesh } from 'three';
+import { Group } from 'three';
 
 export default function useEntityRef() {
-  const [object, setObject] = useState<Object3D | null>(null);
+  const [object, setObject] = useState<Mesh | Group | null>(null);
 
-  const setRef = useCallback((node: Object3D | null) => {
+  const setRef = useCallback((node: Mesh | Group | null) => {
     setObject(node);
   }, []);
 

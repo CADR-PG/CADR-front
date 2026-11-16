@@ -1,17 +1,24 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
 import EditingMode from '../types/EditingMode';
+import { Camera } from 'three';
 
 export interface EditorContextValues {
   focused: string | null;
   focus: Dispatch<SetStateAction<string | null>>;
   running: boolean;
-  setRunning: (newState: boolean) => void;
+  setRunning: (newState: boolean, current: boolean | null) => Promise<void>;
   editingMode: EditingMode;
   selectMode: Dispatch<SetStateAction<EditingMode>>;
   hovered: string | null;
   hover: Dispatch<SetStateAction<string | null>>;
   dragged: boolean;
   drag: Dispatch<SetStateAction<boolean>>;
+  gDragged: boolean;
+  gDrag: Dispatch<SetStateAction<boolean>>;
+  dnd: string | null;
+  setDnd: Dispatch<SetStateAction<string | null>>;
+  camera: Camera;
+  setCamera: Dispatch<SetStateAction<Camera>>;
 }
 
 export const EditorContext = createContext<EditorContextValues | undefined>(

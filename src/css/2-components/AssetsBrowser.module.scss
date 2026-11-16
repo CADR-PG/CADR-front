@@ -19,6 +19,9 @@
 
 .fileName {
   flex: 1;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 1px 4px;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -82,6 +85,26 @@
   padding: 8px;
 }
 
+.searchInput {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-family: inherit;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 4px 6px;
+  margin: 8px 8px 0;
+  outline: none;
+
+  &:focus {
+    border-color: #90caf9;
+  }
+}
+
+.noResults {
+  color: #999;
+  padding: 4px;
+}
+
 .rootDir {
   cursor: pointer;
   font-weight: bold;
@@ -101,21 +124,13 @@
   margin-top: 4px;
 }
 
-.toolbar {
-  border-bottom: 1px solid #ddd;
-  padding: 8px;
-  display: flex;
-  flex-direction: row;
-  gap: 4px;
-}
-
-.toolbarRow {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-
-.uploadLabel {
-  font-size: 11px;
-  color: #666;
+.renameInput {
+  flex: 1;
+  font-size: 13px;
+  font-family: inherit;
+  border: 1px solid #90caf9;
+  border-radius: 3px;
+  padding: 1px 4px;
+  outline: none;
+  min-width: 0;
 }

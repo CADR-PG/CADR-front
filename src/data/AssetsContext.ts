@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 
 interface AssetsContextValue {
   selectedId: string;
-  onSelect: (id: string, name: string) => void;
+  onSelect: (id: string, name: string, type: 'file' | 'directory') => void;
 }
 
 export const AssetsContext = createContext<AssetsContextValue | null>(null);

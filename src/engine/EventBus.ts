@@ -3,7 +3,8 @@ export type EventMessageType =
   | 'collisionExit'
   | 'intersectEnter'
   | 'intersectExit'
-  | 'contactForce';
+  | 'contactForce'
+  | 'animationFinished';
 
 export interface EventMessageData {
   type: EventMessageType;
@@ -36,6 +37,7 @@ export class EventBus {
       this.subscribers[event] = [];
     }
     this.subscribers[event]!.push(callback);
+    console.log('subscribers', this.subscribers);
   }
 
   publish<T extends EventMessageData>(event: EventMessage<T>) {
@@ -43,8 +45,14 @@ export class EventBus {
 
     if (!callbacks) return;
 
+    console.log(callbacks);
     for (const callback of callbacks) {
-      callback(event.data);
+      try {
+        console.log('calling callback', callback);
+        callback(event.data);
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
 }

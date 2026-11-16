@@ -12,6 +12,7 @@ import type {
   AssetsDirectory,
   AssetsFileUploadReadModel,
 } from '../types/Assets';
+import RequestFileUploadResponse from '@/types/RequestFileUploadResponse';
 
 const localApiUrl = '/api';
 const productionApiUrl = 'https://api.cadr.games';
@@ -169,14 +170,44 @@ export const uploadFileStorage = async (uploadUrl: string, file: File) => {
 export const requestFileDownload = async (
   projectId: string,
   fileId: string,
+  opts?: { signal: AbortSignal },
 ) => {
   return await apiClient.post<{ downloadUrl: string }>(
     `/projects/${projectId}/assets/files/${fileId}/request-download`,
+    { signal: opts?.signal },
   );
 };
 
 export const deleteFile = async (projectId: string, fileId: string) => {
   return await apiClient.delete(
     `/projects/${projectId}/assets/files/${fileId}`,
+  );
+};
+
+export const requestFileUpload = async (projectId: string, fileId: string) => {
+  return await apiClient.post<RequestFileUploadResponse>(
+    `/projects/${projectId}/assets/files/${fileId}/move`,
+  );
+};
+
+export const renameDirectory = async (
+  projectId: string,
+  directoryId: string,
+  name: string,
+) => {
+  return await apiClient.post(
+    `/projects/${projectId}/assets/directories/${directoryId}/rename`,
+    { name },
+  );
+};
+
+export const renameFile = async (
+  projectId: string,
+  fileId: string,
+  name: string,
+) => {
+  return await apiClient.post(
+    `/projects/${projectId}/assets/files/${fileId}/rename`,
+    { name },
   );
 };

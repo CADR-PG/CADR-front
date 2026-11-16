@@ -1,66 +1,153 @@
-import { useEffect, useRef } from 'react';
-import { useEditorContext } from '../../hooks/useEditorContext';
-import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import Name from '../../engine/components/Name';
+import { useRef, useState } from 'react';
 import useEntityManager from '../../hooks/useEntityManager';
-import Invisible from '../../engine/components/Invisible';
-import { Entity } from '../../engine/Entity';
-import { ECS } from '../../engine/ECS';
+import HierarchyEntity from './HierarchyEntity';
+import Parent from '@/engine/components/Parent';
+import { Button, Menu, MenuItem } from '@mui/material';
+import {
+  makeCreateEntityCommand,
+  makeDestroyEntityCommand,
+  makePasteEntityCommand,
+} from '@/engine/Command';
+import { ECS } from '@/engine/ECS';
+import Name from '@/engine/components/Name';
+import Transform from '@/engine/components/Transform';
+import { Entity } from '@/engine/Entity';
+import { useEditorContext } from '@/hooks/useEditorContext';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useClipboardStore } from '@/stores/clipboardStore';
+import ScriptHolder from '@/engine/components/ScriptHolder';
+import TemplateHolder from '@/engine/components/TemplateHolder';
+
+interface ContextMenuState {
+  mouseX: number;
+  mouseY: number;
+  entity: Entity | null;
+}
 
 function HierarchyWindow() {
   const em = useEntityManager();
-  const { focused, focus } = useEditorContext();
+  const { focus } = useEditorContext();
   const parentRef = useRef<HTMLDivElement>(null);
+  const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
+  const { clipboard, copy } = useClipboardStore();
 
-  const handleClick = (entity: Entity) => {
-    if (!em.has(Invisible, entity)) {
-      ECS.instance.entityManager.addComponent(new Invisible(), entity);
-    } else {
-      ECS.instance.entityManager.removeComponent(Invisible, entity);
-    }
+  const createRoot = () => {
+    const command = makeCreateEntityCommand(null, null, (entity) => {
+      ECS.instance.entityManager.addComponent(new Name('root'), entity);
+      ECS.instance.entityManager.addComponent(new Transform(), entity);
+      ECS.instance.entityManager.addComponent(new ScriptHolder(), entity);
+      ECS.instance.entityManager.addComponent(new TemplateHolder(), entity);
+    });
+    ECS.instance.entityManager.pushCommand(command);
   };
 
-  // TODO: make it more generic and extract it to a hook
-  useEffect(() => {
-    const handleClick = (event: MouseEvent) => {
-      const isInsideParent = parentRef.current?.contains(event.target as Node);
-      // TODO: this is kinda stupid, but `eventListener` gets called before `onClick`
-      // so on a valid object click it will override null
-      if (isInsideParent) focus(null);
-    };
+  const openEntityContextMenu = (event: React.MouseEvent, entity: Entity) => {
+    event.preventDefault();
+    setContextMenu({
+      mouseX: event.clientX + 2,
+      mouseY: event.clientY - 6,
+      entity,
+    });
+  };
 
-    document.addEventListener('mousedown', handleClick);
-    return () => {
-      document.removeEventListener('mousedown', handleClick);
-    };
-  }, [focus]);
+  const openBackgroundContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setContextMenu({
+      mouseX: event.clientX + 2,
+      mouseY: event.clientY - 6,
+      entity: null,
+    });
+  };
+
+  const closeContextMenu = () => setContextMenu(null);
+
+  const handleCopy = () => {
+    if (contextMenu?.entity) copy(contextMenu.entity);
+    closeContextMenu();
+  };
+
+  const handleDelete = () => {
+    if (contextMenu?.entity) {
+      const command = makeDestroyEntityCommand(contextMenu.entity, focus);
+      ECS.instance.entityManager.pushCommand(command);
+    }
+    closeContextMenu();
+  };
+
+  const handlePaste = () => {
+    const parent = contextMenu?.entity ?? em.getScene().root;
+    if (clipboard && parent) {
+      const command = makePasteEntityCommand(clipboard, parent, focus);
+      ECS.instance.entityManager.pushCommand(command);
+    }
+    closeContextMenu();
+  };
 
   return (
     <div className="hierarchy-window" ref={parentRef}>
       <h3>Hierarchy</h3>
-      {em.getEntities().map((entity) => (
-        <div
-          key={entity}
-          className="hierarchy-window__item"
-          onClick={() => focus(entity)}
-          style={{ background: focused == entity ? '#555' : '' }}
-        >
-          {em.getComponent(Name, entity)?.displayName || entity}
-          <div className="buttonContainer">
-            <button
-              className="visibilityButton"
-              onClick={() => handleClick(entity)}
-            >
-              {!em.has(Invisible, entity) ? (
-                <VisibilityOutlined />
-              ) : (
-                <VisibilityOffOutlinedIcon />
-              )}
-            </button>
+      <div
+        className="hierarchy-window-content"
+        onContextMenu={openBackgroundContextMenu}
+      >
+        <b className="hierarchy-window-content-title">Scene</b>
+        {em.getEntities().length > 0 ? (
+          <ul className="tree">
+            {em
+              .getEntities()
+              .filter(
+                (entity) =>
+                  !em.getComponent(Parent, entity) ||
+                  !em.getComponent(Parent, entity)?.entity,
+              )
+              .map((entity) => (
+                <HierarchyEntity
+                  parent={parentRef.current}
+                  entity={entity}
+                  key={entity}
+                  onContextMenu={openEntityContextMenu}
+                />
+              ))}
+          </ul>
+        ) : (
+          <div className="hierarchy-window-content-create-button">
+            <Button variant="contained" onClick={() => createRoot()}>
+              Create root
+            </Button>
           </div>
-        </div>
-      ))}
+        )}
+      </div>
+      <Menu
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+        open={contextMenu !== null}
+        onClose={closeContextMenu}
+        disableRestoreFocus
+        disableEnforceFocus
+      >
+        {contextMenu?.entity && (
+          <MenuItem onClick={handleCopy}>
+            <ContentCopyIcon fontSize="small" sx={{ mr: 1 }} />
+            Copy
+          </MenuItem>
+        )}
+        <MenuItem onClick={handlePaste} disabled={!clipboard}>
+          <ContentPasteIcon fontSize="small" sx={{ mr: 1 }} />
+          Paste
+        </MenuItem>
+        {contextMenu?.entity && (
+          <MenuItem onClick={handleDelete}>
+            <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
+            Delete
+          </MenuItem>
+        )}
+      </Menu>
     </div>
   );
 }

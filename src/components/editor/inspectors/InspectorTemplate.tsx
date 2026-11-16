@@ -7,6 +7,7 @@ import NumberField from '../../NumberField';
 import { Checkbox, TextField } from '@mui/material';
 import InspectorKey from './InspectorKey';
 import { Vec3 } from '../../../engine/components/Transform';
+import { makeSetCommand, makeSetVec3Command } from '@/engine/Command';
 
 interface InspectorTemplateProps<T extends Component, S = T> {
   entity: Entity;
@@ -21,7 +22,7 @@ export default function InspectorTemplate<T extends Component, S = T>({
   componentType,
   select,
   specialRender,
-  skipKeys = ['name', 'element', 'data'],
+  skipKeys = ['name', 'element', 'data', 'ref'],
 }: InspectorTemplateProps<T, S>) {
   const em = useEntityManager();
   const component = em.getComponent(componentType, entity);
@@ -38,11 +39,13 @@ export default function InspectorTemplate<T extends Component, S = T>({
   const write = pick(componentWrite);
 
   const setField = (key: keyof S, value: string | number | boolean) => {
-    (write as Record<keyof S, unknown>)[key] = value;
+    const command = makeSetCommand(value, write, key);
+    ECS.instance.entityManager.pushCommand(command);
   };
 
   const setVecField = (key: keyof S, value: number, index: 0 | 1 | 2) => {
-    (write as Record<keyof S, Vec3>)[key][index] = value;
+    const command = makeSetVec3Command(value, write, key, index);
+    ECS.instance.entityManager.pushCommand(command);
   };
 
   const isVec3 = (key: unknown): key is Vec3 => {
@@ -67,22 +70,28 @@ export default function InspectorTemplate<T extends Component, S = T>({
           <div className="inspector-input-columns">
             <NumberField
               className="inspector-input-columns-column"
-              value={value[0]}
-              onValueChange={(value) => setVecField(key, value!, 0)}
+              value={value[0] ?? 0}
+              onValueChange={(v: number | null) =>
+                v !== null && setVecField(key, v!, 0)
+              }
               size="small"
               label="x"
             />
             <NumberField
               className="inspector-input-columns-column"
-              value={value[1]}
-              onValueChange={(value) => setVecField(key, value!, 1)}
+              value={value[1] ?? 0}
+              onValueChange={(v: number | null) =>
+                v !== null && setVecField(key, v!, 1)
+              }
               size="small"
               label="y"
             />
             <NumberField
               className="inspector-input-columns-column"
-              value={value[2]}
-              onValueChange={(value) => setVecField(key, value!, 2)}
+              value={value[2] ?? 0}
+              onValueChange={(v: number | null) =>
+                v !== null && setVecField(key, v!, 2)
+              }
               size="small"
               label="z"
             />
