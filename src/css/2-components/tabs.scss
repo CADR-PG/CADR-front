@@ -2,10 +2,20 @@
 
 .scene-tabs-container {
   display: flex;
-  background: white;
+  background: variables.$c-white;
+  color: variables.$c-text;
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+
+  .dark & {
+    background: variables.$c-bg-dark;
+    color: variables.$c-text-dark;
+  }
+
+  .MuiIconButton-root {
+    color: inherit;
+  }
 
   &-tab {
     padding: 0 8px 0 8px;
@@ -16,6 +26,10 @@
 
     &-active {
       background: variables.$c-border;
+
+      .dark & {
+        background: variables.$c-border-dark;
+      }
     }
 
     &-content {

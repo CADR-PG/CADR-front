@@ -12,6 +12,25 @@
     border-bottom: 1px solid variables.$c-border-dark;
   }
 
+  .tool-bar__item .MuiButton-root {
+    color: variables.$c-mui-primary;
+    border-radius: 4px;
+
+    &:hover {
+      background: variables.$c-mui-primary-hover-bg;
+      color: variables.$c-mui-primary;
+    }
+
+    .dark & {
+      color: variables.$c-mui-primary;
+
+      &:hover {
+        background: variables.$c-mui-primary-hover-bg-dark;
+        color: variables.$c-mui-primary;
+      }
+    }
+  }
+
   .tool-bar__theme-toggle {
     margin-left: auto;
     margin-right: 8px;
@@ -35,12 +54,40 @@
   &--right {
     display: flex;
     flex: 1;
+    justify-content: flex-end;
+    align-items: center;
   }
 
   &--center {
     display: flex;
     justify-content: center;
     align-items: center;
+
+    .MuiIconButton-root {
+      color: variables.$c-text-secondary;
+
+      &.Mui-disabled {
+        color: rgba(0, 0, 0, 0.26);
+      }
+
+      .dark & {
+        color: variables.$c-text-dark;
+
+        &.Mui-disabled {
+          color: rgba(255, 255, 255, 0.3);
+        }
+      }
+
+      &:hover:not(.Mui-disabled) {
+        background: variables.$c-cyan;
+        color: variables.$c-button-text;
+
+        .dark & {
+          background: variables.$c-cyan-dark;
+          color: variables.$c-button-text-dark;
+        }
+      }
+    }
   }
 }
 
@@ -223,14 +270,29 @@
   align-items: center;
   padding: 0 16px 0 16px;
   background: variables.$c-border;
+  color: variables.$c-text;
+
+  .dark & {
+    background: variables.$c-bg-header-dark;
+    color: variables.$c-text-dark;
+  }
 
   .toolbar-item {
     border-radius: 0;
     font-size: 10px;
+    color: variables.$c-text-secondary;
+
+    .dark & {
+      color: variables.$c-text-secondary-dark;
+    }
   }
 
   .active {
     color: variables.$c-blue;
+
+    .dark & {
+      color: variables.$c-cyan-dark;
+    }
   }
 }
 

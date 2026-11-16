@@ -34,6 +34,10 @@ $c-button-text-dark: #0f172a;
 $c-dot-color-dark: rgba(255, 255, 255, 0.08);
 $c-card-bg-dark: rgba(15, 23, 42, 0.6);
 
+$c-mui-primary: var(--mui-palette-primary-main, #1976d2);
+$c-mui-primary-hover-bg: rgba(25, 118, 210, 0.04);
+$c-mui-primary-hover-bg-dark: rgba(25, 118, 210, 0.08);
+
 //common colors
 $c-glow1: rgba(56,189,248,0.25);
 $c-glow2: rgba(99,102,241,0.25);

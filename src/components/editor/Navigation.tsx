@@ -9,10 +9,6 @@ import StartStopBtnToolbar from './StartStopBtnToolbar';
 function Navigation() {
   return (
     <div className="tool-bar">
-      <FileNavigationItem />
-      <ObjectNavigationItem />
-      <LightNavigationItem />
-      <ThemeToggle className="tool-bar__theme-toggle" />
       <div className="tool-bar--left">
         <FileNavigationItem />
         <ObjectNavigationItem />
@@ -23,7 +19,9 @@ function Navigation() {
         <PauseButton />
         <StartStopBtnToolbar />
       </div>
-      <div className="tool-bar--right"></div>
+      <div className="tool-bar--right">
+        <ThemeToggle className="tool-bar__theme-toggle" />
+      </div>
     </div>
   );
 }
